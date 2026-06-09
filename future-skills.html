@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Skills Library — Amplified</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--deep-teal:#1B4A44;--mid-teal:#2D756F;--teal:#3A8F88;--sage:#ACC4B6;--light-sage:#D8E6E2;--off-white:#F7F5F2;--charcoal:#1E2A26;--warm-gray:#8B8A85;--terracotta:#C77B5F;--text-dark:#1C2B26;--text-mid:#3D5248;--text-muted:#4A5C55;--white:#FFFFFF;--page-max:1100px;--radius:6px;--radius-lg:10px;--radius-xl:14px}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+  body{font-family:'DM Sans',system-ui,sans-serif;color:var(--text-dark);background:var(--off-white);font-size:16px;line-height:1.65}
+  .skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
+  .skip-link:focus{top:0}
+  :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
+  .lcard:focus-visible{outline:2px solid var(--mid-teal);outline-offset:4px;border-radius:var(--radius-lg)}
+
+  /* ── HERO ── */
+  .hero{background:var(--deep-teal);padding:80px 40px 72px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 80% 60%,rgba(91,167,159,.07) 0%,transparent 70%);pointer-events:none}
+  .hi{max-width:var(--page-max);margin:0 auto}
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
+  .hero-hl{font-family:'Lora',Georgia,serif;font-size:clamp(32px,3.8vw,48px);font-weight:600;color:var(--white);line-height:1.15;letter-spacing:-.02em;margin-bottom:20px;max-width:900px}
+  .hero-hl em{color:var(--sage);font-style:italic;font-weight:400}
+  .hero-body{font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:900px}
+
+  /* ── INTRO ── */
+  .intro{padding:56px 40px 48px;max-width:var(--page-max);margin:0 auto}
+  .intro-grid{display:grid;grid-template-columns:1fr 300px;gap:64px;align-items:start}
+  .ib{font-size:15.5px;line-height:1.8;color:var(--text-mid)}
+  .ib p+p{margin-top:16px}
+  .ib strong{color:var(--text-dark);font-weight:500}
+  .ia{background:var(--light-sage);border-radius:var(--radius-xl);padding:26px}
+  .ia-title{font-family:'Lora',Georgia,serif;font-size:14px;font-weight:600;color:var(--deep-teal);margin-bottom:14px}
+  .how-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+  .how-item{display:flex;gap:12px;align-items:flex-start}
+  .how-dot{width:8px;height:8px;border-radius:50%;background:var(--mid-teal);flex-shrink:0;margin-top:7px}
+  .how-label{font-size:13.5px;font-weight:600;color:var(--deep-teal);line-height:1.3}
+  .how-sub{font-size:12px;color:var(--mid-teal);margin-top:2px;line-height:1.45}
+
+  /* ── LIBRARY ── */
+  .divider{height:1px;background:rgba(172,196,182,.2);margin:0 40px}
+  .library{padding:52px 40px 80px;max-width:var(--page-max);margin:0 auto}
+  .lib-hdr{margin-bottom:36px}
+  .section-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:8px}
+  .stitle{font-family:'Lora',Georgia,serif;font-size:clamp(22px,2.6vw,28px);font-weight:600;color:var(--text-dark);line-height:1.2;letter-spacing:-.015em}
+
+  /* ── SKILL CARDS ── */
+  .skill-list{display:flex;flex-direction:column;gap:16px}
+  .scard{background:var(--white);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);overflow:hidden;transition:border-color .15s}
+  .scard:hover{border-color:rgba(45,117,111,.3)}
+  .scard.active{border-color:rgba(45,117,111,.4);box-shadow:0 4px 24px rgba(27,74,68,.07)}
+  .scard.cs{opacity:.68}
+  .sheader{display:flex;align-items:stretch;cursor:pointer;min-height:72px}
+  .scard.cs .sheader{cursor:default}
+
+  /* status strip — left edge */
+  .sstatus-strip{width:5px;flex-shrink:0}
+  .scard.active .sstatus-strip{background:var(--mid-teal)}
+  .scard.cs .sstatus-strip{width:0}
+
+  .shc{flex:1;display:flex;align-items:center;gap:16px;padding:18px 22px;flex-wrap:wrap}
+  .stb{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px}
+  .skill-pills{display:flex;flex-wrap:wrap;gap:5px}
+  .skill-pill{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--light-sage);color:var(--mid-teal)}
+  /* Category-specific pill colors — mapped to brand palette tag system */
+  .skill-pill.sp-cognitive   {background:#C5DDD9;color:#2D756F}
+  .skill-pill.sp-self-efficacy{background:#EDD5CB;color:#1F4D4A}
+  .skill-pill.sp-engagement  {background:#F2DDB8;color:#2D3330}
+  .skill-pill.sp-technology  {background:#D8E4DD;color:#1F4D4A}
+  .skill-pill.sp-management  {background:#C8D4DC;color:#2D3330}
+  /* Coming-soon cards: desaturate all pill variants */
+  .scard.cs .skill-pill,
+  .scard.cs .skill-pill.sp-cognitive,
+  .scard.cs .skill-pill.sp-self-efficacy,
+  .scard.cs .skill-pill.sp-engagement,
+  .scard.cs .skill-pill.sp-technology,
+  .scard.cs .skill-pill.sp-management{background:rgba(139,138,133,.1);color:var(--warm-gray)}
+  .sname{font-family:'Lora',Georgia,serif;font-size:18px;font-weight:600;color:var(--text-dark);line-height:1.2}
+  
+  .scard.cs .sname{color:var(--text-muted)}
+  
+  .ssum{font-size:13.5px;line-height:1.55;color:var(--text-muted);max-width:400px;flex:2}
+  .scard.cs .ssum{color:rgba(139,138,133,.7)}
+  .sstatus{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+  .ss-avail{background:rgba(45,117,111,.12);color:var(--mid-teal)}
+  .ss-soon{background:rgba(139,138,133,.1);color:var(--warm-gray)}
+  .stoggle{display:flex;align-items:center;padding:0 18px;color:var(--text-muted);transition:transform .2s;flex-shrink:0}
+  .stoggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .scard.open .stoggle{transform:rotate(180deg)}
+
+  /* expanded body */
+  .sbody{display:none;border-top:1px solid rgba(172,196,182,.2);padding:28px 28px 28px 28px;gap:40px;align-items:flex-start}
+  .scard.open .sbody{display:flex;flex-wrap:wrap}
+  .sdef{flex:1;min-width:280px}
+  .sdl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:10px}
+  .sdtext{font-family:'Lora',Georgia,serif;font-size:16px;line-height:1.7;color:var(--text-dark);font-style:italic;border-left:3px solid var(--sage);padding-left:18px;margin-bottom:20px}
+  .swhat{font-size:14px;line-height:1.75;color:var(--text-mid)}
+  .swhat p+p{margin-top:12px}
+  .slaunch{width:252px;flex-shrink:0}
+  .ltitle{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:12px}
+  .lcards{display:flex;flex-direction:column;gap:10px}
+  .lcard{background:var(--off-white);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-lg);padding:14px 16px;text-decoration:none;display:block;transition:border-color .15s,background .15s,transform .1s}
+  .lcard:hover{border-color:rgba(45,117,111,.45);background:var(--white);transform:translateY(-1px)}
+  .lcard.primary{background:var(--deep-teal);border-color:transparent}
+  .lcard.primary:hover{background:var(--mid-teal)}
+  .lctype{font-size:14px;font-weight:600;letter-spacing:.01em;text-transform:none;color:var(--text-dark);margin-bottom:4px;line-height:1.3}
+  .lcard.primary .lctype{color:var(--white)}
+  .lcdesc{font-size:12px;color:var(--text-muted);line-height:1.5}
+  .lcard.primary .lcdesc{color:rgba(255,255,255,.75)}
+  .lccta{font-size:11.5px;font-weight:600;color:var(--mid-teal);margin-top:6px;display:flex;align-items:center;gap:4px}
+  .lcard.primary .lccta{color:var(--sage)}
+
+
+  /* ── FILTER TABS ── */
+  .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
+  .ftab{font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid rgba(172,196,182,.3);color:var(--text-muted);background:transparent;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap;font-family:'DM Sans',system-ui,sans-serif}
+  .ftab:hover{background:var(--light-sage);border-color:rgba(45,117,111,.3);color:var(--mid-teal)}
+  .ftab.active{background:var(--mid-teal);border-color:transparent;color:var(--white)}
+  .scard.hidden{display:none}
+  .filter-empty{display:none;padding:32px 0;font-size:14px;color:var(--text-muted)}
+  .filter-empty.visible{display:block}
+
+  footer{background:var(--charcoal);padding:24px 40px;border-top:1px solid rgba(255,255,255,.06)}
+  .fi{max-width:var(--page-max);margin:0 auto}
+  .fn{font-size:12px;color:rgba(255,255,255,.35)}
+
+  @media(max-width:900px){.intro-grid{grid-template-columns:1fr;gap:32px}.slaunch{width:100%}}
+  @media(max-width:640px){
+    .hero,.intro,.library{padding-left:20px;padding-right:20px}
+    .divider{margin:0 20px}
+    .shc{padding:14px 16px}
+    .ssum{display:none}
+    .sbody{padding:20px 16px}
+    footer{padding:16px 20px}
+  }
+
+  @media(prefers-reduced-motion:reduce){.scard,.lcard,.stoggle{transition:none}}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="nav.js"></script>
+
+<section class="hero">
+  <div class="hi">
+    <p class="eyebrow">Future Skills Library</p>
+    <h1 class="hero-hl">Skills grounded in research.<br /><em>Built for real work.</em></h1>
+    <p class="hero-body">A growing library of skills drawn from the WEF Core Skills 2030 framework and corroborated by research from McKinsey, Udemy, and Microsoft. Each skill includes a primer and a full learning plan designed for deliberate practice in the flow of daily work.</p>
+  </div>
+</section>
+
+<main id="main-content">
+
+<section class="intro">
+  <div class="intro-grid">
+    <div class="ib">
+      <p>The skills in this library are not the ones getting the most attention in L&D conversations right now. Most organisations are focused on AI fluency - and that matters. But <strong>the skills that make a difference as AI handles more cognitive work</strong> are the ones that have always stood the test of time and don't get automated away such as analytical reasoning, creative problem-solving, systems awareness, resilience, the ability to lead without authority.</p>
+      <p>Each skill here is standalone — a self-contained resource you can start with wherever it's most relevant to your work right now. Over time, as the library grows, related skills will be packaged into guided learning journeys for people who want a more structured path through a connected set of capabilities.</p>
+      <p>Every entry includes two access points: a short primer that covers the core concept, and a full learning plan with curated resources, activities, and a habit builder you can embed into real work. Start with whichever fits your time and intent.</p>
+    </div>
+    <div class="ia">
+      <div class="ia-title">How each skill is built</div>
+      <ul class="how-list">
+        <li class="how-item">
+          <div class="how-dot"></div>
+          <div>
+            <div class="how-label">Skill Primer</div>
+            <div class="how-sub">Short · Overview, core concepts, worked example, knowledge check</div>
+          </div>
+        </li>
+        <li class="how-item">
+          <div class="how-dot"></div>
+          <div>
+            <div class="how-label">Full Learning Plan</div>
+            <div class="how-sub">Self-paced · Curated resources, frameworks, habit builder, behavioural indicators</div>
+          </div>
+        </li>
+        <li class="how-item">
+          <div class="how-dot"></div>
+          <div>
+            <div class="how-label">Skill categories</div>
+            <div class="how-sub">Each skill is tagged by type — Cognitive, Self-Efficacy, Engagement, Technology, Management — drawn from the World Economic Forum's Global Skills taxonomy</div>
+          </div>
+        </li>
+        <li class="how-item">
+          <div class="how-dot"></div>
+          <div>
+            <div class="how-label">Guided journeys (coming)</div>
+            <div class="how-sub">Related skills bundled into structured learning journeys</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="library" aria-label="Skills library">
+  <div class="lib-hdr">
+    <p class="section-label">The library</p>
+    <h2 class="stitle">Browse by skill</h2>
+    <div class="filter-bar" role="group" aria-label="Filter skills by category">
+      <button class="ftab active" data-filter="all">All</button>
+      <button class="ftab" data-filter="cognitive">Cognitive</button>
+      <button class="ftab" data-filter="self-efficacy">Self-Efficacy</button>
+      <button class="ftab" data-filter="engagement">Engagement</button>
+      <button class="ftab" data-filter="management">Management</button>
+    </div>
+  </div>
+  <div class="filter-empty" id="filter-empty">No skills match this filter yet.</div>
+
+  <div class="skill-list" role="list">
+
+    <!-- ANALYTICAL THINKING — available -->
+    <div class="scard active" id="s-analytical" data-categories="cognitive" role="listitem">
+      <div class="sheader" onclick="toggleSkill('s-analytical')" aria-expanded="false" aria-controls="sb-analytical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-analytical')">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
+            <div class="sname">Analytical Thinking</div>
+            
+          </div>
+          <div class="ssum">Break complex problems into their components before drawing conclusions. <em>"What's actually happening here?"</em></div>
+          <div class="sstatus ss-avail">Available Now</div>
+        </div>
+        <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sbody" id="sb-analytical">
+        <div class="sdef">
+          <div class="sdl">Skill definition</div>
+          <div class="sdtext">"Analytical Thinking is the discipline of breaking complexity into its parts before drawing conclusions from it."</div>
+          <div class="swhat">
+            <p>Without it, complex problems stay complex. People respond to symptoms, draw conclusions from the most visible information rather than the most relevant, and make decisions that feel structured but aren't.</p>
+            <p>The skill produces a clear, structured picture of what is happening and why — the foundation that any reliable solution has to rest on. It means building a structure before you analyse, tracing symptoms to their source rather than stopping at the first plausible cause, and knowing the difference between what the evidence shows and what you are assuming.</p>
+          </div>
+        </div>
+        <div class="slaunch">
+          <div class="lcards">
+            <a href="skills/analytical-thinking/primer.html" class="lcard" aria-label="Open Analytical Thinking Primer">
+              <div class="lctype">Skill Primer</div>
+              <div class="lcdesc">Short skill introduction. Core concepts, worked example, knowledge check. ~15 minutes.</div>
+              <div class="lccta">Open primer →</div>
+            </a>
+            <a href="skills/analytical-thinking/plan.html" class="lcard primary" aria-label="Open Analytical Thinking Full Learning Plan">
+              <div class="lctype">Full Learning Plan</div>
+              <div class="lcdesc">First principles, mental models, habit builder, behavioural indicators, and curated resources.</div>
+              <div class="lccta">Open full plan →</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATIVE THINKING -->
+    <div class="scard cs" id="s-creative" data-categories="cognitive" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
+            <div class="sname">Creative Thinking</div>
+          </div>
+          <div class="ssum">Produce original approaches by combining ideas across domains in ways that default thinking misses. <em>"What else is possible?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESILIENCE -->
+    <div class="scard cs" id="s-resilience" data-categories="self-efficacy" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-self-efficacy">Self-Efficacy</span></div>
+            <div class="sname">Resilience, Flexibility & Agility</div>
+          </div>
+          <div class="ssum">Recover from setbacks, adapt behaviour under pressure, and sustain productive momentum through uncertainty. <em>"How do I keep going?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEMS THINKING -->
+    <div class="scard cs" id="s-systems" data-categories="cognitive management" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span><span class="skill-pill sp-management">Management</span></div>
+            <div class="sname">Systems Thinking</div>
+          </div>
+          <div class="ssum">See interdependencies, feedback loops, and unintended consequences before they surface. <em>"What am I not seeing?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGIC SYNTHESIS & DECISION MAKING -->
+    <div class="scard cs" id="s-strategic" data-categories="cognitive" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
+            <div class="sname">Strategic Synthesis & Decision-Making</div>
+          </div>
+          <div class="ssum">Connect disparate information into a coherent picture and choose a path forward under uncertainty. <em>"What does this all mean — and what do we do?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CRITICAL THINKING -->
+    <div class="scard cs" id="s-critical" data-categories="cognitive" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
+            <div class="sname">Critical Thinking</div>
+          </div>
+          <div class="ssum">Evaluate arguments, identify assumptions, and resist the pull of flawed reasoning — including your own. <em>"Is this actually true?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERSHIP -->
+    <div class="scard cs" id="s-leadership" data-categories="engagement" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-engagement">Engagement</span></div>
+            <div class="sname">Leadership & Social Influence</div>
+          </div>
+          <div class="ssum">Build credibility, persuade across functions, and lead with integrity — regardless of formal authority. <em>"How do I bring people with me?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOTIVATION -->
+    <div class="scard cs" id="s-motivation" data-categories="self-efficacy" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-self-efficacy">Self-Efficacy</span></div>
+            <div class="sname">Motivation & Self-Awareness</div>
+          </div>
+          <div class="ssum">Understand your values, triggers, and impact on others — and use that self-knowledge to show up more deliberately. <em>"Why do I do what I do?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMPATHY -->
+    <div class="scard cs" id="s-empathy" data-categories="engagement" role="listitem">
+      <div class="sheader">
+        <div class="sstatus-strip"></div>
+        <div class="shc">
+          <div class="stb">
+            <div class="skill-pills"><span class="skill-pill sp-engagement">Engagement</span></div>
+            <div class="sname">Empathy & Active Listening</div>
+          </div>
+          <div class="ssum">Understand what others mean — including what they don't say — and respond in ways that build trust and productive collaboration. <em>"Do I actually understand what you mean?"</em></div>
+          <div class="sstatus ss-soon">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+</main>
+
+<footer>
+  <div class="fi">
+    <div class="fn">© <span id="yr"></span> Sing Chen</div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+  </div>
+</footer>
+
+<script>
+
+function filterSkills(filter) {
+  // Update active tab
+  document.querySelectorAll('.ftab').forEach(function(tab) {
+    tab.classList.toggle('active', tab.dataset.filter === filter);
+  });
+
+  // Show/hide cards
+  var cards = document.querySelectorAll('.scard');
+  var visible = 0;
+  cards.forEach(function(card) {
+    var cats = (card.dataset.categories || '').split(' ');
+    var show = filter === 'all' || cats.indexOf(filter) !== -1;
+    card.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+
+  // Empty state
+  var empty = document.getElementById('filter-empty');
+  if (empty) empty.classList.toggle('visible', visible === 0);
+}
+
+// Wire up tabs
+document.querySelectorAll('.ftab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    filterSkills(this.dataset.filter);
+  });
+});
+
+function toggleSkill(id) {
+  var card = document.getElementById(id);
+  if (!card || card.classList.contains('cs')) return;
+  var isOpen = card.classList.contains('open');
+  card.classList.toggle('open', !isOpen);
+  var header = card.querySelector('.sheader[aria-expanded]');
+  if (header) header.setAttribute('aria-expanded', !isOpen);
+}
+</script>
+</body>
+</html>

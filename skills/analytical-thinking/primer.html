@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytical Thinking — Full Learning Plan · Amplified</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── BRAND TOKENS ───────────────────────────── */
+  :root {
+    --sage:       #ACC4B6;
+    --teal:       #5BA79F;
+    --deep-teal:  #2D756F;
+    --off-white:  #F5F7F6;
+    --cream:      #EDE5C5;
+    --terracotta: #C77B5F;
+    --amber:      #D9A05B;
+    --navy:       #1F4D4A;
+    --charcoal:   #2D3330;
+    --light-sage: #D8E4DD;
+    --warm-gray:  #8B8A85;
+    --slate-blue: #5B7C8F;
+    --tag-analytical-bg: #C5DDD9;
+    --tag-analytical-tx: #2D756F;
+    --tag-structural-bg: #D8E4DD;
+    --tag-structural-tx: #1F4D4A;
+    --tag-human-bg:      #EDD5CB;
+    --tag-human-tx:      #1F4D4A;
+    --tag-growth-bg:     #F2DDB8;
+    --tag-growth-tx:     #2D3330;
+    --tag-insight-bg:    #C8D4DC;
+    --tag-insight-tx:    #2D3330;
+    --nav-width: 260px;
+    --content-max: 780px;
+    --radius: 8px;
+  }
+
+  /* ── RESET ──────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--navy);
+    background: var(--off-white);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── LEFT NAV ───────────────────────────────── */
+  .nav-rail {
+    width: var(--nav-width);
+    min-height: 100vh;
+    background: var(--charcoal);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 40px;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .nav-brand {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
+  }
+  .nav-series {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 6px;
+  }
+  .nav-skill {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.2;
+  }
+  .nav-items { list-style: none; padding: 0 12px; flex: 1; }
+  .nav-item { margin-bottom: 2px; }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .nav-link:hover { color: var(--off-white); background: rgba(255,255,255,0.06); }
+  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.2); }
+  .nav-link.visited { color: rgba(255,255,255,0.85); }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .nav-link.active .nav-dot  { background: var(--teal); }
+  .nav-link.visited .nav-dot { background: var(--sage); }
+  /* ── PREV / NEXT ARROWS ─────────────────────── */
+  .nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 16px;
+  }
+  .nav-arrow {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: #E8EDEB;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .nav-arrow:hover {
+    background: rgba(91,167,159,0.28);
+    border-color: var(--teal);
+    color: #FFFFFF;
+  }
+  .nav-arrow svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+  .slide-counter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN CONTENT ───────────────────────────── */
+  .main {
+    margin-left: var(--nav-width);
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ───────────────────────────────────── */
+  .hero {
+    background: var(--cream);
+    padding: 72px 80px 64px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(45,117,111,0.12);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.07;
+    top: -100px; right: -80px;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    opacity: 0.06;
+    bottom: -40px; right: 200px;
+  }
+  .hero-series {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+  .hero-accent { width: 4px; height: 56px; background: var(--terracotta); margin-bottom: 24px; }
+  .hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    max-width: 600px;
+  }
+  .hero-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    color: var(--navy);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ── TAGS ───────────────────────────────────── */
+  .tag {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    display: inline-block;
+  }
+  .tag-analytical { background: var(--tag-analytical-bg); color: var(--tag-analytical-tx); }
+  .tag-structural  { background: var(--tag-structural-bg); color: var(--tag-structural-tx); }
+  .tag-human       { background: var(--tag-human-bg);      color: var(--tag-human-tx); }
+  .tag-growth      { background: var(--tag-growth-bg);     color: var(--tag-growth-tx); }
+  .tag-insight     { background: var(--tag-insight-bg);    color: var(--tag-insight-tx); }
+
+  /* ── CONTENT SECTIONS ───────────────────────── */
+  .content { max-width: calc(var(--content-max) + 160px); padding: 0 80px 120px; }
+
+  .section {
+    padding-top: 72px;
+    padding-bottom: 16px;
+  }
+  .section-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .section h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    max-width: var(--content-max);
+  }
+  .section h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+    margin-bottom: 12px;
+    margin-top: 36px;
+  }
+  .section p {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    color: var(--navy);
+  }
+  .divider {
+    height: 1px;
+    background: rgba(45,117,111,0.1);
+    margin: 8px 0 0;
+    max-width: var(--content-max);
+  }
+
+  /* ── SNAPSHOT CARDS ─────────────────────────── */
+  .snapshot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .snapshot-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    border-top: 3px solid var(--teal);
+  }
+  .snapshot-card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .snapshot-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0;
+    color: var(--navy);
+  }
+  .snapshot-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+  }
+  .snapshot-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+  }
+  .snapshot-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .snapshot-list li.ai-item { font-style: italic; color: var(--deep-teal); }
+
+  /* ── CALLOUT ────────────────────────────────── */
+  .callout {
+    background: var(--light-sage);
+    border-left: 4px solid var(--terracotta);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .callout p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--terracotta);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .callout-teal {
+    background: var(--tag-analytical-bg);
+    border-left-color: var(--deep-teal);
+  }
+  .callout-teal p { color: var(--deep-teal); }
+
+  /* ── DEFINITION BOX ─────────────────────────── */
+  .definition-box {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .definition-box p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ── OBJECTIVES LIST ────────────────────────── */
+  .objectives-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .objectives-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 20px;
+    background: white;
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+  }
+  .obj-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 24px;
+    padding-top: 1px;
+  }
+  .obj-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  /* ── PRINCIPLE BLOCKS ───────────────────────── */
+  .principle {
+    max-width: var(--content-max);
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(45,117,111,0.08);
+  }
+  .principle:last-child { border-bottom: none; }
+  .principle-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .principle h3 {
+    margin-top: 0;
+    color: var(--deep-teal);
+  }
+  .ai-note {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--tag-growth-bg);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-top: 16px;
+    border-left: 3px solid var(--amber);
+  }
+  .ai-note-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .ai-note p {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── MENTAL MODEL CARDS ─────────────────────── */
+  .model-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    border-top: 3px solid var(--teal);
+  }
+  .model-source {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--warm-gray);
+    margin-bottom: 14px;
+  }
+  .model-applied {
+    background: var(--light-sage);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 16px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .model-applied-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+    margin-bottom: 6px;
+  }
+  .model-applied p { font-size: 14px; margin: 0; }
+
+  /* ── MISTAKES ───────────────────────────────── */
+  .mistake {
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .mistake h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+  }
+  .mistake-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .mistake-cell-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 4px;
+  }
+  .mistake-cell p { font-size: 14px; margin: 0; line-height: 1.5; }
+
+  /* ── BEHAVIORAL INDICATORS ──────────────────── */
+  .indicators-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .indicator-col {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .indicator-col.strength { border-top: 3px solid var(--teal); }
+  .indicator-col.warning  { border-top: 3px solid var(--terracotta); }
+  .indicator-col.overindex { border-top: 3px solid var(--amber); grid-column: 1 / -1; }
+  .indicator-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .strength .indicator-col-label  { color: var(--teal); }
+  .warning  .indicator-col-label  { color: var(--terracotta); }
+  .overindex .indicator-col-label { color: var(--amber); }
+  .indicator-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .indicator-list li {
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+    color: var(--navy);
+  }
+  .indicator-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+  .strength  .indicator-list li::before  { background: var(--teal); }
+  .warning   .indicator-list li::before  { background: var(--terracotta); }
+  .overindex .indicator-list li::before  { background: var(--amber); }
+
+  /* ── SCENARIOS ──────────────────────────────── */
+  .scenario {
+    max-width: var(--content-max);
+    margin-bottom: 32px;
+  }
+  .scenario h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin-bottom: 16px;
+  }
+  .scenario-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .scenario-col {
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .scenario-col.without {
+    background: #FDF0EC;
+    border-top: 3px solid var(--terracotta);
+  }
+  .scenario-col.with {
+    background: color-mix(in srgb, var(--tag-analytical-bg) 50%, transparent);
+    border-top: 3px solid var(--teal);
+  }
+  .scenario-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .without .scenario-col-label { color: var(--terracotta); }
+  .with    .scenario-col-label { color: var(--deep-teal); }
+  .scenario-col p { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+  .scenario-col p:last-child { margin-bottom: 0; }
+  .scenario-highlight { font-weight: 500; color: var(--deep-teal); }
+
+  /* ── REFLECTION ─────────────────────────────── */
+  .reflection-item {
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    border-left: 3px solid var(--slate-blue);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .reflection-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--slate-blue);
+    min-width: 28px;
+    padding-top: 1px;
+  }
+  .reflection-q {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--navy);
+  }
+  .reflection-time {
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 4px;
+  }
+
+  /* ── KNOWLEDGE CHECK ────────────────────────── */
+  .kc-question {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .kc-q-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 8px;
+  }
+  .kc-q-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .kc-options { display: flex; flex-direction: column; gap: 8px; }
+  .kc-option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1.5px solid transparent;
+    background: var(--light-sage);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    line-height: 1.45;
+  }
+  .kc-option:hover:not(:disabled) { border-color: var(--deep-teal); background: var(--tag-structural-bg); }
+  .kc-option.selected { background: var(--tag-structural-bg); border-color: var(--deep-teal); }
+  .kc-option.correct  { background: var(--tag-analytical-bg); border-color: var(--teal); }
+  .kc-option.incorrect { background: #FDE8E0; border-color: var(--terracotta); }
+  .kc-reveal-btn {
+    display: none;
+    margin-top: 16px;
+    background: var(--deep-teal);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .kc-reveal-btn:hover { background: var(--navy); }
+  .kc-score {
+    display: none;
+    margin-top: 20px;
+    background: var(--tag-analytical-bg);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    max-width: var(--content-max);
+  }
+  .kc-score p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin: 0;
+  }
+  .kc-answer { display: none; margin-top: 10px; }
+  .kc-answer-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .kc-answer p { font-size: 13px; color: var(--navy); margin: 0; line-height: 1.5; }
+
+  /* ── HABIT BUILDER ──────────────────────────── */
+  .habit-day {
+    max-width: var(--content-max);
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid rgba(45,117,111,0.12);
+  }
+  .habit-day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: white;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .habit-day-header:hover { background: var(--light-sage); }
+  .habit-day-header.open  { background: var(--deep-teal); }
+  .habit-day-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 32px;
+  }
+  .habit-day-header.open .habit-day-num { color: var(--sage); }
+  .habit-day-title-wrap { flex: 1; }
+  .habit-day-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+  }
+  .habit-day-header.open .habit-day-title { color: var(--off-white); }
+  .habit-day-concept {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 2px;
+  }
+  .habit-day-header.open .habit-day-concept { color: var(--sage); }
+  .habit-day-chevron {
+    font-size: 14px;
+    color: var(--warm-gray);
+    transition: transform 0.25s;
+  }
+  .habit-day-header.open .habit-day-chevron { transform: rotate(180deg); color: var(--sage); }
+  .habit-day-body {
+    display: none;
+    padding: 24px 28px 24px 72px;
+    background: white;
+    border-top: 1px solid rgba(45,117,111,0.08);
+  }
+  .habit-day-body.open { display: block; }
+  .habit-focus {
+    margin-bottom: 20px;
+  }
+  .habit-focus strong {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .habit-focus p { font-size: 14px; margin: 0; }
+  .habit-tasks { margin-bottom: 20px; }
+  .habit-tasks-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .habit-task {
+    margin-bottom: 16px;
+  }
+  .habit-task-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .habit-task p { font-size: 14px; margin-bottom: 8px; line-height: 1.55; }
+  .habit-example {
+    background: var(--cream);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--navy);
+    line-height: 1.55;
+    margin-top: 8px;
+    border-left: 3px solid var(--amber);
+  }
+  .habit-example-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .habit-meta { display: flex; flex-direction: column; gap: 10px; }
+  .habit-meta-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .habit-meta-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    min-width: 90px;
+    padding-top: 2px;
+  }
+  .habit-meta-value { font-size: 14px; color: var(--navy); line-height: 1.5; }
+  .habit-meta-value strong { color: var(--deep-teal); }
+  .habit-not-clicking {
+    margin-top: 16px;
+    background: var(--light-sage);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--navy);
+    line-height: 1.55;
+    border-left: 3px solid var(--slate-blue);
+  }
+  .habit-not-clicking-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-blue);
+    margin-bottom: 4px;
+  }
+
+  /* ── PROGRESSION ────────────────────────────── */
+  .progression-stage {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    border-left: 4px solid var(--teal);
+  }
+  .progression-stage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .progression-stage h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--deep-teal);
+  }
+  .progression-cap {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(45,117,111,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .progression-cap-item label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .progression-cap-item p { font-size: 14px; line-height: 1.5; margin: 0; }
+
+  /* ── SUMMARY ────────────────────────────────── */
+  .summary-block {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-block::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.1;
+    top: -80px; right: -60px;
+  }
+  .summary-block blockquote {
+    border-left: 4px solid var(--sage);
+    padding-left: 28px;
+    position: relative;
+  }
+  .summary-block p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--off-white);
+    line-height: 1.6;
+    margin: 0 0 16px;
+    max-width: 620px;
+  }
+  .summary-block p:last-child { margin: 0; font-size: 16px; color: var(--sage); }
+
+  /* ── RESOURCE TABLE ─────────────────────────── */
+  .resource-table {
+    width: 100%;
+    max-width: var(--content-max);
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  .resource-table th {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--light-sage);
+  }
+  .resource-table td {
+    padding: 14px 14px;
+    border-bottom: 1px solid var(--light-sage);
+    vertical-align: top;
+    line-height: 1.5;
+    color: var(--navy);
+  }
+  .resource-table tr:last-child td { border-bottom: none; }
+  .resource-table tr:hover td { background: color-mix(in srgb, var(--light-sage) 40%, transparent); }
+  .resource-type {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--warm-gray);
+    white-space: nowrap;
+  }
+  .resource-title { font-weight: 500; color: var(--deep-teal); }
+  .resource-why { color: var(--navy); font-size: 13px; }
+  .resource-links { white-space: nowrap; vertical-align: top; }
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--deep-teal);
+    text-decoration: none;
+    background: var(--tag-analytical-bg);
+    padding: 3px 10px;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+    margin-bottom: 4px;
+    margin-right: 4px;
+  }
+  .resource-link:hover { background: var(--deep-teal); color: var(--off-white); }
+
+  /* ── CROSS SKILL ────────────────────────────── */
+  .cross-skill-item {
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .cross-skill-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    min-width: 160px;
+  }
+  .cross-skill-desc { font-size: 14px; line-height: 1.6; color: var(--navy); }
+  .cross-skill-practice {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--teal);
+    font-style: italic;
+  }
+
+  /* ── SCOPE ──────────────────────────────────── */
+  .scope-list {
+    list-style: none;
+    max-width: var(--content-max);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .scope-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+    padding: 12px 16px;
+    background: white;
+    border-radius: 6px;
+  }
+  .scope-list li::before {
+    content: '✕';
+    font-size: 11px;
+    color: var(--terracotta);
+    font-weight: 700;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── ANIMATIONS ─────────────────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeInUp 0.4s ease both; }
+
+  /* ── SCROLLBAR ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(45,117,111,0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(45,117,111,0.5); }
+
+  /* ── ALTERNATING SECTION BACKGROUNDS ───────── */
+  .section-odd  { background: var(--off-white); }
+  .section-even {
+    background: var(--cream);
+    /* Extend cream to full width by compensating for content padding */
+    margin-left: -80px;
+    margin-right: -80px;
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  /* On cream sections, white-background cards stay white for clear contrast */
+  .section-even .model-card,
+  .section-even .mistake,
+  .section-even .objectives-list li,
+  .section-even .reflection-item,
+  .section-even .kc-question,
+  .section-even .progression-stage,
+  .section-even .cross-skill-item,
+  .section-even .scope-list li { background: white; }
+
+  /* ── SKIP NAVIGATION ─────────────────────────── */
+  .skip-link { position: absolute; top: -44px; left: 0; background: var(--deep-teal); color: var(--off-white); font-size: 14px; font-weight: 600; padding: 10px 18px; z-index: 9999; text-decoration: none; border-radius: 0 0 var(--radius) 0; transition: top .15s; }
+  .skip-link:focus { top: 0; }
+
+  /* ── FOCUS STYLES ────────────────────────────── */
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  /* ── REDUCED MOTION ──────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+
+</style>
+  <style id="site-nav-overrides">
+    /* Site nav offset — injected by wrapper */
+    body {
+      padding-top: 96px !important; /* 56px site nav + 40px skill bar */
+    }
+    .nav-rail {
+      top: 96px !important;
+      height: calc(100vh - 96px) !important;
+      min-height: calc(100vh - 96px) !important;
+    }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="../../nav.js"></script>
+
+<!-- Screen reader live region for section announcements -->
+<div aria-live="polite" aria-atomic="true" class="sr-only" id="sectionAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
+
+<!-- ── LEFT NAV ───────────────────────────────── -->
+<nav class="nav-rail" aria-label="Section navigation">
+  <div class="nav-brand">
+    <div class="nav-series">Future Skills Series</div>
+    <div class="nav-skill">Analytical<br>Thinking</div>
+  </div>
+  <ul class="nav-items" id="navItems">
+    <li class="nav-item"><a class="nav-link" href="#snapshot"   data-section="snapshot"><span class="nav-dot"></span>01 · Skill Snapshot</a></li>
+    <li class="nav-item"><a class="nav-link" href="#overview"   data-section="overview"><span class="nav-dot"></span>02 · Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="#objectives" data-section="objectives"><span class="nav-dot"></span>03 · Learning Objectives</a></li>
+    <li class="nav-item"><a class="nav-link" href="#principles" data-section="principles"><span class="nav-dot"></span>04 · First Principles</a></li>
+    <li class="nav-item"><a class="nav-link" href="#models"     data-section="models"><span class="nav-dot"></span>05 · Mental Models</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mistakes"   data-section="mistakes"><span class="nav-dot"></span>06 · Common Mistakes</a></li>
+    <li class="nav-item"><a class="nav-link" href="#indicators" data-section="indicators"><span class="nav-dot"></span>07 · Behavioral Indicators</a></li>
+    <li class="nav-item"><a class="nav-link" href="#scenarios"  data-section="scenarios"><span class="nav-dot"></span>08 · Practical Examples</a></li>
+    <li class="nav-item"><a class="nav-link" href="#reflection" data-section="reflection"><span class="nav-dot"></span>09 · Self-Reflection</a></li>
+    <li class="nav-item"><a class="nav-link" href="#check"      data-section="check"><span class="nav-dot"></span>10 · Knowledge Check</a></li>
+    <li class="nav-item"><a class="nav-link" href="#habits"     data-section="habits"><span class="nav-dot"></span>11 · 5-Day Habit Builder</a></li>
+    <li class="nav-item"><a class="nav-link" href="#progression" data-section="progression"><span class="nav-dot"></span>12 · Progression Path</a></li>
+    <li class="nav-item"><a class="nav-link" href="#summary"    data-section="summary"><span class="nav-dot"></span>13 · Summary</a></li>
+    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>14 · Explore Further</a></li>
+  </ul>
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="btnPrev" disabled>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Prev
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 14</span>
+    <button class="nav-arrow" id="btnNext">
+      Next
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────── -->
+<main class="main" id="main-content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-series">Future Skills Series · Thinking Skills Journey</div>
+    <div class="hero-accent"></div>
+    <h1>Analytical Thinking</h1>
+    <p class="hero-sub">The full learning plan. Work through it sequentially or use the navigation to jump to what you need.</p>
+    <div class="hero-tags">
+      <span class="tag tag-analytical">Thinking Skills</span>
+      <span class="tag tag-structural">Full Learning Plan</span>
+      <span class="tag tag-growth">Self-Paced</span>      
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- 0. SKILL SNAPSHOT -->
+    <div class="section section-odd" id="snapshot">
+      <div class="section-label">Section 01</div>
+      <h2>Skill Snapshot</h2>
+      <div class="divider"></div>
+      <div class="snapshot-grid">
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Problem It Solves</div>
+          <p>Without Analytical Thinking, complex problems stay complex. People respond to symptoms, draw conclusions from the most visible information rather than the most relevant, and make decisions that feel structured but aren't. The cost is invisible — until a project fails in the same place for the third time.</p>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">When It Matters Most</div>
+          <ul class="snapshot-list">
+            <li>A stakeholder presents a problem and the instinct is to jump to a solution</li>
+            <li>Data is available but nobody agrees on what's driving it</li>
+            <li>The same issue keeps recurring despite multiple fixes</li>
+            <li>A complex deliverable needs scoping and nobody has named the parts</li>
+            <li class="ai-item">AI produces an analysis that needs assessing for whether it decomposed the right problem — not just decomposed it neatly</li>
+          </ul>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Outcome It Enables</div>
+          <p>The ability to take any problem of meaningful complexity and produce a structured picture of its component parts, their relationships, and what is driving the outcomes you're observing — before drawing a single conclusion.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <div class="section section-even" id="overview">
+      <div class="section-label">Section 02</div>
+      <h2>Overview</h2>
+      <div class="divider"></div>
+      <p>Analytical Thinking is the discipline of breaking complex problems into their component parts, organizing those parts into a structure that reveals relationships and patterns, and following evidence from visible symptoms down to underlying causes.</p>
+      <p>The analogy that isolates it best: think of a mechanic diagnosing a car fault. They don't guess. They start by separating the system into its components — engine, fuel, electrical, exhaust. They organize the diagnostic territory before testing anything. Then they follow the evidence from what they can observe (the symptom) toward what is actually causing it. That systematic decomposition, structure, and cause-tracing is Analytical Thinking.</p>
+      <h3>Where the boundaries are</h3>
+      <p><strong>Critical Thinking</strong> asks whether the picture you've produced is trustworthy — whether the evidence is sound, the assumptions are visible, and the reasoning holds up. Analytical Thinking produces the picture. Critical Thinking evaluates it. They are sequential, not interchangeable.</p>
+	  <p><strong>Creative Thinking</strong> generates solutions and alternatives from the analytical picture. Analytical Thinking produces the picture — what's happening and why. Creative Thinking asks what you could do about it. The sequence matters: you need a clear picture before you can generate meaningful options from it.</p>
+      <p><strong>Systems Thinking</strong> maps how parts connect within a larger whole, including feedback loops, second-order effects, and emergent behavior. Analytical Thinking works within a defined problem boundary. Systems Thinking questions the boundary itself and asks what lies beyond it.</p>
+      <div class="definition-box">
+        <p>Analytical Thinking is the practice of decomposing complexity into a structured, evidence-based picture of what is actually happening and why.</p>
+      </div>
+      <h3>Out of scope</h3>
+      <ul class="scope-list">
+        <li>Statistical analysis or data science methods — the skill targets everyday professional judgment, not quantitative analysis</li>
+        <li>Systems mapping and feedback loop analysis — that is Systems Thinking</li>
+        <li>Evaluating whether your analytical output is trustworthy — that is Critical Thinking</li>
+        <li>Generating solutions or creative alternatives from your analysis — that is Creative Thinking</li>
+      </ul>
+    </div>
+
+    <!-- 2. OBJECTIVES -->
+    <div class="section section-odd" id="objectives">
+      <div class="section-label">Section 03</div>
+      <h2>Learning Objectives</h2>
+      <div class="divider"></div>
+      <p>By the end of this learning plan, you will be able to:</p>
+      <ol class="objectives-list">
+        <li><span class="obj-num">01</span><span class="obj-text">Decompose a complex professional problem into clearly named, separable components before attempting to draw conclusions from it.</span></li>
+        <li><span class="obj-num">02</span><span class="obj-text">Select an appropriate organizing framework for a given problem type — and explain why that framework fits better than alternatives.</span></li>
+        <li><span class="obj-num">03</span><span class="obj-text">Distinguish between a symptom and a root cause, and trace the thread from one to the other using structured diagnostic techniques.</span></li>
+        <li><span class="obj-num">04</span><span class="obj-text">Assess whether a conclusion is supported by evidence or by assumption, and name the gap explicitly when it exists.</span></li>
+        <li><span class="obj-num">05</span><span class="obj-text">Recognize a genuine pattern in a dataset or body of information and distinguish it from a pattern you are projecting onto noise.</span></li>
+        <li><span class="obj-num">06</span><span class="obj-text">Produce a structured analytical output — a decomposition, a diagnosis, a root cause map — that a colleague could interrogate without needing you to explain it.</span></li>
+      </ol>
+    </div>
+
+    <!-- 3. FIRST PRINCIPLES -->
+    <div class="section section-even" id="principles">
+      <div class="section-label">Section 04</div>
+      <h2>First Principles</h2>
+      <div class="divider"></div>
+
+      <div class="principle">
+        <div class="principle-number">Principle 01</div>
+        <h3>Decomposition: naming the parts is the first analytical act</h3>
+        <p>Complex problems resist direct analysis because they are too large and entangled to examine as a whole. The act of decomposition — separating a problem into its distinct, nameable components — is what makes analysis possible at all. Until you have named the parts, you are reacting to the problem as a single overwhelming mass rather than working on it systematically.</p>
+        <p>This is not intuitive. Under time pressure or cognitive load, the brain prefers to treat a complex problem as a pattern match against something familiar and jump to a response. Decomposition interrupts that jump. It forces the question: what is this actually made of?</p>
+      </div>
+
+      <div class="principle">
+        <div class="principle-number">Principle 02</div>
+        <h3>Structure before analysis: the map precedes the territory</h3>
+        <p>Before you analyze, you need a way to organize what you are looking at. Structure determines what you examine, in what order, and whether you are covering the full territory or only the parts that are most visible or most familiar.</p>
+        <p>A framework does not tell you the answer. It tells you where to look. The structure you choose — whether a simple categorization, a process map, or an established framework like MECE or fishbone — determines whether your analysis is systematic or selective. Selective analysis produces confident-sounding conclusions that break down the moment the unexamined parts surface.</p>
+      </div>
+
+      <div class="principle">
+        <div class="principle-number">Principle 03</div>
+        <h3>Cause versus symptom: the diagnostic obligation</h3>
+        <p>What you observe is almost always a downstream effect of something upstream. A team missing deadlines is a symptom. A customer segment churning is a symptom. A process producing errors at a consistent rate is a symptom. The analytical work is tracing the thread from what is visible back to what is actually generating it.</p>
+        <p>Skipping this step — treating the symptom as the problem — produces solutions that suppress the observable effect without addressing its source. The symptom returns, often in a different form, and the cycle repeats. The diagnostic obligation is to follow the evidence until you reach something that, if it changed, would change the symptom.</p>
+      </div>
+
+      <div class="principle">
+        <div class="principle-number">Principle 04</div>
+        <h3>Evidence over assumption: knowing which is which</h3>
+        <p>Every analysis rests on a mixture of data and assumption. Evidence tells you what is actually happening in the situation you are examining. Assumption tells you what you already believed before you started. The analytical discipline is making that distinction visible — knowing, for each element of your picture, whether it is grounded in evidence from this situation or imported from prior experience.</p>
+        <div class="ai-note">
+          <div class="ai-note-label">AI Context</div>
+          <p>AI-generated analysis arrives pre-structured, with confident language and apparent evidentiary support. The analytical question is the same one you would ask of your own work: which claims are grounded in evidence from this specific situation, and which are pattern-matched from training data that may or may not apply here?</p>
+        </div>
+      </div>
+
+      <div class="principle">
+        <div class="principle-number">Principle 05</div>
+        <h3>Pattern recognition: real signal versus projected pattern</h3>
+        <p>Across enough observations, genuine patterns emerge — regularities that would be invisible in any single data point. Pattern recognition is the ability to identify those regularities and draw valid inferences from them.</p>
+        <p>The discipline is knowing when a pattern is real. Human cognition has a strong tendency to find patterns in noise — to see regularity in random data because regularity is easier to process and act on than randomness. The check is replication: does the pattern hold when tested against new data, applied to adjacent cases, or examined by someone who did not expect to find it?</p>
+      </div>
+
+      <div class="principle">
+        <div class="principle-number">Principle 06</div>
+        <h3>The right decomposition for the situation</h3>
+        <p>There is no universal analytical framework. MECE is well-suited to structuring problem spaces where completeness matters and overlap creates confusion. First Principles decomposition works when established assumptions need stripping away. Fishbone diagrams are effective for cause-and-effect analysis in operational contexts. Process mapping fits problems that live in workflows and handoffs.</p>
+        <p>Choosing well is itself an analytical act. The wrong framework can make certain causes structurally invisible by putting them outside the categories the framework creates.</p>
+      </div>
+    </div>
+
+    <!-- 4. MENTAL MODELS -->
+    <div class="section section-odd" id="models">
+      <div class="section-label">Section 05</div>
+      <h2>Key Mental Models and Frameworks</h2>
+      <div class="divider"></div>
+
+      <div class="model-card">
+        <h3 style="margin-top:0">MECE — Mutually Exclusive, Collectively Exhaustive</h3>
+        <div class="model-source">Barbara Minto · The Pyramid Principle · McKinsey & Company, 1987</div>
+        <p>A structuring principle that ensures a decomposition covers all relevant territory (collectively exhaustive) without double-counting or creating ambiguous overlaps (mutually exclusive). It disciplines the analytical impulse to add categories until the problem feels covered — because categories that overlap hide where the issue actually sits.</p>
+        <div class="model-applied">
+          <div class="model-applied-label">Applied</div>
+          <p>A process architect diagnosing an over-budget project decomposes cost drivers into People, Technology, Process, Scope. Each category is examined once only — no double-counting, no blind spots between overlapping categories.</p>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h3 style="margin-top:0">The 5 Whys</h3>
+        <div class="model-source">Taiichi Ohno · Toyota Production System · 1950s</div>
+        <p>A cause-tracing technique that works by repeatedly asking "why" in response to each answer until a root cause is reached — typically within five iterations. Interrupts the tendency to stop analysis at the first plausible explanation, which is almost always a symptom or intermediate cause.</p>
+        <div class="model-applied">
+          <div class="model-applied-label">Applied</div>
+          <p>Support ticket volume spikes. Why? Customers can't complete a workflow. Why? A UI update changed the flow without updating help docs. Why? No documentation review step in the release process. Why? Documentation ownership sits outside the release workflow. That's the cause — fixing it prevents recurrence.</p>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h3 style="margin-top:0">First Principles Decomposition</h3>
+        <div class="model-source">Aristotle · modern application by physicists and engineers · popularized in business by Elon Musk</div>
+        <p>Strips a problem back to its most fundamental, irreducible truths — the things verifiably true regardless of convention or history — then rebuilds understanding from those foundations rather than inheriting assumptions from prior analyses.</p>
+        <div class="model-applied">
+          <div class="model-applied-label">Applied</div>
+          <p>A team estimates a project at six months based on how long similar projects have taken. First Principles asks: what are the actual components of this work, and what does each genuinely require? Starting from scratch, they find two of the six months were historically consumed by a dependency that no longer exists. The real estimate is four months.</p>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h3 style="margin-top:0">Fishbone Diagram (Ishikawa / Cause-and-Effect)</h3>
+        <div class="model-source">Kaoru Ishikawa · quality management · 1960s</div>
+        <p>Maps potential causes of a problem across standard categories — typically People, Process, Technology, Environment, Materials, Measurement — to ensure diagnostic coverage and make cause-effect relationships visually explicit. Most effective in operational and quality contexts where multiple contributing causes are likely.</p>
+        <div class="model-applied">
+          <div class="model-applied-label">Applied</div>
+          <p>A data team produces reports with a consistent error rate. A fishbone analysis across Process, Technology, People, and Measurement reveals four contributing causes. Fixing only the most visible one (manual entry) reduces but does not eliminate errors — because three other causes continue operating.</p>
+        </div>
+      </div>
+
+      <div class="model-card">
+        <h3 style="margin-top:0">The Issue Tree</h3>
+        <div class="model-source">Management consulting practice · McKinsey & Co. · widely adopted across professional services</div>
+        <p>Decomposes a central question into its component sub-questions in a hierarchical, branching structure. Makes the full analytical territory visible at once, shows how sub-questions relate, and allows work to be allocated across a decomposed structure rather than tackled as an undifferentiated whole.</p>
+        <div class="model-applied">
+          <div class="model-applied-label">Applied</div>
+          <p>A product team needs to understand why a feature has low adoption. The issue tree branches: do users know it exists? (awareness) · do they understand how to use it? (clarity) · does it solve their problem? (relevance) · does it work reliably? (reliability). The team discovers awareness and reliability are both partial causes — without the tree, they would have investigated only the most visible one.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. COMMON MISTAKES -->
+    <div class="section section-even" id="mistakes">
+      <div class="section-label">Section 06</div>
+      <h2>Common Mistakes</h2>
+      <div class="divider"></div>
+
+      <div class="mistake">
+        <h4>Solving before decomposing</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Under time pressure, the brain moves fast toward pattern matching. If a problem looks familiar, the instinct is to apply the solution that worked before. Decomposition feels like delay.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Before proposing or evaluating any solution, write down what the problem is made of. Name the component parts explicitly. This takes five minutes and frequently reveals the problem is not what it initially appeared to be.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Confusing a comprehensive framework with a complete analysis</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Applying a recognized framework creates the feeling of rigor. The framework looks thorough, so the analysis feels thorough — even if the categories are wrong for the problem.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>After applying any framework, ask: "what would this framework make invisible?" Check for causes or components that don't sit cleanly inside any category. Those are often where the real issue lives.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Stopping at the first plausible cause</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Finding a cause that explains the symptoms is cognitively satisfying. The brain registers it as a solution and loses motivation to keep digging — especially under pressure.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Apply the "and why does that happen?" test to every cause identified. If you can answer specifically, you haven't reached the root yet. Keep going until you reach something that, if changed, would stop the chain entirely.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Treating pattern recognition as analysis</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Humans are excellent at finding patterns — often too excellent. The cognitive system is biased toward pattern completion and will impose structure on data even when the data is genuinely noisy.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>When you identify a pattern, ask: does this hold when tested against data you didn't use to find it? Would someone who didn't expect to find a pattern here see the same thing? If no to either — treat it as a hypothesis, not a finding.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. BEHAVIORAL INDICATORS -->
+    <div class="section section-odd" id="indicators">
+      <div class="section-label">Section 07</div>
+      <h2>Behavioral Indicators</h2>
+      <div class="divider"></div>
+      <p>Observable behaviors across three levels — what good looks like, what signals underuse, and what signals overuse.</p>
+      <div class="indicators-grid">
+        <div class="indicator-col strength">
+          <div class="indicator-col-label">What Good Looks Like</div>
+          <ul class="indicator-list">
+            <li>Names the component parts of a problem before proposing solutions</li>
+            <li>Selects a framework and explains why it fits this problem specifically</li>
+            <li>Distinguishes explicitly between what data shows and what they're inferring</li>
+            <li>Traces a symptom back through intermediate causes to root cause before acting</li>
+            <li>Produces analytical outputs that hold up to questions without verbal explanation</li>
+            <li>Asks "what would make this pattern not real?" before acting on pattern-based conclusions</li>
+            <li>States the scope of an analysis explicitly — what it covers and what it doesn't</li>
+            <li>Adjusts the decomposition structure mid-analysis when evidence points elsewhere</li>
+            <li>Separates "what is happening" from "why it is happening" and works them in sequence</li>
+            <li>Can hand a structured analysis to someone unfamiliar with the problem who follows the logic independently</li>
+          </ul>
+        </div>
+        <div class="indicator-col warning">
+          <div class="indicator-col-label">Early Warning Signs</div>
+          <ul class="indicator-list">
+            <li>Jumps to cause identification before completing a decomposition of the problem space</li>
+            <li>Uses a familiar framework regardless of whether it fits the problem at hand</li>
+            <li>Presents a conclusion then assembles supporting evidence rather than deriving the conclusion from evidence</li>
+            <li>Calls a hypothesis a finding — states a pattern as confirmed before testing it</li>
+            <li>Produces analyses that require extensive verbal explanation to make sense of</li>
+            <li>Treats comprehensiveness of effort as a proxy for quality of analysis</li>
+            <li>Accepts AI-generated analytical outputs without checking whether the decomposition addresses the right problem</li>
+            <li>Identifies a plausible cause but stops before asking what's generating it upstream</li>
+          </ul>
+        </div>
+        <div class="indicator-col overindex">
+          <div class="indicator-col-label">Overindexing Signals</div>
+          <ul class="indicator-list">
+            <li>Decomposition paralysis — breaks problems into progressively finer components without ever reaching a point of sufficient clarity to act</li>
+            <li>Framework rigidity — insists on completing a full analytical structure even when early findings make parts of it clearly irrelevant</li>
+            <li>Analysis substituting for judgment — produces thorough, accurate pictures of the problem but cannot commit to a conclusion</li>
+            <li>Elevates analytical process over practical utility — the decomposition becomes the deliverable rather than a means to a decision</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. PRACTICAL EXAMPLES -->
+    <div class="section section-even" id="scenarios">
+      <div class="section-label">Section 08</div>
+      <h2>Practical Examples</h2>
+      <div class="divider"></div>
+
+      <div class="scenario">
+        <h4>Recurring delivery delays in a client project</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Analytical Thinking</div>
+            <p>A project manager notices deliverables are consistently running late. The team is working hard. The PM concludes it's a resource problem and makes the case for headcount. Headcount is approved. Delays continue.</p>
+            <p>The real constraint — an unowned handoff step consuming three days per cycle — was never examined. The symptom was treated as the problem.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Analytical Thinking</div>
+            <p>The PM decomposes the delivery process into stages. Maps actual time per stage against planned time. Finds the handoff stage is consistently the outlier — for a different reason each time.</p>
+            <p class="scenario-highlight">Root cause: unclear ownership at the handoff boundary. Neither team knows who resolves queries at that stage. Fixed with one conversation. No headcount required.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario">
+        <h4>Declining engagement scores in an employee survey</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Analytical Thinking</div>
+            <p>Engagement scores drop year-over-year. Leadership commissions a wellbeing initiative and increases recognition budget. Scores remain flat. The initiative addressed a real issue — just not the one driving the decline.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Analytical Thinking</div>
+            <p>An analyst decomposes the survey into its component dimensions and finds the decline is concentrated in role clarity and confidence in leadership — not wellbeing. Segmenting by tenure reveals the decline is strongest among mid-tenure employees who have experienced three reporting structure changes.</p>
+            <p class="scenario-highlight">Root cause: structural instability in a specific cohort. The intervention is targeted, not broad, and directly addresses what's driving the scores.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. SELF-REFLECTION -->
+    <div class="section section-odd" id="reflection">
+      <div class="section-label">Section 09</div>
+      <h2>Self-Reflection Activities</h2>
+      <div class="divider"></div>
+      <p>Three prompts to audit your current use of Analytical Thinking. Each takes under five minutes to complete honestly.</p>
+
+      <div class="reflection-item">
+        <div class="reflection-num">1</div>
+        <div>
+          <div class="reflection-q">Think of a recommendation or conclusion you produced in the last two weeks. Write it down in one sentence. Now write down the decomposition that preceded it — the component parts of the problem you examined before reaching that conclusion. If you can't reconstruct a decomposition, you probably didn't do one. What did you do instead, and what parts of the problem might you have missed?</div>
+          <div class="reflection-time">Targets: decomposition habit · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">2</div>
+        <div>
+          <div class="reflection-q">Identify one problem in your current work that has recurred — something that has been "fixed" at least once but keeps coming back. Write down the fix that was applied. Now ask: what was that fix actually addressing — the symptom, an intermediate cause, or a root cause? Apply "and why does that happen?" to each answer until you either reach something foundational or exhaust what you currently know.</div>
+          <div class="reflection-time">Targets: cause vs. symptom · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">3</div>
+        <div>
+          <div class="reflection-q">Think of the last time you used a structured framework — MECE, a process map, a root cause analysis, even a simple categorization — to organize a problem. Write down the framework you chose. Now write down what that framework made structurally invisible — causes, dimensions, or components that don't fit its categories. Was there anything important in the invisible space?</div>
+          <div class="reflection-time">Targets: framework fit · ~5 minutes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. KNOWLEDGE CHECK -->
+    <div class="section section-even" id="check">
+      <div class="section-label">Section 10</div>
+      <h2>Knowledge Check</h2>
+      <div class="divider"></div>
+      <p>Five questions — two conceptual, two applied, one synthesis. Select your answers, then reveal results.</p>
+
+      <div class="kc-question" id="kc1">
+        <div class="kc-q-label">Conceptual · Question 1 of 5</div>
+        <div class="kc-q-text">What is the difference between a MECE decomposition and a comprehensive one? Can something be comprehensive without being MECE?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc1', 0)">Yes — comprehensive just means thorough, with no structural requirements on categories</button>
+          <button class="kc-option" onclick="selectOption('kc1', 1)">No — if something is truly comprehensive it must also be MECE by definition</button>
+          <button class="kc-option" onclick="selectOption('kc1', 2)">Yes — something can cover a lot of ground while still having overlapping or gapped categories that hide causes</button>
+          <button class="kc-option" onclick="selectOption('kc1', 3)">No — MECE and comprehensive describe the same quality using different language</button>
+        </div>
+        <div class="kc-answer" id="kc1-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>A MECE decomposition is both mutually exclusive (no overlap) and collectively exhaustive (full coverage). Something can cover a lot of ground — comprehensive — without being MECE if categories overlap or if territory sits between categories and is never examined. Causes hiding in those overlapping or uncategorized spaces remain invisible despite apparent thoroughness.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc2">
+        <div class="kc-q-label">Conceptual · Question 2 of 5</div>
+        <div class="kc-q-text">Why does stopping at the first plausible cause create more risk than finding no cause at all?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc2', 0)">It doesn't — finding any cause is better than finding none, even if it's intermediate</button>
+          <button class="kc-option" onclick="selectOption('kc2', 1)">Because the first plausible cause is always a symptom, never a root cause</button>
+          <button class="kc-option" onclick="selectOption('kc2', 2)">Because it produces false closure — resources are committed, the real driver continues operating, and credibility is spent when the problem recurs</button>
+          <button class="kc-option" onclick="selectOption('kc2', 3)">Because it prevents you from using the 5 Whys technique correctly</button>
+        </div>
+        <div class="kc-answer" id="kc2-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Finding no cause leaves the problem open and acknowledged — uncertainty is visible. Stopping at the first plausible cause produces false closure. The problem appears solved, effort and resources are committed, and the real driver continues operating unaddressed. The cost of false closure is higher because it also consumes the credibility and momentum needed to address the problem again when it recurs.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc3">
+        <div class="kc-q-label">Application · Question 3 of 5</div>
+        <div class="kc-q-text">A software team reports that code quality has dropped significantly over the past quarter — bug rates are up, review cycles are longer, and two major releases have been delayed. A senior engineer says the problem is that the team is moving too fast. Before accepting or rejecting that diagnosis, what analytical step should come first?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc3', 0)">Accept the senior engineer's diagnosis — experience-based pattern matching is a reliable signal</button>
+          <button class="kc-option" onclick="selectOption('kc3', 1)">Decompose the problem — map what specifically has dropped, at which stage of the process, and when the decline began relative to any changes in the environment</button>
+          <button class="kc-option" onclick="selectOption('kc3', 2)">Run the 5 Whys immediately starting from "moving too fast" as the root cause</button>
+          <button class="kc-option" onclick="selectOption('kc3', 3)">Survey the team to find the cause — people closest to the problem always know best</button>
+        </div>
+        <div class="kc-answer" id="kc3-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>"Moving too fast" is a hypothesis, not a finding. Before accepting or rejecting it, decompose: what specifically has dropped (type of bugs, stage of process where they're introduced, proportion of code affected)? When did the drop begin, and what else changed at the same time? The hypothesis needs to be tested against the decomposed evidence before it can support a recommendation. Running the 5 Whys from an unvalidated hypothesis risks building a cause chain on a false foundation.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc4">
+        <div class="kc-q-label">Application · Question 4 of 5</div>
+        <div class="kc-q-text">You receive an AI-generated analysis of customer churn that is well-structured and clearly written. It identifies three root causes and recommends two interventions. Using the principles of Analytical Thinking, what specifically would you examine before acting on it?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc4', 0)">Check who generated the prompt and whether the model version is current</button>
+          <button class="kc-option" onclick="selectOption('kc4', 1)">Whether the three causes are internally consistent and the recommendations are practical</button>
+          <button class="kc-option" onclick="selectOption('kc4', 2)">Whether the decomposition addresses the right problem for this context, which claims are grounded in evidence from this situation versus pattern-matched from general knowledge, and whether the identified causes are root causes or intermediate symptoms</button>
+          <button class="kc-option" onclick="selectOption('kc4', 3)">Run the analysis again with a different model to see if it produces the same output</button>
+        </div>
+        <div class="kc-answer" id="kc4-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Three analytical checks apply to any analysis — AI-generated or otherwise. First, check the decomposition: has the problem been broken into the right components for this specific context, or is this a generic churn framework that may not map to this product, customer type, or market? Second, check the evidence: which claims are grounded in data from this situation, and which are pattern-matched from general churn knowledge? Third, check cause depth: are the three identified causes root causes, or are they symptoms of something upstream? Structure and confidence of presentation don't answer any of these questions.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc5">
+        <div class="kc-q-label">Synthesis · Question 5 of 5</div>
+        <div class="kc-q-text">A colleague produces a detailed fishbone diagram for a recurring operational problem — every standard category is populated, the causes are specific, the diagram is clearly presented. They recommend acting on the three causes with the most entries. What is potentially wrong with this approach, and what would a stronger analytical process look like?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc5', 0)">Nothing is wrong — more entries per category is a valid signal of where the problem is concentrated</button>
+          <button class="kc-option" onclick="selectOption('kc5', 1)">The fishbone should have been replaced with a 5 Whys analysis for this type of problem</button>
+          <button class="kc-option" onclick="selectOption('kc5', 2)">Counting entries per category reflects where the team had ideas, not where impact sits — a stronger process validates each cause against evidence before prioritizing</button>
+          <button class="kc-option" onclick="selectOption('kc5', 3)">The diagram needs more categories before any recommendation can be made</button>
+        </div>
+        <div class="kc-answer" id="kc5-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Counting entries per category is not analytical weighting — it reflects where the team had the most ideas to contribute, not where the most impactful causes sit. A well-populated fishbone is a hypothesis-generation tool. The analytical work of validating those hypotheses against evidence happens after the diagram is drawn: which causes have data supporting their contribution? Which can be traced through to the observed symptom? Which are independent causes versus contributing factors to a shared upstream cause? A correct analytical process uses the fishbone as a starting point, then applies evidence-based validation before prioritizing.</p>
+        </div>
+      </div>
+
+      <button class="kc-reveal-btn" id="kcRevealBtn" onclick="revealAnswers()">Reveal answers and explanations</button>
+      <div class="kc-score" id="kcScore"><p id="kcScoreText"></p></div>
+    </div>
+
+    <!-- 10. HABIT BUILDER -->
+    <div class="section section-odd" id="habits">
+      <div class="section-label">Section 11</div>
+      <h2>5-Day Habit Builder</h2>
+      <div class="divider"></div>
+      <p>Five daily practices, each under 15 minutes. Days build on each other — from Day 2 onward, at least one step uses output from the previous day. Open each day to see the full practice.</p>
+
+      <!-- Day 1 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">1</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Separating the Problem from the Symptom</div>
+            <div class="habit-day-concept">Concept: Cause versus symptom</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Name what you are actually solving before you start solving it.</strong>
+            Most analytical errors begin here — at the moment a symptom gets treated as a problem statement and work begins on the wrong thing.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Identify one problem currently on your plate.</div>
+              <p>Write it down as it's currently stated — the way it was handed to you or the way you've been thinking about it.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Ask: is this a symptom or a cause?</div>
+              <p>Write one sentence: "This is happening because..." If you can answer specifically, what you started with is a symptom. Go one more level: "And that is happening because..." Stop when you reach something that, if changed, would stop the chain.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example</div>
+                Starting statement: "Our onboarding process is taking too long."<br>
+                One level: "Because new hires aren't completing system access requests on time."<br>
+                Two levels: "Because there's no clear owner for chasing outstanding requests and no visibility into where each hire is in the process."<br>
+                <strong>That's the problem. The onboarding duration is the symptom.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>immediately after your morning standup or first team check-in</strong>, while the day's problem statements are fresh.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You end the day having worked on something real rather than the surface presentation of it.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            You may be stopping too early because the first "because" feels sufficient. Push past it. The test: if you fixed the thing you've identified, would the original symptom stop entirely? If the answer is "probably, but not definitely," there's still something upstream.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 2 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">2</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Choosing a Structure</div>
+            <div class="habit-day-concept">Concept: Structure before analysis</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Organize the territory before you start analyzing it.</strong>
+            A decomposition without a structure is just a list. A structure forces you to decide what the problem is made of — and to notice what doesn't fit.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Take the cause you identified on Day 1.</div>
+              <p>Apply a MECE decomposition: break it into 3–5 categories that together cover the full problem space and don't overlap.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Check the fit.</div>
+              <p>Ask: is there anything about this problem that doesn't sit cleanly in any of these categories? If yes, your decomposition has a gap. Revise until the categories cover the full territory.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Day 1)</div>
+                Problem: No owner for access requests, no visibility into new hire progress.<br>
+                MECE decomposition: Process · Ownership · Tooling · Communication<br>
+                Check: Is there anything missing? Yes — escalation. What happens when a request is stuck? Add it as a fifth category or nest it under Process.
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>during your first uninterrupted block after lunch</strong>, when you have enough cognitive space to think structurally.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">The problem looks smaller and more workable once it has a structure. You can see the parts.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            You may be creating categories that describe what you already know rather than mapping what the problem contains. Try starting from scratch: "What are the fundamentally different types of things that could be causing this?" If your categories all feel like variations on the same type, they're not genuinely MECE.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 3 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">3</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Following the Evidence</div>
+            <div class="habit-day-concept">Concept: Evidence over assumption</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Separate what you know from what you're assuming within your Day 2 structure.</strong>
+            Every decomposition contains a mixture of evidence and assumption. Today's work is making that visible.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Take your MECE decomposition from Day 2.</div>
+              <p>For each category, write down the specific evidence you have that this category is relevant — data, direct observation, documented examples. Then write down what you are assuming.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Mark each claim E (evidence) or A (assumption).</div>
+              <p>If a category has more A's than E's, it is a hypothesis, not a finding. Note which parts of your picture are solid and which need validation before acting.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–2)</div>
+                Process: E — access requests submitted via email with no tracking. A — this is the primary source of delay (not yet confirmed).<br>
+                Ownership: E — no documented owner in the runbook. A — no one is doing this informally either.<br>
+                Tooling: A — no dedicated system exists (based on assumption; HRIS capabilities not checked).<br>
+                Communication: A — status isn't being shared (assumed from absence, not evidence of sharing).
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>before you close your laptop for the day</strong>, while your analytical work is still in working memory.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You know exactly where your analysis is solid and where you need more before acting — a more honest and more useful picture than one that looks complete but isn't.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            You may be labeling things as evidence when they are strong assumptions. The test: could you point to a specific document, dataset, or direct observation that supports this claim? If the answer is "not exactly, but it's reasonable to assume," it's an assumption.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 4 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">4</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Testing the Pattern</div>
+            <div class="habit-day-concept">Concept: Pattern recognition</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Test whether the pattern you've identified is real or projected.</strong>
+            By Day 4 you have a structured picture with evidence and assumptions marked. Today you look at whether the pattern holds beyond the cases you used to build it.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Identify the central pattern in your analysis.</div>
+              <p>State it in one sentence: "The evidence suggests that X is consistently happening because of Y."</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Apply two tests.</div>
+              <p>First: does this pattern hold for cases you didn't examine — other teams, time periods, or examples of the same problem? Second: is there a counter-example — a situation where X happened without Y, or Y was present without X? Revise the claim based on what you find.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–3)</div>
+                Pattern: "Access request delays are consistently caused by unclear ownership, not by request volume."<br>
+                Test 1: Check two recent cases from other departments — both show the same ownership gap regardless of volume. Pattern holds.<br>
+                Test 2: One peak hiring month found where a clear owner existed but was overwhelmed. Volume can be a contributing factor under peak conditions.<br>
+                <strong>Revised: "Unclear ownership is the primary driver; volume is a secondary factor under peak conditions."</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>during a commute or a walk</strong> — away from your desk. The distance helps you look at the pattern more neutrally.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You either confirm your analysis is solid, or you catch a revision before acting on a flawed conclusion. Both are good outcomes.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            You may be finding confirmatory cases rather than genuinely testing the pattern. The most useful test is actively looking for the counter-example. If you can't find one after genuinely searching, that's a meaningful result — not a failure of effort.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 5 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">5</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Producing a Communicable Analysis</div>
+            <div class="habit-day-concept">Concept: Decomposition as a deliverable</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Turn your analysis into something a colleague can follow without you explaining it.</strong>
+            A strong analysis that requires verbal translation hasn't fully done its work. Structure should carry the logic.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Using the work from Days 1–4, write a one-page summary.</div>
+              <p>Structure: the problem (one sentence) · the decomposition (your MECE categories) · the evidence for each category (E items only, A items flagged as assumptions requiring validation) · the root cause (what the evidence supports) · the confidence level (what you are certain of versus what you are still assuming).</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Read it as if seeing it for the first time.</div>
+              <p>Can you follow the logic from problem to conclusion without additional context? If not, find the gap in the written structure and fill it.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Output Shape</div>
+                Problem: New hire system access is consistently delayed, extending onboarding time.<br>
+                Decomposition: Process · Ownership · Tooling · Communication.<br>
+                Evidence summary: Process and Ownership confirmed. Tooling and Communication currently assumptions pending HRIS review.<br>
+                Root cause (evidence-based): Absence of process ownership is the primary driver. Volume is secondary under peak conditions.<br>
+                <strong>Confidence: High on ownership gap; medium on tooling and communication pending validation.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this as a <strong>Friday wrap-up</strong>, replacing the mental summary you would normally give yourself at the end of the week with a written one.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You have a structured, communicable analysis you can hand to a stakeholder, use as the basis for a recommendation, or return to next week — without rebuilding it from memory.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            You may be trying to write the summary before the structure is clear. Go back to the MECE categories from Day 2 and make sure each one has at least one evidence-based claim. The summary writes itself once the structure is solid.
+          </div>
+          <div class="callout callout-teal" style="margin-top:20px">
+            <p>Five days complete. The Foundation stage begins here — the habit builder has given you the starting practice. Return to it any time the skill feels rusty.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. PROGRESSION PATH -->
+    <div class="section section-even" id="progression">
+      <div class="section-label">Section 12</div>
+      <h2>Progression Path</h2>
+      <div class="divider"></div>
+      <p>Three stages of developing mastery in Analytical Thinking. Each stage has a new capability and an observable signal of progress.</p>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-structural">Foundation</span>
+          <h4>The Deliberate Decomposer</h4>
+        </div>
+        <p>You apply the analytical sequence deliberately and consciously: decompose before analyzing, name evidence versus assumption, trace symptoms toward causes before concluding. The process requires effort and reminders. You occasionally catch yourself jumping ahead and have to pull back. Your analytical outputs are clearer and more defensible than before, but still rely on you being present to explain them.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can take a problem that previously felt overwhelming and produce a structured picture of its parts — something that can be worked on systematically rather than reacted to as a whole.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>A colleague asks you to explain your analysis and you can walk them through it using the structure you built, without improvising the logic in the moment.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-analytical">Expansion</span>
+          <h4>The Evidence Tracer</h4>
+        </div>
+        <p>Decomposition has become habitual — you do it before consciously deciding to. Your focus shifts to the quality of the analysis: are you tracing causes far enough, testing patterns against new data, distinguishing between evidence and assumption with increasing precision? You start noticing when others' analyses have structural gaps — untested patterns, causes stopped too early, frameworks that don't fit the problem.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can evaluate someone else's analytical output — a report, a diagnosis, an AI-generated analysis — and identify specifically where it is solid, where it is assumption, and what would need to be done to close the gap.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>You are brought in to review others' work before it goes to stakeholders, not because you are senior but because you consistently catch things others miss.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-growth">Integration</span>
+          <h4>The Analytical Standard-Setter</h4>
+        </div>
+        <p>Analytical Thinking is no longer a process you follow — it is the way you naturally approach problems. You select frameworks fluidly, revise decompositions mid-analysis when the evidence points elsewhere, and hold the full picture from symptom to root cause in working memory across complex, multi-variable problems. You help others develop their analytical practice by making your process visible.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can facilitate an analytical process across a group — helping a team move from a shared symptom to a shared understanding of root cause in a single working session.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>Teams you work with start using decomposition and cause-tracing as a default in problem discussions — not as a technique you introduced, but as something that has become part of how they think.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. SUMMARY -->
+    <div class="section section-odd" id="summary">
+      <div class="section-label">Section 13</div>
+      <h2>Quick-Recall Summary</h2>
+      <div class="divider"></div>
+      <div class="summary-block">
+        <blockquote>
+          <p>Analytical Thinking is the discipline of breaking complexity into its parts before drawing conclusions from it. It means building a structure before you analyze, tracing symptoms to their source rather than stopping at the first plausible cause, and knowing the difference between what the evidence shows and what you are assuming.</p>
+          <p>The output is a clear, structured picture of what is happening and why — not a solution, but the foundation that any reliable solution has to rest on.</p>
+        </blockquote>
+      </div>
+    </div>
+
+    <!-- 13. DEEP DIVE RESOURCES -->
+    <div class="section section-even" id="resources">
+      <div class="section-label">Section 14</div>
+      <h2>Explore Further</h2>
+      <div class="divider"></div>
+      <p>Curated for what each resource adds beyond this learning plan — not a description of what it covers, but a reason it belongs here.</p>
+
+      <table class="resource-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Author / Source</th>
+            <th>Est. Time</th>
+            <th>Why This Specifically</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- BOOKS -->
+          <tr>
+            <td class="resource-type">Book</td>
+            <td class="resource-title">The Pyramid Principle</td>
+            <td>Barbara Minto · Pearson</td>
+            <td>4–5 hrs</td>
+            <td class="resource-why">The foundational text for MECE — goes deeper than any article can on how to structure decompositions that are both complete and clean.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.goodreads.com/book/show/33206.The_Minto_Pyramid_Principle" target="_blank" rel="noopener">Goodreads</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Book</td>
+            <td class="resource-title">Are Your Lights On?</td>
+            <td>Donald Gause &amp; Gerald Weinberg · Dorset House</td>
+            <td>2–3 hrs</td>
+            <td class="resource-why">A cult classic on problem definition — the skill of naming the right problem before solving anything. Directly addresses the gap between what gets stated and what actually needs solving.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.goodreads.com/book/show/1044831.Are_Your_Lights_On_" target="_blank" rel="noopener">Goodreads</a>
+            </td>
+          </tr>
+
+          <!-- MENTAL MODEL RESOURCES -->
+          <tr>
+            <td class="resource-type">Article</td>
+            <td class="resource-title">MECE: I invented it, so I get to say how to pronounce it</td>
+            <td>Barbara Minto · McKinsey &amp; Company</td>
+            <td>10 min</td>
+            <td class="resource-why">The origin of MECE in Minto's own words — the authoritative source on what the principle was designed to do and why it matters for structuring any analysis.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.mckinsey.com/alumni/news-and-events/global-news/alumni-news/barbara-minto-mece-i-invented-it-so-i-get-to-say-how-to-pronounce-it" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Article</td>
+            <td class="resource-title">5 Whys</td>
+            <td>Lean Enterprise Institute</td>
+            <td>10 min</td>
+            <td class="resource-why">The LEI is the authoritative English-language repository for Toyota Production System methodology — this entry explains the 5 Whys in its original operational context, including Ohno's own machine-stoppage example.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.lean.org/lexicon-terms/5-whys/" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Video</td>
+            <td class="resource-title">The First Principles Method Explained by Elon Musk</td>
+            <td>Elon Musk · Kevin Rose Foundation interview</td>
+            <td>3 min</td>
+            <td class="resource-why">The original clip where Musk explains First Principles using the battery analogy — the clearest practical demonstration of the method in under three minutes.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.youtube.com/watch?v=NV3sBlRgzTI" target="_blank" rel="noopener">YouTube</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Article</td>
+            <td class="resource-title">Fishbone (Ishikawa) Diagram</td>
+            <td>American Society for Quality (ASQ)</td>
+            <td>15 min</td>
+            <td class="resource-why">ASQ is the field's authoritative body on quality tools — this page covers the diagram's origin, structure, the six standard categories, and how to facilitate a session, which is what the learning plan's worked example is based on.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://asq.org/quality-resources/fishbone" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Article</td>
+            <td class="resource-title">Issue Trees: How to Use Them</td>
+            <td>IGotAnOffer (McKinsey-trained practitioners)</td>
+            <td>15 min</td>
+            <td class="resource-why">The clearest practitioner-level explanation of how issue trees are built and used in real analytical work — goes beyond definition to show how branches are constructed, trimmed, and tested.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://igotanoffer.com/blogs/mckinsey-case-interview-blog/issue-tree" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+
+          <!-- PODCAST -->
+          <tr>
+            <td class="resource-type">Podcast</td>
+            <td class="resource-title">The Signal and The Noise — Nate Silver</td>
+            <td>Wiser Than Yesterday · Nico &amp; Sam · Feb 2024</td>
+            <td>35 min</td>
+            <td class="resource-why">Covers the pattern recognition principle directly — why predictions fail, how to distinguish real signal from noise, and what accurate analytical thinking actually looks like in practice.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://open.spotify.com/episode/3ew5YmjKxWKIDselVMDtY0" target="_blank" rel="noopener">Spotify</a>
+              <a class="resource-link" href="https://podcasts.apple.com/us/podcast/the-signal-and-the-noise-nate-silver/id1502095206?i=1000643964554" target="_blank" rel="noopener">Apple</a>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ── KNOWLEDGE CHECK ──────────────────────────
+const kcAnswers = { kc1: 2, kc2: 2, kc3: 1, kc4: 2, kc5: 2 };
+const kcSelected = {};
+
+function selectOption(qId, optionIdx) {
+  const q = document.getElementById(qId);
+  const options = q.querySelectorAll('.kc-option');
+  options.forEach((o, i) => {
+    o.classList.toggle('selected', i === optionIdx);
+  });
+  kcSelected[qId] = optionIdx;
+  checkAllAnswered();
+}
+
+function checkAllAnswered() {
+  const allIds = Object.keys(kcAnswers);
+  const allDone = allIds.every(id => kcSelected[id] !== undefined);
+  const btn = document.getElementById('kcRevealBtn');
+  btn.style.display = allDone ? 'inline-block' : 'none';
+}
+
+function revealAnswers() {
+  let score = 0;
+  Object.keys(kcAnswers).forEach(qId => {
+    const correct = kcAnswers[qId];
+    const selected = kcSelected[qId];
+    const q = document.getElementById(qId);
+    const options = q.querySelectorAll('.kc-option');
+    options.forEach((o, i) => {
+      o.disabled = true;
+      if (i === correct) o.classList.add('correct');
+      else if (i === selected && i !== correct) o.classList.add('incorrect');
+      o.classList.remove('selected');
+    });
+    const answer = document.getElementById(qId + '-answer');
+    if (answer) answer.style.display = 'block';
+    if (selected === correct) score++;
+  });
+  document.getElementById('kcRevealBtn').style.display = 'none';
+  const scoreEl = document.getElementById('kcScore');
+  const scoreText = document.getElementById('kcScoreText');
+  scoreEl.style.display = 'block';
+  scoreText.textContent = score + ' of 5 correct — ' +
+    (score === 5 ? 'solid foundation. Move to the habit builder.' :
+     score >= 3 ? 'good understanding. Review the sections linked to any missed questions.' :
+     'worth revisiting the first principles and mental models before moving on.');
+}
+
+// ── HABIT ACCORDION ──────────────────────────
+function toggleDay(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', !isOpen);
+}
+
+// ── SCROLL SPY + PROGRESS ────────────────────
+const sections = document.querySelectorAll('.section[id]');
+const navLinks  = document.querySelectorAll('.nav-link[data-section]');
+const visited   = new Set();
+const total     = navLinks.length;
+const announce  = document.getElementById('sectionAnnounce');
+const btnPrev   = document.getElementById('btnPrev');
+const btnNext   = document.getElementById('btnNext');
+const counter   = document.getElementById('slideCounter');
+let   lastActiveId = null;
+let   currentIdx   = 0;
+
+const sectionIds = Array.from(navLinks).map(l => l.dataset.section);
+
+function updateNav() {
+  let activeId = null;
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top <= 120) activeId = sec.id;
+  });
+  navLinks.forEach(link => {
+    const s = link.dataset.section;
+    link.classList.remove('active');
+    link.removeAttribute('aria-current');
+    if (s === activeId) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'true');
+      visited.add(s);
+    }
+    if (visited.has(s) && s !== activeId) link.classList.add('visited');
+    else if (s !== activeId) link.classList.remove('visited');
+  });
+  if (activeId && activeId !== lastActiveId) {
+    const activeLink = document.querySelector('.nav-link[data-section="' + activeId + '"]');
+    if (activeLink && announce) {
+      announce.textContent = 'Now reading: ' + activeLink.textContent.trim();
+    }
+    lastActiveId = activeId;
+    const idx = sectionIds.indexOf(activeId);
+    if (idx !== -1) currentIdx = idx;
+  }
+  updateButtons();
+  const pct = Math.round((visited.size / total) * 100);
+}
+
+function updateButtons() {
+  btnPrev.disabled = currentIdx === 0;
+  btnNext.disabled = currentIdx === sectionIds.length - 1;
+  counter.textContent = (currentIdx + 1) + ' / ' + sectionIds.length;
+}
+
+function scrollToSection(idx) {
+  if (idx < 0 || idx >= sectionIds.length) return;
+  const target = document.getElementById(sectionIds[idx]);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    currentIdx = idx;
+    updateButtons();
+  }
+}
+
+btnPrev.addEventListener('click', function () { scrollToSection(currentIdx - 1); });
+btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1); });
+
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+</script>
+</body>
+</html>

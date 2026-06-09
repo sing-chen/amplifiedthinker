@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Amplified</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep-teal:#1B4A44;--mid-teal:#2D756F;--teal:#3A8F88;--sage:#ACC4B6;
+    --light-sage:#D8E6E2;--off-white:#F7F5F2;--charcoal:#1E2A26;
+    --warm-gray:#8B8A85;--terracotta:#C77B5F;
+    --text-dark:#1C2B26;--text-mid:#3D5248;--text-muted:#4A5C55;--white:#FFFFFF;
+    --radius:6px;--radius-lg:10px;--radius-xl:14px;
+    --col:680px; /* reading column width */
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+  body{font-family:'DM Sans',system-ui,sans-serif;color:var(--text-dark);background:var(--off-white);font-size:16px;line-height:1.65}
+  .skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
+  .skip-link:focus{top:0}
+  :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
+
+  /* ── PAGE WRAPPER ── */
+  .about-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
+
+  /* ── IDENTITY BLOCK ── */
+  .identity{display:flex;gap:32px;align-items:flex-start;margin-bottom:56px}
+  .identity-photo{width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:center top;flex-shrink:0;border:2px solid rgba(172,196,182,.3)}
+  .identity-text{display:flex;flex-direction:column;justify-content:center;gap:6px;padding-top:4px}
+  .identity-name{font-family:'Lora',Georgia,serif;font-size:26px;font-weight:600;color:var(--text-dark);letter-spacing:-.015em;line-height:1.1}
+  .identity-role{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--mid-teal)}
+  .identity-quote{font-family:'Lora',Georgia,serif;font-size:15px;font-style:italic;color:var(--text-muted);line-height:1.5;margin-top:4px;border-left:2px solid var(--sage);padding-left:14px}
+
+  /* ── PROSE ── */
+  .about-prose{display:flex;flex-direction:column;gap:32px}
+  .about-prose p{font-size:16px;line-height:1.85;color:var(--text-mid)}
+  .about-prose p strong{color:var(--text-dark);font-weight:500}
+
+  /* ── SECTION BREAK ── */
+  .prose-divider{height:1px;background:rgba(172,196,182,.25);margin:8px 0}
+
+  /* ── THESIS CALLOUT ── */
+  .thesis{background:var(--deep-teal);border-radius:var(--radius-lg);padding:28px 32px;margin:8px 0}
+  .thesis p{font-family:'Lora',Georgia,serif;font-size:17px;font-style:italic;color:rgba(255,255,255,.9);line-height:1.65}
+  .thesis p + p{margin-top:12px}
+
+  /* ── CTA ── */
+  .about-cta{margin-top:16px;padding-top:40px;border-top:1px solid rgba(172,196,182,.25);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .cta-link{display:inline-flex;align-items:center;gap:8px;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:11px 22px;border-radius:var(--radius);text-decoration:none;transition:background .15s,transform .1s}
+  .cta-link:hover{background:var(--teal);transform:translateY(-1px)}
+  .cta-link-ghost{display:inline-flex;align-items:center;gap:8px;color:var(--mid-teal);font-size:14px;font-weight:500;text-decoration:none;padding:11px 4px;border-bottom:1px solid rgba(45,117,111,.3);transition:border-color .15s,color .15s}
+  .cta-link-ghost:hover{color:var(--teal);border-color:var(--teal)}
+
+  /* ── CONTACT ── */
+  .contact-block{margin-top:8px;padding-top:32px;border-top:1px solid rgba(172,196,182,.25);display:flex;flex-direction:column;gap:10px}
+  .contact-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-gray)}
+  .contact-body{font-size:14px;line-height:1.65;color:var(--text-muted)}
+
+  /* ── FOOTER ── */
+  footer{background:var(--charcoal);padding:24px 40px;border-top:1px solid rgba(255,255,255,.06)}
+  .fi{max-width:1100px;margin:0 auto}
+  .fn{font-size:12px;color:rgba(255,255,255,.35)}
+
+  @media(max-width:640px){
+    .about-page{padding:48px 20px 72px}
+    .identity{flex-direction:column;gap:20px;align-items:center;text-align:center}
+    .identity-quote{border-left:none;padding-left:0;border-top:2px solid var(--sage);padding-top:12px;margin-top:8px}
+    .thesis{padding:22px 22px}
+    footer{padding:16px 20px}
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="nav.js"></script>
+
+<main id="main-content">
+<article class="about-page">
+
+  <!-- Identity block -->
+  <div class="identity">
+    <img
+      src="./images/Profile_Pic.png"
+      alt="Sing Chen"
+      class="identity-photo"
+      width="96"
+      height="96"
+    >
+    <div class="identity-text">
+      <h1 class="identity-name">Sing Chen</h1>
+      <p class="identity-role">Capability Builder · Systems Thinker · Writer</p>
+      <blockquote class="identity-quote">
+        Clarity builds confidence.<br>Capability growth multiplies outcomes.
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- Prose -->
+  <div class="about-prose">
+
+    <p>Work is changing at a pace most organisations weren't designed for. The demands on people — to think clearly, adapt quickly, lead without authority, and stay effective through complexity — have always been significant. What's changed is the urgency. The conditions of the last few years have made it harder to ignore what was already true: human capability doesn't develop by accident, and the organisations and individuals who build it deliberately are the ones that compound over time.</p>
+
+    <p>Amplified exists because of that opportunity. The skills that matter most — analytical reasoning, systems thinking, creative judgment, resilience, the ability to influence and connect — don't depreciate the way technical skills do. They compound. But only if you build them intentionally, with the right frameworks and enough intellectual honesty about what actually drives outcomes.</p>
+
+    <div class="prose-divider"></div>
+
+    <p>My background spans product, engineering, operations, enablement, and global delivery. For much of my career I've worked at the intersection of strategy, execution, and capability — building operating models, embedding ways of working, and helping organisations move with more clarity and less noise.</p>
+
+    <p>What looks like a strategy problem is usually a conditions problem — the conditions under which people can actually think, adapt, and move.</p>
+
+    <div class="thesis">
+      <p>Clarity builds confidence.</p>
+      <p>Capability growth multiplies outcomes.</p>
+    </div>
+
+    <div class="prose-divider"></div>
+
+    <p>Amplified is where I build that thinking in public. Right now that means a growing library of practical skills resources — grounded in research and insight from the World Economic Forum, McKinsey, MIT, Stanford, and a range of practitioners and thinkers whose work I've found genuinely useful rather than just well-cited. Each resource is designed to be applied, not just absorbed.</p>
+
+    <p>Over time Amplified will grow to include longer-form writing, thought leadership, and a curated set of thinkers whose work has shaped how I see these questions.</p>
+
+    <p>If you're a practitioner trying to build more deliberately in a landscape that keeps shifting, a leader working to close the gap between investment and outcomes, or someone early in your career who wants to develop capability that compounds — this is built for you.</p>
+
+    <!-- CTA -->
+    <div class="about-cta">
+      <a href="future-skills.html" class="cta-link">Browse the skills library →</a>
+      <a href="https://www.linkedin.com/in/singchen" class="cta-link-ghost" target="_blank" rel="noopener noreferrer">Connect on LinkedIn →</a>
+    </div>
+
+    <!-- Contact -->
+    <div class="contact-block">
+      <p class="contact-label">Get in touch</p>
+      <p class="contact-body">Found an issue, have a suggestion, or want to share feedback on the content? Reach out directly.</p>
+      <a href="mailto:singfenchen@gmail.com?subject=Amplified%20feedback" class="cta-link-ghost">Email me →</a>
+    </div>
+
+  </div>
+
+</article>
+</main>
+
+<footer>
+  <div class="fi">
+    <div class="fn">© <span id="yr"></span> Sing Chen</div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+  </div>
+</footer>
+</body>
+</html>
