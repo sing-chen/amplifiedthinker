@@ -26,17 +26,33 @@
 
   /* ── INTRO ── */
   .intro{padding:56px 40px 48px;max-width:var(--page-max);margin:0 auto}
-  .intro-grid{display:grid;grid-template-columns:1fr 300px;gap:64px;align-items:start}
+  .intro-grid{display:grid;grid-template-columns:1fr 320px;gap:64px;align-items:start}
   .ib{font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.8;color:var(--navy)}
   .ib p+p{margin-top:16px}
   .ib strong{color:var(--text-dark);font-weight:500}
-  .ia{background:var(--light-sage);border-radius:var(--radius-xl);padding:26px}
-  .ia-title{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--deep-teal);margin-bottom:14px}
-  .how-list{list-style:none;display:flex;flex-direction:column;gap:14px}
-  .how-item{display:flex;gap:12px;align-items:flex-start}
-  .how-dot{width:8px;height:8px;border-radius:50%;background:var(--mid-teal);flex-shrink:0;margin-top:6px}
-  .how-label{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);line-height:1.3}
-  .how-sub{font-family:'Inter',sans-serif;font-size:12px;color:var(--mid-teal);margin-top:2px;line-height:1.45}
+
+  /* ── HOW IT WORKS (visual) ── */
+  .how-visual{display:flex;flex-direction:column;gap:0}
+  .how-title{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:14px}
+  .how-steps{display:flex;flex-direction:column;gap:0}
+  .how-step{background:var(--white);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-lg);padding:18px 20px;display:flex;gap:14px;align-items:flex-start;position:relative}
+  .how-step+.how-step{margin-top:-1px;border-radius:0}
+  .how-step:first-child{border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+  .how-step:last-child{border-radius:0 0 var(--radius-lg) var(--radius-lg)}
+  .how-step-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .how-step-icon svg{width:15px;height:15px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .hs-primer .how-step-icon{background:#D4EAE7;} .hs-primer .how-step-icon svg{stroke:#2D756F;}
+  .hs-plan .how-step-icon{background:#1B4A44;} .hs-plan .how-step-icon svg{stroke:#ACC4B6;}
+  .hs-journey .how-step-icon{background:#F2DDD6;} .hs-journey .how-step-icon svg{stroke:#C77B5F;}
+  .how-step-label{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text-dark);line-height:1.3;margin-bottom:3px}
+  .how-step-sub{font-family:'Inter',sans-serif;font-size:12px;color:var(--text-muted);line-height:1.5}
+  .how-step-badge{font-family:'Poppins',sans-serif;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}
+  .badge-live{background:rgba(45,117,111,.12);color:var(--mid-teal)}
+  .badge-soon{background:rgba(139,138,133,.1);color:var(--warm-gray)}
+
+  /* connector arrow between steps */
+  .how-connector{display:flex;justify-content:center;align-items:center;height:0;position:relative;z-index:1}
+  .how-connector-line{width:1px;height:20px;background:rgba(172,196,182,.4);position:absolute;top:-10px}
 
   /* ── LIBRARY ── */
   .divider{height:1px;background:rgba(172,196,182,.2);margin:0 40px}
@@ -58,6 +74,16 @@
   .sstatus-strip{width:5px;flex-shrink:0}
   .scard.active .sstatus-strip{background:var(--mid-teal)}
   .scard.cs .sstatus-strip{width:0}
+
+  /* skill icon */
+  .skill-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:auto 0 auto 18px}
+  .skill-icon svg{width:20px;height:20px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .si-cognitive{background:#D4EAE7;} .si-cognitive svg{stroke:#2D756F;}
+  .si-self-efficacy{background:#F0D9D1;} .si-self-efficacy svg{stroke:#A0553F;}
+  .si-engagement{background:#E8F2E8;} .si-engagement svg{stroke:#3A6E3A;}
+  .si-management{background:#EDE5C5;} .si-management svg{stroke:#8B6A1A;}
+  .si-technology{background:#D5DFE6;} .si-technology svg{stroke:#3D5F70;}
+  .scard.cs .skill-icon{background:rgba(139,138,133,.08);} .scard.cs .skill-icon svg{stroke:var(--warm-gray);}
 
   .shc{flex:1;display:flex;align-items:center;gap:16px;padding:18px 22px;flex-wrap:wrap}
   .stb{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px}
@@ -129,7 +155,6 @@
     .sbody{padding:20px 16px}
     footer{padding:16px 20px}
   }
-
   @media(prefers-reduced-motion:reduce){.scard,.lcard,.stoggle{transition:none}}
 </style>
 </head>
@@ -150,42 +175,44 @@
 <section class="intro">
   <div class="intro-grid">
     <div class="ib">
-      <p>The skills in this library are not the ones getting the most attention in L&D conversations right now. Most organisations are focused on AI fluency - and that matters. But <strong>the skills that make a difference as AI handles more cognitive work</strong> are the ones that have always stood the test of time and don't get automated away such as analytical reasoning, creative problem-solving, systems awareness, resilience, the ability to lead without authority.</p>
+      <p>The skills in this library are not the ones getting the most attention in L&D conversations right now. Most organisations are focused on AI fluency — and that matters. But <strong>the skills that make a difference as AI handles more cognitive work</strong> are the ones that have always stood the test of time and don't get automated away: analytical reasoning, creative problem-solving, systems awareness, resilience, the ability to lead without authority.</p>
       <p>Each skill here is standalone — a self-contained resource you can start with wherever it's most relevant to your work right now. Over time, as the library grows, related skills will be packaged into guided learning journeys for people who want a more structured path through a connected set of capabilities.</p>
       <p>Every entry includes two access points: a short primer that covers the core concept, and a full learning plan with curated resources, activities, and a habit builder you can embed into real work. Start with whichever fits your time and intent.</p>
     </div>
-    <div class="ia">
-      <div class="ia-title">How each skill is built</div>
-      <ul class="how-list">
-        <li class="how-item">
-          <div class="how-dot"></div>
-          <div>
-            <div class="how-label">Skill Primer</div>
-            <div class="how-sub">Short · Overview, core concepts, worked example, knowledge check</div>
+    <div>
+      <p class="section-label" style="margin-bottom:14px">How each skill is structured</p>
+      <div class="how-steps">
+        <div class="how-step hs-primer">
+          <div class="how-step-icon">
+            <!-- lightning / quick read icon -->
+            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-        </li>
-        <li class="how-item">
-          <div class="how-dot"></div>
           <div>
-            <div class="how-label">Full Learning Plan</div>
-            <div class="how-sub">Self-paced · Curated resources, frameworks, habit builder, behavioural indicators</div>
+            <div class="how-step-label">Skill Primer <span class="how-step-badge badge-live">Available</span></div>
+            <div class="how-step-sub">Short · Core concepts, worked example, knowledge check</div>
           </div>
-        </li>
-        <li class="how-item">
-          <div class="how-dot"></div>
+        </div>
+        <div class="how-step hs-plan">
+          <div class="how-step-icon">
+            <!-- map / full plan icon -->
+            <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          </div>
           <div>
-            <div class="how-label">Skill categories</div>
-            <div class="how-sub">Each skill is tagged by type — Cognitive, Self-Efficacy, Engagement, Management — drawn from the World Economic Forum's Global Skills taxonomy</div>
+            <div class="how-step-label">Full Learning Plan <span class="how-step-badge badge-live">Available</span></div>
+            <div class="how-step-sub">Self-paced · Curated resources, frameworks, habit builder, behavioural indicators</div>
           </div>
-        </li>
-        <li class="how-item">
-          <div class="how-dot"></div>
+        </div>
+        <div class="how-step hs-journey">
+          <div class="how-step-icon">
+            <!-- route / journey icon -->
+            <svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>
+          </div>
           <div>
-            <div class="how-label">Guided journeys (coming)</div>
-            <div class="how-sub">Related skills bundled into structured learning journeys</div>
+            <div class="how-step-label">Guided Journeys <span class="how-step-badge badge-soon">Coming</span></div>
+            <div class="how-step-sub">Related skills bundled into structured learning paths</div>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -212,6 +239,10 @@
     <div class="scard active" id="s-analytical" data-categories="cognitive" role="listitem">
       <div class="sheader" onclick="toggleSkill('s-analytical')" aria-expanded="false" aria-controls="sb-analytical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-analytical')">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-cognitive">
+          <!-- magnifying glass — analytical thinking -->
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
@@ -252,6 +283,10 @@
     <div class="scard cs" id="s-creative" data-categories="cognitive" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-cognitive">
+          <!-- lightbulb — creative thinking -->
+          <svg viewBox="0 0 24 24"><path d="M9 21h6"/><path d="M12 3a6 6 0 0 1 6 6c0 2.22-1.2 4.16-3 5.2V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-2.8C7.2 13.16 6 11.22 6 9a6 6 0 0 1 6-6z"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
@@ -267,10 +302,13 @@
     <div class="scard cs" id="s-resilience" data-categories="self-efficacy" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-self-efficacy">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-self-efficacy">Self-Efficacy</span></div>
-            <div class="sname">Resilience, Flexibility & Agility</div>
+            <div class="sname">Resilience, Flexibility &amp; Agility</div>
           </div>
           <div class="ssum">Recover from setbacks, adapt behaviour under pressure, and sustain productive momentum through uncertainty. <em>"How do I keep going?"</em></div>
           <div class="sstatus ss-soon">Coming soon</div>
@@ -282,6 +320,9 @@
     <div class="scard cs" id="s-systems" data-categories="cognitive management" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-cognitive">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span><span class="skill-pill sp-management">Management</span></div>
@@ -297,10 +338,13 @@
     <div class="scard cs" id="s-strategic" data-categories="cognitive" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-cognitive">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
-            <div class="sname">Strategic Synthesis & Decision-Making</div>
+            <div class="sname">Strategic Synthesis &amp; Decision-Making</div>
           </div>
           <div class="ssum">Connect disparate information into a coherent picture and choose a path forward under uncertainty. <em>"What does this all mean — and what do we do?"</em></div>
           <div class="sstatus ss-soon">Coming soon</div>
@@ -312,6 +356,10 @@
     <div class="scard cs" id="s-critical" data-categories="cognitive" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-cognitive">
+          <!-- scales — critical thinking -->
+          <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="3" x2="12" y2="21"/><path d="M5 21h14"/><path d="M5 8l-3 6a3 3 0 0 0 6 0L5 8z"/><path d="M19 8l-3 6a3 3 0 0 0 6 0L19 8z"/><line x1="5" y1="8" x2="19" y2="8"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
@@ -327,10 +375,13 @@
     <div class="scard cs" id="s-leadership" data-categories="engagement" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-engagement">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-engagement">Engagement</span></div>
-            <div class="sname">Leadership & Social Influence</div>
+            <div class="sname">Leadership &amp; Social Influence</div>
           </div>
           <div class="ssum">Build credibility, persuade across functions, and lead with integrity — regardless of formal authority. <em>"How do I bring people with me?"</em></div>
           <div class="sstatus ss-soon">Coming soon</div>
@@ -342,10 +393,13 @@
     <div class="scard cs" id="s-motivation" data-categories="self-efficacy" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-self-efficacy">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-self-efficacy">Self-Efficacy</span></div>
-            <div class="sname">Motivation & Self-Awareness</div>
+            <div class="sname">Motivation &amp; Self-Awareness</div>
           </div>
           <div class="ssum">Understand your values, triggers, and impact on others — and use that self-knowledge to show up more deliberately. <em>"Why do I do what I do?"</em></div>
           <div class="sstatus ss-soon">Coming soon</div>
@@ -357,10 +411,13 @@
     <div class="scard cs" id="s-empathy" data-categories="engagement" role="listitem">
       <div class="sheader">
         <div class="sstatus-strip"></div>
+        <div class="skill-icon si-engagement">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-engagement">Engagement</span></div>
-            <div class="sname">Empathy & Active Listening</div>
+            <div class="sname">Empathy &amp; Active Listening</div>
           </div>
           <div class="ssum">Understand what others mean — including what they don't say — and respond in ways that build trust and productive collaboration. <em>"Do I actually understand what you mean?"</em></div>
           <div class="sstatus ss-soon">Coming soon</div>
