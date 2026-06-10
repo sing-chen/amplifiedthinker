@@ -144,6 +144,15 @@
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
     flex-shrink: 0;
   }
+  .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+  .slide-counter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    flex-shrink: 0;
+  }
 
   /* ── MAIN CONTENT ───────────────────────────── */
   .main {
@@ -1150,14 +1159,15 @@
     <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>14 · Explore Further</a></li>
   </ul>
   <div class="nav-arrows">
-    <a class="nav-arrow" id="btnPrev" href="primer.html">
+    <button class="nav-arrow" id="btnPrev" disabled>
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      Primer
-    </a>
-    <a class="nav-arrow" id="btnNext" href="../../future-skills.html">
-      Hub
+      Prev
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 14</span>
+    <button class="nav-arrow" id="btnNext">
+      Next
       <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
+    </button>
   </div>
 </nav>
 
@@ -2129,13 +2139,19 @@ function toggleDay(btn) {
   btn.setAttribute('aria-expanded', !isOpen);
 }
 
-// ── SCROLL SPY + PROGRESS ────────────────────
+// ── SCROLL SPY + PREV/NEXT ───────────────────
 const sections = document.querySelectorAll('.section[id]');
 const navLinks  = document.querySelectorAll('.nav-link[data-section]');
 const visited   = new Set();
 const total     = navLinks.length;
 const announce  = document.getElementById('sectionAnnounce');
+const btnPrev   = document.getElementById('btnPrev');
+const btnNext   = document.getElementById('btnNext');
+const counter   = document.getElementById('slideCounter');
 let   lastActiveId = null;
+let   currentIdx   = 0;
+
+const sectionIds = Array.from(navLinks).map(l => l.dataset.section);
 
 function updateNav() {
   let activeId = null;
@@ -2155,16 +2171,37 @@ function updateNav() {
     if (visited.has(s) && s !== activeId) link.classList.add('visited');
     else if (s !== activeId) link.classList.remove('visited');
   });
-  // Announce section change to screen readers
   if (activeId && activeId !== lastActiveId) {
     const activeLink = document.querySelector('.nav-link[data-section="' + activeId + '"]');
     if (activeLink && announce) {
       announce.textContent = 'Now reading: ' + activeLink.textContent.trim();
     }
     lastActiveId = activeId;
+    const idx = sectionIds.indexOf(activeId);
+    if (idx !== -1) currentIdx = idx;
   }
+  updateButtons();
   const pct = Math.round((visited.size / total) * 100);
 }
+
+function updateButtons() {
+  btnPrev.disabled = currentIdx === 0;
+  btnNext.disabled = currentIdx === sectionIds.length - 1;
+  counter.textContent = (currentIdx + 1) + ' / ' + sectionIds.length;
+}
+
+function scrollToSection(idx) {
+  if (idx < 0 || idx >= sectionIds.length) return;
+  const target = document.getElementById(sectionIds[idx]);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    currentIdx = idx;
+    updateButtons();
+  }
+}
+
+btnPrev.addEventListener('click', function () { scrollToSection(currentIdx - 1); });
+btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1); });
 
 window.addEventListener('scroll', updateNav, { passive: true });
 updateNav();
