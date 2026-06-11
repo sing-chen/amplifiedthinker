@@ -418,65 +418,6 @@
     flex-shrink: 0;
   }
 
-  /* ── VIDEO EMBED (TITLE SLIDE) ──────────────── */
-  .video-embed-wrap { max-width: 640px; margin-top: 36px; }
-  .video-embed {
-    position: relative; width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--charcoal);
-  }
-  .video-embed img {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-  }
-  .video-embed iframe {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%; border: 0;
-  }
-  .video-play-btn {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    width: 100%; height: 100%;
-    background: rgba(45,51,48,0.22);
-    border: none; padding: 0; cursor: pointer;
-    transition: background 0.15s;
-  }
-  .video-play-btn:hover, .video-play-btn:focus-visible { background: rgba(45,51,48,0.38); }
-  .video-play-icon {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: var(--terracotta);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-    transition: transform 0.15s;
-  }
-  .video-play-btn:hover .video-play-icon,
-  .video-play-btn:focus-visible .video-play-icon { transform: scale(1.06); }
-  .video-play-icon svg {
-    width: 22px; height: 22px;
-    fill: var(--off-white); margin-left: 3px;
-  }
-  .video-meta { margin-top: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .video-transcript-toggle {
-    background: none; border: none; padding: 0;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px; font-weight: 500;
-    color: var(--deep-teal); text-decoration: underline;
-    cursor: pointer;
-  }
-  .video-transcript-toggle:hover { color: var(--terracotta); }
-  .video-transcript {
-    display: none; margin-top: 14px; padding: 18px 24px;
-    background: rgba(255,255,255,0.55);
-    border-radius: var(--radius);
-    font-family: 'Inter', sans-serif;
-    font-size: 14px; line-height: 1.65; color: var(--navy);
-    max-height: 280px; overflow-y: auto;
-  }
-  .video-transcript p + p { margin-top: 12px; }
-  .video-transcript.open { display: block; }
-
   /* ── DENSE SLIDE ADJUSTMENT ─────────────────── */
   .slide-dense { padding-top: 48px; padding-bottom: 48px; justify-content: flex-start; }
 
@@ -561,33 +502,7 @@
       <div class="accent-bar" style="margin-top:8px;"></div>
       <h1 class="h-display">Analytical Thinking</h1>
     </div>
-    <p class="t-lead" style="max-width:680px;margin-bottom:8px;">Most professionals react to problems. This skill builds the discipline to understand them first.</p>
-
-    <div class="video-embed-wrap">
-      <div class="video-embed" id="videoEmbed">
-        <img src="analytical-thinking-video-thumbnail.png" alt="" />
-        <button class="video-play-btn" id="videoPlayBtn" type="button" aria-label="Play video overview: Amplified, Future Skills, Analytical Thinking. Duration 4 minutes 13 seconds.">
-          <span class="video-play-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-          </span>
-        </button>
-      </div>
-      <div class="video-meta">
-        <span class="t-meta">Video overview · 4:13</span>
-        <button class="video-transcript-toggle" id="transcriptToggle" type="button" aria-expanded="false" aria-controls="videoTranscript">Show transcript</button>
-      </div>
-      <div class="video-transcript" id="videoTranscript" role="region" aria-label="Video transcript">
-        <p>You've likely seen this happen. A major project keeps failing in the exact same place week after week. When teams hit this kind of friction, the immediate instinct is to look at the most obvious symptom — the project manager sees an exhausted team and assumes they need to hire more people. This chart shows how that instinct plays out in the data. While the headcount spikes upward, the project delays remain completely flat. The new hires are in the door, but the expensive bottlenecks haven't moved.</p>
-        <p>The solution failed because it addressed a surface-level symptom. Adding more people to a broken system just scales the problem, because the underlying structure was never actually mapped out. Complexity doesn't wait for you to catch up — when we react purely to the most visible information, the actual mechanics driving the failure stay invisible. Jumping straight to a solution before understanding the component parts guarantees that highly intelligent people will spend significant time and money fixing the wrong thing.</p>
-        <p>Escaping this cycle requires analytical thinking — the discipline of breaking a complex problem down into a structured, evidence-based picture before you draw a single conclusion. People often confuse this with critical thinking, but they serve different functions. Analytical thinking produces the picture of what is happening; critical thinking evaluates whether that picture is trustworthy.</p>
-        <p>Think of a mechanic diagnosing an engine fault. They never guess — they systematically separate the failing system into components to organise the diagnostic territory. If we apply this to our failed project, we can use a framework called MECE, which stands for Mutually Exclusive, Collectively Exhaustive. This illustrates the MECE principle: sorting data into four buckets — people, technology, process, and scope. Every piece fits into one category with zero overlap. Structuring the problem this way ensures no variables are double-counted, preventing root causes from hiding in the spaces between. Establishing this structure is a mandatory first step — it ensures hard evidence replaces human assumptions before the analysis even begins.</p>
-        <p>Mapping just one bucket — process — using an issue tree breaks a single "process delays" node into branching sub-questions, making the full analytical territory visible. Without this, teams lock onto the most obvious branch and stop, missing compounding partial causes.</p>
-        <p>To trace these branches down to their origin, we use the Five Whys framework, developed by Taiichi Ono in the 1950s. Ono designed the practice for the Toyota Production System, to interrupt the human tendency to stop at the first plausible explanation. In a dense environment like an assembly line, the sheer number of variables makes it easy for systemic problems to hide.</p>
-        <p>We apply this by asking why the project is running late — which points to a specific process stage. Why is that stage an outlier? Because the handoff consumes three days per cycle. Why is it consistently slow? Because ownership at that boundary is undefined. Tracking a symptom backward along its causal chain strips away the chaos. What initially looked like a massive, undifferentiated disaster becomes a specific, solvable fault.</p>
-        <p>This reveals the root of the issue: an unowned handoff step consuming three days per cycle. The analytical process isolated a strictly relational issue — the workflow map shows a clear ownership void between the two teams. While headcount was the intuitive guess, evidence shows the real friction is a lack of clarity between the people already in the room. Armed with this precise diagnosis, the manager resolves the recurring delay with a single clarifying conversation. The problem is fixed without requiring a single new hire.</p>
-        <p>This is the core discipline of the practice: you have to build a structure before you can accurately analyse the situation, carefully separating what the evidence shows from what you assume. Analytical thinking provides the structured picture of what is actually happening — and that clarity is the necessary precursor to an effective solution.</p>
-      </div>
-    </div>
+    <p class="t-lead" style="max-width:10800px;margin-bottom:8px;">Most professionals react to problems. This skill builds the discipline to understand them first.</p>    
   </div>
 
   <!-- 02 · THE PROBLEM -->
@@ -750,37 +665,6 @@
   var counter  = document.getElementById('slideCounter');
   var announce = document.getElementById('slideAnnounce');
 
-  // ── Video facade (title slide) ──────────────
-  var YOUTUBE_ID = '0I8QrFtSoCY';
-  var videoEmbed = document.getElementById('videoEmbed');
-  var videoEmbedDefaultHTML = videoEmbed ? videoEmbed.innerHTML : '';
-
-  if (videoEmbed) {
-    videoEmbed.addEventListener('click', function (e) {
-      var btn = e.target.closest('.video-play-btn');
-      if (!btn) return;
-      var iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube-nocookie.com/embed/' + YOUTUBE_ID + '?autoplay=1&rel=0';
-      iframe.title = 'Amplified - Future Skills - Analytical Thinking — video overview';
-      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      iframe.allowFullscreen = true;
-      iframe.setAttribute('allowfullscreen', '');
-      videoEmbed.innerHTML = '';
-      videoEmbed.appendChild(iframe);
-    });
-  }
-
-  var transcriptToggle = document.getElementById('transcriptToggle');
-  var videoTranscript  = document.getElementById('videoTranscript');
-  if (transcriptToggle) {
-    transcriptToggle.addEventListener('click', function () {
-      var isOpen = videoTranscript.classList.toggle('open');
-      transcriptToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      transcriptToggle.textContent = isOpen ? 'Hide transcript' : 'Show transcript';
-    });
-  }
-
   var slideTitles = [
     'Introduction', 'The Problem', 'When It Matters', 'The Outcome',
     'What It Is', 'Model: MECE', 'Model: The 5 Whys', 'Model: Issue Tree',
@@ -789,11 +673,6 @@
 
   function goTo(idx) {
     if (idx < 0 || idx >= TOTAL || idx === current) return;
-
-    // Stop playback and restore the facade if leaving the title slide
-    if (current === 0 && idx !== 0 && videoEmbed) {
-      videoEmbed.innerHTML = videoEmbedDefaultHTML;
-    }
 
     // Exit current
     slides[current].classList.remove('active');
