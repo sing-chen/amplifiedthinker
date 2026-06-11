@@ -200,25 +200,23 @@
     color: var(--teal);
     margin-bottom: 16px;
   }
-  .hero-accent { width: 4px; height: 56px; background: var(--terracotta); margin-bottom: 24px; }
+  .hero-title-row { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; }
+  .hero-accent { width: 4px; height: 56px; background: var(--terracotta); border-radius: 2px; flex-shrink: 0; }
   .hero h1 {
     font-family: 'Poppins', sans-serif;
     font-size: 52px;
     font-weight: 700;
     color: var(--deep-teal);
     line-height: 1.1;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     max-width: 600px;
   }
   .hero-sub {
     font-family: 'Inter', sans-serif;
     font-size: 18px;
     color: var(--navy);
-    max-width: 560px;
     line-height: 1.6;
-    margin-bottom: 32px;
   }
-  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 
   /* ── TAGS ───────────────────────────────────── */
   .tag {
@@ -237,20 +235,11 @@
   .tag-insight     { background: var(--tag-insight-bg);    color: var(--tag-insight-tx); }
 
   /* ── CONTENT SECTIONS ───────────────────────── */
-  .content { max-width: calc(var(--content-max) + 160px); padding: 0 80px 120px; width: 100%; }
+  .content { max-width: calc(var(--content-max) + 160px); padding: 0 80px 120px; width: 100%; counter-reset: section-counter; }
 
   .section {
-    padding-top: 72px;
+    padding-top: 96px;
     padding-bottom: 16px;
-  }
-  .section-label {
-    font-family: 'Poppins', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 10px;
   }
   .section h2 {
     font-family: 'Poppins', sans-serif;
@@ -274,12 +263,6 @@
     max-width: var(--content-max);
     margin-bottom: 20px;
     color: var(--navy);
-  }
-  .divider {
-    height: 1px;
-    background: rgba(45,117,111,0.1);
-    margin: 8px 0 0;
-    max-width: var(--content-max);
   }
 
   /* ── SNAPSHOT CARDS ─────────────────────────── */
@@ -1113,6 +1096,30 @@
   .section-even .cross-skill-item,
   .section-even .scope-list li { background: white; }
 
+  /* ── SECTION GHOST NUMERAL ───────────────────
+     Low-opacity numeral sitting behind each section's heading — a
+     quieter echo of the primer's per-slide numbering, giving each
+     section a visual landmark independent of background colour.
+     Sized so its lower edge clears the heading's margin before body
+     content begins (h2: 96–132px, margin-bottom 24px → content at
+     156px; numeral spans 38–138px, leaving an 18px gap). */
+  .section { counter-increment: section-counter; }
+  .section::after {
+    content: counter(section-counter, decimal-leading-zero);
+    position: absolute;
+    top: 38px;
+    left: 0;
+    z-index: -1;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 100px;
+    line-height: 1;
+    color: var(--deep-teal);
+    opacity: 0.10;
+    pointer-events: none;
+    user-select: none;
+  }
+
   /* ── SKIP NAVIGATION ─────────────────────────── */
   .skip-link { position: absolute; top: -44px; left: 0; background: var(--deep-teal); color: var(--off-white); font-size: 14px; font-weight: 600; padding: 10px 18px; z-index: 9999; text-decoration: none; border-radius: 0 0 var(--radius) 0; transition: top .15s; }
   .skip-link:focus { top: 0; }
@@ -1186,23 +1193,18 @@
 
   <!-- HERO -->
   <div class="hero">    
-    <div class="hero-accent"></div>
-    <h1>Analytical Thinking</h1>
-    <p class="hero-sub">The full learning plan. Work through it sequentially or use the navigation to jump to what you need.</p>
-    <div class="hero-tags">
-      <span class="tag tag-analytical">Thinking Skills</span>
-      <span class="tag tag-structural">Full Learning Plan</span>
-      <span class="tag tag-growth">Self-Paced</span>      
+    <div class="hero-title-row">
+      <div class="hero-accent"></div>
+      <h1>Analytical Thinking</h1>
     </div>
+    <p class="hero-sub">The full learning plan. Work through it sequentially or use the navigation to jump to what you need.</p>
   </div>
 
   <div class="content">
 
     <!-- 0. SKILL SNAPSHOT -->
     <div class="section section-odd" id="snapshot">
-      <div class="section-label">Section 01</div>
       <h2>Skill Snapshot</h2>
-      <div class="divider"></div>
       <div class="snapshot-grid">
         <div class="snapshot-card">
           <div class="snapshot-card-label">The Problem It Solves</div>
@@ -1227,9 +1229,7 @@
 
     <!-- 1. OVERVIEW -->
     <div class="section section-even" id="overview">
-      <div class="section-label">Section 02</div>
       <h2>Overview</h2>
-      <div class="divider"></div>
       <p>Analytical Thinking is the discipline of breaking complex problems into their component parts, organizing those parts into a structure that reveals relationships and patterns, and following evidence from visible symptoms down to underlying causes.</p>
       <p>The analogy that isolates it best: think of a mechanic diagnosing a car fault. They don't guess. They start by separating the system into its components — engine, fuel, electrical, exhaust. They organize the diagnostic territory before testing anything. Then they follow the evidence from what they can observe (the symptom) toward what is actually causing it. That systematic decomposition, structure, and cause-tracing is Analytical Thinking.</p>
       <h3>Where the boundaries are</h3>
@@ -1250,9 +1250,7 @@
 
     <!-- 2. OBJECTIVES -->
     <div class="section section-odd" id="objectives">
-      <div class="section-label">Section 03</div>
       <h2>Learning Objectives</h2>
-      <div class="divider"></div>
       <p>By the end of this learning plan, you will be able to:</p>
       <ol class="objectives-list">
         <li><span class="obj-num">01</span><span class="obj-text">Decompose a complex professional problem into clearly named, separable components before attempting to draw conclusions from it.</span></li>
@@ -1266,9 +1264,7 @@
 
     <!-- 3. FIRST PRINCIPLES -->
     <div class="section section-even" id="principles">
-      <div class="section-label">Section 04</div>
       <h2>First Principles</h2>
-      <div class="divider"></div>
 
       <div class="principle">
         <div class="principle-number">Principle 01</div>
@@ -1318,9 +1314,7 @@
 
     <!-- 4. MENTAL MODELS -->
     <div class="section section-odd" id="models">
-      <div class="section-label">Section 05</div>
       <h2>Key Mental Models and Frameworks</h2>
-      <div class="divider"></div>
 
       <div class="model-card">
         <h3 style="margin-top:0">MECE — Mutually Exclusive, Collectively Exhaustive</h3>
@@ -1375,9 +1369,7 @@
 
     <!-- 5. COMMON MISTAKES -->
     <div class="section section-even" id="mistakes">
-      <div class="section-label">Section 06</div>
       <h2>Common Mistakes</h2>
-      <div class="divider"></div>
 
       <div class="mistake">
         <h4>Solving before decomposing</h4>
@@ -1438,9 +1430,7 @@
 
     <!-- 6. BEHAVIORAL INDICATORS -->
     <div class="section section-odd" id="indicators">
-      <div class="section-label">Section 07</div>
       <h2>Behavioral Indicators</h2>
-      <div class="divider"></div>
       <p>Observable behaviors across three levels — what good looks like, what signals underuse, and what signals overuse.</p>
       <div class="indicators-grid">
         <div class="indicator-col strength">
@@ -1485,9 +1475,7 @@
 
     <!-- 7. PRACTICAL EXAMPLES -->
     <div class="section section-even" id="scenarios">
-      <div class="section-label">Section 08</div>
       <h2>Practical Examples</h2>
-      <div class="divider"></div>
 
       <div class="scenario">
         <h4>Recurring delivery delays in a client project</h4>
@@ -1523,9 +1511,7 @@
 
     <!-- 8. SELF-REFLECTION -->
     <div class="section section-odd" id="reflection">
-      <div class="section-label">Section 09</div>
       <h2>Self-Reflection Activities</h2>
-      <div class="divider"></div>
       <p>Three prompts to audit your current use of Analytical Thinking. Each takes under five minutes to complete honestly.</p>
 
       <div class="reflection-item">
@@ -1555,9 +1541,7 @@
 
     <!-- 9. KNOWLEDGE CHECK -->
     <div class="section section-even" id="check">
-      <div class="section-label">Section 10</div>
       <h2>Knowledge Check</h2>
-      <div class="divider"></div>
       <p>Five questions — two conceptual, two applied, one synthesis. Select your answers, then reveal results.</p>
 
       <div class="kc-question" id="kc1">
@@ -1641,9 +1625,7 @@
 
     <!-- 10. HABIT BUILDER -->
     <div class="section section-odd" id="habits">
-      <div class="section-label">Section 11</div>
       <h2>5-Day Habit Builder</h2>
-      <div class="divider"></div>
       <p>Five daily practices, each under 15 minutes. Days build on each other — from Day 2 onward, at least one step uses output from the previous day. Open each day to see the full practice.</p>
 
       <!-- Day 1 -->
@@ -1902,9 +1884,7 @@
 
     <!-- 11. PROGRESSION PATH -->
     <div class="section section-even" id="progression">
-      <div class="section-label">Section 12</div>
       <h2>Progression Path</h2>
-      <div class="divider"></div>
       <p>Three stages of developing mastery in Analytical Thinking. Each stage has a new capability and an observable signal of progress.</p>
 
       <div class="progression-stage">
@@ -1964,9 +1944,7 @@
 
     <!-- 12. SUMMARY -->
     <div class="section section-odd" id="summary">
-      <div class="section-label">Section 13</div>
       <h2>Quick-Recall Summary</h2>
-      <div class="divider"></div>
       <div class="summary-block">
         <blockquote>
           <p>Analytical Thinking is the discipline of breaking complexity into its parts before drawing conclusions from it. It means building a structure before you analyze, tracing symptoms to their source rather than stopping at the first plausible cause, and knowing the difference between what the evidence shows and what you are assuming.</p>
@@ -1977,9 +1955,7 @@
 
     <!-- 13. DEEP DIVE RESOURCES -->
     <div class="section section-even" id="resources">
-      <div class="section-label">Section 14</div>
       <h2>Explore Further</h2>
-      <div class="divider"></div>
       <p>Curated for what each resource adds beyond this learning plan — not a description of what it covers, but a reason it belongs here.</p>
 
       <table class="resource-table">
