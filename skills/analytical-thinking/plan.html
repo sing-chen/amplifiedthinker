@@ -422,6 +422,70 @@
     margin-top: 0;
     color: var(--deep-teal);
   }
+
+  /* ── ACCORDION (shared: principles + mental models) ──
+     Principles default open (sequential read); model cards
+     default closed except the first (browse/select). Toggled
+     via .open class on the parent .principle / .model-card. */
+  .principle-header,
+  .model-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+  .principle-header-text,
+  .model-header-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .principle-body,
+  .model-body { display: none; }
+  .principle.open .principle-body,
+  .model-card.open .model-body { display: block; }
+  .accordion-control {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .accordion-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+  .accordion-toggle {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--teal);
+  }
+  .accordion-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  .open .accordion-toggle svg { transform: rotate(180deg); }
+  .principle-header:hover .accordion-label,
+  .model-header:hover .accordion-label,
+  .principle-header:hover .accordion-toggle,
+  .model-header:hover .accordion-toggle { color: var(--deep-teal); }
+  .principle-header:focus-visible,
+  .model-header:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  @media (max-width: 560px) {
+    .accordion-label { display: none; }
+  }
   .ai-note {
     display: flex;
     gap: 12px;
@@ -454,11 +518,15 @@
   .model-card {
     background: white;
     border-radius: var(--radius);
-    padding: 28px 32px;
     max-width: var(--content-max);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     border-top: 3px solid var(--teal);
+    overflow: hidden;
   }
+  .model-header { padding: 24px 32px; }
+  .model-body { padding: 0 32px 28px; }
+  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header .model-source { margin-bottom: 0; }
   .model-source {
     font-family: 'Inter', sans-serif;
     font-size: 13px;
@@ -627,55 +695,111 @@
   .mistake-cell p { font-size: 14px; margin: 0; line-height: 1.5; }
 
   /* ── BEHAVIORAL INDICATORS ──────────────────── */
-  .indicators-grid {
+  .continuum-bar {
+    display: flex;
+    gap: 6px;
+    max-width: var(--content-max);
+    margin: 24px 0 20px;
+  }
+  .continuum-segment {
+    flex: 1;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+  }
+  .continuum-segment.underuse { background: var(--tag-human-bg); color: var(--navy); }
+  .continuum-segment.target   { background: var(--tag-analytical-bg); color: var(--deep-teal); flex: 1.3; }
+  .continuum-segment.overuse  { background: var(--tag-growth-bg); color: var(--charcoal); }
+
+  .indicators-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+  }
+  .indicator-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    max-width: var(--content-max);
-    margin: 24px 0;
   }
-  .indicator-col {
+  .indicator-panel {
     background: white;
     border-radius: var(--radius);
-    padding: 24px;
+    padding: 24px 28px;
   }
-  .indicator-col.strength { border-top: 3px solid var(--teal); }
-  .indicator-col.warning  { border-top: 3px solid var(--terracotta); }
-  .indicator-col.overindex { border-top: 3px solid var(--amber); grid-column: 1 / -1; }
+  .indicator-panel.target   { border-top: 4px solid var(--teal); }
+  .indicator-panel.underuse { border-top: 3px solid var(--terracotta); }
+  .indicator-panel.overuse  { border-top: 3px solid var(--amber); }
+
+  .indicator-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .indicator-icon {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .indicator-icon svg {
+    width: 20px; height: 20px;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .indicator-panel.target   .indicator-icon { color: var(--teal); }
+  .indicator-panel.underuse .indicator-icon { color: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-icon { color: var(--amber); }
   .indicator-col-label {
     font-family: 'Poppins', sans-serif;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 14px;
+    color: var(--deep-teal);
   }
-  .strength .indicator-col-label  { color: var(--teal); }
-  .warning  .indicator-col-label  { color: var(--terracotta); }
-  .overindex .indicator-col-label { color: var(--amber); }
+
   .indicator-list {
     list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px 24px;
   }
+  .indicator-list.cols-2 { grid-template-columns: 1fr 1fr; }
   .indicator-list li {
     font-size: 14px;
     line-height: 1.5;
-    padding-left: 16px;
+    padding: 7px 10px 7px 18px;
+    margin: 0 -10px;
+    border-radius: 6px;
     position: relative;
     color: var(--navy);
+    transition: background 0.15s ease;
   }
   .indicator-list li::before {
     content: '';
     position: absolute;
-    left: 0; top: 8px;
+    left: 4px; top: 14px;
     width: 5px; height: 5px;
     border-radius: 50%;
   }
-  .strength  .indicator-list li::before  { background: var(--teal); }
-  .warning   .indicator-list li::before  { background: var(--terracotta); }
-  .overindex .indicator-list li::before  { background: var(--amber); }
+  .indicator-panel.target   .indicator-list li::before { background: var(--teal); }
+  .indicator-panel.underuse .indicator-list li::before { background: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-list li::before { background: var(--amber); }
+  .indicator-panel.target   .indicator-list li:hover { background: var(--tag-analytical-bg); }
+  .indicator-panel.underuse .indicator-list li:hover { background: var(--tag-human-bg); }
+  .indicator-panel.overuse  .indicator-list li:hover { background: var(--tag-growth-bg); }
+
+  @media (max-width: 640px) {
+    .indicator-row { grid-template-columns: 1fr; }
+    .indicator-list.cols-2 { grid-template-columns: 1fr; }
+  }
 
   /* ── SCENARIOS ──────────────────────────────── */
   .scenario {
@@ -1253,6 +1377,13 @@
     html { scroll-behavior: auto; }
   }
 
+  /* ── PRINT ──────────────────────────────────── */
+  @media print {
+    .principle-body, .model-body { display: block !important; }
+    .accordion-toggle { display: none; }
+    .principle-header, .model-header { cursor: default; }
+  }
+
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */
@@ -1386,49 +1517,109 @@
       <h2>First Principles</h2>
       <p class="principles-intro">Six principles, in sequence. Each builds on the one before it — decomposition makes structure possible, structure makes cause-tracing possible, and so on through to choosing the right framework for the problem in front of you. The mental models, behavioral indicators, and daily practices later in this plan are all applications of these six ideas.</p>
 
-      <div class="principle">
-        <div class="principle-number">Principle 01</div>
-        <h3>Decomposition: naming the parts is the first analytical act</h3>
-        <p>Complex problems resist direct analysis because they are too large and entangled to examine as a whole. The act of decomposition — separating a problem into its distinct, nameable components — is what makes analysis possible at all. Until you have named the parts, you are reacting to the problem as a single overwhelming mass rather than working on it systematically.</p>
-        <p>This is not intuitive. Under time pressure or cognitive load, the brain prefers to treat a complex problem as a pattern match against something familiar and jump to a response. Decomposition interrupts that jump. It forces the question: what is this actually made of?</p>
-      </div>
-
-      <div class="principle">
-        <div class="principle-number">Principle 02</div>
-        <h3>Structure before analysis: the map precedes the territory</h3>
-        <p>Before you analyze, you need a way to organize what you are looking at. Structure determines what you examine, in what order, and whether you are covering the full territory or only the parts that are most visible or most familiar.</p>
-        <p>A framework does not tell you the answer. It tells you where to look. The structure you choose — whether a simple categorization, a process map, or an established framework like MECE or fishbone — determines whether your analysis is systematic or selective. Selective analysis produces confident-sounding conclusions that break down the moment the unexamined parts surface.</p>
-      </div>
-
-      <div class="principle">
-        <div class="principle-number">Principle 03</div>
-        <h3>Cause versus symptom: the diagnostic obligation</h3>
-        <p>What you observe is almost always a downstream effect of something upstream. A team missing deadlines is a symptom. A customer segment churning is a symptom. A process producing errors at a consistent rate is a symptom. The analytical work is tracing the thread from what is visible back to what is actually generating it.</p>
-        <p>Skipping this step — treating the symptom as the problem — produces solutions that suppress the observable effect without addressing its source. The symptom returns, often in a different form, and the cycle repeats. The diagnostic obligation is to follow the evidence until you reach something that, if it changed, would change the symptom.</p>
-      </div>
-
-      <div class="principle">
-        <div class="principle-number">Principle 04</div>
-        <h3>Evidence over assumption: knowing which is which</h3>
-        <p>Every analysis rests on a mixture of data and assumption. Evidence tells you what is actually happening in the situation you are examining. Assumption tells you what you already believed before you started. The analytical discipline is making that distinction visible — knowing, for each element of your picture, whether it is grounded in evidence from this situation or imported from prior experience.</p>
-        <div class="ai-note">
-          <div class="ai-note-label">AI Context</div>
-          <p>AI-generated analysis arrives pre-structured, with confident language and apparent evidentiary support. The analytical question is the same one you would ask of your own work: which claims are grounded in evidence from this specific situation, and which are pattern-matched from training data that may or may not apply here?</p>
+      <div class="principle" id="principle-01">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 01</div>
+            <h3>Decomposition: naming the parts is the first analytical act</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-01-body">
+          <p>Complex problems resist direct analysis because they are too large and entangled to examine as a whole. The act of decomposition — separating a problem into its distinct, nameable components — is what makes analysis possible at all. Until you have named the parts, you are reacting to the problem as a single overwhelming mass rather than working on it systematically.</p>
+          <p>This is not intuitive. Under time pressure or cognitive load, the brain prefers to treat a complex problem as a pattern match against something familiar and jump to a response. Decomposition interrupts that jump. It forces the question: what is this actually made of?</p>
         </div>
       </div>
 
-      <div class="principle">
-        <div class="principle-number">Principle 05</div>
-        <h3>Pattern recognition: real signal versus projected pattern</h3>
-        <p>Across enough observations, genuine patterns emerge — regularities that would be invisible in any single data point. Pattern recognition is the ability to identify those regularities and draw valid inferences from them.</p>
-        <p>The discipline is knowing when a pattern is real. Human cognition has a strong tendency to find patterns in noise — to see regularity in random data because regularity is easier to process and act on than randomness. The check is replication: does the pattern hold when tested against new data, applied to adjacent cases, or examined by someone who did not expect to find it?</p>
+      <div class="principle" id="principle-02">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 02</div>
+            <h3>Structure before analysis: the map precedes the territory</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-02-body">
+          <p>Before you analyze, you need a way to organize what you are looking at. Structure determines what you examine, in what order, and whether you are covering the full territory or only the parts that are most visible or most familiar.</p>
+          <p>A framework does not tell you the answer. It tells you where to look. The structure you choose — whether a simple categorization, a process map, or an established framework like MECE or fishbone — determines whether your analysis is systematic or selective. Selective analysis produces confident-sounding conclusions that break down the moment the unexamined parts surface.</p>
+        </div>
       </div>
 
-      <div class="principle">
-        <div class="principle-number">Principle 06</div>
-        <h3>The right decomposition for the situation</h3>
-        <p>There is no universal analytical framework. MECE is well-suited to structuring problem spaces where completeness matters and overlap creates confusion. First Principles decomposition works when established assumptions need stripping away. Fishbone diagrams are effective for cause-and-effect analysis in operational contexts. Process mapping fits problems that live in workflows and handoffs.</p>
-        <p>Choosing well is itself an analytical act. The wrong framework can make certain causes structurally invisible by putting them outside the categories the framework creates.</p>
+      <div class="principle" id="principle-03">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 03</div>
+            <h3>Cause versus symptom: the diagnostic obligation</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-03-body">
+          <p>What you observe is almost always a downstream effect of something upstream. A team missing deadlines is a symptom. A customer segment churning is a symptom. A process producing errors at a consistent rate is a symptom. The analytical work is tracing the thread from what is visible back to what is actually generating it.</p>
+          <p>Skipping this step — treating the symptom as the problem — produces solutions that suppress the observable effect without addressing its source. The symptom returns, often in a different form, and the cycle repeats. The diagnostic obligation is to follow the evidence until you reach something that, if it changed, would change the symptom.</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-04">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 04</div>
+            <h3>Evidence over assumption: knowing which is which</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-04-body">
+          <p>Every analysis rests on a mixture of data and assumption. Evidence tells you what is actually happening in the situation you are examining. Assumption tells you what you already believed before you started. The analytical discipline is making that distinction visible — knowing, for each element of your picture, whether it is grounded in evidence from this situation or imported from prior experience.</p>
+          <div class="ai-note">
+            <div class="ai-note-label">AI Context</div>
+            <p>AI-generated analysis arrives pre-structured, with confident language and apparent evidentiary support. The analytical question is the same one you would ask of your own work: which claims are grounded in evidence from this specific situation, and which are pattern-matched from training data that may or may not apply here?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-05">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 05</div>
+            <h3>Pattern recognition: real signal versus projected pattern</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-05-body">
+          <p>Across enough observations, genuine patterns emerge — regularities that would be invisible in any single data point. Pattern recognition is the ability to identify those regularities and draw valid inferences from them.</p>
+          <p>The discipline is knowing when a pattern is real. Human cognition has a strong tendency to find patterns in noise — to see regularity in random data because regularity is easier to process and act on than randomness. The check is replication: does the pattern hold when tested against new data, applied to adjacent cases, or examined by someone who did not expect to find it?</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-06">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-06')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 06</div>
+            <h3>The right decomposition for the situation</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-06-body">
+          <p>There is no universal analytical framework. MECE is well-suited to structuring problem spaces where completeness matters and overlap creates confusion. First Principles decomposition works when established assumptions need stripping away. Fishbone diagrams are effective for cause-and-effect analysis in operational contexts. Process mapping fits problems that live in workflows and handoffs.</p>
+          <p>Choosing well is itself an analytical act. The wrong framework can make certain causes structurally invisible by putting them outside the categories the framework creates.</p>
+        </div>
       </div>
     </div>
 
@@ -1436,91 +1627,141 @@
     <div class="section section-odd" id="models">
       <h2>Key Mental Models and Frameworks</h2>
 
-      <div class="model-card">
-        <h3 style="margin-top:0">MECE — Mutually Exclusive, Collectively Exhaustive</h3>
-        <div class="model-source">Barbara Minto · The Pyramid Principle · McKinsey & Company, 1987</div>
-        <p>A structuring principle that ensures a decomposition covers all relevant territory (collectively exhaustive) without double-counting or creating ambiguous overlaps (mutually exclusive). It disciplines the analytical impulse to add categories until the problem feels covered — because categories that overlap hide where the issue actually sits.</p>
-        <div class="model-applied">
-          <div class="model-applied-label">Applied</div>
-          <p>A process architect diagnosing an over-budget project decomposes cost drivers into People, Technology, Process, Scope. Each category is examined once only — no double-counting, no blind spots between overlapping categories.</p>
-        </div>
-        <div class="model-diagram">
-          <div class="mece-grid">
-            <div class="mece-cell" style="background:var(--tag-analytical-bg);color:var(--deep-teal);">People</div>
-            <div class="mece-cell" style="background:var(--light-sage);color:var(--navy);">Technology</div>
-            <div class="mece-cell" style="background:var(--tag-human-bg);color:var(--navy);">Process</div>
-            <div class="mece-cell" style="background:var(--tag-growth-bg);color:var(--charcoal);">Scope</div>
+      <div class="model-card" id="model-mece">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-mece-body" onclick="toggleAccordion('model-mece')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-mece')}">
+          <div class="model-header-text">
+            <h3>MECE — Mutually Exclusive, Collectively Exhaustive</h3>
+            <div class="model-source">Barbara Minto · The Pyramid Principle · McKinsey & Company, 1987</div>
           </div>
-          <p class="model-diagram-caption">No overlap. Full coverage.</p>
-        </div>
-      </div>
-
-      <div class="model-card">
-        <h3 style="margin-top:0">The 5 Whys</h3>
-        <div class="model-source">Taiichi Ohno · Toyota Production System · 1950s</div>
-        <p>A cause-tracing technique that works by repeatedly asking "why" in response to each answer until a root cause is reached — typically within five iterations. Interrupts the tendency to stop analysis at the first plausible explanation, which is almost always a symptom or intermediate cause.</p>
-        <div class="model-applied">
-          <div class="model-applied-label">Applied</div>
-          <div class="step-chain">
-            <div class="step-item"><div class="step-num">1</div><p><span class="step-meta">Why? &nbsp;</span>Support ticket volume is spiking</p></div>
-            <div class="step-item"><div class="step-num">2</div><p><span class="step-meta">Why? &nbsp;</span>Customers can't complete a key workflow</p></div>
-            <div class="step-item"><div class="step-num">3</div><p><span class="step-meta">Why? &nbsp;</span>A UI update changed the flow without updating help docs</p></div>
-            <div class="step-item"><div class="step-num root">4</div><p style="color:var(--terracotta);font-weight:500;"><span class="step-meta">Why? &nbsp;</span>No documentation review step in the release process — ownership sits outside the release workflow</p></div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
           </div>
-          <div class="step-root-label">ROOT CAUSE IDENTIFIED</div>
         </div>
-      </div>
-
-      <div class="model-card">
-        <h3 style="margin-top:0">First Principles Decomposition</h3>
-        <div class="model-source">Aristotle · modern application by physicists and engineers · popularized in business by Elon Musk</div>
-        <p>Strips a problem back to its most fundamental, irreducible truths — the things verifiably true regardless of convention or history — then rebuilds understanding from those foundations rather than inheriting assumptions from prior analyses.</p>
-        <div class="model-applied">
-          <div class="model-applied-label">Applied</div>
-          <p>A team estimates a project at six months based on how long similar projects have taken. First Principles asks: what are the actual components of this work, and what does each genuinely require? Starting from scratch, they find two of the six months were historically consumed by a dependency that no longer exists. The real estimate is four months.</p>
-        </div>
-      </div>
-
-      <div class="model-card">
-        <h3 style="margin-top:0">Fishbone Diagram (Ishikawa / Cause-and-Effect)</h3>
-        <div class="model-source">Kaoru Ishikawa · quality management · 1960s</div>
-        <p>Maps potential causes of a problem across standard categories — typically People, Process, Technology, Environment, Materials, Measurement — to ensure diagnostic coverage and make cause-effect relationships visually explicit. Most effective in operational and quality contexts where multiple contributing causes are likely.</p>
-        <div class="model-applied">
-          <div class="model-applied-label">Applied</div>
-          <div class="fishbone-diagram">
-            <svg viewBox="0 0 760 260" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-              <line x1="110" y1="130" x2="470" y2="130" stroke="var(--teal)" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-              <line x1="210" y1="130" x2="140" y2="40" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-              <line x1="370" y1="130" x2="340" y2="40" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-              <line x1="210" y1="130" x2="140" y2="220" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-              <line x1="370" y1="130" x2="340" y2="220" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-              <path d="M470,60 L470,200 L660,130 Z" fill="var(--terracotta)"/>
-            </svg>
-            <div class="fishbone-cat-label" style="left:18.4%;top:15.4%;"><strong>Process</strong><span class="fishbone-cat-desc">No validation step before reports are published</span></div>
-            <div class="fishbone-cat-label" style="left:44.7%;top:15.4%;"><strong>Technology</strong><span class="fishbone-cat-desc">Source system doesn't enforce data types</span></div>
-            <div class="fishbone-cat-label" style="left:18.4%;top:84.6%;"><strong>People</strong><span class="fishbone-cat-desc">Manual entry introduces transcription errors — the most visible cause</span></div>
-            <div class="fishbone-cat-label" style="left:44.7%;top:84.6%;"><strong>Measurement</strong><span class="fishbone-cat-desc">Error rate definitions differ across teams</span></div>
-            <div class="fishbone-effect-label" style="left:70.4%;top:50%;">Consistent Error Rate</div>
+        <div class="model-body" id="model-mece-body">
+          <p>A structuring principle that ensures a decomposition covers all relevant territory (collectively exhaustive) without double-counting or creating ambiguous overlaps (mutually exclusive). It disciplines the analytical impulse to add categories until the problem feels covered — because categories that overlap hide where the issue actually sits.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A process architect diagnosing an over-budget project decomposes cost drivers into People, Technology, Process, Scope. Each category is examined once only — no double-counting, no blind spots between overlapping categories.</p>
           </div>
-          <p style="margin-top:14px;">A data team produces reports with a consistent error rate. Fixing the most visible cause — manual entry — wouldn't eliminate it: the other three keep operating regardless.</p>
+          <div class="model-diagram">
+            <div class="mece-grid">
+              <div class="mece-cell" style="background:var(--tag-analytical-bg);color:var(--deep-teal);">People</div>
+              <div class="mece-cell" style="background:var(--light-sage);color:var(--navy);">Technology</div>
+              <div class="mece-cell" style="background:var(--tag-human-bg);color:var(--navy);">Process</div>
+              <div class="mece-cell" style="background:var(--tag-growth-bg);color:var(--charcoal);">Scope</div>
+            </div>
+            <p class="model-diagram-caption">No overlap. Full coverage.</p>
+          </div>
         </div>
       </div>
 
-      <div class="model-card">
-        <h3 style="margin-top:0">The Issue Tree</h3>
-        <div class="model-source">Management consulting practice · McKinsey & Co. · widely adopted across professional services</div>
-        <p>Decomposes a central question into its component sub-questions in a hierarchical, branching structure. Makes the full analytical territory visible at once, shows how sub-questions relate, and allows work to be allocated across a decomposed structure rather than tackled as an undifferentiated whole.</p>
-        <div class="model-applied">
-          <div class="model-applied-label">Applied</div>
-          <p>A product team needs to understand why a feature has low adoption. The issue tree branches: do users know it exists? (awareness) · do they understand how to use it? (clarity) · does it solve their problem? (relevance) · does it work reliably? (reliability). The team discovers awareness and reliability are both partial causes — without the tree, they would have investigated only the most visible one.</p>
+      <div class="model-card" id="model-5whys">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-5whys-body" onclick="toggleAccordion('model-5whys')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-5whys')}">
+          <div class="model-header-text">
+            <h3>The 5 Whys</h3>
+            <div class="model-source">Taiichi Ohno · Toyota Production System · 1950s</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
         </div>
-        <div class="model-diagram">
-          <div class="tree-root">Why is feature adoption low?</div>
-          <div class="tree-branches">
-            <div class="tree-branch"><div class="tree-branch-box">Awareness<span class="tree-branch-sub">Do users know it exists?</span></div></div>
-            <div class="tree-branch"><div class="tree-branch-box">Clarity<span class="tree-branch-sub">Do they know how to use it?</span></div></div>
-            <div class="tree-branch"><div class="tree-branch-box">Relevance<span class="tree-branch-sub">Does it solve their problem?</span></div></div>
-            <div class="tree-branch"><div class="tree-branch-box">Reliability<span class="tree-branch-sub">Does it work consistently?</span></div></div>
+        <div class="model-body" id="model-5whys-body">
+          <p>A cause-tracing technique that works by repeatedly asking "why" in response to each answer until a root cause is reached — typically within five iterations. Interrupts the tendency to stop analysis at the first plausible explanation, which is almost always a symptom or intermediate cause.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <div class="step-chain">
+              <div class="step-item"><div class="step-num">1</div><p><span class="step-meta">Why? &nbsp;</span>Support ticket volume is spiking</p></div>
+              <div class="step-item"><div class="step-num">2</div><p><span class="step-meta">Why? &nbsp;</span>Customers can't complete a key workflow</p></div>
+              <div class="step-item"><div class="step-num">3</div><p><span class="step-meta">Why? &nbsp;</span>A UI update changed the flow without updating help docs</p></div>
+              <div class="step-item"><div class="step-num root">4</div><p style="color:var(--terracotta);font-weight:500;"><span class="step-meta">Why? &nbsp;</span>No documentation review step in the release process — ownership sits outside the release workflow</p></div>
+            </div>
+            <div class="step-root-label">ROOT CAUSE IDENTIFIED</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-first-principles">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-first-principles-body" onclick="toggleAccordion('model-first-principles')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-first-principles')}">
+          <div class="model-header-text">
+            <h3>First Principles Decomposition</h3>
+            <div class="model-source">Aristotle · modern application by physicists and engineers · popularized in business by Elon Musk</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-first-principles-body">
+          <p>Strips a problem back to its most fundamental, irreducible truths — the things verifiably true regardless of convention or history — then rebuilds understanding from those foundations rather than inheriting assumptions from prior analyses.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A team estimates a project at six months based on how long similar projects have taken. First Principles asks: what are the actual components of this work, and what does each genuinely require? Starting from scratch, they find two of the six months were historically consumed by a dependency that no longer exists. The real estimate is four months.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-fishbone">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-fishbone-body" onclick="toggleAccordion('model-fishbone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-fishbone')}">
+          <div class="model-header-text">
+            <h3>Fishbone Diagram (Ishikawa / Cause-and-Effect)</h3>
+            <div class="model-source">Kaoru Ishikawa · quality management · 1960s</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-fishbone-body">
+          <p>Maps potential causes of a problem across standard categories — typically People, Process, Technology, Environment, Materials, Measurement — to ensure diagnostic coverage and make cause-effect relationships visually explicit. Most effective in operational and quality contexts where multiple contributing causes are likely.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <div class="fishbone-diagram">
+              <svg viewBox="0 0 760 260" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                <line x1="110" y1="130" x2="470" y2="130" stroke="var(--teal)" stroke-width="3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                <line x1="210" y1="130" x2="140" y2="40" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                <line x1="370" y1="130" x2="340" y2="40" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                <line x1="210" y1="130" x2="140" y2="220" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                <line x1="370" y1="130" x2="340" y2="220" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+                <path d="M470,60 L470,200 L660,130 Z" fill="var(--terracotta)"/>
+              </svg>
+              <div class="fishbone-cat-label" style="left:18.4%;top:15.4%;"><strong>Process</strong><span class="fishbone-cat-desc">No validation step before reports are published</span></div>
+              <div class="fishbone-cat-label" style="left:44.7%;top:15.4%;"><strong>Technology</strong><span class="fishbone-cat-desc">Source system doesn't enforce data types</span></div>
+              <div class="fishbone-cat-label" style="left:18.4%;top:84.6%;"><strong>People</strong><span class="fishbone-cat-desc">Manual entry introduces transcription errors — the most visible cause</span></div>
+              <div class="fishbone-cat-label" style="left:44.7%;top:84.6%;"><strong>Measurement</strong><span class="fishbone-cat-desc">Error rate definitions differ across teams</span></div>
+              <div class="fishbone-effect-label" style="left:70.4%;top:50%;">Consistent Error Rate</div>
+            </div>
+            <p style="margin-top:14px;">A data team produces reports with a consistent error rate. Fixing the most visible cause — manual entry — wouldn't eliminate it: the other three keep operating regardless.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-issue-tree">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-issue-tree-body" onclick="toggleAccordion('model-issue-tree')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-issue-tree')}">
+          <div class="model-header-text">
+            <h3>The Issue Tree</h3>
+            <div class="model-source">Management consulting practice · McKinsey & Co. · widely adopted across professional services</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-issue-tree-body">
+          <p>Decomposes a central question into its component sub-questions in a hierarchical, branching structure. Makes the full analytical territory visible at once, shows how sub-questions relate, and allows work to be allocated across a decomposed structure rather than tackled as an undifferentiated whole.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A product team needs to understand why a feature has low adoption. The issue tree branches: do users know it exists? (awareness) · do they understand how to use it? (clarity) · does it solve their problem? (relevance) · does it work reliably? (reliability). The team discovers awareness and reliability are both partial causes — without the tree, they would have investigated only the most visible one.</p>
+          </div>
+          <div class="model-diagram">
+            <div class="tree-root">Why is feature adoption low?</div>
+            <div class="tree-branches">
+              <div class="tree-branch"><div class="tree-branch-box">Awareness<span class="tree-branch-sub">Do users know it exists?</span></div></div>
+              <div class="tree-branch"><div class="tree-branch-box">Clarity<span class="tree-branch-sub">Do they know how to use it?</span></div></div>
+              <div class="tree-branch"><div class="tree-branch-box">Relevance<span class="tree-branch-sub">Does it solve their problem?</span></div></div>
+              <div class="tree-branch"><div class="tree-branch-box">Reliability<span class="tree-branch-sub">Does it work consistently?</span></div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1590,11 +1831,21 @@
     <!-- 6. BEHAVIORAL INDICATORS -->
     <div class="section section-odd" id="indicators">
       <h2>Behavioral Indicators</h2>
-      <p>Observable behaviors across three levels — what good looks like, what signals underuse, and what signals overuse.</p>
-      <div class="indicators-grid">
-        <div class="indicator-col strength">
-          <div class="indicator-col-label">What Good Looks Like</div>
-          <ul class="indicator-list">
+      <p>Observable behaviors across a single spectrum: the target zone in the middle, flanked by the signals that show when the skill is under- or overused.</p>
+
+      <div class="continuum-bar" aria-hidden="true">
+        <div class="continuum-segment underuse">Underuse</div>
+        <div class="continuum-segment target">Target Zone</div>
+        <div class="continuum-segment overuse">Overuse</div>
+      </div>
+
+      <div class="indicators-stack">
+        <div class="indicator-panel target">
+          <div class="indicator-panel-header">
+            <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/></svg></div>
+            <div class="indicator-col-label">What Good Looks Like</div>
+          </div>
+          <ul class="indicator-list cols-2">
             <li>Names the component parts of a problem before proposing solutions</li>
             <li>Selects a framework and explains why it fits this problem specifically</li>
             <li>Distinguishes explicitly between what data shows and what they're inferring</li>
@@ -1607,27 +1858,36 @@
             <li>Can hand a structured analysis to someone unfamiliar with the problem who follows the logic independently</li>
           </ul>
         </div>
-        <div class="indicator-col warning">
-          <div class="indicator-col-label">Early Warning Signs</div>
-          <ul class="indicator-list">
-            <li>Jumps to cause identification before completing a decomposition of the problem space</li>
-            <li>Uses a familiar framework regardless of whether it fits the problem at hand</li>
-            <li>Presents a conclusion then assembles supporting evidence rather than deriving the conclusion from evidence</li>
-            <li>Calls a hypothesis a finding — states a pattern as confirmed before testing it</li>
-            <li>Produces analyses that require extensive verbal explanation to make sense of</li>
-            <li>Treats comprehensiveness of effort as a proxy for quality of analysis</li>
-            <li>Accepts AI-generated analytical outputs without checking whether the decomposition addresses the right problem</li>
-            <li>Identifies a plausible cause but stops before asking what's generating it upstream</li>
-          </ul>
-        </div>
-        <div class="indicator-col overindex">
-          <div class="indicator-col-label">Overindexing Signals</div>
-          <ul class="indicator-list">
-            <li>Decomposition paralysis — breaks problems into progressively finer components without ever reaching a point of sufficient clarity to act</li>
-            <li>Framework rigidity — insists on completing a full analytical structure even when early findings make parts of it clearly irrelevant</li>
-            <li>Analysis substituting for judgment — produces thorough, accurate pictures of the problem but cannot commit to a conclusion</li>
-            <li>Elevates analytical process over practical utility — the decomposition becomes the deliverable rather than a means to a decision</li>
-          </ul>
+
+        <div class="indicator-row">
+          <div class="indicator-panel underuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="indicator-col-label">Early Warning Signs</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Jumps to cause identification before completing a decomposition of the problem space</li>
+              <li>Uses a familiar framework regardless of whether it fits the problem at hand</li>
+              <li>Presents a conclusion then assembles supporting evidence rather than deriving the conclusion from evidence</li>
+              <li>Calls a hypothesis a finding — states a pattern as confirmed before testing it</li>
+              <li>Produces analyses that require extensive verbal explanation to make sense of</li>
+              <li>Treats comprehensiveness of effort as a proxy for quality of analysis</li>
+              <li>Accepts AI-generated analytical outputs without checking whether the decomposition addresses the right problem</li>
+              <li>Identifies a plausible cause but stops before asking what's generating it upstream</li>
+            </ul>
+          </div>
+          <div class="indicator-panel overuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="indicator-col-label">Overindexing Signals</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Decomposition paralysis — breaks problems into progressively finer components without ever reaching a point of sufficient clarity to act</li>
+              <li>Framework rigidity — insists on completing a full analytical structure even when early findings make parts of it clearly irrelevant</li>
+              <li>Analysis substituting for judgment — produces thorough, accurate pictures of the problem but cannot commit to a conclusion</li>
+              <li>Elevates analytical process over practical utility — the decomposition becomes the deliverable rather than a means to a decision</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -2281,6 +2541,18 @@ function toggleDay(btn) {
   body.classList.toggle('open', !isOpen);
   btn.classList.toggle('open', !isOpen);
   btn.setAttribute('aria-expanded', !isOpen);
+}
+
+// ── PRINCIPLES & MODELS ACCORDION ────────────
+function toggleAccordion(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const isOpen = card.classList.contains('open');
+  card.classList.toggle('open', !isOpen);
+  const header = card.querySelector('[aria-expanded]');
+  if (header) header.setAttribute('aria-expanded', !isOpen);
+  const label = card.querySelector('.accordion-label');
+  if (label) label.textContent = isOpen ? 'Expand' : 'Collapse';
 }
 
 // ── SCROLL SPY + PREV/NEXT ───────────────────
