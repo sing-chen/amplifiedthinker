@@ -23,7 +23,8 @@
   /* ── HERO ── */
   .hero{background:#1B4A44;padding:88px 40px 80px;position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,rgba(91,167,159,.07) 0%,transparent 68%);pointer-events:none}
-  .hi{max-width:var(--page-max);margin:0 auto}
+  .hero-pattern{position:absolute;top:0;right:0;width:60%;height:100%;opacity:.14;pointer-events:none}
+  .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
   .eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:18px}
   .hero-hl{font-family:'Poppins',sans-serif;font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.01em;margin-bottom:24px;max-width:860px}
   .hero-hl em{color:var(--sage);font-style:normal;font-weight:400}
@@ -141,6 +142,46 @@
 <script src="nav.js"></script>
 
 <section class="hero">
+  <svg class="hero-pattern" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+    <g stroke="#5BA79F" stroke-width="1.2" fill="none">
+      <line x1="60" y1="70" x2="190" y2="30"/>
+      <line x1="190" y1="30" x2="340" y2="75"/>
+      <line x1="340" y1="75" x2="500" y2="45"/>
+      <line x1="60" y1="70" x2="130" y2="170"/>
+      <line x1="190" y1="30" x2="290" y2="195"/>
+      <line x1="340" y1="75" x2="450" y2="155"/>
+      <line x1="500" y1="45" x2="555" y2="255"/>
+      <line x1="130" y1="170" x2="290" y2="195"/>
+      <line x1="290" y1="195" x2="450" y2="155"/>
+      <line x1="450" y1="155" x2="555" y2="255"/>
+      <line x1="130" y1="170" x2="85" y2="300"/>
+      <line x1="290" y1="195" x2="250" y2="335"/>
+      <line x1="450" y1="155" x2="410" y2="315"/>
+      <line x1="555" y1="255" x2="535" y2="365"/>
+      <line x1="85" y1="300" x2="250" y2="335"/>
+      <line x1="250" y1="335" x2="410" y2="315"/>
+      <line x1="410" y1="315" x2="535" y2="365"/>
+    </g>
+    <g>
+      <circle cx="60" cy="70" r="5" fill="#5BA79F"/>
+      <circle cx="190" cy="30" r="7" fill="#5BA79F"/>
+      <circle cx="340" cy="75" r="5" fill="#5BA79F"/>
+      <circle cx="500" cy="45" r="4" fill="#5BA79F"/>
+      <circle cx="130" cy="170" r="4" fill="#D9A05B"/>
+      <circle cx="290" cy="195" r="7" fill="#5BA79F"/>
+      <circle cx="450" cy="155" r="5" fill="#5BA79F"/>
+      <circle cx="555" cy="255" r="4" fill="#C77B5F"/>
+      <circle cx="85" cy="300" r="5" fill="#5BA79F"/>
+      <circle cx="250" cy="335" r="4" fill="#5BA79F"/>
+      <circle cx="410" cy="315" r="6" fill="#5BA79F"/>
+      <circle cx="535" cy="365" r="3" fill="#D9A05B"/>
+      <circle cx="160" cy="95" r="2" fill="#5BA79F" opacity=".5"/>
+      <circle cx="390" cy="185" r="2.5" fill="#C77B5F" opacity=".45"/>
+      <circle cx="230" cy="260" r="2" fill="#5BA79F" opacity=".5"/>
+      <circle cx="480" cy="290" r="2" fill="#5BA79F" opacity=".4"/>
+      <circle cx="50" cy="210" r="2" fill="#5BA79F" opacity=".45"/>
+    </g>
+  </svg>
   <div class="hi">
     <p class="eyebrow">Future Skills</p>
     <h1 class="hero-hl">The skills that matter most are the ones getting the <em>least practice</em></h1>
@@ -189,7 +230,7 @@
       <div class="why-body">
         <p>Entry-level tasks — synthesising research, producing first-pass analysis, organising information — were never just grunt work. They were how professionals developed judgment, pattern recognition, and the ability to distinguish what matters from what doesn't.</p>
         <p>As AI handles more of that work, the pipeline that turned junior contributors into strategic thinkers is breaking down. <strong>Heavy reliance on AI tools correlates with declining critical thinking abilities</strong>, driven by cognitive offloading.<sup><a href="#cite-4" aria-label="Citation 4" style="color:var(--teal);text-decoration:none;font-family:'Poppins',sans-serif;font-size:9px;font-weight:600;vertical-align:super;margin-left:1px">4</a></sup> The capability that took years to build is now going unexercised.</p>
-        <p>This library addresses that gap directly. Each skill is grounded in the WEF Core Skills 2030 framework and cross-referenced with research from McKinsey, Udemy, and Microsoft on what employers are actually struggling to find. They are not soft skills. They are the skills that determine whether people remain indispensable as AI handles the rest.</p>
+        <p>This library addresses that gap directly. Each skill is grounded in the WEF Core Skills 2030 framework and cross-referenced with research from McKinsey, Udemy, and Microsoft on what employers are actually struggling to find. They are the skills that determine whether people remain indispensable as AI handles the rest.</p>
       </div>
     </div>
     <div class="why-cards">
