@@ -72,14 +72,15 @@
   /* ── WEF CHART SECTION ── */
   .chart-section{background:var(--white);border-top:1px solid rgba(172,196,182,.2);border-bottom:1px solid rgba(172,196,182,.2);padding:72px 40px}
   .chart-inner{max-width:var(--page-max);margin:0 auto}
-  .chart-header{margin-bottom:40px;max-width:760px}
+  .chart-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
+  .chart-header{max-width:none}
   .chart-hl{font-family:'Poppins',sans-serif;font-size:clamp(20px,2.4vw,28px);font-weight:700;color:var(--text-dark);line-height:1.2;letter-spacing:-.01em;margin-bottom:16px}
   .chart-body{font-family:'Inter',sans-serif;font-size:15px;line-height:1.8;color:var(--navy)}
   .chart-body p+p{margin-top:12px}
   /* SVG scatter chart */
-  .chart-wrap{position:relative;background:var(--off-white);border-radius:var(--radius-lg);border:1px solid rgba(172,196,182,.25);padding:20px;overflow:hidden}
+  .chart-wrap{position:relative;background:var(--off-white);border-radius:var(--radius-lg);border:1px solid rgba(172,196,182,.25);padding:16px;overflow:hidden}
   .chart-img{display:block;width:100%;height:auto;border-radius:6px}
-  .chart-source{font-family:'Inter',sans-serif;font-size:11px;color:var(--warm-gray);margin-top:16px;text-align:right}
+  .chart-source{font-family:'Inter',sans-serif;font-size:11px;color:var(--warm-gray);margin-top:12px;text-align:right}
   .chart-source a{color:var(--warm-gray);text-decoration:none;border-bottom:1px solid rgba(139,138,133,.3);transition:color .15s}
   .chart-source a:hover{color:var(--navy)}
 
@@ -107,6 +108,7 @@
 
   @media(max-width:900px){
     .why-grid{grid-template-columns:1fr;gap:36px}
+    .chart-grid{grid-template-columns:1fr;gap:32px}
   }
   @media(max-width:640px){
     .hero,.why,.citations,.chart-section{padding-left:20px;padding-right:20px}
@@ -217,17 +219,19 @@
 <!-- ── WEF SKILLS SCATTER CHART ── -->
 <section class="chart-section" aria-labelledby="chart-heading">
   <div class="chart-inner">
-    <div class="chart-header">
-      <p class="section-label">The evidence</p>
-      <h2 class="chart-hl" id="chart-heading">Where the skills in this library sit in 2030</h2>
-      <div class="chart-body">
-        <p>The WEF Future of Jobs Report 2025 mapped every core skill on two axes: how essential it is today, and how much employers expect its importance to grow. Skills covered in this library cluster in the top-right quadrant — core now, and rising fast.</p>
-        <p>The cluster reflects a consistent pattern: the capabilities most likely to compound in value are the hardest to automate and the easiest to neglect.</p>
+    <div class="chart-grid">
+      <div class="chart-header">
+        <p class="section-label">The evidence</p>
+        <h2 class="chart-hl" id="chart-heading">Where the skills in this library sit in 2030</h2>
+        <div class="chart-body">
+          <p>The WEF Future of Jobs Report 2025 mapped every core skill on two axes: how essential it is today, and how much employers expect its importance to grow. Skills covered in this library cluster in the top-right quadrant — core now, and rising fast.</p>
+          <p>The cluster reflects a consistent pattern: the capabilities most likely to compound in value are the hardest to automate and the easiest to neglect.</p>
+        </div>
       </div>
-    </div>
 
-    <div class="chart-wrap">
-      <img class="chart-img" src="images/WEF Core Skills 2030.png" alt="Scatter chart titled '2030 Future Skills: Priority and Expected Growth', plotting WEF skill categories by share of employers considering each a core skill in 2025 versus share expecting increasing use by 2030. Analytical Thinking, Creative Thinking, Resilience, Leadership, Systems Thinking, Curiosity and Lifelong Learning, Talent Management, Motivation, and Empathy all sit in the top-right 'Core Skills in 2030' quadrant. Source: World Economic Forum, Future of Jobs Report 2025.">
+      <div class="chart-wrap">
+        <img class="chart-img" src="images/WEF Core Skills 2030.png" alt="Scatter chart titled '2030 Future Skills: Priority and Expected Growth', plotting WEF skill categories by share of employers considering each a core skill in 2025 versus share expecting increasing use by 2030. Analytical Thinking, Creative Thinking, Resilience, Leadership, Systems Thinking, Curiosity and Lifelong Learning, Talent Management, Motivation, and Empathy all sit in the top-right 'Core Skills in 2030' quadrant. Source: World Economic Forum, Future of Jobs Report 2025.">
+      </div>
     </div>
   </div>
 </section>
