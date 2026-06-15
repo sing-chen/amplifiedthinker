@@ -346,9 +346,9 @@
       </div>
     </div>
 
-    <!-- CRITICAL THINKING -->
-    <div class="scard cs" id="s-critical" data-categories="cognitive" role="listitem">
-      <div class="sheader">
+    <!-- CRITICAL THINKING — available -->
+    <div class="scard active" id="s-critical" data-categories="cognitive" role="listitem">
+      <div class="sheader" onclick="toggleSkill('s-critical')" aria-expanded="false" aria-controls="sb-critical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-critical')">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <!-- scales — critical thinking -->
@@ -360,7 +360,32 @@
             <div class="sname">Critical Thinking</div>
           </div>
           <div class="ssum">Evaluate arguments, identify assumptions, and resist the pull of flawed reasoning — including your own. <em>"Is this actually true?"</em></div>
-          <div class="sstatus ss-soon">Coming soon</div>
+          <div class="sstatus ss-avail">Available Now</div>
+        </div>
+        <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sbody" id="sb-critical">
+        <div class="sdef">
+          <div class="sdl">Skill definition</div>
+          <div class="sdtext">"Critical Thinking is the discipline of testing whether a conclusion holds — checking its evidence, its reasoning, and its bias — before deciding what to trust, what to question, and what's still missing."</div>
+          <div class="swhat">
+            <p>Without it, well-presented conclusions get treated as verified ones. A confident report, a polished AI analysis, or an argument that sounds airtight all get acted on before anyone checks what they're standing on.</p>
+            <p>The skill produces a clear judgment — what's sound, what's questionable, and what's missing — before a conclusion gets built on. It means separating claims from evidence, checking that evidence against its source, method, currency, and motive, watching for bias in the source, the data, and yourself, and tracing surprising conclusions back to the leap where an assumption took over from observation.</p>
+          </div>
+        </div>
+        <div class="slaunch">
+          <div class="lcards">
+            <a href="skills/critical-thinking/primer.html" class="lcard" aria-label="Open Critical Thinking Primer">
+              <div class="lctype">Skill Primer</div>
+              <div class="lcdesc">Short skill introduction. Core concepts, worked example, knowledge check. ~10 minutes.</div>
+              <div class="lccta">Open primer<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+            </a>
+            <a href="skills/critical-thinking/plan.html" class="lcard primary" aria-label="Open Critical Thinking Full Learning Plan">
+              <div class="lctype">Full Learning Plan</div>
+              <div class="lcdesc">Principles of evaluation, the Ladder of Inference, behavioural indicators, and curated resources. ~60–75 min, plus a 5-day habit builder (~15 min/day).</div>
+              <div class="lccta">Open full plan<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+            </a>
+          </div>
         </div>
       </div>
     </div>

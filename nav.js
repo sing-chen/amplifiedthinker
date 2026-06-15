@@ -54,7 +54,7 @@
   if (activePage === 'skill') {
     var m = pathname.match(/skills\/([^\/]+)/i);
     skillSlug = m ? m[1] : '';
-    var names = { 'analytical-thinking': 'Analytical Thinking' };
+    var names = { 'analytical-thinking': 'Analytical Thinking', 'critical-thinking': 'Critical Thinking' };
     skillName = names[skillSlug] || skillSlug.replace(/-/g, ' ');
     var pageFile = pathname.split('/').pop() || '';
     isPrimer  = /^primer/i.test(pageFile);
