@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Critical Thinking — Skill Primer</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<style>
+  /* ── BRAND TOKENS ───────────────────────────── */
+  :root {
+    --sage:        #ACC4B6;
+    --teal:        #5BA79F;
+    --deep-teal:   #2D756F;
+    --off-white:   #F5F7F6;
+    --light-sage:  #D8E4DD;
+    --terracotta:  #C77B5F;
+    --amber:       #D9A05B;
+    --navy:        #1F4D4A;
+    --charcoal:    #2D3330;
+    --warm-gray:   #8B8A85;
+    --white:       #FFFFFF;
+    --nav-width:   260px;
+    --radius:      8px;
+  }
+
+  /* ── RESET ──────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--navy);
+    background: var(--off-white);
+    display: flex;
+  }
+
+  /* ── LEFT NAV RAIL ──────────────────────────── */
+  .nav-rail {
+    width: var(--nav-width);
+    height: 100%;
+    background: var(--charcoal);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 40px;
+    z-index: 100;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .nav-brand {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
+  }
+  .nav-skill {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--off-white); line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .nav-items { list-style: none; padding: 0 12px; flex: 1; }
+  .nav-item { margin-bottom: 2px; }
+  .nav-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px; font-weight: 400;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none; cursor: pointer;
+    transition: all 0.15s; border: none; background: none;
+    width: 100%; text-align: left;
+  }
+  .nav-link:hover  { color: var(--off-white); background: rgba(255,255,255,0.06); }
+  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.22); }
+  .nav-link.visited { color: rgba(255,255,255,0.65); }
+  .nav-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.2);
+    min-width: 18px; flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .nav-link.active .nav-num  { color: var(--teal); }
+  .nav-link.visited .nav-num { color: var(--sage); opacity: 0.7; }
+  .nav-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); flex-shrink: 0;
+    margin-left: auto; transition: background 0.15s;
+  }
+  .nav-link.active .nav-dot  { background: var(--teal); }
+  .nav-link.visited .nav-dot { background: var(--sage); opacity: 0.6; }
+
+  /* ── SLIDE STAGE ────────────────────────────── */
+  .stage {
+    margin-left: var(--nav-width);
+    width: calc(100% - var(--nav-width));
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── SLIDES ─────────────────────────────────── */
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 72px 96px 80px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(16px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .slide.active {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+  .slide.exit-up {
+    opacity: 0; transform: translateY(-16px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  /* slide backgrounds */
+  .slide-sage   { background: var(--light-sage); }
+  .slide-white  { background: var(--off-white); }
+  .slide-teal   { background: #1B4A44; }
+
+  /* decorative circle */
+  .bg-circle {
+    position: absolute; border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* ── TYPOGRAPHY ─────────────────────────────── */
+  .eyebrow {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--deep-teal); margin-bottom: 20px;
+    display: block;
+  }
+  .eyebrow-lt { color: var(--sage); }
+
+  .h-display {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(52px, 5.5vw, 80px);
+    font-weight: 400; line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--navy); margin-bottom: 28px;
+  }
+  .h-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(36px, 3.8vw, 54px);
+    font-weight: 400; line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--deep-teal); margin-bottom: 28px;
+  }
+  .h-heading {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(28px, 2.8vw, 40px);
+    font-weight: 400; line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--deep-teal); margin-bottom: 16px;
+  }
+  .h-lt { color: var(--off-white); }
+
+  .t-body {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(16px, 1.5vw, 20px);
+    line-height: 1.65; color: var(--navy);
+  }
+  .t-lead {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(17px, 1.7vw, 22px);
+    line-height: 1.65; color: var(--navy);
+  }
+  .t-light { color: rgba(245,247,246,0.82); }
+  .t-terra { color: var(--terracotta); }
+  .t-teal  { color: var(--deep-teal); }
+  .t-meta  { font-size: 13px; color: var(--warm-gray); }
+
+  /* accent bar */
+  .accent-bar {
+    width: 4px; height: 56px;
+    background: var(--terracotta);
+    border-radius: 2px; flex-shrink: 0;
+  }
+
+  /* callouts */
+  .callout-sage {
+    background: var(--light-sage);
+    border-left: 4px solid var(--terracotta);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 28px;
+  }
+  .callout-dark {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius); padding: 22px 28px;
+  }
+  .callout-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--deep-teal); margin-bottom: 8px;
+  }
+
+  /* two-col */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .card {
+    background: var(--white);
+    border-radius: var(--radius); padding: 24px 28px;
+    border: 1px solid rgba(45,51,48,0.08);
+  }
+  .card-top-teal { border-top: 3px solid var(--teal); }
+  .card-top-terra { border-top: 3px solid var(--terracotta); }
+  .card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--deep-teal); margin-bottom: 10px;
+  }
+
+  /* num list */
+  .num-list { display: flex; flex-direction: column; gap: 14px; }
+  .num-item { display: flex; align-items: flex-start; gap: 20px; }
+  .num-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--teal); min-width: 28px; flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  /* comparison cards */
+  .comp-card { border-radius: var(--radius); padding: 24px 28px; }
+  .comp-without { background: #FDF0EC; border-top: 3px solid var(--terracotta); }
+  .comp-with    { background: rgba(197,221,217,0.35); border-top: 3px solid var(--teal); }
+  .comp-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .comp-label-terra { color: var(--terracotta); }
+  .comp-label-teal  { color: var(--deep-teal); }
+
+  /* evidence filter grid */
+  .filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .filter-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    border-top: 3px solid var(--teal);
+  }
+  .filter-card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--deep-teal); margin-bottom: 10px;
+  }
+  .filter-card p {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; line-height: 1.55;
+    color: var(--navy);
+  }
+
+  /* ladder of inference */
+  .ladder {
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .ladder-rung {
+    background: #C5DDD9; color: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 12px 20px; margin: 0 auto;
+    text-align: center;
+  }
+  .ladder-rung-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600;
+  }
+  .ladder-rung-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; line-height: 1.4;
+    opacity: 0.78; margin-top: 2px;
+  }
+  .ladder-leap-group {
+    position: relative;
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .ladder-leap-group .ladder-rung {
+    background: var(--terracotta); color: var(--off-white);
+  }
+  .ladder-leap-tag {
+    position: absolute; left: calc(100% + 18px); top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--terracotta); white-space: nowrap;
+  }
+  @media (max-width: 900px) {
+    .ladder-leap-tag {
+      position: static; transform: none;
+      display: block; text-align: center;
+      margin-top: 4px;
+    }
+  }
+
+  /* pull quote */
+  .pull-quote {
+    border-left: 4px solid var(--terracotta);
+    padding-left: 36px;
+  }
+  .pull-quote p {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(18px, 1.8vw, 24px);
+    line-height: 1.6; font-style: italic;
+    color: var(--navy);
+  }
+
+  /* ── PREV / NEXT ARROWS ─────────────────────── */
+  .nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 16px;
+  }
+  .nav-arrow {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,0.6); cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    text-decoration: none;
+  }
+  .nav-arrow:hover:not(:disabled) {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(172,196,182,0.35);
+    color: rgba(255,255,255,0.9);
+  }
+  .nav-arrow:disabled { opacity: 0.25; cursor: default; }
+  .nav-arrow svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .slide-counter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── RAIL TOGGLE (mobile bottom-toolbar trigger, hidden on desktop) ── */
+  .rail-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: rgba(255,255,255,0.6);
+  }
+  .rail-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .rail-toggle .rail-icon-close { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-open  { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-close { display: block; }
+
+  /* ── DENSE SLIDE ADJUSTMENT ─────────────────── */
+  .slide-dense { padding-top: 48px; padding-bottom: 48px; justify-content: flex-start; }
+
+  /* ── SKIP NAVIGATION ─────────────────────────── */
+  .skip-link {
+    position: absolute; top: -44px; left: 0;
+    background: var(--deep-teal); color: var(--off-white);
+    font-size: 14px; font-weight: 600; padding: 10px 18px;
+    z-index: 9999; text-decoration: none;
+    border-radius: 0 0 var(--radius) 0; transition: top .15s;
+  }
+  .skip-link:focus { top: 0; }
+
+  /* ── FOCUS STYLES ────────────────────────────── */
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .nav-arrow:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  /* ── REDUCED MOTION ──────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    .slide { transition: none; }
+  }
+</style>
+  <style id="site-nav-overrides">
+    /* Site nav offset — injected by wrapper */
+    body {
+      padding-top: 96px !important; /* 56px site nav + 40px skill bar */
+    }
+    .nav-rail {
+      top: 96px !important;
+      height: calc(100vh - 96px) !important;
+    }
+  </style>
+  <style id="mobile-nav-overrides">
+    /* ── MOBILE (≤768px): nav-rail becomes a bottom toolbar ─────────────
+       Comes after #site-nav-overrides so its !important rules win at
+       this viewport width. The slide-title list collapses into a
+       "Sections" panel that pops up above the toolbar. Prev/Next +
+       counter stay visible at all times.
+    ──────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-rail {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0; right: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: auto !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+        overflow: visible;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.18);
+      }
+      .nav-rail .nav-brand { display: none; }
+
+      .nav-rail .nav-items {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 10px;
+        background: var(--charcoal);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-rail.open .nav-items { display: block; }
+
+      .nav-rail .nav-arrows {
+        flex: 1;
+        border-top: none;
+        margin-top: 0;
+        padding: 10px 12px;
+      }
+
+      .rail-toggle {
+        display: flex;
+        width: 44px; flex-shrink: 0;
+        align-self: stretch;
+        border-left: 1px solid rgba(255,255,255,0.08);
+      }
+      .rail-toggle:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); }
+
+      .stage { margin-left: 0; width: 100%; }
+
+      .slide { padding: 28px 20px 92px; }
+
+      .two-col,
+      .filter-grid,
+      .model-layout { grid-template-columns: 1fr; }
+
+      .ladder-rung,
+      .ladder-leap-group { width: 100% !important; }
+    }
+  </style>
+</head>
+<body>
+<a href="#slide-stage" class="skip-link">Skip to slide content</a>
+
+<script src="../../nav.js"></script>
+
+<!-- Screen reader live region for slide announcements -->
+<div aria-live="polite" aria-atomic="true" id="slideAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
+
+<!-- ── LEFT NAV RAIL ─────────────────────────── -->
+<nav class="nav-rail" aria-label="Slide navigation">
+  <button type="button" id="railToggle" class="rail-toggle" aria-expanded="false" aria-controls="slideNav" aria-label="Show all slides">
+    <svg class="rail-icon-open"  viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>
+    <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-brand">
+    <div class="nav-skill">Critical Thinking</div>
+  </div>
+  <ul class="nav-items" id="slideNav">
+    <li class="nav-item"><button class="nav-link active" data-slide="0" aria-current="true"><span class="nav-num">01</span><span>Introduction</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="1"><span class="nav-num">02</span><span>The Problem</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="2"><span class="nav-num">03</span><span>When It Matters</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="3"><span class="nav-num">04</span><span>The Outcome</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="4"><span class="nav-num">05</span><span>What It Is</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="5"><span class="nav-num">06</span><span>The Evidence Filter</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="6"><span class="nav-num">07</span><span>Model: Ladder of Inference</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="7"><span class="nav-num">08</span><span>In Practice</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="8"><span class="nav-num">09</span><span>Summary</span><span class="nav-dot"></span></button></li>
+  </ul>
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="btnPrev" disabled>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Prev
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 9</span>
+    <button class="nav-arrow" id="btnNext">
+      Next
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── SLIDE STAGE ───────────────────────────── -->
+<div class="stage" id="slide-stage" role="region" aria-label="Critical Thinking primer slides" tabindex="-1">
+
+  <!-- 01 · TITLE -->
+  <div class="slide slide-sage active" data-index="0">
+    <div class="bg-circle" style="width:480px;height:480px;top:-120px;right:-100px;background:var(--teal);opacity:0.09;"></div>
+    <div class="bg-circle" style="width:180px;height:180px;bottom:100px;right:340px;background:var(--terracotta);opacity:0.07;"></div>
+    <div style="display:flex;align-items:flex-start;gap:28px;margin-bottom:24px;">
+      <div class="accent-bar" style="margin-top:8px;"></div>
+      <h1 class="h-display">Critical Thinking</h1>
+    </div>
+    <p class="t-lead" style="max-width:680px;margin-bottom:20px;">AI can give you a confident, well-structured answer in seconds. This skill decides whether it deserves your trust.</p>
+    <p class="t-body" style="max-width:660px;">Critical Thinking is what stands between a plausible-sounding conclusion and an acted-on one — whether that conclusion came from a colleague, a report, or an AI tool that sounds certain regardless of what it's actually certain about.</p>
+  </div>
+
+  <!-- 02 · THE PROBLEM -->
+  <div class="slide slide-white" data-index="1">
+    <div class="bg-circle" style="width:300px;height:300px;bottom:-70px;left:-70px;background:var(--teal);opacity:0.07;"></div>
+    <span class="eyebrow">The Problem</span>
+    <h2 class="h-title" style="max-width:680px;">Confidence isn't evidence. It just feels like it.</h2>
+    <p class="t-body" style="max-width:680px;margin-bottom:24px;">Without Critical Thinking, a conclusion's presentation does the work its evidence should. A report that's well-organised, confidently worded, and arrives from a source that sounds authoritative gets treated as settled — regardless of what's actually underneath it. AI sharpens this, not because it's wrong more often than people are, but because it's fluent and certain-sounding by default, whether or not that certainty has been earned.</p>
+    <div class="callout-sage" style="max-width:660px;">
+      <p class="t-body t-terra" style="font-weight:500;">A 2025 study of 666 professionals found a measurable negative correlation between frequent AI tool use and critical thinking ability — driven by exactly this: a confident answer substituting for independent evaluation.</p>
+    </div>
+  </div>
+
+  <!-- 03 · WHEN IT MATTERS -->
+  <div class="slide slide-white" data-index="2">
+    <div class="bg-circle" style="width:240px;height:240px;top:-50px;right:-50px;background:var(--teal);opacity:0.07;"></div>
+    <span class="eyebrow">When It Matters Most</span>
+    <h2 class="h-title" style="max-width:620px;">Five moments where this skill makes the difference.</h2>
+    <div class="num-list" style="max-width:760px;">
+      <div class="num-item"><span class="num-badge">01</span><span class="t-body">A confident, well-structured recommendation arrives and the instinct is to act on it</span></div>
+      <div class="num-item"><span class="num-badge">02</span><span class="t-body">A conclusion conveniently confirms what you already expected to find</span></div>
+      <div class="num-item"><span class="num-badge">03</span><span class="t-body">A number gets repeated often enough that nobody traces it back to where it came from</span></div>
+      <div class="num-item"><span class="num-badge">04</span><span class="t-body">A colleague's argument sounds airtight, but something about it doesn't sit right</span></div>
+      <div class="num-item"><span class="num-badge">05</span><span class="t-body t-teal" style="font-style:italic;">AI produces a polished, confident analysis — and the question becomes whether it has earned that confidence, not whether it sounds right</span></div>
+    </div>
+  </div>
+
+  <!-- 04 · THE OUTCOME (dark) -->
+  <div class="slide slide-teal" data-index="3">
+    <div class="bg-circle" style="width:500px;height:500px;top:-140px;right:-140px;background:var(--teal);opacity:0.12;"></div>
+    <div class="bg-circle" style="width:240px;height:240px;bottom:-40px;left:60px;background:var(--amber);opacity:0.08;"></div>
+    <span class="eyebrow eyebrow-lt">The Outcome It Enables</span>
+    <h2 class="h-title h-lt" style="max-width:780px;">A clear judgment of what's sound, what's questionable, and what's still missing — before it gets acted on.</h2>
+    <p class="t-body t-light" style="max-width:640px;margin-bottom:28px;">The ability to take any conclusion — your own, a colleague's, or an AI's — and test its evidence, its reasoning, and its bias before deciding whether to build on it.</p>
+    <div class="callout-dark" style="max-width:660px;">
+      <p class="t-body" style="color:var(--off-white);opacity:0.92;font-weight:500;">Critical Thinking is the discipline of testing whether a conclusion holds — checking its evidence, its reasoning, and its bias — before deciding what to trust, what to question, and what's still missing.</p>
+    </div>
+  </div>
+
+  <!-- 05 · WHAT IT IS -->
+  <div class="slide slide-sage" data-index="4">
+    <div class="bg-circle" style="width:360px;height:360px;bottom:-80px;right:-80px;background:var(--teal);opacity:0.08;"></div>
+    <span class="eyebrow">What It Is — And What It Isn't</span>
+    <h2 class="h-title" style="max-width:700px;">Think of a fact-checker reviewing a finished article.</h2>
+    <p class="t-body" style="max-width:700px;margin-bottom:28px;">They don't write the piece, and they don't rewrite it. They take it as given and test whether each claim holds — tracing assertions back to sources, checking whether the evidence supports what's being claimed, and flagging what's solid from what isn't. That's Critical Thinking, applied to a conclusion, an argument, or an AI-generated analysis, not just a news article.</p>
+    <div class="two-col" style="max-width:820px;">
+      <div class="card card-top-teal">
+        <div class="card-label">Analytical Thinking</div>
+        <p class="t-body">Produces the picture you're evaluating. Analytical Thinking decomposes a problem into its parts — Critical Thinking tests whether that picture, including one an AI produced, actually holds up.</p>
+      </div>
+      <div class="card card-top-teal">
+        <div class="card-label">Creative Thinking</div>
+        <p class="t-body">Generates what comes next. This skill's output is a judgment — sound, questionable, missing. Deciding what to do about it is Creative Thinking's job.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 · THE EVIDENCE FILTER -->
+  <div class="slide slide-white slide-dense" data-index="5">
+    <span class="eyebrow" style="margin-bottom:8px;">A Practical Filter</span>
+    <h2 class="h-heading" style="margin-bottom:4px;">Source, Method, Currency, Motive</h2>
+    <p class="t-meta" style="margin-bottom:24px;">Not a named model — a checklist you run on any claim before building on it</p>
+    <p class="t-body" style="max-width:700px;margin-bottom:24px;">Not all evidence carries the same weight. Four questions catch most of the gap between "there's evidence" and "this evidence is good enough to act on."</p>
+    <div class="filter-grid" style="max-width:820px;margin-bottom:24px;">
+      <div class="filter-card">
+        <div class="filter-card-label">Source</div>
+        <p>Where did this come from — a primary source, a report about a report, or an unsourced assertion?</p>
+      </div>
+      <div class="filter-card">
+        <div class="filter-card-label">Method</div>
+        <p>How do they know — measured, observed, inferred, or just stated?</p>
+      </div>
+      <div class="filter-card">
+        <div class="filter-card-label">Currency</div>
+        <p>Does it still hold — or has the context changed since this was true?</p>
+      </div>
+      <div class="filter-card">
+        <div class="filter-card-label">Motive</div>
+        <p>Who benefits if this is true — and does that shape how it's being framed?</p>
+      </div>
+    </div>
+    <div class="callout-sage" style="max-width:820px;">
+      <div class="callout-label">Applied</div>
+      <p class="t-body">An AI report claims ticket volume is up 40%. Source: the support tool's own tagging — traceable. Method: how "increase" was calculated isn't shown. Currency: the comparison period wasn't checked against what else changed. Motive: the AI has none of its own, but its confident framing does the work a motive usually would — making the figure feel more settled than it is.</p>
+    </div>
+  </div>
+
+  <!-- 07 · MENTAL MODEL: LADDER OF INFERENCE -->
+  <div class="slide slide-white slide-dense" data-index="6">
+    <span class="eyebrow" style="margin-bottom:8px;">Mental Model</span>
+    <h2 class="h-heading" style="margin-bottom:4px;">The Ladder of Inference</h2>
+    <p class="t-meta" style="margin-bottom:20px;">Chris Argyris · popularised by Peter Senge, <em>The Fifth Discipline</em>, 1990</p>
+    <div class="model-layout" style="display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start;">
+      <div>
+        <p class="t-body" style="margin-bottom:16px;">A model of how we move from raw observation to action through a series of narrowing steps — selecting data, adding meaning, assuming, concluding, believing, acting — often without noticing we've climbed at all.</p>
+        <p class="t-body">Most flawed conclusions aren't wrong because the underlying data was wrong. They're wrong because a step partway up the ladder went unexamined.</p>
+      </div>
+      <div class="ladder">
+        <div class="ladder-rung" style="width:42%;"><div class="ladder-rung-label">Act</div><div class="ladder-rung-desc">Recommend reverting the UI change</div></div>
+        <div class="ladder-rung" style="width:50%;"><div class="ladder-rung-label">Believe</div><div class="ladder-rung-desc">This UI change is hurting customers</div></div>
+        <div class="ladder-rung" style="width:58%;"><div class="ladder-rung-label">Conclude</div><div class="ladder-rung-desc">The UI change is confusing customers</div></div>
+        <div class="ladder-rung" style="width:68%;"><div class="ladder-rung-label">Assume</div><div class="ladder-rung-desc">This spike is the UI change</div></div>
+        <div class="ladder-leap-group" style="width:100%;">
+          <div class="ladder-leap-tag">The Leap</div>
+          <div class="ladder-rung" style="width:80%;"><div class="ladder-rung-label">Add Meaning</div><div class="ladder-rung-desc">UI changes are a known cause of support spikes</div></div>
+          <div class="ladder-rung" style="width:92%;"><div class="ladder-rung-label">Select</div><div class="ladder-rung-desc">Notice the UI-tagged tickets specifically</div></div>
+        </div>
+        <div class="ladder-rung" style="width:100%;"><div class="ladder-rung-label">Data &amp; Facts</div><div class="ladder-rung-desc">Tickets up 40%, tagged across categories</div></div>
+      </div>
+    </div>
+    <p class="t-body" style="max-width:760px;margin-top:24px;">The leap happens between noticing the UI-tagged tickets and treating "UI changes cause spikes" as if it applied here — a pattern from general experience, applied to this specific, unverified situation.</p>
+  </div>
+
+  <!-- 08 · IN PRACTICE -->
+  <div class="slide slide-white" data-index="7">
+    <span class="eyebrow">In Practice</span>
+    <h2 class="h-title" style="max-width:840px;">An AI ticket analysis — same report, two responses.</h2>
+    <div class="two-col" style="max-width:900px;">
+      <div class="comp-card comp-without">
+        <div class="comp-label comp-label-terra">Without Critical Thinking</div>
+        <p class="t-body" style="margin-bottom:14px;">An AI tool reports ticket volume up 40%, points to a recent UI change, and recommends reverting it plus adding headcount for slower resolution times. Both are approved immediately.</p>
+        <p class="t-body">Three months later, volume hasn't moved. The 40% figure was partly a tagging artefact, a pricing change that shipped the same week was never considered, and the headcount addition missed the real bottleneck — triage.</p>
+      </div>
+      <div class="comp-card comp-with">
+        <div class="comp-label comp-label-teal">With Critical Thinking</div>
+        <p class="t-body" style="margin-bottom:14px;">Each claim gets traced to its source before action. The volume figure is checked against the tagging change. The UI-change theory is steelmanned against "what else changed that week?" — surfacing the pricing change.</p>
+        <p class="t-body t-teal" style="font-weight:500;">"Resolution time" gets checked against what it actually measures, and the real bottleneck — triage — becomes visible. The report was a hypothesis worth testing, not a finding worth acting on.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 · SUMMARY -->
+  <div class="slide slide-sage" data-index="8">
+    <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
+    <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
+    <span class="eyebrow" style="margin-bottom:32px;">Quick-Recall Summary</span>
+    <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">
+      <p>Critical Thinking is the discipline of testing whether a conclusion holds before deciding what to trust. It means separating what's claimed from what's evidenced, checking that evidence against its source, method, currency, and motive, watching for bias in the source, the data, and yourself, and tracing surprising conclusions back to the point where an assumption took over from observation.</p>
+    </div>
+    <p class="t-body" style="max-width:640px;opacity:0.75;">The output is a judgment — sound, questionable, missing — not a fix. What you do with that judgment is a different skill; this one gives you the confidence to know which parts of the picture you can actually stand on.</p>
+  </div>
+
+</div><!-- /stage -->
+
+
+
+<script>
+(function () {
+  var TOTAL = 9;
+  var current = 0;
+  var visited = new Set([0]);
+
+  var slides   = Array.from(document.querySelectorAll('.slide'));
+  var navLinks = Array.from(document.querySelectorAll('.nav-link'));
+  var btnPrev  = document.getElementById('btnPrev');
+  var btnNext  = document.getElementById('btnNext');
+  var counter  = document.getElementById('slideCounter');
+  var announce = document.getElementById('slideAnnounce');
+
+  var slideTitles = [
+    'Introduction', 'The Problem', 'When It Matters', 'The Outcome',
+    'What It Is', 'The Evidence Filter', 'Model: Ladder of Inference',
+    'In Practice', 'Summary'
+  ];
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= TOTAL || idx === current) return;
+
+    // Exit current
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit-up');
+    setTimeout(function () {
+      slides[idx >= current ? idx - 1 : idx + 1] && slides[current] &&
+        slides[current].classList.remove('exit-up');
+    }, 280);
+
+    current = idx;
+    visited.add(current);
+
+    // Activate new
+    slides[current].classList.remove('exit-up');
+    slides[current].classList.add('active');
+
+    updateUI();
+  }
+
+  function updateUI() {
+    // Nav links
+    navLinks.forEach(function (link) {
+      var i = parseInt(link.dataset.slide, 10);
+      link.classList.toggle('active',  i === current);
+      link.classList.toggle('visited', visited.has(i) && i !== current);
+      if (i === current) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+
+    // Arrows
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === TOTAL - 1;
+    btnNext.textContent = '';
+    btnNext.innerHTML = current === TOTAL - 1
+      ? 'Done'
+      : 'Next <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+
+    // Counter
+    counter.textContent = (current + 1) + ' / ' + TOTAL;
+
+    // Screen reader announcement
+    if (announce) {
+      announce.textContent = 'Slide ' + (current + 1) + ' of ' + TOTAL + ': ' + slideTitles[current];
+    }
+  }
+
+  // Button events
+  btnPrev.addEventListener('click', function () { goTo(current - 1); });
+  btnNext.addEventListener('click', function () { goTo(current + 1); });
+
+  // Rail link events
+  navLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      goTo(parseInt(link.dataset.slide, 10));
+    });
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  // ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
+  var railToggle = document.getElementById('railToggle');
+  if (railToggle) {
+    var rail = railToggle.closest('.nav-rail');
+
+    function closeRailPanel() {
+      rail.classList.remove('open');
+      railToggle.setAttribute('aria-expanded', 'false');
+      railToggle.setAttribute('aria-label', 'Show all slides');
+    }
+    function openRailPanel() {
+      rail.classList.add('open');
+      railToggle.setAttribute('aria-expanded', 'true');
+      railToggle.setAttribute('aria-label', 'Hide all slides');
+    }
+
+    railToggle.addEventListener('click', function () {
+      rail.classList.contains('open') ? closeRailPanel() : openRailPanel();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!rail.classList.contains('open')) return;
+      if (e.target.closest('.nav-link')) { closeRailPanel(); return; }
+      if (!rail.contains(e.target)) closeRailPanel();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && rail.classList.contains('open')) {
+        closeRailPanel();
+        railToggle.focus();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 768 && rail.classList.contains('open')) closeRailPanel();
+    });
+  }
+
+  // Init
+  updateUI();
+})();
+</script>
+
+</body>
+</html>

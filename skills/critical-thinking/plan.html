@@ -1,0 +1,2589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Critical Thinking: Full Learning Plan · Amplified</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── BRAND TOKENS ───────────────────────────── */
+  :root {
+    --sage:       #ACC4B6;
+    --teal:       #5BA79F;
+    --deep-teal:  #2D756F;
+    --off-white:  #F5F7F6;
+    --cream:      #EDE5C5;
+    --terracotta: #C77B5F;
+    --amber:      #D9A05B;
+    --navy:       #1F4D4A;
+    --charcoal:   #2D3330;
+    --light-sage: #D8E4DD;
+    --warm-gray:  #8B8A85;
+    --slate-blue: #5B7C8F;
+    --tag-analytical-bg: #C5DDD9;
+    --tag-analytical-tx: #2D756F;
+    --tag-structural-bg: #D8E4DD;
+    --tag-structural-tx: #1F4D4A;
+    --tag-human-bg:      #EDD5CB;
+    --tag-human-tx:      #1F4D4A;
+    --tag-growth-bg:     #F2DDB8;
+    --tag-growth-tx:     #2D3330;
+    --tag-insight-bg:    #C8D4DC;
+    --tag-insight-tx:    #2D3330;
+    --nav-width: 260px;
+    --content-max: 780px;
+    --radius: 8px;
+  }
+
+  /* ── RESET ──────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--navy);
+    background: var(--off-white);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── LEFT NAV ───────────────────────────────── */
+  .nav-rail {
+    width: var(--nav-width);
+    min-height: 100vh;
+    background: var(--charcoal);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 40px;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .nav-brand {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
+  }
+  .nav-skill {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.2;
+  }
+  .nav-items { list-style: none; padding: 0 12px; flex: 1; }
+  .nav-item { margin-bottom: 2px; }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .nav-link:hover { color: var(--off-white); background: rgba(255,255,255,0.06); }
+  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.2); }
+  .nav-link.visited { color: rgba(255,255,255,0.85); }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .nav-link.active .nav-dot  { background: var(--teal); }
+  .nav-link.visited .nav-dot { background: var(--sage); }
+  /* ── PREV / NEXT ARROWS ─────────────────────── */
+  .nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 16px;
+  }
+  .nav-arrow {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: #E8EDEB;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .nav-arrow:hover {
+    background: rgba(91,167,159,0.28);
+    border-color: var(--teal);
+    color: #FFFFFF;
+  }
+  .nav-arrow svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+  .slide-counter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── RAIL TOGGLE (mobile bottom-toolbar trigger, hidden on desktop) ── */
+  .rail-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: rgba(255,255,255,0.6);
+  }
+  .rail-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .rail-toggle .rail-icon-close { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-open  { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-close { display: block; }
+
+  /* ── MAIN CONTENT ───────────────────────────── */
+  .main {
+    margin-left: var(--nav-width);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* ── HERO ───────────────────────────────────── */
+  .hero {
+    background: var(--cream);
+    padding: 72px 80px 64px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(45,117,111,0.12);
+    width: 100%;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.07;
+    top: -100px; right: -80px;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    opacity: 0.06;
+    bottom: -40px; right: 200px;
+  }
+  .hero-title-row { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; }
+  .hero-accent { width: 4px; height: 56px; background: var(--terracotta); border-radius: 2px; flex-shrink: 0; }
+  .hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.1;
+    margin-bottom: 0;
+    max-width: 600px;
+  }
+  .hero-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+
+  /* ── TAGS ───────────────────────────────────── */
+  .tag {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    display: inline-block;
+  }
+  .tag-analytical { background: var(--tag-analytical-bg); color: var(--tag-analytical-tx); }
+  .tag-structural  { background: var(--tag-structural-bg); color: var(--tag-structural-tx); }
+  .tag-human       { background: var(--tag-human-bg);      color: var(--tag-human-tx); }
+  .tag-growth      { background: var(--tag-growth-bg);     color: var(--tag-growth-tx); }
+  .tag-insight     { background: var(--tag-insight-bg);    color: var(--tag-insight-tx); }
+
+  /* ── CONTENT SECTIONS ───────────────────────── */
+  .content { max-width: calc(var(--content-max) + 160px); padding: 0 80px 120px; width: 100%; counter-reset: section-counter; }
+
+  .section {
+    padding-top: 96px;
+    padding-bottom: 16px;
+  }
+  .section h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    max-width: var(--content-max);
+  }
+  .section h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+    margin-bottom: 12px;
+    margin-top: 36px;
+  }
+  .section p {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    color: var(--navy);
+  }
+  .principles-intro {
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(45,117,111,0.08);
+  }
+
+  /* ── SNAPSHOT CARDS ─────────────────────────── */
+  .snapshot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .snapshot-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    border-top: 3px solid var(--teal);
+  }
+  .snapshot-card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .snapshot-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0;
+    color: var(--navy);
+  }
+  .snapshot-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+  }
+  .snapshot-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+  }
+  .snapshot-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .snapshot-list li.ai-item { font-style: italic; color: var(--deep-teal); }
+
+  /* ── CALLOUT ────────────────────────────────── */
+  .callout {
+    background: var(--light-sage);
+    border-left: 4px solid var(--terracotta);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .callout p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--terracotta);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .callout-teal {
+    background: var(--tag-analytical-bg);
+    border-left-color: var(--deep-teal);
+  }
+  .callout-teal p { color: var(--deep-teal); }
+
+  /* ── DEFINITION BOX ─────────────────────────── */
+  .definition-box {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .definition-box p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ── OBJECTIVES LIST ────────────────────────── */
+  .objectives-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .objectives-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 20px;
+    background: white;
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+  }
+  .obj-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 24px;
+    padding-top: 1px;
+  }
+  .obj-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  /* ── PRINCIPLE BLOCKS ───────────────────────── */
+  .principle {
+    max-width: var(--content-max);
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(45,117,111,0.08);
+  }
+  .principle:last-child { border-bottom: none; }
+  .principle:first-child {
+    border-top: 1px solid rgba(45,117,111,0.08);
+    padding-top: 32px;
+    margin-top: 28px;
+  }
+  .principle-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .principle h3 {
+    margin-top: 0;
+    color: var(--deep-teal);
+  }
+
+  /* ── ACCORDION (shared: principles + mental model) ────
+     Principles default open (sequential read); the model
+     card defaults open too, since there's only one. Toggled
+     via .open class on the parent .principle / .model-card. */
+  .principle-header,
+  .model-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+  .principle-header-text,
+  .model-header-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .principle-body,
+  .model-body { display: none; }
+  .principle.open .principle-body,
+  .model-card.open .model-body { display: block; }
+  .accordion-control {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .accordion-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+  .accordion-toggle {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--teal);
+  }
+  .accordion-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  .open .accordion-toggle svg { transform: rotate(180deg); }
+  .principle-header:hover .accordion-label,
+  .model-header:hover .accordion-label,
+  .principle-header:hover .accordion-toggle,
+  .model-header:hover .accordion-toggle { color: var(--deep-teal); }
+  .principle-header:focus-visible,
+  .model-header:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  @media (max-width: 560px) {
+    .accordion-label { display: none; }
+  }
+  .ai-note {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--tag-growth-bg);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-top: 16px;
+    border-left: 3px solid var(--amber);
+  }
+  .ai-note-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .ai-note p {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── EVIDENCE FILTER (embedded in Principle 02) ─────── */
+  .filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: var(--content-max);
+    margin: 20px 0;
+  }
+  .filter-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    border-top: 3px solid var(--teal);
+  }
+  .filter-card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+    margin-bottom: 8px;
+  }
+  .filter-card p { font-size: 14px; line-height: 1.55; margin: 0; }
+
+  /* ── MENTAL MODEL CARD ──────────────────────── */
+  .model-card {
+    background: white;
+    border-radius: var(--radius);
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    border-top: 3px solid var(--teal);
+    overflow: hidden;
+  }
+  .model-header { padding: 24px 32px; }
+  .model-body { padding: 0 32px 28px; }
+  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header .model-source { margin-bottom: 0; }
+  .model-source {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--warm-gray);
+    margin-bottom: 14px;
+  }
+  .model-applied {
+    background: var(--light-sage);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-top: 16px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .model-applied-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+    margin-bottom: 14px;
+  }
+  .model-applied p { font-size: 14px; }
+  .model-diagram-caption {
+    text-align: center; margin-top: 14px;
+    font-size: 12px; color: var(--warm-gray);
+  }
+
+  /* ladder of inference */
+  .ladder {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    max-width: 560px; margin: 0 auto;
+  }
+  .ladder-rung {
+    background: var(--tag-analytical-bg); color: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 10px 18px; margin: 0 auto;
+    text-align: center;
+  }
+  .ladder-rung-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 600;
+  }
+  .ladder-rung-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; line-height: 1.4;
+    opacity: 0.78; margin-top: 2px;
+  }
+  .ladder-leap-group {
+    position: relative;
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .ladder-leap-group .ladder-rung {
+    background: var(--terracotta); color: var(--off-white);
+  }
+  .ladder-leap-tag {
+    position: absolute; left: calc(100% + 16px); top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--terracotta); white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .ladder-leap-tag {
+      position: static; transform: none;
+      display: block; text-align: center;
+      margin-top: 4px;
+    }
+    .ladder-rung,
+    .ladder-leap-group { width: 100% !important; }
+  }
+
+  /* ── MISTAKES ───────────────────────────────── */
+  .mistake {
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .mistake h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+  }
+  .mistake-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .mistake-cell-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 4px;
+  }
+  .mistake-cell p { font-size: 14px; margin: 0; line-height: 1.5; }
+
+  /* ── BEHAVIORAL INDICATORS ──────────────────── */
+  .continuum-bar {
+    display: flex;
+    gap: 6px;
+    max-width: var(--content-max);
+    margin: 24px 0 20px;
+  }
+  .continuum-segment {
+    flex: 1;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+  }
+  .continuum-segment.underuse { background: var(--tag-human-bg); color: var(--navy); }
+  .continuum-segment.target   { background: var(--tag-analytical-bg); color: var(--deep-teal); flex: 1.3; }
+  .continuum-segment.overuse  { background: var(--tag-growth-bg); color: var(--charcoal); }
+
+  .indicators-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+  }
+  .indicator-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .indicator-panel {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .indicator-panel.target   { border-top: 4px solid var(--teal); }
+  .indicator-panel.underuse { border-top: 3px solid var(--terracotta); }
+  .indicator-panel.overuse  { border-top: 3px solid var(--amber); }
+
+  .indicator-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .indicator-icon {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .indicator-icon svg {
+    width: 20px; height: 20px;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .indicator-panel.target   .indicator-icon { color: var(--teal); }
+  .indicator-panel.underuse .indicator-icon { color: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-icon { color: var(--amber); }
+  .indicator-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+  }
+
+  .indicator-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px 24px;
+  }
+  .indicator-list.cols-2 { grid-template-columns: 1fr 1fr; }
+  .indicator-list li {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 7px 10px 7px 18px;
+    margin: 0 -10px;
+    border-radius: 6px;
+    position: relative;
+    color: var(--navy);
+    transition: background 0.15s ease;
+  }
+  .indicator-list li::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 14px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+  .indicator-panel.target   .indicator-list li::before { background: var(--teal); }
+  .indicator-panel.underuse .indicator-list li::before { background: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-list li::before { background: var(--amber); }
+  .indicator-panel.target   .indicator-list li:hover { background: var(--tag-analytical-bg); }
+  .indicator-panel.underuse .indicator-list li:hover { background: var(--tag-human-bg); }
+  .indicator-panel.overuse  .indicator-list li:hover { background: var(--tag-growth-bg); }
+
+  @media (max-width: 640px) {
+    .indicator-row { grid-template-columns: 1fr; }
+    .indicator-list.cols-2 { grid-template-columns: 1fr; }
+  }
+
+  /* ── SCENARIOS ──────────────────────────────── */
+  .scenario {
+    max-width: var(--content-max);
+    margin-bottom: 32px;
+  }
+  .scenario h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin-bottom: 16px;
+  }
+  .scenario-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .scenario-col {
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .scenario-col.without {
+    background: #FDF0EC;
+    border-top: 3px solid var(--terracotta);
+  }
+  .scenario-col.with {
+    background: color-mix(in srgb, var(--tag-analytical-bg) 50%, transparent);
+    border-top: 3px solid var(--teal);
+  }
+  .scenario-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .without .scenario-col-label { color: var(--terracotta); }
+  .with    .scenario-col-label { color: var(--deep-teal); }
+  .scenario-col p { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+  .scenario-col p:last-child { margin-bottom: 0; }
+  .scenario-highlight { font-weight: 500; color: var(--deep-teal); }
+
+  /* ── REFLECTION ─────────────────────────────── */
+  .reflection-item {
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    border-left: 3px solid var(--slate-blue);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .reflection-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--slate-blue);
+    min-width: 28px;
+    padding-top: 1px;
+  }
+  .reflection-q {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--navy);
+  }
+  .reflection-time {
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 4px;
+  }
+
+  /* ── KNOWLEDGE CHECK ────────────────────────── */
+  .kc-question {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .kc-q-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 8px;
+  }
+  .kc-q-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .kc-options { display: flex; flex-direction: column; gap: 8px; }
+  .kc-option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1.5px solid transparent;
+    background: var(--light-sage);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    line-height: 1.45;
+  }
+  .kc-option:hover:not(:disabled) { border-color: var(--deep-teal); background: var(--tag-structural-bg); }
+  .kc-option.selected { background: var(--tag-structural-bg); border-color: var(--deep-teal); }
+  .kc-option.correct  { background: var(--tag-analytical-bg); border-color: var(--teal); }
+  .kc-option.incorrect { background: #FDE8E0; border-color: var(--terracotta); }
+  .kc-reveal-btn {
+    display: none;
+    margin-top: 16px;
+    background: var(--deep-teal);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .kc-reveal-btn:hover { background: var(--navy); }
+  .kc-score {
+    display: none;
+    margin-top: 20px;
+    background: var(--tag-analytical-bg);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    max-width: var(--content-max);
+  }
+  .kc-score p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin: 0;
+  }
+  .kc-answer { display: none; margin-top: 10px; }
+  .kc-answer-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .kc-answer p { font-size: 13px; color: var(--navy); margin: 0; line-height: 1.5; }
+
+  /* ── HABIT BUILDER ──────────────────────────── */
+  .habit-day {
+    max-width: var(--content-max);
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid rgba(45,117,111,0.12);
+  }
+  .habit-day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: white;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .habit-day-header:hover { background: var(--light-sage); }
+  .habit-day-header.open  { background: var(--deep-teal); }
+  .habit-day-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 32px;
+  }
+  .habit-day-header.open .habit-day-num { color: var(--sage); }
+  .habit-day-title-wrap { flex: 1; }
+  .habit-day-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+  }
+  .habit-day-header.open .habit-day-title { color: var(--off-white); }
+  .habit-day-concept {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 2px;
+  }
+  .habit-day-header.open .habit-day-concept { color: var(--sage); }
+  .habit-day-chevron {
+    font-size: 14px;
+    color: var(--warm-gray);
+    transition: transform 0.25s;
+  }
+  .habit-day-header.open .habit-day-chevron { transform: rotate(180deg); color: var(--sage); }
+  .habit-day-body {
+    display: none;
+    padding: 24px 28px 24px 72px;
+    background: white;
+    border-top: 1px solid rgba(45,117,111,0.08);
+  }
+  .habit-day-body.open { display: block; }
+  .habit-focus {
+    margin-bottom: 20px;
+  }
+  .habit-focus strong {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .habit-focus p { font-size: 14px; margin: 0; }
+  .habit-tasks { margin-bottom: 20px; }
+  .habit-tasks-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .habit-task {
+    margin-bottom: 16px;
+  }
+  .habit-task-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .habit-task p { font-size: 14px; margin: 0 0 8px; line-height: 1.55; }
+  .habit-example {
+    background: var(--light-sage);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--navy);
+  }
+  .habit-example-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .habit-meta {
+    border-top: 1px solid rgba(45,117,111,0.08);
+    padding-top: 16px;
+    margin-bottom: 16px;
+  }
+  .habit-meta-row { margin-bottom: 10px; }
+  .habit-meta-row:last-child { margin-bottom: 0; }
+  .habit-meta-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .habit-meta-value { font-size: 13px; line-height: 1.55; color: var(--navy); }
+  .habit-not-clicking {
+    background: var(--tag-human-bg);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--navy);
+  }
+  .habit-not-clicking-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* ── PROGRESSION ────────────────────────────── */
+  .progression-stage {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    border-left: 4px solid var(--teal);
+  }
+  .progression-stage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .progression-stage h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--deep-teal);
+  }
+  .progression-cap {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(45,117,111,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .progression-cap-item label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .progression-cap-item p { font-size: 14px; line-height: 1.5; margin: 0; }
+
+  /* ── SUMMARY ────────────────────────────────── */
+  .summary-block {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-block::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.1;
+    top: -80px; right: -60px;
+  }
+  .summary-block blockquote {
+    border-left: 4px solid var(--sage);
+    padding-left: 28px;
+    position: relative;
+  }
+  .summary-block p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--off-white);
+    line-height: 1.6;
+    margin: 0 0 16px;
+    max-width: 620px;
+  }
+  .summary-block p:last-child { margin: 0; font-size: 16px; color: var(--sage); }
+
+  /* ── RESOURCE TABLE ─────────────────────────── */
+  .table-scroll {
+    width: 100%;
+    max-width: var(--content-max);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
+  .resource-table {
+    width: 100%;
+    max-width: var(--content-max);
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+  .resource-table th {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--light-sage);
+  }
+  .resource-table th:nth-child(1) { width: 9%; }
+  .resource-table th:nth-child(2) { width: 19%; }
+  .resource-table th:nth-child(3) { width: 14%; }
+  .resource-table th:nth-child(4) { width: 8%; }
+  .resource-table th:nth-child(5) { width: 38%; }
+  .resource-table th:nth-child(6) { width: 12%; }
+  .resource-table td {
+    padding: 14px 14px;
+    border-bottom: 1px solid var(--light-sage);
+    vertical-align: top;
+    line-height: 1.5;
+    color: var(--navy);
+  }
+  .resource-table tr:last-child td { border-bottom: none; }
+  .resource-table tr:hover td { background: color-mix(in srgb, var(--light-sage) 40%, transparent); }
+  .resource-type {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--warm-gray);
+    white-space: nowrap;
+  }
+  .resource-title { font-weight: 500; color: var(--deep-teal); }
+  .resource-why { color: var(--navy); font-size: 13px; }
+  .resource-links { white-space: nowrap; vertical-align: top; }
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--deep-teal);
+    text-decoration: none;
+    background: var(--tag-analytical-bg);
+    padding: 3px 10px;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+    margin-bottom: 4px;
+    margin-right: 4px;
+  }
+  .resource-link:hover { background: var(--deep-teal); color: var(--off-white); }
+
+  .table-scroll-hint {
+    display: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--warm-gray);
+    margin: 0 0 8px;
+  }
+
+  /* ── SCOPE ──────────────────────────────────── */
+  .scope-list {
+    list-style: none;
+    max-width: var(--content-max);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .scope-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+    padding: 12px 16px;
+    background: white;
+    border-radius: 6px;
+  }
+  .scope-list li::before {
+    content: '✕';
+    font-size: 11px;
+    color: var(--terracotta);
+    font-weight: 700;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── ANIMATIONS ─────────────────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeInUp 0.4s ease both; }
+
+  /* ── SCROLLBAR ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(45,117,111,0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(45,117,111,0.5); }
+
+  /* ── ALTERNATING SECTION BACKGROUNDS ───────── */
+  .section { position: relative; z-index: 0; }
+  .section-odd::before,
+  .section-even::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: -80px;
+    right: min(-80px, calc(1120px - 100vw));
+    z-index: -1;
+  }
+  .section-odd::before  { background: var(--off-white); }
+  .section-even::before { background: var(--cream); }
+  .section-even .model-card,
+  .section-even .mistake,
+  .section-even .objectives-list li,
+  .section-even .reflection-item,
+  .section-even .kc-question,
+  .section-even .progression-stage,
+  .section-even .scope-list li,
+  .section-even .filter-card { background: white; }
+
+  /* ── SECTION GHOST NUMERAL ───────────────────
+     Low-opacity numeral sitting behind each section's heading. */
+  .section { counter-increment: section-counter; }
+  .section::after {
+    content: counter(section-counter, decimal-leading-zero);
+    position: absolute;
+    top: 38px;
+    left: 0;
+    z-index: -1;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 100px;
+    line-height: 1;
+    color: var(--deep-teal);
+    opacity: 0.10;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── SKIP NAVIGATION ─────────────────────────── */
+  .skip-link { position: absolute; top: -44px; left: 0; background: var(--deep-teal); color: var(--off-white); font-size: 14px; font-weight: 600; padding: 10px 18px; z-index: 9999; text-decoration: none; border-radius: 0 0 var(--radius) 0; transition: top .15s; }
+  .skip-link:focus { top: 0; }
+
+  /* ── FOCUS STYLES ────────────────────────────── */
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  /* ── REDUCED MOTION ──────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ── PRINT ──────────────────────────────────── */
+  @media print {
+    .principle-body, .model-body { display: block !important; }
+    .accordion-toggle { display: none; }
+    .principle-header, .model-header { cursor: default; }
+  }
+
+</style>
+  <style id="site-nav-overrides">
+    /* Site nav offset — injected by wrapper */
+    body {
+      padding-top: 96px !important; /* 56px site nav + 40px skill bar */
+    }
+    .nav-rail {
+      top: 96px !important;
+      height: calc(100vh - 96px) !important;
+      min-height: calc(100vh - 96px) !important;
+    }
+  </style>
+  <style id="mobile-nav-overrides">
+    /* ── MOBILE (≤768px): nav-rail becomes a bottom toolbar ─────────────
+       Comes after #site-nav-overrides so its !important rules win at
+       this viewport width. The section TOC collapses into a panel that
+       pops up above the toolbar. Prev/Next + counter stay visible.
+    ──────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-rail {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0; right: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: auto !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+        overflow: visible;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.18);
+      }
+      .nav-rail .nav-brand { display: none; }
+
+      .nav-rail .nav-items {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 10px;
+        background: var(--charcoal);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-rail.open .nav-items { display: block; }
+
+      .nav-rail .nav-arrows {
+        flex: 1;
+        border-top: none;
+        margin-top: 0;
+        padding: 10px 12px;
+      }
+
+      .rail-toggle {
+        display: flex;
+        width: 44px; flex-shrink: 0;
+        align-self: stretch;
+        border-left: 1px solid rgba(255,255,255,0.08);
+      }
+      .rail-toggle:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); }
+
+      .main { margin-left: 0; min-width: 0; }
+
+      .hero { padding: 28px 20px 40px; }
+      .hero h1 {
+        font-size: clamp(28px, 8vw, 52px);
+        overflow-wrap: break-word;
+      }
+      .content { padding: 0 20px 110px; }
+
+      /* Multi-column grids that would otherwise overflow a 100%-width .content */
+      .snapshot-grid,
+      .filter-grid,
+      .mistake-row,
+      .scenario-cols,
+      .progression-cap {
+        grid-template-columns: 1fr;
+      }
+
+      /* Full-bleed alternating section backgrounds were sized to cancel
+         the desktop 80px .content padding. At the 20px mobile padding,
+         -20px exactly spans .main's full width instead. */
+      .section-odd::before,
+      .section-even::before {
+        left: -20px;
+        right: -20px;
+      }
+
+      .table-scroll-hint { display: block; }
+    }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="../../nav.js"></script>
+
+<!-- Screen reader live region for section announcements -->
+<div aria-live="polite" aria-atomic="true" class="sr-only" id="sectionAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
+
+<!-- ── LEFT NAV ───────────────────────────────── -->
+<nav class="nav-rail" aria-label="Section navigation">
+  <button type="button" id="railToggle" class="rail-toggle" aria-expanded="false" aria-controls="navItems" aria-label="Show section list">
+    <svg class="rail-icon-open"  viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>
+    <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-brand">
+    <div class="nav-skill">Critical Thinking</div>
+  </div>
+  <ul class="nav-items" id="navItems">
+    <li class="nav-item"><a class="nav-link" href="#snapshot"   data-section="snapshot"><span class="nav-dot"></span>01 · Skill Snapshot</a></li>
+    <li class="nav-item"><a class="nav-link" href="#overview"   data-section="overview"><span class="nav-dot"></span>02 · Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="#objectives" data-section="objectives"><span class="nav-dot"></span>03 · Learning Objectives</a></li>
+    <li class="nav-item"><a class="nav-link" href="#principles" data-section="principles"><span class="nav-dot"></span>04 · Principles of Evaluation</a></li>
+    <li class="nav-item"><a class="nav-link" href="#model"      data-section="model"><span class="nav-dot"></span>05 · Mental Model</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mistakes"   data-section="mistakes"><span class="nav-dot"></span>06 · Common Mistakes</a></li>
+    <li class="nav-item"><a class="nav-link" href="#indicators" data-section="indicators"><span class="nav-dot"></span>07 · Behavioral Indicators</a></li>
+    <li class="nav-item"><a class="nav-link" href="#scenarios"  data-section="scenarios"><span class="nav-dot"></span>08 · Practical Examples</a></li>
+    <li class="nav-item"><a class="nav-link" href="#reflection" data-section="reflection"><span class="nav-dot"></span>09 · Self-Reflection</a></li>
+    <li class="nav-item"><a class="nav-link" href="#check"      data-section="check"><span class="nav-dot"></span>10 · Knowledge Check</a></li>
+    <li class="nav-item"><a class="nav-link" href="#habits"     data-section="habits"><span class="nav-dot"></span>11 · 5-Day Habit Builder</a></li>
+    <li class="nav-item"><a class="nav-link" href="#progression" data-section="progression"><span class="nav-dot"></span>12 · Progression Path</a></li>
+    <li class="nav-item"><a class="nav-link" href="#summary"    data-section="summary"><span class="nav-dot"></span>13 · Summary</a></li>
+    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>14 · Explore Further</a></li>
+  </ul>
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="btnPrev" disabled>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Prev
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 14</span>
+    <button class="nav-arrow" id="btnNext">
+      Next
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────── -->
+<main class="main" id="main-content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-title-row">
+      <div class="hero-accent"></div>
+      <h1>Critical Thinking</h1>
+    </div>
+    <p class="hero-sub">The full learning plan. Work through it sequentially or use the navigation to jump to what you need.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- 1. SKILL SNAPSHOT -->
+    <div class="section section-odd" id="snapshot">
+      <h2>Skill Snapshot</h2>
+      <div class="snapshot-grid">
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Problem It Solves</div>
+          <p>Without Critical Thinking, well-presented conclusions get treated as verified ones. A confident report, a polished AI analysis, or an argument that sounds airtight all get acted on before anyone checks what they're standing on. The cost surfaces later — a recommendation built on a stale assumption, a number nobody traced back to its source, weeks spent fixing the wrong thing.</p>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">When It Matters Most</div>
+          <ul class="snapshot-list">
+            <li>A confident, well-structured recommendation arrives and the instinct is to act on it</li>
+            <li>A conclusion conveniently confirms what you already expected to find</li>
+            <li>A number gets repeated often enough that nobody traces it back to its source</li>
+            <li>A colleague's argument sounds airtight, but something about it doesn't sit right</li>
+            <li class="ai-item">AI produces a polished, confident analysis — and the question becomes whether it has earned that confidence, not whether it sounds right</li>
+          </ul>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Outcome It Enables</div>
+          <p>The ability to take any conclusion — your own, a colleague's, or an AI's — and produce a clear judgment of what's sound, what's questionable, and what's missing, before it gets acted on.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. OVERVIEW -->
+    <div class="section section-even" id="overview">
+      <h2>Overview</h2>
+      <p>Critical Thinking is the discipline of testing whether a conclusion holds — checking its evidence, its reasoning, and its bias — before deciding what to trust, what to question, and what's still missing. Unlike a skill that produces something new, this one takes something already produced — an analysis, an argument, a recommendation, a report an AI generated in seconds — and tests it before anyone builds on it.</p>
+      <p>The analogy that isolates it best: think of a fact-checker reviewing a finished article. They don't write the piece, and they don't rewrite it. They take it as given and test whether each claim holds up — tracing assertions back to sources, checking whether the evidence actually supports what's being claimed, and flagging what's solid from what isn't. The article might be entirely accurate, or it might have one unsupported claim buried in an otherwise solid piece. Either way, the fact-checker's job is the same: test, don't assume.</p>
+      <h3>Where the boundaries are</h3>
+      <p><strong>Analytical Thinking</strong> produces the picture this skill evaluates. It decomposes a problem into its component parts and traces symptoms to causes — the output is a structured analysis, whether produced by a person or an AI tool. Critical Thinking doesn't redo that work. It tests whether the picture that's been produced actually holds up: are the parts correctly identified, is the cause-tracing supported by evidence, does the structure hide anything important. The two skills are sequential — Analytical Thinking first, then Critical Thinking — not interchangeable.</p>
+      <p><strong>Creative Thinking</strong> generates what comes next. Once a judgment exists — this part is sound, this part is questionable, this is missing — deciding what to do about it, including generating alternatives or proposing a fix, is Creative Thinking's job. The boundary matters because the pull toward "here's what we should do instead" is strong the moment a flaw is found, and converging on a fix before the evaluation is finished is one of the most common ways an evaluation gets cut short.</p>
+      <p><strong>Decision-making</strong> sits a step further still. A completed judgment — even paired with a generated set of alternatives — still requires choosing a course of action, weighing trade-offs, and committing. That choice is a separate act from either evaluating what's in front of you or generating what could replace it.</p>
+      <div class="definition-box">
+        <p>Critical Thinking is the discipline of testing whether a conclusion holds — checking its evidence, its reasoning, and its bias — before deciding what to trust, what to question, and what's still missing.</p>
+      </div>
+      <h3>Out of scope</h3>
+      <ul class="scope-list">
+        <li>Generating alternatives, solutions, or recommendations from a judgment — that's Creative Thinking</li>
+        <li>Producing the initial analysis, decomposition, or report being evaluated — that's Analytical Thinking</li>
+        <li>Formal logic, epistemology, or academic argumentation theory — the focus stays on applied workplace judgment</li>
+        <li>Choosing a course of action based on the judgment — that follows this skill but is a separate act of decision-making</li>
+      </ul>
+    </div>
+
+    <!-- 3. OBJECTIVES -->
+    <div class="section section-odd" id="objectives">
+      <h2>Learning Objectives</h2>
+      <p>By the end of this learning plan, you will be able to:</p>
+      <ol class="objectives-list">
+        <li><span class="obj-num">01</span><span class="obj-text">Separate a claim from the evidence that actually supports it, regardless of how confidently the claim is stated.</span></li>
+        <li><span class="obj-num">02</span><span class="obj-text">Apply a source/method/currency/motive filter to judge whether a piece of evidence is strong enough to build on.</span></li>
+        <li><span class="obj-num">03</span><span class="obj-text">Identify where bias may be operating — in a source, in the data, or in your own reaction to a conclusion.</span></li>
+        <li><span class="obj-num">04</span><span class="obj-text">Trace a conclusion back through the Ladder of Inference to find the rung where an assumption took over from observation.</span></li>
+        <li><span class="obj-num">05</span><span class="obj-text">Construct the strongest reasonable version of a claim — including an AI-generated one — before evaluating it.</span></li>
+        <li><span class="obj-num">06</span><span class="obj-text">Produce a judgment of sound, questionable, or missing without converging prematurely on a fix.</span></li>
+      </ol>
+    </div>
+
+    <!-- 4. PRINCIPLES OF EVALUATION -->
+    <div class="section section-even" id="principles">
+      <h2>Principles of Evaluation</h2>
+      <p class="principles-intro">Five axes for testing whether a conclusion holds. Unlike a build sequence, these aren't strictly ordered — depending on what's in front of you, you might start anywhere. Together they cover the ground a judgment needs to stand on: what's claimed versus what's shown, whether the evidence underneath is strong enough, where bias might be operating, where an unexamined assumption took over, and what an evaluation does — and doesn't — produce.</p>
+
+      <div class="principle open" id="principle-01">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="true" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 01</div>
+            <h3>Claims versus evidence</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Collapse</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-01-body">
+          <p>Every conclusion arrives wrapped in language that makes it sound true: confident framing, specific numbers, an authoritative tone. None of that is evidence. The first move in evaluating any conclusion is separating what's being claimed from what's actually been demonstrated — which sentences are assertions, and which are backed by something you could independently check.</p>
+          <p>This is easy to skip because a well-formed claim and a well-evidenced claim often look identical on the page. "Support tickets increased 40% due to a UI change" reads the same whether that's a measured fact or a plausible-sounding inference dressed in measurement language. Until you've located what a claim is standing on, treat it as a hypothesis — something to test, not something to act on.</p>
+        </div>
+      </div>
+
+      <div class="principle open" id="principle-02">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="true" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 02</div>
+            <h3>The quality of the evidence</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Collapse</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-02-body">
+          <p>Not all evidence carries the same weight, and treating it as if it does is one of the most common ways a sound-seeming conclusion turns out to be wrong. Evidence varies along at least four dimensions worth checking deliberately, every time:</p>
+          <div class="filter-grid">
+            <div class="filter-card">
+              <div class="filter-card-label">Source</div>
+              <p>Where did this come from — a primary source, a report about a report, or an unsourced assertion?</p>
+            </div>
+            <div class="filter-card">
+              <div class="filter-card-label">Method</div>
+              <p>How do they know — measured, observed, inferred, or just stated?</p>
+            </div>
+            <div class="filter-card">
+              <div class="filter-card-label">Currency</div>
+              <p>Does it still hold — or has the context changed since this was true?</p>
+            </div>
+            <div class="filter-card">
+              <div class="filter-card-label">Motive</div>
+              <p>Who benefits if this is true — and does that shape how it's being framed?</p>
+            </div>
+          </div>
+          <p>Running this filter turns "is there evidence" into "is this evidence good enough to build on." A claim can pass on three of four and still be unsafe to act on — currency in particular is easy to skip, because evidence that was true rarely announces when it stops being true.</p>
+          <div class="ai-note">
+            <div class="ai-note-label">AI Context</div>
+            <p>AI-generated analysis often presents figures without showing where they came from — source and method are frequently invisible by default. The question is the same one you'd ask of any report: does this figure trace back to something checkable, or did it just appear, stated with the same confidence either way?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle open" id="principle-03">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="true" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 03</div>
+            <h3>Bias has three addresses</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Collapse</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-03-body">
+          <p>Bias is in the source — a report written by someone with a stake in a particular outcome. It's in the data — a dataset filtered, categorized, or collected in a way that shapes what it can show before any analysis begins. And it's in you — bringing prior beliefs that make some conclusions feel more obviously true than others, regardless of what the evidence actually supports.</p>
+          <p>The third is hardest, because it's invisible from the inside. A conclusion that confirms what you already suspected gets less scrutiny than one that surprises you — not from carelessness, but because confirming evidence takes less effort to accept than disconfirming evidence takes to process.</p>
+          <p>One check against all three: before critiquing a claim, restate it in its strongest possible form — a practice known as steelmanning, after Anatol Rapoport's rules for constructive criticism. If your objection only works against a weaker version of the argument than the one actually made, you haven't found a problem with the argument. You've found a problem with how you first heard it.</p>
+          <div class="ai-note">
+            <div class="ai-note-label">AI Context</div>
+            <p>AI tools are unusually good at producing conclusions that sound reasonable whether or not they confirm what you expected — which leaves your own reaction as the main filter still standing. A surprising AI conclusion tends to get checked; a convenient one often doesn't, even though both came from the same process.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle open" id="principle-04">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="true" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 04</div>
+            <h3>The leap from data to conclusion</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Collapse</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-04-body">
+          <p>Between "here's what happened" and "here's what it means" sits a leap, and that leap is where assumptions get smuggled in without anyone deciding to put them there. A 40% increase in tickets is data. "A UI change caused confusion" is an interpretation of that data, resting on an assumption — that UI changes typically cause this kind of spike — which may or may not apply here.</p>
+          <p>The Ladder of Inference, covered as this plan's mental model, makes this leap visible: each rung from raw observation to action involves a choice that feels automatic but isn't. Most flawed conclusions aren't wrong because the underlying data was wrong. They're wrong because a leap partway up the ladder went unexamined — and the higher up the ladder a conclusion sits, the more confidently it tends to be stated, which is exactly backwards from how much scrutiny it's received.</p>
+        </div>
+      </div>
+
+      <div class="principle open" id="principle-05">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="true" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 05</div>
+            <h3>What this produces — and what it doesn't</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Collapse</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-05-body">
+          <p>The output of this entire process is a judgment: this part is sound, this part is questionable, this is what's missing. That's it. It is not a fix, a redesign, or a list of alternatives — reaching for those is Creative Thinking, and reaching for them too early is one of the most common ways an evaluation gets cut short.</p>
+          <p>The pull toward "here's what we should do instead" is strong, especially once you've found a real problem with a conclusion. Finding a flaw creates momentum toward resolving it, and stopping at "this doesn't hold" can feel incomplete in a way that's uncomfortable to sit with. Resisting that pull means treating an honest, incomplete picture — knowing something doesn't hold up without yet knowing what replaces it — as a legitimate, useful place to stop.</p>
+          <div class="ai-note">
+            <div class="ai-note-label">AI Context</div>
+            <p>AI tools rarely stop at a judgment — ask one to evaluate a plan and it will typically follow with suggested fixes, whether or not you asked for them. That's not wrong, but it collapses two separate steps into one, and the second step can arrive before the first has actually been tested. Take the evaluation; set the suggested fix aside until the judgment itself is finished.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. MENTAL MODEL -->
+    <div class="section section-odd" id="model">
+      <h2>Mental Model</h2>
+
+      <div class="model-card open" id="model-ladder">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="true" aria-controls="model-ladder-body" onclick="toggleAccordion('model-ladder')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-ladder')}">
+          <div class="model-header-text">
+            <h3>The Ladder of Inference</h3>
+            <div class="model-source">Chris Argyris · popularised by Peter Senge, <em>The Fifth Discipline</em>, 1990</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Collapse</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-ladder-body">
+          <p>The Ladder of Inference describes seven rungs most people climb in milliseconds, without noticing: starting from raw data and facts, we select certain data to pay attention to (shaped by what we already expect to see), add meaning to it based on past experience, form assumptions, draw conclusions, develop beliefs, and take action — each rung built on the one below it, each one a choice that felt automatic.</p>
+          <p>Argyris's caution is that the lower a rung sits, the more self-evident it feels — and the less likely anyone questions it. A fact, however obvious it seems, isn't really substantiated until it's verified independently. The Ladder's value isn't memorising seven labels; it's the habit of climbing back down a conclusion before acting on it, rung by rung, until you find the one that was actually an assumption wearing a fact's clothes.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <div class="ladder">
+              <div class="ladder-rung" style="width:42%;"><div class="ladder-rung-label">Act</div><div class="ladder-rung-desc">Recommend reverting the UI change</div></div>
+              <div class="ladder-rung" style="width:50%;"><div class="ladder-rung-label">Believe</div><div class="ladder-rung-desc">This UI change is hurting customers</div></div>
+              <div class="ladder-rung" style="width:58%;"><div class="ladder-rung-label">Conclude</div><div class="ladder-rung-desc">The UI change is confusing customers</div></div>
+              <div class="ladder-rung" style="width:68%;"><div class="ladder-rung-label">Assume</div><div class="ladder-rung-desc">This spike is the UI change</div></div>
+              <div class="ladder-leap-group" style="width:100%;">
+                <div class="ladder-leap-tag">The Leap</div>
+                <div class="ladder-rung" style="width:80%;"><div class="ladder-rung-label">Add Meaning</div><div class="ladder-rung-desc">UI changes are a known cause of support spikes</div></div>
+                <div class="ladder-rung" style="width:92%;"><div class="ladder-rung-label">Select</div><div class="ladder-rung-desc">Notice the UI-tagged tickets specifically</div></div>
+              </div>
+              <div class="ladder-rung" style="width:100%;"><div class="ladder-rung-label">Data &amp; Facts</div><div class="ladder-rung-desc">Tickets up 40%, tagged across categories</div></div>
+            </div>
+            <p class="model-diagram-caption">The leap: a pattern from general experience ("UI changes cause spikes") applied to this specific, unverified situation.</p>
+          </div>
+          <p>Embedded into a team's working practice — not just an individual's — the Ladder becomes something to show, not just to use privately. Walking a colleague through which rung a conclusion actually sits on, and inviting them to check it, turns a private check into a shared one. It's also a non-confrontational way to question someone's reasoning: "which rung is this on?" lands very differently from "I don't think you're right."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. COMMON MISTAKES -->
+    <div class="section section-even" id="mistakes">
+      <h2>Common Mistakes</h2>
+
+      <div class="mistake">
+        <h4>Mistaking confidence for credibility</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Fluent, assertive language reduces the effort needed to accept a claim — something well-organised and stated with certainty feels more accurate, independent of what's underneath. AI-generated text does this especially well: it's trained to sound certain regardless of how thin the underlying basis is.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Apply the same source/method/currency/motive check no matter how confident the framing sounds. Strip the tone away and ask what's actually left.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Confirmation creep</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>A conclusion that matches what you already believed gets less scrutiny by default — not from carelessness, but because confirming evidence is cognitively cheaper to accept than disconfirming evidence is to process.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Treat "this immediately feels right" as a flag rather than a green light. Apply more scrutiny to claims that confirm your priors, not less.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Strawmanning instead of steelmanning</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Picking apart a careless or weak version of a claim feels productive — you get to "win" without doing the harder work of engaging with its strongest form.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Restate the claim as strongly and fairly as you can before raising an objection. If the objection doesn't survive that version, you haven't found a problem yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Treating "no flaw found" as "verified true"</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Evaluation feels complete once you've checked what you know to check — but unknown unknowns don't announce themselves.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Keep "I checked X, Y, Z and they hold" and "I haven't found a problem yet" as two different statements. The second is an incomplete judgment, and should be labeled that way rather than rounded up to confirmation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. BEHAVIORAL INDICATORS -->
+    <div class="section section-odd" id="indicators">
+      <h2>Behavioral Indicators</h2>
+      <p>Observable behaviors across a single spectrum: the target zone in the middle, flanked by the signals that show when the skill is under- or overused.</p>
+
+      <div class="continuum-bar" aria-hidden="true">
+        <div class="continuum-segment underuse">Underuse</div>
+        <div class="continuum-segment target">Target Zone</div>
+        <div class="continuum-segment overuse">Overuse</div>
+      </div>
+
+      <div class="indicators-stack">
+        <div class="indicator-panel target">
+          <div class="indicator-panel-header">
+            <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/></svg></div>
+            <div class="indicator-col-label">What Good Looks Like</div>
+          </div>
+          <ul class="indicator-list cols-2">
+            <li>Separates what a claim asserts from what it demonstrates before reacting to it</li>
+            <li>Applies the source/method/currency/motive check regardless of how confidently something is presented</li>
+            <li>Notices when a conclusion confirms a prior belief and gives it more scrutiny, not less</li>
+            <li>Restates a claim in its strongest form before finding fault with it</li>
+            <li>Traces a surprising or high-stakes conclusion back through its reasoning to find where an assumption took over</li>
+            <li>States a judgment — sound, questionable, missing — without immediately reaching for a fix</li>
+            <li>Treats AI-generated analysis as a hypothesis needing the same checks as any other source</li>
+            <li>Keeps "no problem found" and "verified" as separate statements</li>
+            <li>Asks "what would change my mind about this?" before accepting a conclusion</li>
+            <li>Can say specifically which parts of an analysis they trust, which they don't, and why</li>
+          </ul>
+        </div>
+
+        <div class="indicator-row">
+          <div class="indicator-panel underuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="indicator-col-label">Early Warning Signs</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Accepts conclusions because they're confidently stated or come from an authoritative-seeming source</li>
+              <li>Acts on AI-generated analysis without checking its basis</li>
+              <li>Stops at "this feels right"</li>
+              <li>Picks apart minor phrasing rather than substance</li>
+              <li>Treats "nobody objected" as evidence of correctness</li>
+              <li>Applies scrutiny unevenly — harder on claims they disagree with, lighter on ones they expected</li>
+              <li>Repeats a conclusion that's gone stale without checking whether the situation changed</li>
+              <li>Accepts a remaining cause "by elimination" once one alternative is ruled out, without separately checking it</li>
+            </ul>
+          </div>
+          <div class="indicator-panel overuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="indicator-col-label">Overindexing Signals</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Treats every claim as equally suspect regardless of stakes, slowing decisions that don't warrant it</li>
+              <li>Evaluation becomes its own end — endless questioning with no judgment ever stated</li>
+              <li>Steelmanning becomes a way to avoid ever disagreeing</li>
+              <li>Uses "not fully verified" to stall indefinitely, including on low-cost-of-being-wrong decisions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. PRACTICAL EXAMPLES -->
+    <div class="section section-even" id="scenarios">
+      <h2>Practical Examples</h2>
+
+      <div class="scenario">
+        <h4>An AI ticket-volume analysis</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Critical Thinking</div>
+            <p>An AI tool reports ticket volume up 40%, points to a recent UI change, and recommends reverting it plus adding headcount for slower resolution times. Leadership approves both immediately.</p>
+            <p>Three months later, volume hasn't moved. The 40% figure was partly a tagging artefact, a pricing change that shipped the same week was never considered, and the headcount addition missed the real bottleneck — triage.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Critical Thinking</div>
+            <p>Each claim gets traced to its source before action. The volume figure is checked against the tagging change. The UI-change theory is steelmanned against "what else changed that week?" — surfacing the pricing change.</p>
+            <p class="scenario-highlight">"Resolution time" gets checked against what it actually measures, and the real bottleneck — triage — becomes visible. The report was a hypothesis worth testing, not a finding worth acting on.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario">
+        <h4>Removing a "redundant" QA step</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Critical Thinking</div>
+            <p>A colleague says "we've always had problems with this step — it just slows everything down." The framing goes unchallenged, and the step gets cut from the release process.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Critical Thinking</div>
+            <p>Someone checks when "always" was. The delays were real eighteen months ago, before a tooling fix resolved the underlying issue.</p>
+            <p class="scenario-highlight">The colleague's experience is genuine but stale — the step hasn't been the bottleneck since. Cutting it would remove a now-harmless check while leaving the actual current bottleneck untouched.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. SELF-REFLECTION -->
+    <div class="section section-odd" id="reflection">
+      <h2>Self-Reflection Activities</h2>
+      <p>Three prompts to audit your current use of Critical Thinking. Each takes under five minutes to complete honestly.</p>
+
+      <div class="reflection-item">
+        <div class="reflection-num">1</div>
+        <div>
+          <div class="reflection-q">Think of a conclusion you accepted in the last two weeks — yours, a colleague's, or AI-generated — with little scrutiny. Write down what it claimed, then write down what it was actually based on. If you can't reconstruct the evidence, what made it feel credible anyway — how it was written, who it came from, or that it matched what you expected?</div>
+          <div class="reflection-time">Targets: claims vs. evidence · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">2</div>
+        <div>
+          <div class="reflection-q">Think of a claim or idea you dismissed recently. Write it in the weakest form you originally judged it in, then rewrite it in its strongest possible form. Does your original objection still hold against that version?</div>
+          <div class="reflection-time">Targets: steelmanning · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">3</div>
+        <div>
+          <div class="reflection-q">Think of a recent conclusion that confirmed something you already believed. Run source/method/currency/motive on it as if seeing it for the first time. Does it hold up the same way it would if it had told you something you didn't want to hear?</div>
+          <div class="reflection-time">Targets: confirmation bias · ~5 minutes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. KNOWLEDGE CHECK -->
+    <div class="section section-even" id="check">
+      <h2>Knowledge Check</h2>
+      <p>Five questions — two conceptual, two applied, one synthesis. Select your answers, then reveal results.</p>
+
+      <div class="kc-question" id="kc1">
+        <div class="kc-q-label">Conceptual · Question 1 of 5</div>
+        <div class="kc-q-text">What's the relationship between a claim being confidently stated and a claim being well-supported?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc1', 0)">Confidence is a stronger signal of accuracy than support, because confident people are usually right</button>
+          <button class="kc-option" onclick="selectOption('kc1', 1)">They vary independently — confidence is a feature of presentation, support is a feature of evidence, and a poorly-supported claim can be stated with total confidence</button>
+          <button class="kc-option" onclick="selectOption('kc1', 2)">A confidently stated claim is always better-supported, because the person had to be sure before stating it that way</button>
+          <button class="kc-option" onclick="selectOption('kc1', 3)">There's no meaningful difference — both describe how persuasive a claim is</button>
+        </div>
+        <div class="kc-answer" id="kc1-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Confidence is a feature of presentation; support is a feature of evidence. They vary independently — a poorly-supported claim can be stated with total confidence (this is common in AI-generated outputs, which are trained to produce fluent, assertive text regardless of underlying certainty), and a well-supported claim can be stated tentatively. Treating confidence as a proxy for support is one of the most common ways flawed conclusions get accepted.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc2">
+        <div class="kc-q-label">Conceptual · Question 2 of 5</div>
+        <div class="kc-q-text">Why does checking your own reaction to a conclusion matter as much as checking the conclusion itself?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc2', 0)">It doesn't — the conclusion either holds up on the evidence or it doesn't, regardless of how you feel about it</button>
+          <button class="kc-option" onclick="selectOption('kc2', 1)">Because conclusions that confirm what you already believe receive less scrutiny by default — not from carelessness, but because confirming evidence takes less effort to accept than disconfirming evidence takes to process</button>
+          <button class="kc-option" onclick="selectOption('kc2', 2)">Because if you don't like a conclusion, you should reject it regardless of the evidence</button>
+          <button class="kc-option" onclick="selectOption('kc2', 3)">Because your reaction tells you whether the conclusion is correct</button>
+        </div>
+        <div class="kc-answer" id="kc2-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Conclusions that confirm what you already believe get less scrutiny by default, not from carelessness, but because confirming evidence is cognitively cheaper to accept than disconfirming evidence is to process. Checking your own reaction is how you catch the bias that's hardest to see — the one operating in you.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc3">
+        <div class="kc-q-label">Applied · Question 3 of 5</div>
+        <div class="kc-q-text">An AI tool reports that customer churn increased 25% and attributes it primarily to a recent price change. Before accepting or rejecting this, what should you check first?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc3', 0)">Whether other companies in the industry have seen similar churn after price changes</button>
+          <button class="kc-option" onclick="selectOption('kc3', 1)">Whether the 25% figure is measuring the same thing across the comparison period — i.e., whether "churn" was defined and tracked consistently — and what else changed at the same time as the price change</button>
+          <button class="kc-option" onclick="selectOption('kc3', 2)">Whether the AI model is a reliable one</button>
+          <button class="kc-option" onclick="selectOption('kc3', 3)">Whether the price change was a good business decision</button>
+        </div>
+        <div class="kc-answer" id="kc3-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Before evaluating a proposed cause, check that the figure itself is measuring something consistent — definitional drift in a metric like "churn" can produce a number that looks like a real change but isn't. Then check what else changed at the same time, since a single proposed cause competing with an unconsidered confound is exactly the gap that produces a confident but wrong conclusion.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc4">
+        <div class="kc-q-label">Applied · Question 4 of 5</div>
+        <div class="kc-q-text">A colleague says "we should drop the weekly status report — nobody reads it and it just takes time." You've heard them say this for months, and the report has indeed seemed redundant in meetings you've both attended recently. What's the Critical Thinking move here?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc4', 0)">Agree — your own recent experience corroborates theirs, which is enough evidence</button>
+          <button class="kc-option" onclick="selectOption('kc4', 1)">Disagree on principle, since removing a long-standing process is risky</button>
+          <button class="kc-option" onclick="selectOption('kc4', 2)">Recognize that your agreement might be confirmation rather than independent verification — check whether anyone outside the meetings you both attend relies on it, and how recently "nobody reads it" was actually established</button>
+          <button class="kc-option" onclick="selectOption('kc4', 3)">Ask the colleague to provide data before considering the idea further</button>
+        </div>
+        <div class="kc-answer" id="kc4-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Shared experience in the same meetings isn't independent verification — it's the same observation seen twice. The bias check here is on yourself: your agreement feels like confirmation because it is one, drawn from the same limited vantage point as the original claim. Checking outside that vantage point, and checking whether the claim is current rather than a stale-but-true story, is what the evaluation actually requires.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc5">
+        <div class="kc-q-label">Synthesis · Question 5 of 5</div>
+        <div class="kc-q-text">You've evaluated an AI-generated analysis and found that one of its three cited causes doesn't hold up — the data it's based on was tagged inconsistently. The other two causes still seem reasonable. What should happen next?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc5', 0)">Reject the entire analysis, since one flawed claim undermines the others</button>
+          <button class="kc-option" onclick="selectOption('kc5', 1)">Accept the other two causes since they weren't directly challenged</button>
+          <button class="kc-option" onclick="selectOption('kc5', 2)">Record the judgment as it stands — one cause unsupported, two unverified-but-plausible — and treat the remaining two as hypotheses needing their own check, not as confirmed by elimination</button>
+          <button class="kc-option" onclick="selectOption('kc5', 3)">Ask the AI tool to redo the analysis without the flawed data</button>
+        </div>
+        <div class="kc-answer" id="kc5-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Disproving one cause doesn't validate the others — "not yet examined" and "confirmed by elimination" are different states being treated as the same thing. The honest judgment names exactly what's been established: one cause unsupported, two still untested. That's Principle 05 in practice — a judgment, stated precisely, without rounding up to either "all good" or "all bad."</p>
+        </div>
+      </div>
+
+      <button class="kc-reveal-btn" id="kcRevealBtn" onclick="revealAnswers()">Reveal answers and explanations</button>
+      <div class="kc-score" id="kcScore"><p id="kcScoreText"></p></div>
+    </div>
+
+    <!-- 11. HABIT BUILDER -->
+    <div class="section section-odd" id="habits">
+      <h2>5-Day Habit Builder</h2>
+      <p>Five daily practices, each under 15 minutes. Days build on each other — each step uses output from the previous day. Open each day to see the full practice.</p>
+
+      <!-- Day 1 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">1</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Separating What's Said From What's Shown</div>
+            <div class="habit-day-concept">Concept: Claims versus evidence</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Find the gap between the claim and what's behind it.</strong>
+            A vendor's sales deck includes a case study: "Company X, a team similar to yours, cut manual processing time 30% in three months." Today's work starts there.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Write down the claim exactly as stated.</div>
+              <p>"This tool reduces manual processing time by 30% in three months, for teams similar to ours."</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Write down what evidence the deck actually provides.</div>
+              <p>List only what's there: one case study, one customer, no methodology shown, no date.</p>
+              <div class="habit-example">
+                <span class="habit-example-label">Worked Example</span>
+                Claim: "30% reduction in manual processing time, three months, team similar to ours."<br>
+                Evidence provided: one named customer, one headline percentage, a short quote. Nothing about how "processing time" was measured, what the baseline was, or when this happened.
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>right after a vendor call or pitch</strong>, while the claim is fresh.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You've separated "what they said" from "what they showed" — often the gap is larger than it felt in the room.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If the claim and the evidence look identical to you, try writing the evidence as if explaining it to someone who wasn't in the room. If you find yourself adding context from the pitch itself — tone, how confident the presenter seemed — that's not evidence, that's presentation.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 2 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">2</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Running the Evidence Filter</div>
+            <div class="habit-day-concept">Concept: The quality of the evidence</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Apply source, method, currency, and motive to yesterday's evidence.</strong>
+            Four short answers turn "there's a case study" into a specific judgment about what it can and can't tell you.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Answer each of the four questions for the 30% claim.</div>
+              <p>Source: where does this come from? Method: how was it measured? Currency: when did this happen? Motive: who benefits from this number persuading you?</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Write one line per dimension.</div>
+              <div class="habit-example">
+                <span class="habit-example-label">Worked Example (continuing from Day 1)</span>
+                Source: the vendor's own marketing material — not independent.<br>
+                Method: unclear what "manual processing time" includes or how it was baselined.<br>
+                Currency: undated — could be from an earlier product version.<br>
+                Motive: the vendor benefits directly from this number persuading you.
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>during your first uninterrupted block</strong> — it takes focus to resist filling gaps with assumptions.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You can now say specifically <em>why</em> the figure is unverified, not just that it is.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If every dimension comes back "fine," check whether you're filling gaps with what would be reasonable rather than what's actually shown. "Currency: probably recent" is an assumption, not an answer — the honest answer is "not stated."
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 3 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">3</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Checking Your Own Reaction</div>
+            <div class="habit-day-concept">Concept: Bias has three addresses</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Test whether your own leaning is doing some of the vendor's work for them.</strong>
+            Source and data bias were addressed on Day 2. Today's the third address: you.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Were you already inclined toward this vendor?</div>
+              <p>A recommendation, a previous good experience, fatigue from evaluating alternatives — name anything that might be giving this vendor a head start.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Run the steelman test.</div>
+              <p>If a vendor you <em>didn't</em> favor showed you this exact case study, would you accept it as readily?</p>
+              <div class="habit-example">
+                <span class="habit-example-label">Worked Example (continuing from Days 1–2)</span>
+                A colleague's recommendation made this vendor feel pre-vetted before the pitch even started. That made the 30% figure feel like confirmation of something already decided, rather than a number on its own.<br>
+                Steelman test: a vendor with no recommendation behind them, showing the exact same case study, would prompt more questions — which means those questions are legitimate now too.
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>away from your desk</strong> — a walk or a commute. Distance helps you see your own reaction more clearly.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">Either the figure earns the same scrutiny it would get from a vendor you didn't favor, or you confirm your evaluation was even-handed. Both are useful.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If you can't identify any lean either way, try the test from the opposite direction: is there a vendor or option you've already mentally ruled out? Notice how much more scrutiny their claims would get, then ask why this one gets less.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 4 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">4</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Climbing Down the Ladder</div>
+            <div class="habit-day-concept">Concept: The leap from data to conclusion</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Work backward from where you currently stand to the data that started it.</strong>
+            By Day 4 you're leaning toward recommending this tool, at least provisionally. Trace that lean back down the Ladder of Inference.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Name where you currently stand.</div>
+              <p>Write the action or belief you're closest to — even provisionally.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Climb back down, rung by rung.</div>
+              <p>Belief → conclusion → assumption → meaning added → selected data → data. Identify which rung holds the unexamined leap.</p>
+              <div class="habit-example">
+                <span class="habit-example-label">Worked Example (continuing from Days 1–3)</span>
+                Action: leaning toward recommending this tool.<br>
+                Belief: it'll meaningfully reduce our team's workload.<br>
+                Conclusion: it'll deliver similar results for us.<br>
+                Assumption: "similar to yours" means comparable enough to transfer.<br>
+                Added meaning: a 30% result from a "similar" team is a strong signal.<br>
+                Selected data: the 30% headline, out of whatever else the case study contained.<br>
+                Data: the case study text itself.<br>
+                <strong>The leap sits between "selected data" and "added meaning" — treating one headline number from one unverified-similar customer as a strong signal.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>before your next meeting about this decision</strong> — so you can name the leap if the topic comes up.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You can now point to the exact rung where confidence outran evidence — not "I'm not sure about this," but "here's specifically what hasn't been tested yet."</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If you can't find a leap, you may be starting from the data and working up rather than starting from where you currently stand and working down. The exercise only works backward — start with the action or belief, however provisional, and ask what's underneath it.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 5 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">5</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Writing the Judgment</div>
+            <div class="habit-day-concept">Concept: What this produces — and what it doesn't</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Turn four days of checking into one written judgment — and stop there.</strong>
+            The hardest part of today isn't writing the judgment. It's not following it with a recommendation.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Write the judgment using Days 1–4.</div>
+              <p>What's sound, what's questionable, what's missing — in plain terms.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Check for a smuggled-in recommendation.</div>
+              <p>Read it back. Does it stop at the judgment, or does "missing" quietly turn into "so we should..."? If so, separate the two.</p>
+              <div class="habit-example">
+                <span class="habit-example-label">Output Shape (continuing from Days 1–4)</span>
+                Sound: the 30% figure is a real, reported result for one customer.<br>
+                Questionable: source-biased (vendor-selected and -published), method unclear (what's measured, what's the baseline), "similar to yours" unverified.<br>
+                Missing: an independent reference customer, the underlying methodology, and the date of the case study.<br>
+                <strong>This isn't evidence the tool won't work — it's evidence we don't yet know whether it will. That's a separate question, requiring separate information-gathering.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this as a <strong>Friday wrap-up</strong> — a written judgment you can return to next week without rebuilding it from memory.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You have a defensible, written judgment to bring to a decision — and a clear list of what to ask for before that decision gets made.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If the judgment keeps turning into a recommendation no matter how you write it, try writing the "missing" list first, on its own, before writing anything else. A clean list of open questions is harder to convert into "so we should" than a paragraph is.
+          </div>
+          <div class="callout callout-teal" style="margin-top:20px">
+            <p>Five days complete. The Foundation stage begins here — the habit builder has given you the starting practice. Return to it any time the skill feels rusty.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. PROGRESSION PATH -->
+    <div class="section section-even" id="progression">
+      <h2>Progression Path</h2>
+      <p>Three stages of developing mastery in Critical Thinking. Each stage has a new capability and an observable signal of progress.</p>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-structural">Foundation</span>
+          <h4>The Careful Skeptic</h4>
+        </div>
+        <p>You apply the checks deliberately and consciously — source, method, currency, motive; steelmanning before objecting; tracing a leap down the Ladder. The process takes effort and reminders. You're still occasionally swept up by confident presentation, but you catch it more often than before.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can take a confidently-stated conclusion — AI-generated or otherwise — and produce a written judgment of what holds and what doesn't, rather than accepting or rejecting it wholesale.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>You catch at least one flawed claim — a number traced to a bad source, a recommendation based on stale data — before it gets acted on.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-analytical">Expansion</span>
+          <h4>The Bias Spotter</h4>
+        </div>
+        <p>The checks become habitual — you run them before deciding to. Your focus shifts to noticing patterns in your own reactions, which kinds of claims get a free pass, and you start noticing when other people's evaluations stop short: a "no flaw found" treated as "verified," a cause accepted by elimination, a conclusion that went unchecked because it confirmed something convenient.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can evaluate someone else's evaluation — noticing when a colleague's "I checked it, it's fine" only checked what was easy to check.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>Colleagues run things past you before acting on them — not because of seniority, but because you reliably catch what others miss.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-growth">Integration</span>
+          <h4>The Calibration Point</h4>
+        </div>
+        <p>The checks run fast enough not to slow decisions down, and you can tell which situations need heavy scrutiny and which don't — avoiding the overuse end of the spectrum as readily as the underuse end. You help others build the same instinct by making the checks visible and shared, not just applying them privately.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can facilitate a group evaluation — bringing a team to a shared judgment about whether to trust a finding, without either rubber-stamping it or getting stuck in endless doubt.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>The team's default response to a confident AI output or a compelling pitch becomes "what's this based on?" — the question itself has become the norm, not something you have to keep introducing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. SUMMARY -->
+    <div class="section section-odd" id="summary">
+      <h2>Quick-Recall Summary</h2>
+      <div class="summary-block">
+        <blockquote>
+          <p>Critical Thinking is the discipline of testing whether a conclusion holds before deciding what to trust. It means separating what's claimed from what's evidenced, checking that evidence against its source, method, currency, and motive, watching for bias in the source, the data, and yourself, and tracing surprising conclusions back to the point where an assumption took over from observation.</p>
+          <p>The output is a judgment — sound, questionable, missing — not a fix. What you do with that judgment is a different skill; this one gives you the confidence to know which parts of the picture you can actually stand on.</p>
+        </blockquote>
+      </div>
+    </div>
+
+    <!-- 14. EXPLORE FURTHER -->
+    <div class="section section-even" id="resources">
+      <h2>Explore Further</h2>
+      <p>Curated for what each resource adds beyond this learning plan — not a description of what it covers, but a reason it belongs here.</p>
+
+      <p class="table-scroll-hint" aria-hidden="true">Swipe to see more →</p>
+      <div class="table-scroll">
+      <table class="resource-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Author / Source</th>
+            <th>Est. Time</th>
+            <th>Why This Specifically</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="resource-type">Book</td>
+            <td class="resource-title">The Fifth Discipline</td>
+            <td>Peter Senge · Doubleday, 1990 (rev. 2006)</td>
+            <td>6–8 hrs</td>
+            <td class="resource-why">The original source for the Ladder of Inference, with the full organizational context Argyris and Senge built it for — beyond what any single-page summary covers.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.goodreads.com/book/show/255127.The_Fifth_Discipline" target="_blank" rel="noopener">Goodreads</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Article</td>
+            <td class="resource-title">How to Use the Ladder of Inference for Better Decisions</td>
+            <td>Asana, 2026</td>
+            <td>15 min</td>
+            <td class="resource-why">The clearest practical walkthrough of all seven rungs with workplace examples, including how to use the Ladder in team conversations rather than just privately.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://asana.com/resources/ladder-of-inference" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Paper</td>
+            <td class="resource-title">AI Tools in Society: Impacts on Cognitive Offloading and the Future of Critical Thinking</td>
+            <td>Michael Gerlich · Societies, 2025 (open access)</td>
+            <td>30–45 min</td>
+            <td class="resource-why">The primary research behind this plan's framing of AI and Critical Thinking: a 666-participant study finding a measurable negative correlation between AI tool use and critical thinking, mediated by cognitive offloading.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.mdpi.com/2075-4698/15/1/6" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Article</td>
+            <td class="resource-title">The Paradox of AI Assistance: Better Results, Worse Thinking</td>
+            <td>EDUCAUSE Review, Dec 2025</td>
+            <td>15 min</td>
+            <td class="resource-why">An accessible synthesis of Gerlich and related studies, written for a workplace and education audience rather than an academic one.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://er.educause.edu/articles/2025/12/the-paradox-of-ai-assistance-better-results-worse-thinking" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Factsheet</td>
+            <td class="resource-title">Evidence-Based Practice for Effective Decision-Making</td>
+            <td>CIPD</td>
+            <td>15 min</td>
+            <td class="resource-why">A practitioner framework for weighing evidence quality from a professional body — useful grounding for the source/method/currency/motive filter in Principle 02.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.cipd.org/en/knowledge/factsheets/evidence-based-practice-factsheet/" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Book</td>
+            <td class="resource-title">Thinking, Fast and Slow</td>
+            <td>Daniel Kahneman, 2011</td>
+            <td>~20 hrs</td>
+            <td class="resource-why">The foundational text on System 1 / System 2 thinking and confirmation bias — goes deeper on "bias has three addresses" than any shorter source can.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.goodreads.com/book/show/11468377-thinking-fast-and-slow" target="_blank" rel="noopener">Goodreads</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type">Book</td>
+            <td class="resource-title">Intuition Pumps and Other Tools for Thinking</td>
+            <td>Daniel Dennett, 2013</td>
+            <td>~10 hrs</td>
+            <td class="resource-why">Dennett's formulation of Rapoport's Rules — the structured version of steelmanning referenced in Principle 03.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.goodreads.com/book/show/16091820-intuition-pumps-and-other-tools-for-thinking" target="_blank" rel="noopener">Goodreads</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ── KNOWLEDGE CHECK ───────────────────────────
+const kcAnswers = { kc1: 1, kc2: 1, kc3: 1, kc4: 2, kc5: 2 };
+const kcSelected = {};
+
+function selectOption(qId, optionIdx) {
+  const q = document.getElementById(qId);
+  const options = q.querySelectorAll('.kc-option');
+  options.forEach((o, i) => {
+    o.classList.toggle('selected', i === optionIdx);
+  });
+  kcSelected[qId] = optionIdx;
+  checkAllAnswered();
+}
+
+function checkAllAnswered() {
+  const allIds = Object.keys(kcAnswers);
+  const allDone = allIds.every(id => kcSelected[id] !== undefined);
+  const btn = document.getElementById('kcRevealBtn');
+  btn.style.display = allDone ? 'inline-block' : 'none';
+}
+
+function revealAnswers() {
+  let score = 0;
+  Object.keys(kcAnswers).forEach(qId => {
+    const correct = kcAnswers[qId];
+    const selected = kcSelected[qId];
+    const q = document.getElementById(qId);
+    const options = q.querySelectorAll('.kc-option');
+    options.forEach((o, i) => {
+      o.disabled = true;
+      o.classList.remove('selected');
+      if (i === correct) o.classList.add('correct');
+      else if (i === selected && i !== correct) o.classList.add('incorrect');
+    });
+    const answer = document.getElementById(qId + '-answer');
+    if (answer) answer.style.display = 'block';
+    if (selected === correct) score++;
+  });
+  document.getElementById('kcRevealBtn').style.display = 'none';
+  const scoreEl = document.getElementById('kcScore');
+  const scoreText = document.getElementById('kcScoreText');
+  scoreEl.style.display = 'block';
+  scoreText.textContent = score + ' of 5 correct — ' +
+    (score === 5 ? 'solid foundation. Move to the habit builder.' :
+     score >= 3 ? 'good understanding. Review the principles linked to any missed questions.' :
+     'worth revisiting the principles and the Ladder of Inference before moving on.');
+}
+
+// ── HABIT BUILDER ACCORDION ───────────────────
+function toggleDay(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+// ── PRINCIPLES & MODEL ACCORDION ─────────────
+function toggleAccordion(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const isOpen = card.classList.contains('open');
+  card.classList.toggle('open', !isOpen);
+  const header = card.querySelector('[aria-expanded]');
+  if (header) header.setAttribute('aria-expanded', !isOpen);
+  const label = card.querySelector('.accordion-label');
+  if (label) label.textContent = isOpen ? 'Expand' : 'Collapse';
+}
+
+// ── SCROLL SPY + PREV/NEXT ───────────────────
+const sections = document.querySelectorAll('.section[id]');
+const navLinks  = document.querySelectorAll('.nav-link[data-section]');
+const visited   = new Set();
+const total     = navLinks.length;
+const announce  = document.getElementById('sectionAnnounce');
+const btnPrev   = document.getElementById('btnPrev');
+const btnNext   = document.getElementById('btnNext');
+const counter   = document.getElementById('slideCounter');
+let   lastActiveId = null;
+let   currentIdx   = 0;
+
+const sectionIds = Array.from(navLinks).map(l => l.dataset.section);
+
+function updateNav() {
+  let activeId = null;
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top <= 120) activeId = sec.id;
+  });
+  navLinks.forEach(link => {
+    const s = link.dataset.section;
+    link.classList.remove('active');
+    link.removeAttribute('aria-current');
+    if (s === activeId) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'true');
+      visited.add(s);
+    }
+    if (visited.has(s) && s !== activeId) link.classList.add('visited');
+    else if (s !== activeId) link.classList.remove('visited');
+  });
+  if (activeId && activeId !== lastActiveId) {
+    const activeLink = document.querySelector('.nav-link[data-section="' + activeId + '"]');
+    if (activeLink && announce) {
+      announce.textContent = 'Now reading: ' + activeLink.textContent.trim();
+    }
+    lastActiveId = activeId;
+    const idx = sectionIds.indexOf(activeId);
+    if (idx !== -1) currentIdx = idx;
+  }
+  updateButtons();
+}
+
+function updateButtons() {
+  btnPrev.disabled = currentIdx === 0;
+  btnNext.disabled = currentIdx === sectionIds.length - 1;
+  counter.textContent = (currentIdx + 1) + ' / ' + sectionIds.length;
+}
+
+function scrollToSection(idx) {
+  if (idx < 0 || idx >= sectionIds.length) return;
+  const target = document.getElementById(sectionIds[idx]);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    currentIdx = idx;
+    updateButtons();
+  }
+}
+
+btnPrev.addEventListener('click', function () { scrollToSection(currentIdx - 1); });
+btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1); });
+
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();
+
+// ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
+var railToggle = document.getElementById('railToggle');
+if (railToggle) {
+  var rail = railToggle.closest('.nav-rail');
+
+  function closeRailPanel() {
+    rail.classList.remove('open');
+    railToggle.setAttribute('aria-expanded', 'false');
+    railToggle.setAttribute('aria-label', 'Show section list');
+  }
+  function openRailPanel() {
+    rail.classList.add('open');
+    railToggle.setAttribute('aria-expanded', 'true');
+    railToggle.setAttribute('aria-label', 'Hide section list');
+  }
+
+  railToggle.addEventListener('click', function () {
+    rail.classList.contains('open') ? closeRailPanel() : openRailPanel();
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!rail.classList.contains('open')) return;
+    if (e.target.closest('.nav-link')) { closeRailPanel(); return; }
+    if (!rail.contains(e.target)) closeRailPanel();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && rail.classList.contains('open')) {
+      closeRailPanel();
+      railToggle.focus();
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768 && rail.classList.contains('open')) closeRailPanel();
+  });
+}
+
+</script>
+</body>
+</html>
