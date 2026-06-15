@@ -154,6 +154,22 @@
     flex-shrink: 0;
   }
 
+  /* ── RAIL TOGGLE (mobile bottom-toolbar trigger, hidden on desktop) ── */
+  .rail-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: rgba(255,255,255,0.6);
+  }
+  .rail-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .rail-toggle .rail-icon-close { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-open  { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-close { display: block; }
+
   /* ── MAIN CONTENT ───────────────────────────── */
   .main {
     margin-left: var(--nav-width);
@@ -1190,6 +1206,12 @@
   .summary-block p:last-child { margin: 0; font-size: 16px; color: var(--sage); }
 
   /* ── RESOURCE TABLE ─────────────────────────── */
+  .table-scroll {
+    width: 100%;
+    max-width: var(--content-max);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   .resource-table {
     width: 100%;
     max-width: var(--content-max);
@@ -1370,6 +1392,7 @@
   /* ── FOCUS STYLES ────────────────────────────── */
   :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
 
   /* ── REDUCED MOTION ──────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
@@ -1396,6 +1419,87 @@
       min-height: calc(100vh - 96px) !important;
     }
   </style>
+  <style id="mobile-nav-overrides">
+    /* ── MOBILE (≤768px): nav-rail becomes a bottom toolbar ─────────────
+       Comes after #site-nav-overrides so its !important rules win at
+       this viewport width. The section TOC collapses into a panel that
+       pops up above the toolbar. Prev/Next + counter stay visible.
+    ──────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-rail {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0; right: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: auto !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+        overflow: visible;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.18);
+      }
+      .nav-rail .nav-brand { display: none; }
+
+      .nav-rail .nav-items {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 10px;
+        background: var(--charcoal);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-rail.open .nav-items { display: block; }
+
+      .nav-rail .nav-arrows {
+        flex: 1;
+        border-top: none;
+        margin-top: 0;
+        padding: 10px 12px;
+      }
+
+      .rail-toggle {
+        display: flex;
+        width: 44px; flex-shrink: 0;
+        align-self: stretch;
+        border-left: 1px solid rgba(255,255,255,0.08);
+      }
+      .rail-toggle:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); }
+
+      .main { margin-left: 0; min-width: 0; }
+
+      .hero { padding: 28px 20px 40px; }
+      .hero h1 {
+        font-size: clamp(28px, 8vw, 52px);
+        overflow-wrap: break-word;
+      }
+      .content { padding: 0 20px 110px; }
+
+      /* Multi-column grids that would otherwise overflow a 100%-width .content */
+      .snapshot-grid,
+      .mece-grid,
+      .mistake-row,
+      .scenario-cols,
+      .progression-cap {
+        grid-template-columns: 1fr;
+      }
+      .tree-branches { grid-template-columns: 1fr; }
+
+      /* Full-bleed alternating section backgrounds were sized to cancel
+         the desktop 80px .content padding. At the 20px mobile padding,
+         -20px exactly spans .main's full width instead. */
+      .section-odd::before,
+      .section-even::before {
+        left: -20px;
+        right: -20px;
+      }
+    }
+  </style>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -1406,6 +1510,10 @@
 
 <!-- ── LEFT NAV ───────────────────────────────── -->
 <nav class="nav-rail" aria-label="Section navigation">
+  <button type="button" id="railToggle" class="rail-toggle" aria-expanded="false" aria-controls="navItems" aria-label="Show section list">
+    <svg class="rail-icon-open"  viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>
+    <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
   <div class="nav-brand">    
     <div class="nav-skill">Analytical Thinking</div>
   </div>
@@ -2377,6 +2485,7 @@
       <h2>Explore Further</h2>
       <p>Curated for what each resource adds beyond this learning plan — not a description of what it covers, but a reason it belongs here.</p>
 
+      <div class="table-scroll">
       <table class="resource-table">
         <thead>
           <tr>
@@ -2479,6 +2588,7 @@
 
         </tbody>
       </table>
+      </div>
 
     </div>
 
@@ -2621,6 +2731,45 @@ btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1);
 
 window.addEventListener('scroll', updateNav, { passive: true });
 updateNav();
+
+// ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
+var railToggle = document.getElementById('railToggle');
+if (railToggle) {
+  var rail = railToggle.closest('.nav-rail');
+
+  function closeRailPanel() {
+    rail.classList.remove('open');
+    railToggle.setAttribute('aria-expanded', 'false');
+    railToggle.setAttribute('aria-label', 'Show section list');
+  }
+  function openRailPanel() {
+    rail.classList.add('open');
+    railToggle.setAttribute('aria-expanded', 'true');
+    railToggle.setAttribute('aria-label', 'Hide section list');
+  }
+
+  railToggle.addEventListener('click', function () {
+    rail.classList.contains('open') ? closeRailPanel() : openRailPanel();
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!rail.classList.contains('open')) return;
+    if (e.target.closest('.nav-link')) { closeRailPanel(); return; }
+    if (!rail.contains(e.target)) closeRailPanel();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && rail.classList.contains('open')) {
+      closeRailPanel();
+      railToggle.focus();
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768 && rail.classList.contains('open')) closeRailPanel();
+  });
+}
+
 </script>
 </body>
 </html>

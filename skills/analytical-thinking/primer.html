@@ -418,6 +418,22 @@
     flex-shrink: 0;
   }
 
+  /* ── RAIL TOGGLE (mobile bottom-toolbar trigger, hidden on desktop) ── */
+  .rail-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: rgba(255,255,255,0.6);
+  }
+  .rail-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .rail-toggle .rail-icon-close { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-open  { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-close { display: block; }
+
   /* ── VIDEO EMBED (TITLE SLIDE) ──────────────── */
   .video-embed-wrap { max-width: 640px; margin-top: 36px; }
   .video-embed {
@@ -494,6 +510,7 @@
   :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   .nav-arrow:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
 
   /* ── REDUCED MOTION ──────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
@@ -511,6 +528,64 @@
       height: calc(100vh - 96px) !important;
     }
   </style>
+  <style id="mobile-nav-overrides">
+    /* ── MOBILE (≤768px): nav-rail becomes a bottom toolbar ─────────────
+       Comes after #site-nav-overrides so its !important rules win at
+       this viewport width. The slide-title list collapses into a
+       "Sections" panel that pops up above the toolbar. Prev/Next +
+       counter stay visible at all times.
+    ──────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-rail {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0; right: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: auto !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+        overflow: visible;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.18);
+      }
+      .nav-rail .nav-brand { display: none; }
+
+      .nav-rail .nav-items {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 10px;
+        background: var(--charcoal);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-rail.open .nav-items { display: block; }
+
+      .nav-rail .nav-arrows {
+        flex: 1;
+        border-top: none;
+        margin-top: 0;
+        padding: 10px 12px;
+      }
+
+      .rail-toggle {
+        display: flex;
+        width: 44px; flex-shrink: 0;
+        align-self: stretch;
+        border-left: 1px solid rgba(255,255,255,0.08);
+      }
+      .rail-toggle:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); }
+
+      .stage { margin-left: 0; width: 100%; }
+
+      .slide { padding: 28px 20px 92px; }
+    }
+  </style>
 </head>
 <body>
 <a href="#slide-stage" class="skip-link">Skip to slide content</a>
@@ -522,6 +597,10 @@
 
 <!-- ── LEFT NAV RAIL ─────────────────────────── -->
 <nav class="nav-rail" aria-label="Slide navigation">
+  <button type="button" id="railToggle" class="rail-toggle" aria-expanded="false" aria-controls="slideNav" aria-label="Show all slides">
+    <svg class="rail-icon-open"  viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>
+    <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
   <div class="nav-brand">    
     <div class="nav-skill">Analytical Thinking</div>    
   </div>
@@ -860,6 +939,44 @@
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
     if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
   });
+
+  // ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
+  var railToggle = document.getElementById('railToggle');
+  if (railToggle) {
+    var rail = railToggle.closest('.nav-rail');
+
+    function closeRailPanel() {
+      rail.classList.remove('open');
+      railToggle.setAttribute('aria-expanded', 'false');
+      railToggle.setAttribute('aria-label', 'Show all slides');
+    }
+    function openRailPanel() {
+      rail.classList.add('open');
+      railToggle.setAttribute('aria-expanded', 'true');
+      railToggle.setAttribute('aria-label', 'Hide all slides');
+    }
+
+    railToggle.addEventListener('click', function () {
+      rail.classList.contains('open') ? closeRailPanel() : openRailPanel();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!rail.classList.contains('open')) return;
+      if (e.target.closest('.nav-link')) { closeRailPanel(); return; }
+      if (!rail.contains(e.target)) closeRailPanel();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && rail.classList.contains('open')) {
+        closeRailPanel();
+        railToggle.focus();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 768 && rail.classList.contains('open')) closeRailPanel();
+    });
+  }
 
   // Init
   updateUI();
