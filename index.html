@@ -58,8 +58,10 @@
   .why-body p+p{margin-top:14px}
   .why-body strong{color:var(--text-dark);font-weight:500}
   .why-cards{display:flex;flex-direction:column;gap:12px}
-  .wc{background:var(--white);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-lg);padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
-  .wc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .wc{background:var(--white);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-lg);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .wc:hover{transform:translateY(-3px);box-shadow:0 12px 24px -8px rgba(20,40,35,.12);border-color:rgba(172,196,182,.5)}
+  .wc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:transform .25s ease}
+  .wc:hover .wc-icon{transform:scale(1.08)}
   .wc-icon svg{width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .wc-title{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:3px;line-height:1.3}
   .wc-body{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-muted);line-height:1.55}
