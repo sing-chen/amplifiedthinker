@@ -537,6 +537,132 @@
   }
   .filter-card p { font-size: 14px; line-height: 1.55; margin: 0; }
 
+  /* ── BIAS FIELD GUIDE ─────────────────────────── */
+  .bias-intro {
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+  }
+  .bias-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: var(--content-max);
+    margin-bottom: 8px;
+  }
+  .bias-card {
+    background: white;
+    border-radius: var(--radius);
+    border: 2px solid transparent;
+    border-top: 3px solid var(--teal);
+    padding: 18px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bias-card:hover,
+  .bias-card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(31,77,74,0.14);
+    border-color: var(--teal);
+  }
+  .bias-card.active {
+    border-color: var(--deep-teal);
+    background: var(--light-sage);
+  }
+  .bias-card-icon {
+    width: 30px;
+    height: 30px;
+    color: var(--deep-teal);
+  }
+  .bias-card-icon svg { width: 100%; height: 100%; }
+  .bias-card-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .bias-card-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--navy);
+    opacity: 0.85;
+    margin: 0;
+  }
+  .bias-panel {
+    max-width: var(--content-max);
+    margin-top: 20px;
+    background: white;
+    border-radius: var(--radius);
+    border-left: 4px solid var(--deep-teal);
+    padding: 24px 28px;
+  }
+  .bias-panel-empty {
+    color: var(--navy);
+    opacity: 0.6;
+    font-style: italic;
+    font-size: 14px;
+    margin: 0;
+  }
+  .bias-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .bias-panel-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--deep-teal);
+    flex-shrink: 0;
+  }
+  .bias-panel-icon svg { width: 100%; height: 100%; }
+  .bias-panel-header h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    margin: 0;
+  }
+  .bias-panel-def {
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+  .bias-panel-block {
+    margin-bottom: 14px;
+  }
+  .bias-panel-block:last-child { margin-bottom: 0; }
+  .bias-panel-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+  }
+  .bias-panel-block p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .bias-panel-tips {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .bias-panel-tips .bias-panel-block { margin-bottom: 0; }
+  @media (max-width: 1024px) {
+    .bias-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .bias-panel-tips { grid-template-columns: 1fr; }
+  }
+
   /* ── MENTAL MODEL CARD ──────────────────────── */
   .model-card {
     background: white;
@@ -1332,6 +1458,8 @@
     .principle-body, .model-body { display: block !important; }
     .accordion-toggle { display: none; }
     .principle-header, .model-header { cursor: default; }
+    .bias-panel-empty { display: none; }
+    .bias-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
 </style>
@@ -1410,6 +1538,8 @@
       /* Multi-column grids that would otherwise overflow a 100%-width .content */
       .snapshot-grid,
       .filter-grid,
+      .bias-grid,
+      .bias-panel-tips,
       .mistake-row,
       .scenario-cols,
       .progression-cap {
@@ -1450,23 +1580,24 @@
     <li class="nav-item"><a class="nav-link" href="#overview"   data-section="overview"><span class="nav-dot"></span>02 · Overview</a></li>
     <li class="nav-item"><a class="nav-link" href="#objectives" data-section="objectives"><span class="nav-dot"></span>03 · Learning Objectives</a></li>
     <li class="nav-item"><a class="nav-link" href="#principles" data-section="principles"><span class="nav-dot"></span>04 · Principles of Evaluation</a></li>
-    <li class="nav-item"><a class="nav-link" href="#model"      data-section="model"><span class="nav-dot"></span>05 · Mental Model</a></li>
-    <li class="nav-item"><a class="nav-link" href="#mistakes"   data-section="mistakes"><span class="nav-dot"></span>06 · Common Mistakes</a></li>
-    <li class="nav-item"><a class="nav-link" href="#indicators" data-section="indicators"><span class="nav-dot"></span>07 · Behavioral Indicators</a></li>
-    <li class="nav-item"><a class="nav-link" href="#scenarios"  data-section="scenarios"><span class="nav-dot"></span>08 · Practical Examples</a></li>
-    <li class="nav-item"><a class="nav-link" href="#reflection" data-section="reflection"><span class="nav-dot"></span>09 · Self-Reflection</a></li>
-    <li class="nav-item"><a class="nav-link" href="#check"      data-section="check"><span class="nav-dot"></span>10 · Knowledge Check</a></li>
-    <li class="nav-item"><a class="nav-link" href="#habits"     data-section="habits"><span class="nav-dot"></span>11 · 5-Day Habit Builder</a></li>
-    <li class="nav-item"><a class="nav-link" href="#progression" data-section="progression"><span class="nav-dot"></span>12 · Progression Path</a></li>
-    <li class="nav-item"><a class="nav-link" href="#summary"    data-section="summary"><span class="nav-dot"></span>13 · Summary</a></li>
-    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>14 · Explore Further</a></li>
+    <li class="nav-item"><a class="nav-link" href="#biasguide"  data-section="biasguide"><span class="nav-dot"></span>05 · Bias Field Guide</a></li>
+    <li class="nav-item"><a class="nav-link" href="#model"      data-section="model"><span class="nav-dot"></span>06 · Mental Model</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mistakes"   data-section="mistakes"><span class="nav-dot"></span>07 · Common Mistakes</a></li>
+    <li class="nav-item"><a class="nav-link" href="#indicators" data-section="indicators"><span class="nav-dot"></span>08 · Behavioral Indicators</a></li>
+    <li class="nav-item"><a class="nav-link" href="#scenarios"  data-section="scenarios"><span class="nav-dot"></span>09 · Practical Examples</a></li>
+    <li class="nav-item"><a class="nav-link" href="#reflection" data-section="reflection"><span class="nav-dot"></span>10 · Self-Reflection</a></li>
+    <li class="nav-item"><a class="nav-link" href="#check"      data-section="check"><span class="nav-dot"></span>11 · Knowledge Check</a></li>
+    <li class="nav-item"><a class="nav-link" href="#habits"     data-section="habits"><span class="nav-dot"></span>12 · 5-Day Habit Builder</a></li>
+    <li class="nav-item"><a class="nav-link" href="#progression" data-section="progression"><span class="nav-dot"></span>13 · Progression Path</a></li>
+    <li class="nav-item"><a class="nav-link" href="#summary"    data-section="summary"><span class="nav-dot"></span>14 · Summary</a></li>
+    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>15 · Explore Further</a></li>
   </ul>
   <div class="nav-arrows">
     <button class="nav-arrow" id="btnPrev" disabled>
       <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       Prev
     </button>
-    <span class="slide-counter" id="slideCounter">1 / 14</span>
+    <span class="slide-counter" id="slideCounter">1 / 15</span>
     <button class="nav-arrow" id="btnNext">
       Next
       <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1670,8 +1801,68 @@
       </div>
     </div>
 
-    <!-- 5. MENTAL MODEL -->
-    <div class="section section-odd" id="model">
+    <!-- 05. BIAS FIELD GUIDE -->
+    <div class="section section-odd" id="biasguide">
+      <h2>Bias Field Guide</h2>
+      <p class="bias-intro">Eight biases that shape what gets noticed, accepted, or waved through — in a source, in data, and in your own reaction to a conclusion. Click a card for the fuller picture: what it looks like in knowledge work, how to spot it, and how to counter it.</p>
+
+      <div class="bias-grid" id="biasGrid" role="list">
+        <button type="button" class="bias-card" role="listitem" data-bias="confirmation" onclick="showBias('confirmation')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg></div>
+          <div class="bias-card-name">Confirmation Bias</div>
+          <p class="bias-card-desc">Favoring evidence that fits what you already believe.</p>
+        </button>
+
+        <button type="button" class="bias-card" role="listitem" data-bias="anchoring" onclick="showBias('anchoring')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M12 3a3 3 0 100 6 3 3 0 000-6zM6 14h12M6 14a3 3 0 106 0M18 14a3 3 0 11-6 0"/></svg></div>
+          <div class="bias-card-name">Anchoring Bias</div>
+          <p class="bias-card-desc">Letting the first number or claim set the scale for everything after.</p>
+        </button>
+
+        <button type="button" class="bias-card" role="listitem" data-bias="availability" onclick="showBias('availability')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5l3 3"/><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="bias-card-name">Availability Heuristic</div>
+          <p class="bias-card-desc">Judging likelihood by how easily an example comes to mind.</p>
+        </button>
+
+        <button type="button" class="bias-card" role="listitem" data-bias="authority" onclick="showBias('authority')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v2H4V7z"/><path d="M5 9v9M9 9v9M15 9v9M19 9v9M3 21h18"/></svg></div>
+          <div class="bias-card-name">Authority Bias</div>
+          <p class="bias-card-desc">Giving a claim more weight because of who or what stated it.</p>
+        </button>
+
+        <button type="button" class="bias-card" role="listitem" data-bias="automation" onclick="showBias('automation')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="7" width="14" height="11" rx="2"/><path d="M9 3v4M15 3v4M9 12h.01M15 12h.01M9 15h.01M15 15h.01"/></svg></div>
+          <div class="bias-card-name">Automation Bias</div>
+          <p class="bias-card-desc">Trusting a system-generated output more than the evidence warrants.</p>
+        </button>
+
+        <button type="button" class="bias-card" role="listitem" data-bias="sunkcost" onclick="showBias('sunkcost')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H7"/></svg></div>
+          <div class="bias-card-name">Sunk Cost Fallacy</div>
+          <p class="bias-card-desc">Continuing based on what's already invested, not what's ahead.</p>
+        </button>
+
+        <button type="button" class="bias-card" role="listitem" data-bias="halo" onclick="showBias('halo')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="3.2"/><ellipse cx="12" cy="9" rx="8.5" ry="3.2"/><path d="M9 12.5V20M15 12.5V20M7 20h10"/></svg></div>
+          <div class="bias-card-name">Halo Effect</div>
+          <p class="bias-card-desc">Letting one strong trait color judgment of everything else.</p>
+        </button>
+
+        <button type="button" class="bias-card" role="listitem" data-bias="recency" onclick="showBias('recency')" aria-pressed="false">
+          <div class="bias-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M9 19V5M14 19v-7M19 19V12"/></svg></div>
+          <div class="bias-card-name">Recency Bias</div>
+          <p class="bias-card-desc">Weighting the latest data point heavier than the trend behind it.</p>
+        </button>
+      </div>
+
+      <div class="bias-panel" id="biasPanel" aria-live="polite">
+        <p class="bias-panel-empty">Select a bias above for a fuller breakdown — definition, how it shows up in knowledge work, and how to spot and counter it.</p>
+      </div>
+    </div>
+
+    <!-- 06. MENTAL MODEL -->
+    <div class="section section-even" id="model">
       <h2>Mental Model</h2>
 
       <div class="model-card open" id="model-ladder">
@@ -1709,8 +1900,8 @@
       </div>
     </div>
 
-    <!-- 6. COMMON MISTAKES -->
-    <div class="section section-even" id="mistakes">
+    <!-- 07. COMMON MISTAKES -->
+    <div class="section section-odd" id="mistakes">
       <h2>Common Mistakes</h2>
 
       <div class="mistake">
@@ -1770,8 +1961,8 @@
       </div>
     </div>
 
-    <!-- 7. BEHAVIORAL INDICATORS -->
-    <div class="section section-odd" id="indicators">
+    <!-- 08. BEHAVIORAL INDICATORS -->
+    <div class="section section-even" id="indicators">
       <h2>Behavioral Indicators</h2>
       <p>Observable behaviors across a single spectrum: the target zone in the middle, flanked by the signals that show when the skill is under- or overused.</p>
 
@@ -1834,8 +2025,8 @@
       </div>
     </div>
 
-    <!-- 8. PRACTICAL EXAMPLES -->
-    <div class="section section-even" id="scenarios">
+    <!-- 09. PRACTICAL EXAMPLES -->
+    <div class="section section-odd" id="scenarios">
       <h2>Practical Examples</h2>
 
       <div class="scenario">
@@ -1870,8 +2061,8 @@
       </div>
     </div>
 
-    <!-- 9. SELF-REFLECTION -->
-    <div class="section section-odd" id="reflection">
+    <!-- 10. SELF-REFLECTION -->
+    <div class="section section-even" id="reflection">
       <h2>Self-Reflection Activities</h2>
       <p>Three prompts to audit your current use of Critical Thinking. Each takes under five minutes to complete honestly.</p>
 
@@ -1900,8 +2091,8 @@
       </div>
     </div>
 
-    <!-- 10. KNOWLEDGE CHECK -->
-    <div class="section section-even" id="check">
+    <!-- 11. KNOWLEDGE CHECK -->
+    <div class="section section-odd" id="check">
       <h2>Knowledge Check</h2>
       <p>Five questions — two conceptual, two applied, one synthesis. Select your answers, then reveal results.</p>
 
@@ -1984,8 +2175,8 @@
       <div class="kc-score" id="kcScore"><p id="kcScoreText"></p></div>
     </div>
 
-    <!-- 11. HABIT BUILDER -->
-    <div class="section section-odd" id="habits">
+    <!-- 12. HABIT BUILDER -->
+    <div class="section section-even" id="habits">
       <h2>5-Day Habit Builder</h2>
       <p>Five daily practices, each under 15 minutes. Days build on each other — each step uses output from the previous day. Open each day to see the full practice.</p>
 
@@ -2242,8 +2433,8 @@
       </div>
     </div>
 
-    <!-- 12. PROGRESSION PATH -->
-    <div class="section section-even" id="progression">
+    <!-- 13. PROGRESSION PATH -->
+    <div class="section section-odd" id="progression">
       <h2>Progression Path</h2>
       <p>Three stages of developing mastery in Critical Thinking. Each stage has a new capability and an observable signal of progress.</p>
 
@@ -2302,8 +2493,8 @@
       </div>
     </div>
 
-    <!-- 13. SUMMARY -->
-    <div class="section section-odd" id="summary">
+    <!-- 14. SUMMARY -->
+    <div class="section section-even" id="summary">
       <h2>Quick-Recall Summary</h2>
       <div class="summary-block">
         <blockquote>
@@ -2313,8 +2504,8 @@
       </div>
     </div>
 
-    <!-- 14. EXPLORE FURTHER -->
-    <div class="section section-even" id="resources">
+    <!-- 15. EXPLORE FURTHER -->
+    <div class="section section-odd" id="resources">
       <h2>Explore Further</h2>
       <p>Curated for what each resource adds beyond this learning plan — not a description of what it covers, but a reason it belongs here.</p>
 
@@ -2478,6 +2669,108 @@ function toggleAccordion(id) {
   if (header) header.setAttribute('aria-expanded', !isOpen);
   const label = card.querySelector('.accordion-label');
   if (label) label.textContent = isOpen ? 'Expand' : 'Collapse';
+}
+
+// ── BIAS FIELD GUIDE ──────────────────────────
+const biasData = {
+  confirmation: {
+    name: 'Confirmation Bias',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>',
+    def: 'The tendency to notice, accept, and remember evidence that fits what you already believe, while giving evidence that contradicts it less scrutiny or less weight.',
+    example: 'A report concludes the new onboarding flow is working. It happens to match what the team already expected, so it gets approved on a skim. A report with the opposite conclusion, on the same data, tends to get read line by line.',
+    spot: 'Notice when you read something and feel agreement before you\'ve checked the evidence. That feeling of "yes, exactly" arriving fast is the signal.',
+    counter: 'Steelman the opposite conclusion first — restate the strongest version of the case you\'d expect if the finding were wrong, then see if the evidence still holds up against it.'
+  },
+  anchoring: {
+    name: 'Anchoring Bias',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M12 3a3 3 0 100 6 3 3 0 000-6zM6 14h12M6 14a3 3 0 106 0M18 14a3 3 0 11-6 0"/></svg>',
+    def: 'Over-relying on the first piece of information offered — a number, an estimate, an initial framing — and judging everything that follows relative to it, even when that first figure was arbitrary or unverified.',
+    example: 'An initial AI-generated estimate puts a project at three weeks. Every revised estimate after that gets discussed as "more" or "less" than three weeks, even after better information arrives that would justify starting from scratch.',
+    spot: 'Ask where the first number in the conversation came from. If nobody can trace it to a source or method, it\'s an anchor, not a baseline.',
+    counter: 'Generate an independent estimate before looking at the existing one, then compare the two — rather than adjusting the existing figure up or down.'
+  },
+  availability: {
+    name: 'Availability Heuristic',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 8v5l3 3"/><circle cx="12" cy="12" r="9"/></svg>',
+    def: 'Judging how likely or common something is by how easily an example comes to mind, rather than by actual frequency or data.',
+    example: 'One vivid outage last quarter makes a particular failure mode feel like the most pressing risk this quarter, even though the data shows it accounts for a small share of incidents compared to less memorable, more frequent ones.',
+    spot: 'Ask whether a risk or priority is getting attention because of its actual frequency, or because a recent or dramatic instance of it is easy to recall.',
+    counter: 'Pull the base rate before trusting the gut sense — how often has this actually happened, over what period, compared to the alternatives.'
+  },
+  authority: {
+    name: 'Authority Bias',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v2H4V7z"/><path d="M5 9v9M9 9v9M15 9v9M19 9v9M3 21h18"/></svg>',
+    def: 'Giving a claim more credibility because of who or what produced it — a senior title, a well-known vendor, a confident AI tool — rather than because of the evidence or reasoning behind it.',
+    example: 'The same recommendation lands differently depending on whether it\'s attributed to a junior analyst or a named industry framework, even when the underlying analysis is identical.',
+    spot: 'Notice if your confidence in a claim shifts when you imagine it stripped of its source. If the claim feels weaker without the name attached, the name was doing the work, not the evidence.',
+    counter: 'Evaluate the claim on its source, method, currency, and motive before noting who said it — then check whether the attribution changes that evaluation at all.'
+  },
+  automation: {
+    name: 'Automation Bias',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="7" width="14" height="11" rx="2"/><path d="M9 3v4M15 3v4M9 12h.01M15 12h.01M9 15h.01M15 15h.01"/></svg>',
+    def: 'Trusting a system-generated or AI-generated output more than the evidence actually warrants, simply because it came from a system rather than a person — and giving it less scrutiny as a result.',
+    example: 'An AI summary states a 40% increase in tickets with no visible source or method. It gets forwarded to leadership as-is, while the same unsourced figure in a colleague\'s email would have prompted a "where\'s this from?" reply.',
+    spot: 'Ask whether you\'d accept the same claim, presented with the same level of detail, if a colleague had said it instead of a tool.',
+    counter: 'Apply the same evidence filter — source, method, currency, motive — to AI output that you\'d apply to a person\'s claim. Confident phrasing is not evidence.'
+  },
+  sunkcost: {
+    name: 'Sunk Cost Fallacy',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H7"/></svg>',
+    def: 'Continuing to invest time, budget, or effort in something based on what\'s already been spent, rather than on what the path forward actually justifies.',
+    example: 'A months-long migration to a new platform keeps getting funded because of how much has already gone into it, even as new evidence suggests the original case for switching no longer holds.',
+    spot: 'Notice when the argument for continuing is framed around past investment ("we\'ve already put in X") rather than future return.',
+    counter: 'Ask the question as if starting fresh today, with no prior investment: would you choose this path knowing only what you know now?'
+  },
+  halo: {
+    name: 'Halo Effect',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="3.2"/><ellipse cx="12" cy="9" rx="8.5" ry="3.2"/><path d="M9 12.5V20M15 12.5V20M7 20h10"/></svg>',
+    def: 'Letting one strong positive (or negative) trait color judgment of everything else about a person, source, or piece of work — assuming competence in one area implies competence in unrelated ones.',
+    example: 'A vendor\'s polished, well-designed dashboard creates an impression that their underlying methodology must be equally rigorous, even though the two are unrelated and the methodology hasn\'t actually been checked.',
+    spot: 'Separate the trait that impressed you from the claim you\'re actually evaluating. Ask whether the impressive part has any bearing on the part in question.',
+    counter: 'Evaluate each component on its own terms — presentation quality, data quality, and reasoning quality are three separate checks, not one.'
+  },
+  recency: {
+    name: 'Recency Bias',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M9 19V5M14 19v-7M19 19V12"/></svg>',
+    def: 'Giving disproportionate weight to the most recent data point or event, treating it as more representative of the trend than it actually is.',
+    example: 'One strong week of adoption numbers after a slow quarter gets read as "the corner has turned," when it sits well within the normal week-to-week variation the longer trend already shows.',
+    spot: 'Ask how many data points are behind the conclusion. If the claim rests on the latest one or two, the trend hasn\'t been checked — only the most recent moment has.',
+    counter: 'Look at the trend line, not the latest point on it. Ask what the conclusion would be if this most recent data point were excluded.'
+  }
+};
+
+function showBias(key) {
+  const data = biasData[key];
+  const panel = document.getElementById('biasPanel');
+  if (!data || !panel) return;
+
+  document.querySelectorAll('.bias-card').forEach(card => {
+    const isActive = card.dataset.bias === key;
+    card.classList.toggle('active', isActive);
+    card.setAttribute('aria-pressed', String(isActive));
+  });
+
+  panel.innerHTML = `
+    <div class="bias-panel-header">
+      <div class="bias-panel-icon">${data.icon}</div>
+      <h4>${data.name}</h4>
+    </div>
+    <p class="bias-panel-def">${data.def}</p>
+    <div class="bias-panel-block">
+      <div class="bias-panel-label">Shows Up As</div>
+      <p>${data.example}</p>
+    </div>
+    <div class="bias-panel-tips">
+      <div class="bias-panel-block">
+        <div class="bias-panel-label">Spot It</div>
+        <p>${data.spot}</p>
+      </div>
+      <div class="bias-panel-block">
+        <div class="bias-panel-label">Counter It</div>
+        <p>${data.counter}</p>
+      </div>
+    </div>
+  `;
 }
 
 // ── SCROLL SPY + PREV/NEXT ───────────────────
