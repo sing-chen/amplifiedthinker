@@ -1,0 +1,20 @@
+/* ── Amplified · shared base ───────────────────────────────────────────────
+   Brand design tokens, reset, base typography, skip-link and focus styles
+   shared by the top-level pages (index, future-skills, about).
+   Linked BEFORE each page's inline <style>, so page-specific rules still win.
+   Note: the skill primer/plan pages are self-contained templates with a
+   deliberately different focus/skip-link palette and are not bound to this file.
+──────────────────────────────────────────────────────────────────────────── */
+:root {
+  --deep-teal:#2D756F;--mid-teal:#2D756F;--teal:#5BA79F;--sage:#ACC4B6;
+  --light-sage:#D8E4DD;--off-white:#F5F7F6;--warm-cream:#EDE5C5;--charcoal:#2D3330;
+  --navy:#1F4D4A;--warm-gray:#8B8A85;--terracotta:#C77B5F;
+  --text-dark:#1F4D4A;--text-mid:#1F4D4A;--text-muted:#4A5C55;--white:#FFFFFF;
+  --page-max:1100px;--col:680px;--radius:6px;--radius-lg:10px;--radius-xl:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--text-dark);background:var(--off-white);font-size:16px;line-height:1.65}
+.skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
+.skip-link:focus{top:0}
+:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
