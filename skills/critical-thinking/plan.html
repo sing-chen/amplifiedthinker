@@ -1309,10 +1309,10 @@
     background: var(--off-white);
     border-bottom: 2px solid var(--light-sage);
   }
-  .resource-table th:nth-child(1) { width: 9%; }
-  .resource-table th:nth-child(2) { width: 19%; }
-  .resource-table th:nth-child(3) { width: 14%; }
-  .resource-table th:nth-child(4) { width: 8%; }
+  .resource-table th:nth-child(1) { width: 12%; }
+  .resource-table th:nth-child(2) { width: 18%; }
+  .resource-table th:nth-child(3) { width: 13%; }
+  .resource-table th:nth-child(4) { width: 7%; }
   .resource-table th:nth-child(5) { width: 38%; }
   .resource-table th:nth-child(6) { width: 12%; }
   .resource-table td {
@@ -1324,14 +1324,38 @@
     background: #FFFFFF;
   }
   .resource-table tr:last-child td { border-bottom: none; }
+  .resource-table tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--off-white) 60%, white); }
   .resource-table tr:hover td { background: color-mix(in srgb, var(--light-sage) 40%, transparent); }
+  .resource-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--warm-gray);
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .resource-time svg { width: 11px; height: 11px; flex-shrink: 0; }
   .resource-type {
+    white-space: nowrap;
+  }
+  .type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-family: 'Poppins', sans-serif;
     font-size: 11px;
     font-weight: 500;
-    color: var(--warm-gray);
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
     white-space: nowrap;
   }
+  .type-pill svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .type-pill--book      { background: #DCEEEC; color: var(--deep-teal); }
+  .type-pill--article   { background: #DEE7EE; color: var(--slate-blue); }
+  .type-pill--video      { background: #F3E0D7; color: var(--terracotta); }
+  .type-pill--podcast   { background: #F6E6C8; color: #8A5A1E; }
+  .type-pill--paper     { background: #DCE6E5; color: var(--navy); }
+  .type-pill--factsheet { background: #E3EDE7; color: #4B6B5C; }
   .resource-title { font-weight: 500; color: var(--deep-teal); }
   .resource-why { color: var(--navy); font-size: 13px; }
   .resource-links { white-space: nowrap; vertical-align: top; }
@@ -2531,70 +2555,70 @@
         </thead>
         <tbody>
           <tr>
-            <td class="resource-type">Book</td>
+            <td class="resource-type"><span class="type-pill type-pill--book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Book</span></td>
             <td class="resource-title">The Fifth Discipline</td>
             <td>Peter Senge · Doubleday, 1990 (rev. 2006)</td>
-            <td>6–8 hrs</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>6–8 hrs</span></td>
             <td class="resource-why">The original source for the Ladder of Inference, with the full organizational context Argyris and Senge built it for — beyond what any single-page summary covers.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.goodreads.com/book/show/255127.The_Fifth_Discipline" target="_blank" rel="noopener">Goodreads</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Article</td>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
             <td class="resource-title">How to Use the Ladder of Inference for Better Decisions</td>
             <td>Asana, 2026</td>
-            <td>15 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>15 min</span></td>
             <td class="resource-why">The clearest practical walkthrough of all seven rungs with workplace examples, including how to use the Ladder in team conversations rather than just privately.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://asana.com/resources/ladder-of-inference" target="_blank" rel="noopener">Read</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Paper</td>
+            <td class="resource-type"><span class="type-pill type-pill--paper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Paper</span></td>
             <td class="resource-title">AI Tools in Society: Impacts on Cognitive Offloading and the Future of Critical Thinking</td>
             <td>Michael Gerlich · Societies, 2025 (open access)</td>
-            <td>30–45 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>30–45 min</span></td>
             <td class="resource-why">The primary research behind this plan's framing of AI and Critical Thinking: a 666-participant study finding a measurable negative correlation between AI tool use and critical thinking, mediated by cognitive offloading.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.mdpi.com/2075-4698/15/1/6" target="_blank" rel="noopener">Read</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Article</td>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
             <td class="resource-title">The Paradox of AI Assistance: Better Results, Worse Thinking</td>
             <td>EDUCAUSE Review, Dec 2025</td>
-            <td>15 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>15 min</span></td>
             <td class="resource-why">An accessible synthesis of Gerlich and related studies, written for a workplace and education audience rather than an academic one.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://er.educause.edu/articles/2025/12/the-paradox-of-ai-assistance-better-results-worse-thinking" target="_blank" rel="noopener">Read</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Factsheet</td>
+            <td class="resource-type"><span class="type-pill type-pill--factsheet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Factsheet</span></td>
             <td class="resource-title">Evidence-Based Practice for Effective Decision-Making</td>
             <td>CIPD</td>
-            <td>15 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>15 min</span></td>
             <td class="resource-why">A practitioner framework for weighing evidence quality from a professional body — useful grounding for the source/method/currency/motive filter in Principle 02.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.cipd.org/en/knowledge/factsheets/evidence-based-practice-factsheet/" target="_blank" rel="noopener">Read</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Book</td>
+            <td class="resource-type"><span class="type-pill type-pill--book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Book</span></td>
             <td class="resource-title">Thinking, Fast and Slow</td>
             <td>Daniel Kahneman, 2011</td>
-            <td>~20 hrs</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~20 hrs</span></td>
             <td class="resource-why">The foundational text on System 1 / System 2 thinking and confirmation bias — goes deeper on "bias has three addresses" than any shorter source can.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.goodreads.com/book/show/11468377-thinking-fast-and-slow" target="_blank" rel="noopener">Goodreads</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Book</td>
+            <td class="resource-type"><span class="type-pill type-pill--book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Book</span></td>
             <td class="resource-title">Intuition Pumps and Other Tools for Thinking</td>
             <td>Daniel Dennett, 2013</td>
-            <td>~10 hrs</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~10 hrs</span></td>
             <td class="resource-why">Dennett's formulation of Rapoport's Rules — the structured version of steelmanning referenced in Principle 03.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.goodreads.com/book/show/16091820-intuition-pumps-and-other-tools-for-thinking" target="_blank" rel="noopener">Goodreads</a>

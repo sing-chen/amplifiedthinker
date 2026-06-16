@@ -1245,14 +1245,38 @@
     background: #FFFFFF;
   }
   .resource-table tr:last-child td { border-bottom: none; }
+  .resource-table tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--off-white) 60%, white); }
   .resource-table tr:hover td { background: color-mix(in srgb, var(--light-sage) 40%, transparent); }
+  .resource-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--warm-gray);
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .resource-time svg { width: 11px; height: 11px; flex-shrink: 0; }
   .resource-type {
+    white-space: nowrap;
+  }
+  .type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-family: 'Poppins', sans-serif;
     font-size: 11px;
     font-weight: 500;
-    color: var(--warm-gray);
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
     white-space: nowrap;
   }
+  .type-pill svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .type-pill--book      { background: #DCEEEC; color: var(--deep-teal); }
+  .type-pill--article   { background: #DEE7EE; color: var(--slate-blue); }
+  .type-pill--video      { background: #F3E0D7; color: var(--terracotta); }
+  .type-pill--podcast   { background: #F6E6C8; color: #8A5A1E; }
+  .type-pill--paper     { background: #DCE6E5; color: var(--navy); }
+  .type-pill--factsheet { background: #E3EDE7; color: #4B6B5C; }
   .resource-title { font-weight: 500; color: var(--deep-teal); }
   .resource-why { color: var(--navy); font-size: 13px; }
   .resource-links { white-space: nowrap; vertical-align: top; }
@@ -2508,20 +2532,20 @@
 
           <!-- BOOKS -->
           <tr>
-            <td class="resource-type">Book</td>
+            <td class="resource-type"><span class="type-pill type-pill--book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Book</span></td>
             <td class="resource-title">The Pyramid Principle</td>
             <td>Barbara Minto · Pearson</td>
-            <td>4–5 hrs</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>4–5 hrs</span></td>
             <td class="resource-why">The foundational text for MECE — goes deeper than any article can on how to structure decompositions that are both complete and clean.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.goodreads.com/book/show/33206.The_Minto_Pyramid_Principle" target="_blank" rel="noopener">Goodreads</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Book</td>
+            <td class="resource-type"><span class="type-pill type-pill--book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Book</span></td>
             <td class="resource-title">Are Your Lights On?</td>
             <td>Donald Gause &amp; Gerald Weinberg · Dorset House</td>
-            <td>2–3 hrs</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>2–3 hrs</span></td>
             <td class="resource-why">A cult classic on problem definition — the skill of naming the right problem before solving anything. Directly addresses the gap between what gets stated and what actually needs solving.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.goodreads.com/book/show/1044831.Are_Your_Lights_On_" target="_blank" rel="noopener">Goodreads</a>
@@ -2530,50 +2554,50 @@
 
           <!-- MENTAL MODEL RESOURCES -->
           <tr>
-            <td class="resource-type">Article</td>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
             <td class="resource-title">MECE: I invented it, so I get to say how to pronounce it</td>
             <td>Barbara Minto · McKinsey &amp; Company</td>
-            <td>10 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>10 min</span></td>
             <td class="resource-why">The origin of MECE in Minto's own words — the authoritative source on what the principle was designed to do and why it matters for structuring any analysis.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.mckinsey.com/alumni/news-and-events/global-news/alumni-news/barbara-minto-mece-i-invented-it-so-i-get-to-say-how-to-pronounce-it" target="_blank" rel="noopener">Read</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Article</td>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
             <td class="resource-title">5 Whys</td>
             <td>Lean Enterprise Institute</td>
-            <td>10 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>10 min</span></td>
             <td class="resource-why">The LEI is the authoritative English-language repository for Toyota Production System methodology — this entry explains the 5 Whys in its original operational context, including Ohno's own machine-stoppage example.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.lean.org/lexicon-terms/5-whys/" target="_blank" rel="noopener">Read</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Video</td>
+            <td class="resource-type"><span class="type-pill type-pill--video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video</span></td>
             <td class="resource-title">The First Principles Method Explained by Elon Musk</td>
             <td>Elon Musk · Kevin Rose Foundation interview</td>
-            <td>3 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>3 min</span></td>
             <td class="resource-why">The original clip where Musk explains First Principles using the battery analogy — the clearest practical demonstration of the method in under three minutes.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://www.youtube.com/watch?v=NV3sBlRgzTI" target="_blank" rel="noopener">YouTube</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Article</td>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
             <td class="resource-title">Fishbone (Ishikawa) Diagram</td>
             <td>American Society for Quality (ASQ)</td>
-            <td>15 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>15 min</span></td>
             <td class="resource-why">ASQ is the field's authoritative body on quality tools — this page covers the diagram's origin, structure, the six standard categories, and how to facilitate a session, which is what the learning plan's worked example is based on.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://asq.org/quality-resources/fishbone" target="_blank" rel="noopener">Read</a>
             </td>
           </tr>
           <tr>
-            <td class="resource-type">Article</td>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
             <td class="resource-title">Issue Trees: How to Use Them</td>
             <td>IGotAnOffer (McKinsey-trained practitioners)</td>
-            <td>15 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>15 min</span></td>
             <td class="resource-why">The clearest practitioner-level explanation of how issue trees are built and used in real analytical work — goes beyond definition to show how branches are constructed, trimmed, and tested.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://igotanoffer.com/blogs/mckinsey-case-interview-blog/issue-tree" target="_blank" rel="noopener">Read</a>
@@ -2582,10 +2606,10 @@
 
           <!-- PODCAST -->
           <tr>
-            <td class="resource-type">Podcast</td>
+            <td class="resource-type"><span class="type-pill type-pill--podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v4"/></svg>Podcast</span></td>
             <td class="resource-title">The Signal and The Noise — Nate Silver</td>
             <td>Wiser Than Yesterday · Nico &amp; Sam · Feb 2024</td>
-            <td>35 min</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>35 min</span></td>
             <td class="resource-why">Covers the pattern recognition principle directly — why predictions fail, how to distinguish real signal from noise, and what accurate analytical thinking actually looks like in practice.</td>
             <td class="resource-links">
               <a class="resource-link" href="https://open.spotify.com/episode/3ew5YmjKxWKIDselVMDtY0" target="_blank" rel="noopener">Spotify</a>
