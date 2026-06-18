@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My People · Amplified</title>
+<meta name="description" content="The thinkers, coaches, and practitioners I return to — my virtual board of advisors. Each of them sharpens a different dimension of how I think and operate.">
+<link rel="canonical" href="https://sing-chen.github.io/amplified/my-people.html">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Amplified">
+<meta property="og:title" content="My People · Amplified">
+<meta property="og:description" content="The thinkers, coaches, and practitioners I return to — my virtual board of advisors. Each of them sharpens a different dimension of how I think and operate.">
+<meta property="og:url" content="https://sing-chen.github.io/amplified/my-people.html">
+<meta property="og:image" content="https://sing-chen.github.io/amplified/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sing-chen.github.io/amplified/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ── HERO ── */
+  .hero{background:#1B4A44;padding:80px 40px 72px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 80% 60%,rgba(91,167,159,.07) 0%,transparent 70%);pointer-events:none}
+  .hero-pattern{position:absolute;top:0;right:0;width:60%;height:100%;opacity:.07;pointer-events:none}
+  .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
+  .eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
+  .hero-hl{font-family:'Poppins',sans-serif;font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.01em;margin-bottom:20px;max-width:860px}
+  .hero-body{font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:640px}
+
+  /* ── PEOPLE SECTION ── */
+  .people-section{padding:52px 40px 80px;max-width:var(--page-max);margin:0 auto}
+
+  /* ── FILTER TABS ── */
+  .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:36px}
+  .ftab{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid rgba(172,196,182,.3);color:var(--text-muted);background:transparent;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
+  .ftab:hover{background:var(--light-sage);border-color:rgba(45,117,111,.3);color:var(--mid-teal)}
+  .ftab.active{background:var(--mid-teal);border-color:transparent;color:var(--white)}
+  .pcard.hidden{display:none}
+  .filter-empty{display:none;padding:32px 0;font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted)}
+  .filter-empty.visible{display:block}
+
+  /* ── PEOPLE GRID ── */
+  .people-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+
+  /* ── PERSON CARD ── */
+  .pcard{background:var(--white);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s}
+  .pcard:hover{border-color:rgba(45,117,111,.45);box-shadow:0 10px 30px rgba(27,74,68,.1);transform:translateY(-3px)}
+
+  /* photo */
+  .pcard-photo{height:220px;background:#1B4A44;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+  .pcard-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0}
+  .pcard-placeholder{width:72px;height:72px;flex-shrink:0}
+
+  /* card body */
+  .pcard-body{padding:18px 20px 20px}
+
+  /* name + external link */
+  .pcard-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
+  .pname{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--text-dark);line-height:1.25}
+  .pext-link{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;color:var(--text-muted);flex-shrink:0;margin-top:1px;transition:color .15s,background .15s;text-decoration:none}
+  .pext-link:hover{color:var(--mid-teal);background:var(--light-sage)}
+  .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+  .pext-link svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* tagline */
+  .ptagline{font-family:'Inter',sans-serif;font-size:13px;font-style:italic;color:var(--text-muted);margin-bottom:10px;line-height:1.4}
+
+  /* category pill */
+  .ppills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+  .ppill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+  .pp-leadership  {background:#C5DDD9;color:#1B4A44}
+  .pp-communication{background:#F2DDB8;color:#5A3A00}
+  .pp-influence   {background:#EDD5CB;color:#7A3A25}
+  .pp-psychology  {background:#D4DCE6;color:#2D3F52}
+  .pp-productivity{background:#D8E4DD;color:#1F4D4A}
+
+  /* description */
+  .pdesc{font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.65;color:var(--navy);margin-bottom:16px}
+
+  /* divider */
+  .pcard-divider{height:1px;background:rgba(172,196,182,.2);margin-bottom:14px}
+
+  /* key works */
+  .pworks-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:8px}
+  .pworks-pills{display:flex;flex-wrap:wrap;gap:5px}
+  .pwork-pill{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:20px;padding:2px 9px;line-height:1.6}
+
+  footer{background:var(--charcoal);padding:24px 40px;border-top:1px solid rgba(255,255,255,.06)}
+  .fi{max-width:var(--page-max);margin:0 auto}
+  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.35)}
+
+  @media(max-width:900px){.people-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){
+    .hero,.people-section{padding-left:20px;padding-right:20px}
+    .people-grid{grid-template-columns:1fr}
+    footer{padding:16px 20px}
+  }
+  @media(prefers-reduced-motion:reduce){.pcard{transition:none}}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="nav.js"></script>
+
+<section class="hero">
+  <svg class="hero-pattern" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+    <g stroke="#5BA79F" stroke-width="1.2" fill="none">
+      <line x1="60" y1="70" x2="190" y2="30"/>
+      <line x1="190" y1="30" x2="340" y2="75"/>
+      <line x1="340" y1="75" x2="500" y2="45"/>
+      <line x1="60" y1="70" x2="130" y2="170"/>
+      <line x1="190" y1="30" x2="290" y2="195"/>
+      <line x1="340" y1="75" x2="450" y2="155"/>
+      <line x1="500" y1="45" x2="555" y2="255"/>
+      <line x1="130" y1="170" x2="290" y2="195"/>
+      <line x1="290" y1="195" x2="450" y2="155"/>
+      <line x1="450" y1="155" x2="555" y2="255"/>
+      <line x1="130" y1="170" x2="85" y2="300"/>
+      <line x1="290" y1="195" x2="250" y2="335"/>
+      <line x1="450" y1="155" x2="410" y2="315"/>
+      <line x1="555" y1="255" x2="535" y2="365"/>
+      <line x1="85" y1="300" x2="250" y2="335"/>
+      <line x1="250" y1="335" x2="410" y2="315"/>
+      <line x1="410" y1="315" x2="535" y2="365"/>
+    </g>
+    <g>
+      <circle cx="60" cy="70" r="5" fill="#5BA79F"/>
+      <circle cx="190" cy="30" r="7" fill="#5BA79F"/>
+      <circle cx="340" cy="75" r="5" fill="#5BA79F"/>
+      <circle cx="500" cy="45" r="4" fill="#5BA79F"/>
+      <circle cx="130" cy="170" r="4" fill="#D9A05B"/>
+      <circle cx="290" cy="195" r="7" fill="#5BA79F"/>
+      <circle cx="450" cy="155" r="5" fill="#5BA79F"/>
+      <circle cx="555" cy="255" r="4" fill="#C77B5F"/>
+      <circle cx="85" cy="300" r="5" fill="#5BA79F"/>
+      <circle cx="250" cy="335" r="4" fill="#5BA79F"/>
+      <circle cx="410" cy="315" r="6" fill="#5BA79F"/>
+      <circle cx="535" cy="365" r="3" fill="#D9A05B"/>
+      <circle cx="160" cy="95" r="2" fill="#5BA79F" opacity=".5"/>
+      <circle cx="390" cy="185" r="2.5" fill="#C77B5F" opacity=".45"/>
+      <circle cx="230" cy="260" r="2" fill="#5BA79F" opacity=".5"/>
+      <circle cx="480" cy="290" r="2" fill="#5BA79F" opacity=".4"/>
+      <circle cx="50" cy="210" r="2" fill="#5BA79F" opacity=".45"/>
+    </g>
+  </svg>
+  <div class="hi">
+    <p class="eyebrow">Virtual Roundtable</p>
+    <h1 class="hero-hl">My People</h1>
+    <p class="hero-body">The thinkers, coaches, and practitioners I return to — my virtual board of advisors. Each of them sharpens a different dimension of how I think and operate.</p>
+  </div>
+</section>
+
+<main id="main-content">
+
+<section class="people-section" aria-label="My People">
+
+  <div class="filter-bar" role="group" aria-label="Filter by area of expertise">
+    <button class="ftab active" data-filter="all">All</button>
+    <button class="ftab" data-filter="leadership">Leadership</button>
+    <button class="ftab" data-filter="communication">Communication</button>
+    <button class="ftab" data-filter="influence">Influence</button>
+    <button class="ftab" data-filter="psychology">Psychology</button>
+    <button class="ftab" data-filter="productivity">Productivity</button>
+  </div>
+
+  <div class="filter-empty" id="filter-empty">No people match this filter.</div>
+
+  <div class="people-grid" role="list">
+
+    <!-- SIMON SINEK -->
+    <div class="pcard" data-categories="leadership" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/simon-sinek.webp" alt="Simon Sinek"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Simon Sinek</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Simon Sinek website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Start with Why</div>
+        <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
+        <div class="pdesc">Leadership purpose, the infinite game mindset, and building organisations that inspire rather than just perform.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">Start With Why</span>
+          <span class="pwork-pill">The Infinite Game</span>
+          <span class="pwork-pill">Leaders Eat Last</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHRIS VOSS -->
+    <div class="pcard" data-categories="communication" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/chris-voss.webp" alt="Chris Voss"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Chris Voss</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Chris Voss website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Never Split the Difference</div>
+        <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
+        <div class="pdesc">High-stakes negotiation, tactical empathy, and the communication techniques that actually move people.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">Never Split the Difference</span>
+          <span class="pwork-pill">Black Swan Group</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHADE ZAHRAI -->
+    <div class="pcard" data-categories="influence" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/shade-zahrai.webp" alt="Shade Zahrai"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Shade Zahrai</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Shade Zahrai website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Influence with integrity</div>
+        <div class="ppills"><span class="ppill pp-influence">Influence</span></div>
+        <div class="pdesc">Authentic influence, behavioural science applied to leadership, and building psychological safety at work.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">TEDx: Become the Best Version of You</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DR JULIE SMITH -->
+    <div class="pcard" data-categories="psychology" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/julie-smith.webp" alt="Dr Julie Smith"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Dr Julie Smith</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Dr Julie Smith website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Why Has Nobody Told Me This Before?</div>
+        <div class="ppills"><span class="ppill pp-psychology">Psychology</span></div>
+        <div class="pdesc">Evidence-based mental health tools, emotional regulation, and the psychology of resilience and self-worth.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">Why Has Nobody Told Me This Before?</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADAM GRANT -->
+    <div class="pcard" data-categories="psychology" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/adam-grant.webp" alt="Adam Grant"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Adam Grant</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Adam Grant website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Think Again</div>
+        <div class="ppills"><span class="ppill pp-psychology">Psychology</span></div>
+        <div class="pdesc">Organisational psychology, rethinking beliefs, giving and taking, and what drives extraordinary performance.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">Think Again</span>
+          <span class="pwork-pill">Give and Take</span>
+          <span class="pwork-pill">Originals</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRENÉ BROWN -->
+    <div class="pcard" data-categories="leadership" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/brene-brown.webp" alt="Brené Brown"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Brené Brown</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Brené Brown website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Dare to Lead</div>
+        <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
+        <div class="pdesc">Vulnerability, courage, shame resilience, and the research-backed case for wholehearted leadership.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">Dare to Lead</span>
+          <span class="pwork-pill">Daring Greatly</span>
+          <span class="pwork-pill">Atlas of the Heart</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VANESSA VAN EDWARDS -->
+    <div class="pcard" data-categories="communication" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/vanessa-van-edwards.webp" alt="Vanessa Van Edwards"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Vanessa Van Edwards</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Vanessa Van Edwards website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Captivate</div>
+        <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
+        <div class="pdesc">The science of people, decoding social cues, and developing the interpersonal skills that shape influence and connection.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">Captivate</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VINH GIANG -->
+    <div class="pcard" data-categories="communication" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/vinh-giang.webp" alt="Vinh Giang"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Vinh Giang</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Vinh Giang website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">The power of your voice</div>
+        <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
+        <div class="pdesc">Communication mastery, presence, storytelling, and using your voice as a leadership instrument.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">Keynotes &amp; Talks</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- JEFF SU -->
+    <div class="pcard" data-categories="productivity" role="listitem">
+      <div class="pcard-photo">
+        <!-- PHOTO: replace svg with <img src="images/people/jeff-su.webp" alt="Jeff Su"> -->
+        <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-top">
+          <div class="pname">Jeff Su</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Jeff Su website" class="pext-link">
+            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+        <div class="ptagline">Work smarter, not harder</div>
+        <div class="ppills"><span class="ppill pp-productivity">Productivity</span></div>
+        <div class="pdesc">Productivity systems, career strategy, and making the most of digital tools without losing your humanity.</div>
+        <div class="pcard-divider"></div>
+        <div class="pworks-label">Key Works</div>
+        <div class="pworks-pills">
+          <span class="pwork-pill">YouTube Channel</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.people-grid -->
+
+</section>
+
+</main>
+
+<footer>
+  <div class="fi">
+    <div class="fn">© <span id="yr"></span> Sing Chen</div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+  </div>
+</footer>
+
+<script>
+function filterPeople(filter) {
+  document.querySelectorAll('.ftab').forEach(function(tab) {
+    tab.classList.toggle('active', tab.dataset.filter === filter);
+  });
+  var cards = document.querySelectorAll('.pcard');
+  var visible = 0;
+  cards.forEach(function(card) {
+    var cats = (card.dataset.categories || '').split(' ');
+    var show = filter === 'all' || cats.indexOf(filter) !== -1;
+    card.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+  var empty = document.getElementById('filter-empty');
+  if (empty) empty.classList.toggle('visible', visible === 0);
+}
+
+document.querySelectorAll('.ftab').forEach(function(tab) {
+  tab.addEventListener('click', function() { filterPeople(this.dataset.filter); });
+});
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     NEW CARD TEMPLATE — copy, paste, and fill in to add a new person.
+     Insert the new card anywhere inside .people-grid — HTML order = display order.
+     ═══════════════════════════════════════════════════════
+
+<div class="pcard" data-categories="[category]" role="listitem">
+  <div class="pcard-photo">
+    OPTION A — real photo (preferred):
+      <img src="images/people/[slug].webp" alt="[Full Name]">
+    OPTION B — placeholder (remove once photo is added):
+      <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
+  </div>
+  <div class="pcard-body">
+    <div class="pcard-top">
+      <div class="pname">[Full Name]</div>
+      <a href="[URL]" target="_blank" rel="noopener" aria-label="[Full Name] website" class="pext-link">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+    </div>
+    <div class="ptagline">[Tagline — main book, series, or idea they are known for]</div>
+    <div class="ppills">
+      <span class="ppill pp-[category]">[Category]</span>
+    </div>
+    <div class="pdesc">[2–3 sentences: what they cover and what it does for how you think.]</div>
+    <div class="pcard-divider"></div>
+    <div class="pworks-label">Key Works</div>
+    <div class="pworks-pills">
+      <span class="pwork-pill">[Work 1]</span>
+      <span class="pwork-pill">[Work 2]</span>
+    </div>
+  </div>
+</div>
+
+     Categories — data-categories value and matching ppill class:
+       leadership      → pp-leadership
+       communication   → pp-communication
+       influence       → pp-influence
+       psychology      → pp-psychology
+       productivity    → pp-productivity
+     Multiple categories: data-categories="leadership influence"
+     ═══════════════════════════════════════════════════════ -->
+
+</body>
+</html>
