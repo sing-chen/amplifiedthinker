@@ -50,18 +50,18 @@
   .pcard-body{padding:18px 20px 20px}
 
   /* name + external link */
-  .pcard-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:3px}
-  .pname{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--text-dark);line-height:1.25;min-height:40px;display:flex;align-items:flex-start}
-  .pext-link{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;color:var(--text-muted);flex-shrink:0;margin-top:1px;transition:color .15s,background .15s;text-decoration:none}
-  .pext-link:hover{color:var(--mid-teal);background:var(--light-sage)}
+  .pcard-top{display:flex;flex-direction:column;gap:0;margin-bottom:12px}
+  .pname{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--text-dark);line-height:1.25;margin-bottom:6px}
+  .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);text-decoration:none;border-radius:4px;padding:2px 0;margin-top:6px;margin-bottom:0;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+  .pext-link:hover{color:var(--mid-teal);text-decoration:underline}
   .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
-  .pext-link svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .pext-link svg{width:11px;height:11px;flex-shrink:0;opacity:.6}
 
   /* tagline */
 
 
   /* category pill */
-  .ppills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+  .ppills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
   .ppill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
   .pp-leadership  {background:#C5DDD9;color:#1B4A44}
   .pp-communication{background:#F2DDB8;color:#5A3A00}
@@ -170,11 +170,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Simon Sinek</div>
-          <a href="https://simonsinek.com" target="_blank" rel="noopener" aria-label="Simon Sinek website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
+          <a href="https://simonsinek.com" target="_blank" rel="noopener" aria-label="Simon Sinek website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>simonsinek.com</a>
         </div>
-        <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
         <div class="pdesc">Simon Sinek is a prominent figure in the fields of leadership, motivation, and organisational culture. He is renowned for his groundbreaking Golden Circle concept — his theory that individuals and organisations who inspire genuine action do so by starting with "why": their purpose, cause, or belief.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-sinek">
@@ -199,11 +197,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Vanessa Van Edwards</div>
-          <a href="https://www.scienceofpeople.com" target="_blank" rel="noopener" aria-label="Vanessa Van Edwards website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
+          <a href="https://www.scienceofpeople.com" target="_blank" rel="noopener" aria-label="Vanessa Van Edwards website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>scienceofpeople.com</a>
         </div>
-        <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
         <div class="pdesc">Vanessa Van Edwards is a behavioural investigator and author known for decoding human behaviour, communication, and charisma. Her expertise provides practical insights into effective communication, relationship-building, leadership, and negotiation skills.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-vve">
@@ -227,11 +223,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Chris Voss</div>
-          <a href="https://www.blackswanltd.com" target="_blank" rel="noopener" aria-label="Chris Voss website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
+          <a href="https://www.blackswanltd.com" target="_blank" rel="noopener" aria-label="Chris Voss website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>blackswanltd.com</a>
         </div>
-        <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
         <div class="pdesc">Chris Voss is an author, instructor, keynote speaker, and former FBI hostage negotiator who successfully resolved numerous high-stakes situations. He is a renowned expert in human behaviour, psychology, and communication and persuasion techniques.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-voss">
@@ -255,11 +249,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Adam Grant</div>
-          <a href="https://adamgrant.net" target="_blank" rel="noopener" aria-label="Adam Grant website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-psychology">Psychology</span></div>
+          <a href="https://adamgrant.net" target="_blank" rel="noopener" aria-label="Adam Grant website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>adamgrant.net</a>
         </div>
-        <div class="ppills"><span class="ppill pp-psychology">Psychology</span></div>
         <div class="pdesc">Adam Grant is an organisational psychologist, bestselling author, and professor at the Wharton School. His research challenges conventional thinking on motivation, generosity, and how we form and revise our beliefs — exploring what drives people to perform, contribute, and change their minds.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-grant">
@@ -284,11 +276,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Ethan Mollick</div>
-          <a href="https://www.oneusefulthing.org" target="_blank" rel="noopener" aria-label="Ethan Mollick website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-ai">AI</span></div>
+          <a href="https://www.oneusefulthing.org" target="_blank" rel="noopener" aria-label="Ethan Mollick website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>oneusefulthing.org</a>
         </div>
-        <div class="ppills"><span class="ppill pp-ai">AI</span></div>
         <div class="pdesc">Ethan Mollick is a professor at the Wharton School and one of the most rigorous researchers studying how AI is changing the way people work and learn. His work cuts through the noise with empirical evidence on human-AI collaboration, adoption patterns, and what it actually takes to integrate AI into how organisations operate.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-mollick">
@@ -312,11 +302,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Shade Zahrai</div>
-          <a href="https://www.shadezahrai.com" target="_blank" rel="noopener" aria-label="Shade Zahrai website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-influence">Influence</span></div>
+          <a href="https://www.shadezahrai.com" target="_blank" rel="noopener" aria-label="Shade Zahrai website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>shadezahrai.com</a>
         </div>
-        <div class="ppills"><span class="ppill pp-influence">Influence</span></div>
         <div class="pdesc">A renowned leadership consultant, author, and speaker, Shade's expertise lies in developing authentic leadership practices, empowering employees, fostering a positive work culture, navigating complex business challenges, and promoting personal and professional well-being.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-zahrai">
@@ -324,7 +312,7 @@
         </button>
         <div class="pworks-body" id="works-zahrai">
           <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/219584563-big-trust" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Big Trust</a>
+            <a href="https://www.goodreads.com/book/show/233902510-big-trust" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Big Trust</a>
           </div>
         </div>
       </div>
@@ -339,11 +327,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Brené Brown</div>
-          <a href="https://brenebrown.com" target="_blank" rel="noopener" aria-label="Brené Brown website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
+          <a href="https://brenebrown.com" target="_blank" rel="noopener" aria-label="Brené Brown website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>brenebrown.com</a>
         </div>
-        <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
         <div class="pdesc">Brené Brown is a research professor, author, and speaker whose work centres on vulnerability, courage, and the human conditions that underpin authentic leadership. Her decades of research make the empirical case that the qualities often dismissed as soft — empathy, shame resilience, and emotional honesty — are the foundations of high-performing cultures.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-brown">
@@ -353,7 +339,7 @@
           <div class="pworks-pills">
             <a href="https://www.goodreads.com/book/show/40109367-dare-to-lead" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Dare to Lead</a>
             <a href="https://www.goodreads.com/book/show/13588356-daring-greatly" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Daring Greatly</a>
-            <a href="https://www.goodreads.com/book/show/58561218-atlas-of-the-heart" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Atlas of the Heart</a>
+            <a href="https://www.goodreads.com/book/show/58330567-atlas-of-the-heart" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Atlas of the Heart</a>
           </div>
         </div>
       </div>
@@ -368,11 +354,9 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Cal Newport</div>
-          <a href="https://calnewport.com" target="_blank" rel="noopener" aria-label="Cal Newport website" class="pext-link">
-            <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
+          <div class="ppills"><span class="ppill pp-productivity">Productivity</span></div>
+          <a href="https://calnewport.com" target="_blank" rel="noopener" aria-label="Cal Newport website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>calnewport.com</a>
         </div>
-        <div class="ppills"><span class="ppill pp-productivity">Productivity</span></div>
         <div class="pdesc">Cal Newport is a computer science professor, author, and one of the most compelling voices on how to do meaningful work in a world designed for distraction. His writing makes the case for depth over constant connectivity, and for building a professional life around focused effort rather than busyness.</div>
 <div class="pcard-divider"></div>
         <button class="pworks-toggle" aria-expanded="false" aria-controls="works-newport">
