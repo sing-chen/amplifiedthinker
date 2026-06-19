@@ -44,7 +44,7 @@
   .filter-empty.visible{display:block}
 
   /* ── PEOPLE GRID ── */
-  .people-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start}
+  .people-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start}
 
   /* ── PERSON CARD ── */
   .pcard{background:var(--white);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s}
@@ -77,6 +77,7 @@
   .pp-influence   {background:#EDD5CB;color:#7A3A25}
   .pp-psychology  {background:#D4DCE6;color:#2D3F52}
   .pp-productivity{background:#D8E4DD;color:#1F4D4A}
+  .pp-ai         {background:#EDE5C5;color:#5A3A00}
 
   /* description */
   .pdesc{font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.65;color:var(--navy);margin-bottom:16px}
@@ -93,7 +94,7 @@
   .fi{max-width:var(--page-max);margin:0 auto}
   .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.35)}
 
-  @media(max-width:900px){.people-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:1100px){.people-grid{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:600px){
     .hero,.people-section{padding-left:20px;padding-right:20px}
     .people-grid{grid-template-columns:1fr}
@@ -165,6 +166,7 @@
     <button class="ftab" data-filter="influence">Influence</button>
     <button class="ftab" data-filter="psychology">Psychology</button>
     <button class="ftab" data-filter="productivity">Productivity</button>
+    <button class="ftab" data-filter="ai">AI</button>
   </div>
 
   <div class="filter-empty" id="filter-empty">No people match this filter.</div>
@@ -174,7 +176,7 @@
     <!-- SIMON SINEK -->
     <div class="pcard" data-categories="leadership" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/simon-sinek.jpg" alt="Simon Sinek">
+        <img src="images/people/simon-sinek.webp" alt="Simon Sinek">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
@@ -200,7 +202,7 @@
     <!-- CHRIS VOSS -->
     <div class="pcard" data-categories="communication" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/chris-voss.jpg" alt="Chris Voss">
+        <img src="images/people/chris-voss.webp" alt="Chris Voss">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
@@ -225,7 +227,7 @@
     <!-- SHADE ZAHRAI -->
     <div class="pcard" data-categories="influence" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/shade-zahrai.jpg" alt="Shade Zahrai">
+        <img src="images/people/shade-zahrai.webp" alt="Shade Zahrai">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
@@ -273,7 +275,7 @@
     <!-- ADAM GRANT -->
     <div class="pcard" data-categories="psychology" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/adam-grant.jpg" alt="Adam Grant">
+        <img src="images/people/adam-grant.webp" alt="Adam Grant">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
@@ -299,7 +301,7 @@
     <!-- BRENÉ BROWN -->
     <div class="pcard" data-categories="leadership" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/brene-brown.jpg" alt="Brené Brown">
+        <img src="images/people/brene-brown.webp" alt="Brené Brown">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
@@ -325,7 +327,7 @@
     <!-- VANESSA VAN EDWARDS -->
     <div class="pcard" data-categories="communication" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/vanessa-van-edwards.jpg" alt="Vanessa Van Edwards">
+        <img src="images/people/vanessa-van-edwards.webp" alt="Vanessa Van Edwards">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
@@ -346,50 +348,53 @@
       </div>
     </div>
 
-    <!-- VINH GIANG -->
-    <div class="pcard" data-categories="communication" role="listitem">
+    <!-- ETHAN MOLLICK -->
+    <div class="pcard" data-categories="ai" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/vinh-giang.jpg" alt="Vinh Giang">
+        <img src="images/people/ethan-mollick.webp" alt="Ethan Mollick">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
         <div class="pcard-top">
-          <div class="pname">Vinh Giang</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Vinh Giang website" class="pext-link">
+          <div class="pname">Ethan Mollick</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Ethan Mollick website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">The power of your voice</div>
-        <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
-        <div class="pdesc">Communication mastery, presence, storytelling, and using your voice as a leadership instrument.</div>
+        <div class="ptagline">Co-Intelligence</div>
+        <div class="ppills"><span class="ppill pp-ai">AI</span></div>
+        <div class="pdesc">Empirical research on AI adoption, human-AI collaboration, and what it actually takes to integrate AI into how we work and learn.</div>
         <div class="pcard-divider"></div>
         <div class="pworks-label">Key Works</div>
         <div class="pworks-pills">
-          <span class="pwork-pill">Keynotes &amp; Talks</span>
+          <span class="pwork-pill">Co-Intelligence</span>
+          <span class="pwork-pill">One Useful Thing</span>
         </div>
       </div>
     </div>
 
-    <!-- JEFF SU -->
+    <!-- CAL NEWPORT -->
     <div class="pcard" data-categories="productivity" role="listitem">
       <div class="pcard-photo">
-        <img src="images/people/jeff-su.jpg" alt="Jeff Su">
+        <img src="images/people/cal-newport.jpg" alt="Cal Newport">
         <!-- PLACEHOLDER: <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg> -->
       </div>
       <div class="pcard-body">
         <div class="pcard-top">
-          <div class="pname">Jeff Su</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Jeff Su website" class="pext-link">
+          <div class="pname">Cal Newport</div>
+          <a href="#" target="_blank" rel="noopener" aria-label="Cal Newport website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Work smarter, not harder</div>
+        <div class="ptagline">Deep Work</div>
         <div class="ppills"><span class="ppill pp-productivity">Productivity</span></div>
-        <div class="pdesc">Productivity systems, career strategy, and making the most of digital tools without losing your humanity.</div>
+        <div class="pdesc">The case for depth over distraction, intentional use of technology, and building a working life around meaningful, focused effort.</div>
         <div class="pcard-divider"></div>
         <div class="pworks-label">Key Works</div>
         <div class="pworks-pills">
-          <span class="pwork-pill">YouTube Channel</span>
+          <span class="pwork-pill">Deep Work</span>
+          <span class="pwork-pill">Digital Minimalism</span>
+          <span class="pwork-pill">Slow Productivity</span>
         </div>
       </div>
     </div>
@@ -467,6 +472,7 @@ document.querySelectorAll('.ftab').forEach(function(tab) {
        influence       → pp-influence
        psychology      → pp-psychology
        productivity    → pp-productivity
+       ai              → pp-ai
      Multiple categories: data-categories="leadership influence"
      ═══════════════════════════════════════════════════════ -->
 
