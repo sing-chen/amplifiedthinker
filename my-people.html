@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My People · Amplified</title>
 <meta name="description" content="The thinkers, coaches, and practitioners I return to — my virtual board of advisors. Each of them sharpens a different dimension of how I think and operate.">
 <link rel="canonical" href="https://sing-chen.github.io/amplified/my-people.html">
@@ -35,13 +30,9 @@
   .people-section{padding:52px 40px 80px;max-width:var(--page-max);margin:0 auto}
 
   /* ── FILTER TABS ── */
-  .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:36px}
-  .ftab{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid rgba(172,196,182,.3);color:var(--text-muted);background:transparent;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
-  .ftab:hover{background:var(--light-sage);border-color:rgba(45,117,111,.3);color:var(--mid-teal)}
-  .ftab.active{background:var(--mid-teal);border-color:transparent;color:var(--white)}
+
   .pcard.hidden{display:none}
-  .filter-empty{display:none;padding:32px 0;font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted)}
-  .filter-empty.visible{display:block}
+
 
   /* ── PEOPLE GRID ── */
   .people-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start}
@@ -67,7 +58,7 @@
   .pext-link svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
   /* tagline */
-  .ptagline{font-family:'Inter',sans-serif;font-size:13px;font-style:italic;color:var(--text-muted);margin-bottom:10px;line-height:1.4}
+
 
   /* category pill */
   .ppills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
@@ -159,18 +150,6 @@
 
 <section class="people-section" aria-label="My People">
 
-  <div class="filter-bar" role="group" aria-label="Filter by area of expertise">
-    <button class="ftab active" data-filter="all">All</button>
-    <button class="ftab" data-filter="leadership">Leadership</button>
-    <button class="ftab" data-filter="communication">Communication</button>
-    <button class="ftab" data-filter="influence">Influence</button>
-    <button class="ftab" data-filter="psychology">Psychology</button>
-    <button class="ftab" data-filter="productivity">Productivity</button>
-    <button class="ftab" data-filter="ai">AI</button>
-  </div>
-
-  <div class="filter-empty" id="filter-empty">No people match this filter.</div>
-
   <div class="people-grid" role="list">
 
     <!-- SIMON SINEK -->
@@ -186,7 +165,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Start with Why</div>
         <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
         <div class="pdesc">Leadership purpose, the infinite game mindset, and building organisations that inspire rather than just perform.</div>
         <div class="pcard-divider"></div>
@@ -212,7 +190,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Captivate</div>
         <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
         <div class="pdesc">The science of people, decoding social cues, and developing the interpersonal skills that shape influence and connection.</div>
         <div class="pcard-divider"></div>
@@ -236,7 +213,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Never Split the Difference</div>
         <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
         <div class="pdesc">High-stakes negotiation, tactical empathy, and the communication techniques that actually move people.</div>
         <div class="pcard-divider"></div>
@@ -261,7 +237,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Think Again</div>
         <div class="ppills"><span class="ppill pp-psychology">Psychology</span></div>
         <div class="pdesc">Organisational psychology, rethinking beliefs, giving and taking, and what drives extraordinary performance.</div>
         <div class="pcard-divider"></div>
@@ -287,7 +262,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Co-Intelligence</div>
         <div class="ppills"><span class="ppill pp-ai">AI</span></div>
         <div class="pdesc">Empirical research on AI adoption, human-AI collaboration, and what it actually takes to integrate AI into how we work and learn.</div>
         <div class="pcard-divider"></div>
@@ -312,7 +286,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Influence with integrity</div>
         <div class="ppills"><span class="ppill pp-influence">Influence</span></div>
         <div class="pdesc">Authentic influence, behavioural science applied to leadership, and building psychological safety at work.</div>
         <div class="pcard-divider"></div>
@@ -336,7 +309,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Dare to Lead</div>
         <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
         <div class="pdesc">Vulnerability, courage, shame resilience, and the research-backed case for wholehearted leadership.</div>
         <div class="pcard-divider"></div>
@@ -362,7 +334,6 @@
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
-        <div class="ptagline">Deep Work</div>
         <div class="ppills"><span class="ppill pp-productivity">Productivity</span></div>
         <div class="pdesc">The case for depth over distraction, intentional use of technology, and building a working life around meaningful, focused effort.</div>
         <div class="pcard-divider"></div>
@@ -387,27 +358,7 @@
   </div>
 </footer>
 
-<script>
-function filterPeople(filter) {
-  document.querySelectorAll('.ftab').forEach(function(tab) {
-    tab.classList.toggle('active', tab.dataset.filter === filter);
-  });
-  var cards = document.querySelectorAll('.pcard');
-  var visible = 0;
-  cards.forEach(function(card) {
-    var cats = (card.dataset.categories || '').split(' ');
-    var show = filter === 'all' || cats.indexOf(filter) !== -1;
-    card.classList.toggle('hidden', !show);
-    if (show) visible++;
-  });
-  var empty = document.getElementById('filter-empty');
-  if (empty) empty.classList.toggle('visible', visible === 0);
-}
 
-document.querySelectorAll('.ftab').forEach(function(tab) {
-  tab.addEventListener('click', function() { filterPeople(this.dataset.filter); });
-});
-</script>
 
 <!-- ═══════════════════════════════════════════════════════
      NEW CARD TEMPLATE — copy, paste, and fill in to add a new person.
