@@ -40,21 +40,39 @@
   .explore-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 
   /* ── SECTION CARDS ── */
-  .scard{display:block;text-decoration:none;background:var(--white);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);padding:32px 36px 36px;transition:border-color .2s,box-shadow .2s,transform .2s;position:relative;overflow:hidden}
-  .scard:hover{border-color:rgba(45,117,111,.4);box-shadow:0 12px 32px -8px rgba(27,74,68,.12);transform:translateY(-3px)}
+  .scard{display:block;text-decoration:none;border-radius:var(--radius-xl);padding:32px 36px 36px;transition:border-color .2s,box-shadow .2s,transform .2s;position:relative;overflow:hidden;border:1px solid transparent}
+  .scard:hover{box-shadow:0 12px 32px -8px rgba(27,74,68,.15);transform:translateY(-3px)}
   .scard:focus-visible{outline:2px solid var(--mid-teal);outline-offset:4px;border-radius:var(--radius-xl)}
   .scard-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;flex-shrink:0}
   .scard-icon svg{width:18px;height:18px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-  .si-teal{background:#D4EAE7;} .si-teal svg{stroke:#2D756F;}
-  .si-slate{background:#D5DFE6;} .si-slate svg{stroke:#3D5F70;}
-  .scard-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;color:var(--text-dark);line-height:1.2;margin-bottom:10px;letter-spacing:-.01em}
-  .scard-desc{font-family:'Inter',sans-serif;font-size:14px;line-height:1.7;color:var(--navy);margin-bottom:24px}
-  .scard-cta{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:var(--mid-teal);display:inline-flex;align-items:center;gap:6px;letter-spacing:.02em}
+  .scard-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;line-height:1.2;margin-bottom:10px;letter-spacing:-.01em}
+  .scard-desc{font-family:'Inter',sans-serif;font-size:14px;line-height:1.7;margin-bottom:24px}
+  .scard-cta{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;letter-spacing:.02em}
   .scard-cta svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
   .scard:hover .scard-cta svg{transform:translateX(3px)}
 
-  /* subtle accent stripe on hover */
-  .scard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--mid-teal);opacity:0;transition:opacity .2s}
+  /* Future Skills card — sage tint */
+  .scard-skills{background:#D8E4DD;border-color:rgba(45,117,111,.15)}
+  .scard-skills:hover{border-color:rgba(45,117,111,.35)}
+  .scard-skills .scard-icon{background:#1B4A44;}
+  .scard-skills .scard-icon svg{stroke:#ACC4B6;}
+  .scard-skills .scard-title{color:#1B4A44}
+  .scard-skills .scard-desc{color:#2D3F3A}
+  .scard-skills .scard-cta{color:#2D756F}
+
+  /* My People card — warm slate tint */
+  .scard-people{background:#D5DFE6;border-color:rgba(61,95,112,.15)}
+  .scard-people:hover{border-color:rgba(61,95,112,.35)}
+  .scard-people .scard-icon{background:#3D5F70;}
+  .scard-people .scard-icon svg{stroke:#D5DFE6;}
+  .scard-people .scard-title{color:#1E3A4A}
+  .scard-people .scard-desc{color:#2C3F4A}
+  .scard-people .scard-cta{color:#3D5F70}
+
+  /* accent stripe on hover */
+  .scard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s}
+  .scard-skills::after{background:#2D756F}
+  .scard-people::after{background:#3D5F70}
   .scard:hover::after{opacity:1}
 
   footer{background:var(--charcoal);padding:24px 40px;border-top:1px solid rgba(255,255,255,.06)}
@@ -130,8 +148,8 @@
   <p class="explore-label" id="explore-label">What's here</p>
   <div class="explore-grid" role="list">
 
-    <a href="future-skills.html" class="scard" role="listitem">
-      <div class="scard-icon si-teal">
+    <a href="future-skills.html" class="scard scard-skills" role="listitem">
+      <div class="scard-icon">
         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       </div>
       <div class="scard-title">Future Skills</div>
@@ -139,8 +157,8 @@
       <div class="scard-cta">Browse the library <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
-    <a href="my-people.html" class="scard" role="listitem">
-      <div class="scard-icon si-slate">
+    <a href="my-people.html" class="scard scard-people" role="listitem">
+      <div class="scard-icon">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
       <div class="scard-title">My People</div>
