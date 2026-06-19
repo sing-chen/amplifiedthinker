@@ -27,7 +27,7 @@
   .hero-body{font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:640px}
 
   /* ── PEOPLE SECTION ── */
-  .people-section{padding:52px 40px 80px;max-width:var(--page-max);margin:0 auto}
+  .people-section{padding:52px 40px 80px;max-width:1400px;margin:0 auto}
 
   /* ── FILTER TABS ── */
 
@@ -77,15 +77,24 @@
   .pcard-divider{height:1px;background:rgba(172,196,182,.2);margin-bottom:14px}
 
   /* key works */
-  .pworks-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:8px}
-  .pworks-pills{display:flex;flex-wrap:wrap;gap:5px}
+  /* Collapsible Key Works */
+  .pworks-toggle{display:flex;align-items:center;gap:6px;background:none;border:none;padding:0;cursor:pointer;font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:0;width:100%}
+  .pworks-toggle:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px;border-radius:2px}
+  .pworks-chevron{width:12px;height:12px;transition:transform .2s;flex-shrink:0}
+  .pworks-toggle[aria-expanded="true"] .pworks-chevron{transform:rotate(180deg)}
+  .pworks-body{overflow:hidden;max-height:0;transition:max-height .25s ease}
+  .pworks-body.open{max-height:200px}
+  .pworks-pills{display:flex;flex-wrap:wrap;gap:5px;padding-top:8px}
+  /* Work pill icons */
+  .pwork-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
+  .pwork-pill{display:inline-flex;align-items:center;gap:4px}
   .pwork-pill{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:20px;padding:2px 9px;line-height:1.6}
 
   footer{background:var(--charcoal);padding:24px 40px;border-top:1px solid rgba(255,255,255,.06)}
   .fi{max-width:var(--page-max);margin:0 auto}
   .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.35)}
 
-  @media(max-width:1100px){.people-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:1200px){.people-grid{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:600px){
     .hero,.people-section{padding-left:20px;padding-right:20px}
     .people-grid{grid-template-columns:1fr}
@@ -161,18 +170,22 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Simon Sinek</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Simon Sinek website" class="pext-link">
+          <a href="https://simonsinek.com" target="_blank" rel="noopener" aria-label="Simon Sinek website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
         <div class="pdesc">Simon Sinek is a prominent figure in the fields of leadership, motivation, and organisational culture. He is renowned for his groundbreaking Golden Circle concept — his theory that individuals and organisations who inspire genuine action do so by starting with "why": their purpose, cause, or belief.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">Start With Why</span>
-          <span class="pwork-pill">The Infinite Game</span>
-          <span class="pwork-pill">Leaders Eat Last</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-sinek">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-sinek">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/7108725-start-with-why" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Start With Why</a>
+            <a href="https://www.goodreads.com/book/show/38390751-the-infinite-game" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>The Infinite Game</a>
+            <a href="https://www.goodreads.com/book/show/16144853-leaders-eat-last" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Leaders Eat Last</a>
+          </div>
         </div>
       </div>
     </div>
@@ -186,16 +199,21 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Vanessa Van Edwards</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Vanessa Van Edwards website" class="pext-link">
+          <a href="https://www.scienceofpeople.com" target="_blank" rel="noopener" aria-label="Vanessa Van Edwards website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
         <div class="pdesc">Vanessa Van Edwards is a behavioural investigator and author known for decoding human behaviour, communication, and charisma. Her expertise provides practical insights into effective communication, relationship-building, leadership, and negotiation skills.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">Captivate</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-vve">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-vve">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/29483376-captivate" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Captivate</a>
+            <a href="https://www.goodreads.com/book/show/55838980-cues" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Cues</a>
+          </div>
         </div>
       </div>
     </div>
@@ -209,17 +227,21 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Chris Voss</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Chris Voss website" class="pext-link">
+          <a href="https://www.blackswanltd.com" target="_blank" rel="noopener" aria-label="Chris Voss website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
         <div class="pdesc">Chris Voss is an author, instructor, keynote speaker, and former FBI hostage negotiator who successfully resolved numerous high-stakes situations. He is a renowned expert in human behaviour, psychology, and communication and persuasion techniques.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">Never Split the Difference</span>
-          <span class="pwork-pill">Black Swan Group</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-voss">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-voss">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/26156469-never-split-the-difference" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Never Split the Difference</a>
+            <a href="https://www.blackswanltd.com" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Black Swan Group</a>
+          </div>
         </div>
       </div>
     </div>
@@ -233,18 +255,22 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Adam Grant</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Adam Grant website" class="pext-link">
+          <a href="https://adamgrant.net" target="_blank" rel="noopener" aria-label="Adam Grant website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-psychology">Psychology</span></div>
         <div class="pdesc">Adam Grant is an organisational psychologist, bestselling author, and professor at the Wharton School. His research challenges conventional thinking on motivation, generosity, and how we form and revise our beliefs — exploring what drives people to perform, contribute, and change their minds.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">Think Again</span>
-          <span class="pwork-pill">Give and Take</span>
-          <span class="pwork-pill">Originals</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-grant">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-grant">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/55539565-think-again" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Think Again</a>
+            <a href="https://www.goodreads.com/book/show/16158498-give-and-take" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Give and Take</a>
+            <a href="https://www.goodreads.com/book/show/25614523-originals" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Originals</a>
+          </div>
         </div>
       </div>
     </div>
@@ -258,17 +284,21 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Ethan Mollick</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Ethan Mollick website" class="pext-link">
+          <a href="https://www.oneusefulthing.org" target="_blank" rel="noopener" aria-label="Ethan Mollick website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-ai">AI</span></div>
         <div class="pdesc">Ethan Mollick is a professor at the Wharton School and one of the most rigorous researchers studying how AI is changing the way people work and learn. His work cuts through the noise with empirical evidence on human-AI collaboration, adoption patterns, and what it actually takes to integrate AI into how organisations operate.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">Co-Intelligence</span>
-          <span class="pwork-pill">One Useful Thing</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-mollick">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-mollick">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/198678736-co-intelligence" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Co-Intelligence</a>
+            <a href="https://www.oneusefulthing.org" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>One Useful Thing</a>
+          </div>
         </div>
       </div>
     </div>
@@ -282,16 +312,20 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Shade Zahrai</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Shade Zahrai website" class="pext-link">
+          <a href="https://www.shadezahrai.com" target="_blank" rel="noopener" aria-label="Shade Zahrai website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-influence">Influence</span></div>
         <div class="pdesc">A renowned leadership consultant, author, and speaker, Shade's expertise lies in developing authentic leadership practices, empowering employees, fostering a positive work culture, navigating complex business challenges, and promoting personal and professional well-being.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">TEDx: Become the Best Version of You</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-zahrai">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-zahrai">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/219584563-big-trust" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Big Trust</a>
+          </div>
         </div>
       </div>
     </div>
@@ -305,18 +339,22 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Brené Brown</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Brené Brown website" class="pext-link">
+          <a href="https://brenebrown.com" target="_blank" rel="noopener" aria-label="Brené Brown website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
         <div class="pdesc">Brené Brown is a research professor, author, and speaker whose work centres on vulnerability, courage, and the human conditions that underpin authentic leadership. Her decades of research make the empirical case that the qualities often dismissed as soft — empathy, shame resilience, and emotional honesty — are the foundations of high-performing cultures.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">Dare to Lead</span>
-          <span class="pwork-pill">Daring Greatly</span>
-          <span class="pwork-pill">Atlas of the Heart</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-brown">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-brown">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/40109367-dare-to-lead" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Dare to Lead</a>
+            <a href="https://www.goodreads.com/book/show/13588356-daring-greatly" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Daring Greatly</a>
+            <a href="https://www.goodreads.com/book/show/58561218-atlas-of-the-heart" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Atlas of the Heart</a>
+          </div>
         </div>
       </div>
     </div>
@@ -330,18 +368,22 @@
       <div class="pcard-body">
         <div class="pcard-top">
           <div class="pname">Cal Newport</div>
-          <a href="#" target="_blank" rel="noopener" aria-label="Cal Newport website" class="pext-link">
+          <a href="https://calnewport.com" target="_blank" rel="noopener" aria-label="Cal Newport website" class="pext-link">
             <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
         </div>
         <div class="ppills"><span class="ppill pp-productivity">Productivity</span></div>
         <div class="pdesc">Cal Newport is a computer science professor, author, and one of the most compelling voices on how to do meaningful work in a world designed for distraction. His writing makes the case for depth over constant connectivity, and for building a professional life around focused effort rather than busyness.</div>
-        <div class="pcard-divider"></div>
-        <div class="pworks-label">Key Works</div>
-        <div class="pworks-pills">
-          <span class="pwork-pill">Deep Work</span>
-          <span class="pwork-pill">Digital Minimalism</span>
-          <span class="pwork-pill">Slow Productivity</span>
+<div class="pcard-divider"></div>
+        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-newport">
+          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="pworks-body" id="works-newport">
+          <div class="pworks-pills">
+            <a href="https://www.goodreads.com/book/show/25744928-deep-work" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Deep Work</a>
+            <a href="https://www.goodreads.com/book/show/40672036-digital-minimalism" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Digital Minimalism</a>
+            <a href="https://www.goodreads.com/book/show/197773418-slow-productivity" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Slow Productivity</a>
+          </div>
         </div>
       </div>
     </div>
@@ -403,5 +445,15 @@
      Multiple categories: data-categories="leadership influence"
      ═══════════════════════════════════════════════════════ -->
 
+<script>
+document.querySelectorAll('.pworks-toggle').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var expanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', String(!expanded));
+    var body = document.getElementById(this.getAttribute('aria-controls'));
+    body.classList.toggle('open', !expanded);
+  });
+});
+</script>
 </body>
 </html>
