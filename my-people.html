@@ -58,6 +58,8 @@
   @media(prefers-reduced-motion:reduce){
     .pcard{opacity:1;transform:none;transition:none}
     .pcard.is-visible{transition:none}
+    .pcard-photo img{transition:none}
+    .pcard:hover .pcard-photo img{transform:none}
   }
   .pcard:hover{border-color:rgba(45,117,111,.45);box-shadow:0 10px 30px rgba(27,74,68,.1);transform:translateY(-3px)}
   .pcard.is-visible:hover{transform:translateY(-3px)}
@@ -80,7 +82,8 @@
 
   /* photo */
   .pcard-photo{height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-  .pcard-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0}
+  .pcard-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0;transition:transform .4s ease}
+  .pcard:hover .pcard-photo img{transform:scale(1.05)}
   .pcard-placeholder{width:72px;height:72px;flex-shrink:0}
 
   /* card body */
