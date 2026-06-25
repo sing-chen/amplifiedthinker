@@ -454,7 +454,7 @@
     <div class="search-state-icon">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
     </div>
-    <p class="search-state-hl">Search the library</p>
+    <p class="search-state-hl">Search the site</p>
     <p class="search-state-body">Skills, learning plans, people, and pages — all searchable. Start typing to explore.</p>
   </div>
 
@@ -555,7 +555,7 @@
         includeMatches: true,
         minMatchCharLength: 2,
         ignoreLocation: true,
-        threshold: 0.2,
+        threshold: 0.1,
         distance: 200,
         keys: [
           { name: 'title',       weight: 0.6  },
@@ -629,7 +629,7 @@
     var merged = [];
     var sorted = indices.slice().sort(function (a, b) { return a[0] - b[0]; });
     sorted.forEach(function (range) {
-      if (range[1] - range[0] < 1) return; // skip single-char matches
+      if (range[1] - range[0] < 3) return; // skip matches shorter than 4 chars
       if (merged.length && range[0] <= merged[merged.length - 1][1] + 1) {
         merged[merged.length - 1][1] = Math.max(merged[merged.length - 1][1], range[1]);
       } else {
