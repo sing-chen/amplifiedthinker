@@ -262,14 +262,17 @@
 .rc-body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 .rc-type-label {
+  display: block;
   font-family: 'Poppins', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: .1em;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .rc-type-primer   { color: #2D756F; }
 .rc-type-plan     { color: #1F4D4A; }
@@ -277,6 +280,7 @@
 .rc-type-page     { color: #4A6878; }
 
 .rc-title {
+  display: block;
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -285,6 +289,7 @@
   margin-bottom: 5px;
 }
 .rc-desc {
+  display: block;
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   color: var(--text-muted);
@@ -293,6 +298,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Suppress native browser clear button on search inputs */
+#search-input::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+#search-input::-webkit-search-decoration    { -webkit-appearance: none; }
 
 /* ── CHEVRON ── */
 .rc-arrow {
@@ -465,8 +474,11 @@
   <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 </footer>
 
-<!-- ── FUSE.JS ── -->
-<script src="fuse.min.js"></script>
+<!-- ── FUSE.JS (CDN) ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"
+  integrity="sha512-+bVD5LKYQkCjXFkEZBDl02cBzHshSKQVdcxmB/cOLJAK0FzL0WG0URByJl7LuE3f2V5qjb4Fj5Gy6bP3H4QQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"></script>
 
 <script>
 (function () {
