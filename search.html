@@ -549,7 +549,7 @@
         includeMatches: true,
         minMatchCharLength: 2,
         ignoreLocation: true,
-        threshold: 0.35,
+        threshold: 0.2,
         distance: 200,
         keys: [
           { name: 'title',       weight: 0.6  },
@@ -619,10 +619,11 @@
   function highlight(text, indices) {
     if (!indices || indices.length === 0) return escHtml(text);
 
-    // Merge overlapping/adjacent ranges
+    // Merge overlapping/adjacent ranges, skip single-character matches
     var merged = [];
     var sorted = indices.slice().sort(function (a, b) { return a[0] - b[0]; });
     sorted.forEach(function (range) {
+      if (range[1] - range[0] < 1) return; // skip single-char matches
       if (merged.length && range[0] <= merged[merged.length - 1][1] + 1) {
         merged[merged.length - 1][1] = Math.max(merged[merged.length - 1][1], range[1]);
       } else {
