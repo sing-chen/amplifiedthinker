@@ -1,0 +1,170 @@
+[
+  {
+    "id": "home",
+    "type": "page",
+    "title": "Amplified",
+    "description": "How work changes. How people keep up. Skills, systems, and the thinkers who shaped how I see both — documented from the inside, as the work unfolds.",
+    "tags": ["amplified", "future skills", "capability", "AI", "human skills"],
+    "url": "index.html"
+  },
+  {
+    "id": "future-skills",
+    "type": "page",
+    "title": "Future Skills Library",
+    "description": "A growing library of skills drawn from the WEF Core Skills 2030 framework. Each skill includes a primer and a full learning plan built for deliberate practice in daily work.",
+    "tags": ["future skills", "WEF", "skills library", "learning", "2030", "core skills"],
+    "url": "future-skills.html"
+  },
+  {
+    "id": "my-people",
+    "type": "page",
+    "title": "My People",
+    "description": "The thinkers, coaches, and practitioners I return to — a virtual board of advisors. Each one sharpens a different dimension of how I think and operate.",
+    "tags": ["people", "thinkers", "advisors", "coaches", "books", "leadership", "psychology"],
+    "url": "my-people.html"
+  },
+  {
+    "id": "about",
+    "type": "page",
+    "title": "About · Amplified",
+    "description": "Amplified is where Sing Chen builds thinking in public — practical, research-grounded resources for the durable human skills that compound as AI handles more of the work.",
+    "tags": ["about", "Sing Chen", "capability", "human skills", "AI adoption", "process architect"],
+    "url": "about.html"
+  },
+  {
+    "id": "at-primer",
+    "type": "primer",
+    "skill": "Analytical Thinking",
+    "title": "Analytical Thinking — Skill Primer",
+    "description": "A 10-minute primer on Analytical Thinking — break complex problems into their parts before drawing conclusions. Core concepts, a worked example, and a knowledge check.",
+    "tags": ["analytical thinking", "MECE", "5 Whys", "issue tree", "problem decomposition", "structured thinking", "primer", "cognitive"],
+    "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "Model: MECE", "Model: The 5 Whys", "Model: Issue Tree", "In Practice", "Summary"],
+    "url": "skills/analytical-thinking/primer.html"
+  },
+  {
+    "id": "at-plan",
+    "type": "plan",
+    "skill": "Analytical Thinking",
+    "title": "Analytical Thinking — Full Learning Plan",
+    "description": "The full Analytical Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.",
+    "tags": ["analytical thinking", "MECE", "5 Whys", "issue tree", "first principles", "mental models", "habit builder", "behavioral indicators", "progression", "cognitive", "Barbara Minto", "pyramid principle"],
+    "sections": ["Skill Snapshot", "Overview", "Learning Objectives", "First Principles", "Key Mental Models and Frameworks", "Common Mistakes", "Behavioral Indicators", "Practical Examples", "Self-Reflection", "Knowledge Check", "5-Day Habit Builder", "Progression Path", "Summary", "Explore Further"],
+    "url": "skills/analytical-thinking/plan.html"
+  },
+  {
+    "id": "ct-primer",
+    "type": "primer",
+    "skill": "Critical Thinking",
+    "title": "Critical Thinking — Skill Primer",
+    "description": "A 10-minute primer on Critical Thinking — test whether a conclusion holds before you trust it. Core concepts, a worked example, and a knowledge check.",
+    "tags": ["critical thinking", "evidence", "bias", "Ladder of Inference", "assumptions", "reasoning", "evaluation", "primer", "cognitive"],
+    "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "The Evidence Filter", "Model: Ladder of Inference", "In Practice", "Summary"],
+    "url": "skills/critical-thinking/primer.html"
+  },
+  {
+    "id": "ct-plan",
+    "type": "plan",
+    "skill": "Critical Thinking",
+    "title": "Critical Thinking — Full Learning Plan",
+    "description": "The full Critical Thinking learning plan — principles of evaluation, the Ladder of Inference, behavioural indicators, curated resources, and a 5-day habit builder.",
+    "tags": ["critical thinking", "Ladder of Inference", "bias field guide", "cognitive bias", "evidence", "principles of evaluation", "habit builder", "behavioral indicators", "cognitive", "Chris Argyris"],
+    "sections": ["Skill Snapshot", "Overview", "Learning Objectives", "Principles of Evaluation", "Bias Field Guide", "Mental Model", "Common Mistakes", "Behavioral Indicators", "Practical Examples", "Self-Reflection", "Knowledge Check", "5-Day Habit Builder", "Progression Path", "Summary", "Explore Further"],
+    "url": "skills/critical-thinking/plan.html"
+  },
+  {
+    "id": "person-simon-sinek",
+    "type": "person",
+    "name": "Simon Sinek",
+    "category": "Leadership",
+    "title": "Simon Sinek · My People",
+    "description": "The clearest articulation I've found of why purpose isn't a slogan — and what actually drives people to follow, stay, and contribute.",
+    "quote": "People don't buy what you do; they buy why you do it.",
+    "quoteSource": "Start With Why",
+    "tags": ["Simon Sinek", "leadership", "purpose", "Start With Why", "Golden Circle", "Infinite Game", "Leaders Eat Last", "why", "motivation"],
+    "url": "my-people.html#simon-sinek"
+  },
+  {
+    "id": "person-vanessa-van-edwards",
+    "type": "person",
+    "name": "Vanessa Van Edwards",
+    "category": "Communication",
+    "title": "Vanessa Van Edwards · My People",
+    "description": "The science of how people read each other — signals, cues, first impressions. Useful for anyone who works across cultures or needs to land ideas quickly.",
+    "quote": "Vulnerability is what truly elevates relationships.",
+    "quoteSource": "Captivate",
+    "tags": ["Vanessa Van Edwards", "communication", "body language", "cues", "Captivate", "Science of People", "charisma", "first impressions", "influence"],
+    "url": "my-people.html#vanessa-van-edwards"
+  },
+  {
+    "id": "person-chris-voss",
+    "type": "person",
+    "name": "Chris Voss",
+    "category": "Communication",
+    "title": "Chris Voss · My People",
+    "description": "Negotiation reframed as listening and calibration rather than persuasion. The practical translation from hostage negotiation to everyday high-stakes conversations is surprisingly direct.",
+    "quote": "Listening is not a passive activity. It is the most active thing you can do.",
+    "quoteSource": "Never Split the Difference",
+    "tags": ["Chris Voss", "negotiation", "communication", "Never Split the Difference", "FBI", "hostage negotiation", "listening", "Black Swan", "influence"],
+    "url": "my-people.html#chris-voss"
+  },
+  {
+    "id": "person-adam-grant",
+    "type": "person",
+    "name": "Adam Grant",
+    "category": "Psychology",
+    "title": "Adam Grant · My People",
+    "description": "Challenges assumptions I didn't know I was carrying. Think Again is the one I return to most — it's essentially a manual for intellectual honesty.",
+    "quote": "If knowledge is power, knowing what we don't know is wisdom.",
+    "quoteSource": "Think Again",
+    "tags": ["Adam Grant", "psychology", "Think Again", "Give and Take", "Originals", "Wharton", "intellectual honesty", "rethinking", "organisational psychology"],
+    "url": "my-people.html#adam-grant"
+  },
+  {
+    "id": "person-ethan-mollick",
+    "type": "person",
+    "name": "Ethan Mollick",
+    "category": "AI",
+    "title": "Ethan Mollick · My People",
+    "description": "The most rigorous empirical voice on what AI actually does to how people work. Cuts through the noise in a space that has a lot of it.",
+    "quote": "We have invented a kind of alien mind.",
+    "quoteSource": "Co-Intelligence",
+    "tags": ["Ethan Mollick", "AI", "artificial intelligence", "Co-Intelligence", "One Useful Thing", "Wharton", "human-AI collaboration", "AI adoption", "future of work"],
+    "url": "my-people.html#ethan-mollick"
+  },
+  {
+    "id": "person-shade-zahrai",
+    "type": "person",
+    "name": "Shade Zahrai",
+    "category": "Influence",
+    "title": "Shade Zahrai · My People",
+    "description": "Authentic leadership without the corporate veneer. Her work sits at the intersection of psychology and practice in a way that feels genuinely earned.",
+    "quote": "Stepping outside your comfort zone doesn't mean you become immunized to pain.",
+    "quoteSource": "Big Trust",
+    "tags": ["Shade Zahrai", "influence", "leadership", "Big Trust", "authentic leadership", "psychology", "self-awareness", "workplace culture"],
+    "url": "my-people.html#shade-zahrai"
+  },
+  {
+    "id": "person-brene-brown",
+    "type": "person",
+    "name": "Brené Brown",
+    "category": "Leadership",
+    "title": "Brené Brown · My People",
+    "description": "Research that makes the empirical case for things most organisations still treat as soft. Vulnerability and courage aren't opposites of rigour — they're preconditions for it.",
+    "quote": "I define a leader as anyone who takes responsibility for finding the potential in people and processes.",
+    "quoteSource": "Dare to Lead",
+    "tags": ["Brené Brown", "leadership", "vulnerability", "courage", "Dare to Lead", "Daring Greatly", "Atlas of the Heart", "shame resilience", "culture"],
+    "url": "my-people.html#brene-brown"
+  },
+  {
+    "id": "person-cal-newport",
+    "type": "person",
+    "name": "Cal Newport",
+    "category": "Productivity",
+    "title": "Cal Newport · My People",
+    "description": "A sustained argument for depth over busyness at a time when most productivity advice optimises for the wrong thing. His work shaped how I protect my mornings.",
+    "quote": "Who you are, what you think, feel, and do, what you love — is the sum of what you focus on.",
+    "quoteSource": "Deep Work",
+    "tags": ["Cal Newport", "productivity", "Deep Work", "Digital Minimalism", "Slow Productivity", "focus", "distraction", "deep work", "attention"],
+    "url": "my-people.html#cal-newport"
+  }
+]
