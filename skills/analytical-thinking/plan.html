@@ -90,17 +90,6 @@
     color: var(--sage);
     margin-bottom: 6px;
   }
-  .nav-back {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px; color: rgba(255,255,255,0.38);
-    text-decoration: none; margin-bottom: 10px;
-    transition: color 0.15s; border-radius: 3px;
-    padding: 2px 0;
-  }
-  .nav-back:hover { color: rgba(255,255,255,0.7); }
-  .nav-back:focus-visible { outline: 2px solid var(--sage); outline-offset: 3px; border-radius: 3px; }
-  .nav-back svg { width: 12px; height: 12px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .nav-skill {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
@@ -1591,10 +1580,6 @@
     <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
   </button>
   <div class="nav-brand">
-    <a href="../../future-skills.html" class="nav-back" aria-label="Back to Future Skills library">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-      Future Skills
-    </a>
     <div class="nav-series">Full Learning Plan</div>
     <div class="nav-skill">Analytical Thinking</div>
   </div>
@@ -2797,15 +2782,29 @@ function updateButtons() {
   counter.textContent = (currentIdx + 1) + ' / ' + sectionIds.length;
 }
 
+function getNavOffset() {
+  return parseInt(window.getComputedStyle(document.body).paddingTop, 10) || 96;
+}
+
 function scrollToSection(idx) {
   if (idx < 0 || idx >= sectionIds.length) return;
   const target = document.getElementById(sectionIds[idx]);
   if (target) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const top = target.getBoundingClientRect().top + window.scrollY - getNavOffset();
+    window.scrollTo({ top: top, behavior: 'smooth' });
     currentIdx = idx;
     updateButtons();
   }
 }
+
+// Intercept nav link clicks to use the same offset-aware scroll
+navLinks.forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const idx = sectionIds.indexOf(this.dataset.section);
+    if (idx !== -1) scrollToSection(idx);
+  });
+});
 
 btnPrev.addEventListener('click', function () { scrollToSection(currentIdx - 1); });
 btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1); });
