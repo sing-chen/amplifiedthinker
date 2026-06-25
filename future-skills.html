@@ -146,9 +146,9 @@
   .lib-hdr{margin-bottom:36px}
   .stitle{font-family:'Poppins',sans-serif;font-size:clamp(20px,2.4vw,26px);font-weight:700;color:var(--text-dark);line-height:1.2;letter-spacing:-.01em}
 
-  /* ── SKILL THUMBNAIL ── */
-  .sthumb{width:100%;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;display:block;flex-shrink:0}
-  .sthumb img{display:block;width:100%;height:auto;border-radius:var(--radius-lg)}
+  /* ── SKILL THUMBNAIL (header, replaces icon for available skills) ── */
+  .skill-thumb{width:80px;height:45px;border-radius:6px;overflow:hidden;flex-shrink:0;margin:auto 0 auto 18px}
+  .skill-thumb img{display:block;width:100%;height:100%;object-fit:cover;border-radius:6px}
 
   /* ── SKILL CARDS ── */
   .skill-list{display:flex;flex-direction:column;gap:16px}
@@ -564,8 +564,8 @@
     <div class="scard active" id="s-analytical" data-categories="cognitive" role="listitem">
       <div class="sheader" onclick="toggleSkill('s-analytical')" aria-expanded="false" aria-controls="sb-analytical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-analytical')">
         <div class="sstatus-strip"></div>
-        <div class="skill-icon si-cognitive">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div class="skill-thumb">
+          <img src="skills/analytical-thinking/analytical-thinking-video-thumbnail.png" alt="" aria-hidden="true" width="80" height="45" loading="lazy">
         </div>
         <div class="shc">
           <div class="stb">
@@ -587,10 +587,8 @@
           </div>
         </div>
         <div class="slaunch">
-          <div class="sthumb">
-            <img src="skills/analytical-thinking/analytical-thinking-video-thumbnail.png" alt="Analytical Thinking skill thumbnail" width="504" height="284" loading="lazy">
-          </div>
-          <div class="lcards"> class="lcard" aria-label="Open Analytical Thinking Primer">
+          <div class="lcards">
+            <a href="skills/analytical-thinking/primer.html" class="lcard" aria-label="Open Analytical Thinking Primer">
               <div class="lctype">Skill Primer</div>
               <div class="lcdesc">Short skill introduction. Core concepts, worked example, knowledge check.</div>
               <div class="lctime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~10 minutes</div>
@@ -629,8 +627,8 @@
     <div class="scard active" id="s-critical" data-categories="cognitive" role="listitem">
       <div class="sheader" onclick="toggleSkill('s-critical')" aria-expanded="false" aria-controls="sb-critical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-critical')">
         <div class="sstatus-strip"></div>
-        <div class="skill-icon si-cognitive">
-          <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="3" x2="12" y2="21"/><path d="M5 21h14"/><path d="M5 8l-3 6a3 3 0 0 0 6 0L5 8z"/><path d="M19 8l-3 6a3 3 0 0 0 6 0L19 8z"/><line x1="5" y1="8" x2="19" y2="8"/></svg>
+        <div class="skill-thumb">
+          <img src="skills/critical-thinking/critical-thinking-video-thumbnail.png" alt="" aria-hidden="true" width="80" height="45" loading="lazy">
         </div>
         <div class="shc">
           <div class="stb">
@@ -652,9 +650,6 @@
           </div>
         </div>
         <div class="slaunch">
-          <div class="sthumb">
-            <img src="skills/critical-thinking/critical-thinking-video-thumbnail.png" alt="Critical Thinking skill thumbnail" width="504" height="284" loading="lazy">
-          </div>
           <div class="lcards">
             <a href="skills/critical-thinking/primer.html" class="lcard" aria-label="Open Critical Thinking Primer">
               <div class="lctype">Skill Primer</div>
