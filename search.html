@@ -294,9 +294,10 @@
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.6;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Suppress native browser clear button on search inputs */
@@ -311,6 +312,11 @@
   border-radius: 2px;
   padding: 0 1px;
   font-style: normal;
+}
+.rc-ellipsis {
+  color: var(--warm-gray);
+  font-style: normal;
+  user-select: none;
 }
 
 /* ── CHEVRON ── */
@@ -663,6 +669,87 @@
     return null;
   }
 
+  /*
+   * excerpt(text, indices, before, after)
+   * When a description match exists, extracts a window of text centred on the
+   * first significant match — `before` chars before it, `after` chars after.
+   * Returns { text: string, offset: number } where offset is how many characters
+   * were trimmed from the start, so highlight() indices can be adjusted.
+   * Falls back to the full text (offset 0) when no windowing is needed.
+   */
+  function excerpt(text, indices, before, after) {
+    if (!indices || indices.length === 0) {
+      return { text: text, offset: 0 };
+    }
+
+    // Find the first significant (multi-char) match position
+    var firstMatch = null;
+    var sorted = indices.slice().sort(function (a, b) { return a[0] - b[0]; });
+    for (var i = 0; i < sorted.length; i++) {
+      if (sorted[i][1] - sorted[i][0] >= 1) {
+        firstMatch = sorted[i];
+        break;
+      }
+    }
+    if (!firstMatch) return { text: text, offset: 0 };
+
+    var matchStart = firstMatch[0];
+
+    // If the match is close enough to the start, no windowing needed
+    if (matchStart <= before) {
+      return { text: text, offset: 0 };
+    }
+
+    // Find a clean word boundary to start the excerpt on
+    var windowStart = matchStart - before;
+    while (windowStart > 0 && text[windowStart - 1] !== ' ') {
+      windowStart--;
+    }
+
+    var windowEnd = Math.min(text.length, windowStart + before + after + (matchStart - windowStart - (matchStart - before)));
+    // Simpler: just take before+after chars from the window start
+    windowEnd = Math.min(text.length, windowStart + before + after);
+
+    return {
+      text: text.slice(windowStart, windowEnd),
+      offset: windowStart,
+      trimStart: windowStart > 0,
+      trimEnd: windowEnd < text.length
+    };
+  }
+
+  /*
+   * highlightExcerpt(text, indices, before, after)
+   * Combines excerpt() and highlight(): extracts the context window, adjusts
+   * match indices to account for the trimmed offset, then highlights.
+   * Prepends/appends ellipsis where the excerpt was trimmed.
+   */
+  function highlightExcerpt(rawText, indices, before, after) {
+    var ex = excerpt(rawText, indices, before, after);
+
+    // Adjust indices to be relative to the excerpt window
+    var adjustedIndices = null;
+    if (indices && indices.length) {
+      adjustedIndices = indices
+        .map(function (range) {
+          return [range[0] - ex.offset, range[1] - ex.offset];
+        })
+        .filter(function (range) {
+          // Keep only ranges that fall within the excerpt window
+          return range[1] >= 0 && range[0] < ex.text.length;
+        })
+        .map(function (range) {
+          // Clamp to excerpt bounds
+          return [Math.max(0, range[0]), Math.min(ex.text.length - 1, range[1])];
+        });
+    }
+
+    var html = highlight(ex.text, adjustedIndices);
+    if (ex.trimStart) html = '<span class="rc-ellipsis">…</span>' + html;
+    if (ex.trimEnd)   html = html + '<span class="rc-ellipsis">…</span>';
+    return html;
+  }
+
   function renderResults(results, query) {
     resultsList.innerHTML = '';
 
@@ -693,8 +780,11 @@
       var descIndices  = getMatchIndices(matches, 'description');
 
       var titleHtml = highlight(rawTitle, titleIndices);
-      // Only highlight description when the match actually came from that field
-      var descHtml  = descIndices ? highlight(rawDesc, descIndices) : escHtml(rawDesc);
+      // Description: use excerpt window when match came from description field,
+      // otherwise show from the start as normal
+      var descHtml = descIndices
+        ? highlightExcerpt(rawDesc, descIndices, 80, 120)
+        : escHtml(rawDesc);
 
       var li = document.createElement('li');
       li.setAttribute('role', 'option');
