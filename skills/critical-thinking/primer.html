@@ -492,6 +492,82 @@
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     .slide { transition: none; }
   }
+
+  /* ── RESUME BANNER ───────────────────────────── */
+  .resume-banner {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    left: calc(var(--nav-width) + 24px);
+    right: 24px;
+    max-width: 480px;
+    background: var(--charcoal);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+    padding: 14px 16px 14px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 200;
+    animation: bannerSlideUp 0.3s ease forwards;
+  }
+  .resume-banner.hidden {
+    display: none !important;
+  }
+  @keyframes bannerSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .resume-banner-text {
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.75);
+  }
+  .resume-banner-text strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 2px;
+  }
+  .resume-banner-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .resume-banner-btn.primary {
+    background: var(--teal);
+    color: var(--off-white);
+  }
+  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.dismiss {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    margin-left: 4px;
+  }
+  .resume-banner-btn.dismiss:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); }
+  .resume-banner-btn:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  @media (max-width: 768px) {
+    .resume-banner {
+      left: 12px;
+      right: 12px;
+      bottom: 80px; /* sit above mobile bottom toolbar */
+      max-width: none;
+    }
+  }
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */
@@ -610,6 +686,16 @@
     </button>
   </div>
 </nav>
+
+<!-- ── RESUME BANNER ──────────────────────────── -->
+<div class="resume-banner hidden" id="resumeBanner" role="status" aria-live="polite">
+  <div class="resume-banner-text">
+    <strong>Welcome back</strong>
+    You were on slide <span id="resumeSlideLabel"></span>
+  </div>
+  <button class="resume-banner-btn primary" id="resumeBtn" type="button">Resume</button>
+  <button class="resume-banner-btn dismiss" id="resumeDismissBtn" type="button" aria-label="Dismiss, start from beginning">Start over</button>
+</div>
 
 <!-- ── SLIDE STAGE ───────────────────────────── -->
 <div class="stage" id="slide-stage" role="region" aria-label="Critical Thinking primer slides" tabindex="-1">
@@ -808,12 +894,21 @@
   var current = 0;
   var visited = new Set([0]);
 
+  // ── localStorage key for this primer ───────
+  var STORAGE_KEY = 'amplified_primer_critical-thinking';
+
   var slides   = Array.from(document.querySelectorAll('.slide'));
   var navLinks = Array.from(document.querySelectorAll('.nav-link'));
   var btnPrev  = document.getElementById('btnPrev');
   var btnNext  = document.getElementById('btnNext');
   var counter  = document.getElementById('slideCounter');
   var announce = document.getElementById('slideAnnounce');
+
+  // ── Resume banner elements ──────────────────
+  var resumeBanner      = document.getElementById('resumeBanner');
+  var resumeBtn         = document.getElementById('resumeBtn');
+  var resumeDismissBtn  = document.getElementById('resumeDismissBtn');
+  var resumeSlideLabel  = document.getElementById('resumeSlideLabel');
 
   // ── Video facade (title slide) ──────────────
   var YOUTUBE_ID = 'AwW1hu1RDzA';
@@ -852,6 +947,64 @@
     'In Practice', 'Summary'
   ];
 
+  // ── Progress persistence ─────────────────────
+
+  function saveProgress() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        current: current,
+        visited: Array.from(visited)
+      }));
+    } catch (e) {
+      // localStorage unavailable (private browsing, storage full) — fail silently
+    }
+  }
+
+  function loadProgress() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearProgress() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {}
+  }
+
+  function hideBanner() {
+    resumeBanner.classList.add('hidden');
+  }
+
+  function showResumeBanner(savedSlide) {
+    var slideNum    = savedSlide + 1;
+    var slideTitle  = slideTitles[savedSlide] || ('Slide ' + slideNum);
+    resumeSlideLabel.textContent = slideNum + ' — ' + slideTitle;
+    resumeBanner.classList.remove('hidden');
+
+    resumeBtn.addEventListener('click', function () {
+      hideBanner();
+      // Activate saved slide directly without goTo animation — state already set
+      slides[current].classList.remove('active');
+      current = savedSlide;
+      visited = new Set(savedData.visited || [savedSlide]);
+      slides[current].classList.add('active');
+      updateUI();
+      saveProgress();
+    }, { once: true });
+
+    resumeDismissBtn.addEventListener('click', function () {
+      hideBanner();
+      clearProgress();
+    }, { once: true });
+  }
+
+  // ── Navigation ───────────────────────────────
+
   function goTo(idx) {
     if (idx < 0 || idx >= TOTAL || idx === current) return;
 
@@ -875,7 +1028,11 @@
     slides[current].classList.remove('exit-up');
     slides[current].classList.add('active');
 
+    // Dismiss banner if still showing
+    if (!resumeBanner.classList.contains('hidden')) hideBanner();
+
     updateUI();
+    saveProgress();
   }
 
   function updateUI() {
@@ -963,8 +1120,18 @@
     });
   }
 
-  // Init
-  updateUI();
+  // ── Init: restore saved progress if any ─────
+  var savedData = loadProgress();
+  if (savedData && typeof savedData.current === 'number' && savedData.current > 0) {
+    // Restore visited set so nav rail shows correct state on slide 0
+    visited = new Set(savedData.visited || [0]);
+    updateUI();
+    // Show resume prompt — don't silently jump
+    showResumeBanner(savedData.current);
+  } else {
+    updateUI();
+  }
+
 })();
 </script>
 
