@@ -72,6 +72,26 @@
     "url": "skills/critical-thinking/plan.html"
   },
   {
+    "id": "cr-primer",
+    "type": "primer",
+    "skill": "Creative Thinking",
+    "title": "Creative Thinking — Skill Primer",
+    "description": "A quick primer on Creative Thinking — expand a problem's solution space before narrowing it. Core concepts, a worked example, and a knowledge check.",
+    "tags": ["creative thinking", "SCAMPER", "divergent thinking", "convergent thinking", "assumption reversal", "ideation", "lateral thinking", "primer", "cognitive", "Edward de Bono"],
+    "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "Model: SCAMPER", "Model: Divergent–Convergent", "Model: Assumption Reversal", "In Practice", "Summary"],
+    "url": "skills/creative-thinking/primer.html"
+  },
+  {
+    "id": "cr-plan",
+    "type": "plan",
+    "skill": "Creative Thinking",
+    "title": "Creative Thinking — Full Learning Plan",
+    "description": "The full Creative Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.",
+    "tags": ["creative thinking", "SCAMPER", "divergent thinking", "convergent thinking", "assumption reversal", "mind mapping", "reframing matrix", "ideation", "habit builder", "behavioral indicators", "cognitive", "Tony Buzan"],
+    "sections": ["Skill Snapshot", "Overview", "Learning Objectives", "First Principles", "Key Mental Models and Frameworks", "Common Mistakes", "Behavioral Indicators", "Practical Examples", "Self-Reflection", "Knowledge Check", "5-Day Habit Builder", "Progression Path", "Summary", "Explore Further"],
+    "url": "skills/creative-thinking/plan.html"
+  },
+  {
     "id": "person-simon-sinek",
     "type": "person",
     "name": "Simon Sinek",

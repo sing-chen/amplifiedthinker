@@ -631,9 +631,9 @@
       </div>
     </div>
 
-    <!-- CREATIVE THINKING -->
-    <div class="scard cs" id="s-creative" data-categories="cognitive" role="listitem">
-      <div class="sheader">
+    <!-- CREATIVE THINKING — available -->
+    <div class="scard active" id="s-creative" data-categories="cognitive" role="listitem">
+      <div class="sheader" onclick="toggleSkill('s-creative')" aria-expanded="false" aria-controls="sb-creative" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-creative')">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><path d="M9 21h6"/><path d="M12 3a6 6 0 0 1 6 6c0 2.22-1.2 4.16-3 5.2V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-2.8C7.2 13.16 6 11.22 6 9a6 6 0 0 1 6-6z"/></svg>
@@ -644,7 +644,35 @@
             <div class="sname">Creative Thinking</div>
           </div>
           <div class="ssum"><span class="ssum-desc">Produce original approaches by combining ideas across domains in ways that default thinking misses. </span><em>"What else is possible?"</em></div>
-          <div class="sstatus ss-soon">Coming soon</div>
+          <div class="sstatus ss-avail">Available Now</div>
+        </div>
+        <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sbody" id="sb-creative">
+        <div class="sdef">
+          <div class="sdef-inner">
+            <div class="sdtext">"Creative Thinking is the practice of generating original ideas by deliberately breaking pattern, recombining unrelated concepts, and expanding a problem's solution space — before narrowing to what's worth pursuing."</div>
+          </div>
+          <div class="swhat">
+            <p>Without it, the first workable idea becomes the only idea. Teams recombine what's familiar, brainstorms produce variations on one theme, and a process that's stopped working keeps getting optimized instead of questioned.</p>
+            <p>The skill produces a genuine range of alternatives — not the final choice, but the raw material any good decision needs to draw from. It means generating before judging, borrowing structure from unrelated domains, and treating the first idea as a starting point, not an answer.</p>
+          </div>
+        </div>
+        <div class="slaunch">
+          <div class="lcards">
+            <a href="skills/creative-thinking/primer.html" class="lcard" aria-label="Open Creative Thinking Primer">
+              <div class="lctype">Skill Primer</div>
+              <div class="lcdesc">Short skill introduction. Core concepts, worked example, knowledge check.</div>
+              <div class="lctime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~10 minutes</div>
+              <div class="lccta">Open primer<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+            </a>
+            <a href="skills/creative-thinking/plan.html" class="lcard primary" aria-label="Open Creative Thinking Full Learning Plan">
+              <div class="lctype">Full Learning Plan</div>
+              <div class="lcdesc">First principles, mental models, behavioural indicators, and curated resources, plus a 5-day habit builder (~15 min/day).</div>
+              <div class="lctime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~60–75 min</div>
+              <div class="lccta">Open full plan<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+            </a>
+          </div>
         </div>
       </div>
     </div>

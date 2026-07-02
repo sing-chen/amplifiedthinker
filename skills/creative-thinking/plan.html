@@ -1,0 +1,3142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Thinking: Full Learning Plan · Amplified</title>
+<meta name="description" content="The full Creative Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.">
+<link rel="canonical" href="https://sing-chen.github.io/amplified/skills/creative-thinking/plan.html">
+<link rel="icon" type="image/png" href="../../images/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Amplified">
+<meta property="og:title" content="Creative Thinking: Full Learning Plan · Amplified">
+<meta property="og:description" content="The full Creative Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.">
+<meta property="og:url" content="https://sing-chen.github.io/amplified/skills/creative-thinking/plan.html">
+<meta property="og:image" content="https://sing-chen.github.io/amplified/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sing-chen.github.io/amplified/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── BRAND TOKENS ───────────────────────────── */
+  :root {
+    --sage:       #ACC4B6;
+    --teal:       #5BA79F;
+    --deep-teal:  #2D756F;
+    --off-white:  #F5F7F6;
+    --cream:      #EDE5C5;
+    --terracotta: #C77B5F;
+    --amber:      #D9A05B;
+    --navy:       #1F4D4A;
+    --charcoal:   #2D3330;
+    --light-sage: #D8E4DD;
+    --warm-gray:  #8B8A85;
+    --slate-blue: #5B7C8F;
+    --tag-analytical-bg: #C5DDD9;
+    --tag-analytical-tx: #2D756F;
+    --tag-structural-bg: #D8E4DD;
+    --tag-structural-tx: #1F4D4A;
+    --tag-human-bg:      #EDD5CB;
+    --tag-human-tx:      #1F4D4A;
+    --tag-growth-bg:     #F2DDB8;
+    --tag-growth-tx:     #2D3330;
+    --tag-insight-bg:    #C8D4DC;
+    --tag-insight-tx:    #2D3330;
+    --nav-width: 260px;
+    --content-max: 780px;
+    --radius: 8px;
+  }
+
+  /* ── RESET ──────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--navy);
+    background: var(--off-white);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── LEFT NAV ───────────────────────────────── */
+  .nav-rail {
+    width: var(--nav-width);
+    min-height: 100vh;
+    background: var(--charcoal);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 40px;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .nav-brand {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
+  }
+  .nav-series {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 6px;
+  }
+  .nav-skill {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.2;
+  }
+  .nav-items { list-style: none; padding: 0 12px; flex: 1; }
+  .nav-item { margin-bottom: 2px; }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .nav-link:hover { color: var(--off-white); background: rgba(255,255,255,0.06); }
+  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.2); }
+  .nav-link.visited { color: rgba(255,255,255,0.85); }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .nav-link.active .nav-dot  { background: var(--teal); }
+  .nav-link.visited .nav-dot { background: var(--sage); }
+  /* ── PREV / NEXT ARROWS ─────────────────────── */
+  .nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 16px;
+  }
+  .nav-arrow {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: #E8EDEB;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .nav-arrow:hover {
+    background: rgba(91,167,159,0.28);
+    border-color: var(--teal);
+    color: #FFFFFF;
+  }
+  .nav-arrow svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+  .slide-counter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── RAIL TOGGLE (mobile bottom-toolbar trigger, hidden on desktop) ── */
+  .rail-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: rgba(255,255,255,0.6);
+  }
+  .rail-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .rail-toggle .rail-icon-close { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-open  { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-close { display: block; }
+
+  /* ── MAIN CONTENT ───────────────────────────── */
+  .main {
+    margin-left: var(--nav-width);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* ── HERO ───────────────────────────────────── */
+  .hero {
+    background: var(--cream);
+    padding: 72px 80px 64px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(45,117,111,0.12);
+    width: 100%;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.07;
+    top: -100px; right: -80px;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    opacity: 0.06;
+    bottom: -40px; right: 200px;
+  }
+  .hero-series {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+  .hero-title-row { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; }
+  .hero-accent { width: 4px; height: 56px; background: var(--terracotta); border-radius: 2px; flex-shrink: 0; }
+  .hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.1;
+    margin-bottom: 0;
+    max-width: 600px;
+  }
+  .hero-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+
+  /* ── TAGS ───────────────────────────────────── */
+  .tag {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    display: inline-block;
+  }
+  .tag-analytical { background: var(--tag-analytical-bg); color: var(--tag-analytical-tx); }
+  .tag-structural  { background: var(--tag-structural-bg); color: var(--tag-structural-tx); }
+  .tag-human       { background: var(--tag-human-bg);      color: var(--tag-human-tx); }
+  .tag-growth      { background: var(--tag-growth-bg);     color: var(--tag-growth-tx); }
+  .tag-insight     { background: var(--tag-insight-bg);    color: var(--tag-insight-tx); }
+
+  /* ── CONTENT SECTIONS ───────────────────────── */
+  .content { max-width: calc(var(--content-max) + 160px); padding: 0 80px 120px; width: 100%; counter-reset: section-counter; }
+
+  .section {
+    padding-top: 96px;
+    padding-bottom: 16px;
+  }
+  .section h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    max-width: var(--content-max);
+  }
+  .section h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+    margin-bottom: 12px;
+    margin-top: 36px;
+  }
+  .section p {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    color: var(--navy);
+  }
+  .principles-intro {
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(45,117,111,0.08);
+  }
+
+  /* ── SNAPSHOT CARDS ─────────────────────────── */
+  .snapshot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .snapshot-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    border-top: 3px solid var(--teal);
+  }
+  .snapshot-card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .snapshot-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0;
+    color: var(--navy);
+  }
+  .snapshot-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+  }
+  .snapshot-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+  }
+  .snapshot-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .snapshot-list li.ai-item { font-style: italic; color: var(--deep-teal); }
+
+  /* ── CALLOUT ────────────────────────────────── */
+  .callout {
+    background: var(--light-sage);
+    border-left: 4px solid var(--terracotta);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .callout p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--terracotta);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .callout-teal {
+    background: var(--tag-analytical-bg);
+    border-left-color: var(--deep-teal);
+  }
+  .callout-teal p { color: var(--deep-teal); }
+
+  /* ── DEFINITION BOX ─────────────────────────── */
+  .definition-box {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .definition-box p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ── OBJECTIVES LIST ────────────────────────── */
+  .objectives-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .objectives-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 20px;
+    background: white;
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+  }
+  .obj-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 24px;
+    padding-top: 1px;
+  }
+  .obj-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  /* ── PRINCIPLE BLOCKS ───────────────────────── */
+  .principle {
+    max-width: var(--content-max);
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(45,117,111,0.08);
+  }
+  .principle:last-child { border-bottom: none; }
+  .principle:first-child {
+    border-top: 1px solid rgba(45,117,111,0.08);
+    padding-top: 32px;
+    margin-top: 28px;
+  }
+  .principle-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .principle h3 {
+    margin-top: 0;
+    color: var(--deep-teal);
+  }
+
+  /* ── ACCORDION (shared: principles + mental models) ──
+     Principles default open (sequential read); model cards
+     default closed except the first (browse/select). Toggled
+     via .open class on the parent .principle / .model-card. */
+  .principle-header,
+  .model-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+  .principle-header-text,
+  .model-header-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .principle-body,
+  .model-body { display: none; }
+  .principle.open .principle-body,
+  .model-card.open .model-body { display: block; }
+  .accordion-control {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .accordion-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+  .accordion-toggle {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--teal);
+  }
+  .accordion-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  .open .accordion-toggle svg { transform: rotate(180deg); }
+  .principle-header:hover .accordion-label,
+  .model-header:hover .accordion-label,
+  .principle-header:hover .accordion-toggle,
+  .model-header:hover .accordion-toggle { color: var(--deep-teal); }
+  .principle-header:focus-visible,
+  .model-header:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  @media (max-width: 560px) {
+    .accordion-label { display: none; }
+  }
+  .ai-note {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--tag-growth-bg);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-top: 16px;
+    border-left: 3px solid var(--amber);
+  }
+  .ai-note-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .ai-note p {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── MENTAL MODEL CARDS ─────────────────────── */
+  .model-card {
+    background: white;
+    border-radius: var(--radius);
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    border-top: 3px solid var(--teal);
+    overflow: hidden;
+  }
+  .model-header { padding: 24px 32px; }
+  .model-body { padding: 0 32px 28px; }
+  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header .model-source { margin-bottom: 0; }
+  .model-source {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--warm-gray);
+    margin-bottom: 14px;
+  }
+  .model-applied {
+    background: var(--light-sage);
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    margin-top: 16px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .model-applied-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+    margin-bottom: 6px;
+  }
+  .model-applied p { font-size: 14px; margin: 0; }
+
+  /* model diagrams — ported from the primer for visual continuity */
+  .model-diagram { margin-top: 20px; }
+  .model-diagram-caption {
+    text-align: center; margin-top: 10px;
+    font-size: 12px; color: var(--warm-gray);
+  }
+
+  /* MECE grid */
+  .mece-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mece-cell {
+    border-radius: var(--radius); padding: 18px 16px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600; font-size: 15px; text-align: center;
+  }
+
+  /* SCAMPER checklist grid */
+  .scamper-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .scamper-cell {
+    border-radius: var(--radius); padding: 16px 14px;
+    background: var(--light-sage);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .scamper-letter {
+    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px;
+    color: var(--deep-teal); flex-shrink: 0; width: 22px;
+  }
+  .scamper-word {
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px;
+    color: var(--navy); line-height: 1.3;
+  }
+
+  /* Divergent–Convergent funnel diagram */
+  .funnel-wrap { display: flex; align-items: center; gap: 32px; justify-content: center; }
+  .funnel-phase { flex: 1; text-align: center; max-width: 240px; }
+  .funnel-phase-label {
+    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--deep-teal);
+    margin-bottom: 14px;
+  }
+  .funnel-dots-wide { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .funnel-dot {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--teal); opacity: 0.55;
+  }
+  .funnel-dot.kept { opacity: 1; background: var(--terracotta); width: 24px; height: 24px; }
+  .funnel-arrow { flex-shrink: 0; color: var(--teal); }
+  .funnel-arrow svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+
+  /* Mind map radial diagram */
+  .mindmap-wrap { position: relative; min-height: 260px; display: flex; align-items: center; justify-content: center; }
+  .mindmap-center {
+    background: var(--terracotta); color: var(--off-white);
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px;
+    text-align: center; border-radius: var(--radius);
+    padding: 14px 20px; position: relative; z-index: 2; max-width: 200px;
+  }
+  .mindmap-branches {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+    margin-top: 24px;
+  }
+  .mindmap-branch {
+    background: var(--tag-analytical-bg); color: var(--deep-teal);
+    border-radius: var(--radius); padding: 12px 14px;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    text-align: center; line-height: 1.4;
+  }
+  .mindmap-branch-sub {
+    display: block; margin-top: 4px;
+    font-size: 11px; font-weight: 400; opacity: 0.75;
+  }
+
+  /* Reframing matrix — 2x2 */
+  .reframe-matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .reframe-cell {
+    border-radius: var(--radius); padding: 16px 18px;
+    background: var(--light-sage);
+  }
+  .reframe-cell-label {
+    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 12px;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--deep-teal);
+    margin-bottom: 6px;
+  }
+  .reframe-cell p { font-family: 'Inter', sans-serif; font-size: 13px; margin: 0; line-height: 1.5; color: var(--navy); }
+
+  /* 5 Whys step chain */
+  .step-chain { display: flex; flex-direction: column; gap: 12px; }
+  .step-item  { display: flex; align-items: flex-start; gap: 16px; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--tag-analytical-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700; font-size: 12px; color: var(--deep-teal);
+    flex-shrink: 0;
+  }
+  .step-num.root { background: var(--terracotta); color: var(--off-white); }
+  .step-item p { font-size: 14px; margin: 0; padding-top: 4px; line-height: 1.5; }
+  .step-meta { font-size: 12px; color: var(--warm-gray); }
+  .model-applied .step-meta { color: var(--navy); }
+  .model-applied .step-num { background: white; }
+  .model-applied .step-num.root { background: var(--terracotta); }
+  .step-root-label {
+    margin: 4px 0 0 48px;
+    font-family: 'Poppins', sans-serif; font-weight: 600;
+    font-size: 11px; color: var(--terracotta); letter-spacing: 0.04em;
+  }
+
+  /* issue tree */
+  .tree-root {
+    max-width: 420px; margin: 0 auto;
+    background: var(--terracotta); color: var(--off-white);
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px;
+    text-align: center; border-radius: var(--radius);
+    padding: 14px 22px; position: relative;
+  }
+  .tree-root::after {
+    content: ''; position: absolute;
+    left: 50%; bottom: -28px;
+    width: 2px; height: 28px;
+    background: var(--teal); transform: translateX(-1px);
+  }
+  .tree-branches {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    margin-top: 28px; position: relative;
+  }
+  .tree-branches::before {
+    content: ''; position: absolute;
+    top: -28px; left: 12.5%; right: 12.5%;
+    height: 2px; background: var(--teal);
+  }
+  .tree-branch { padding: 0 6px; position: relative; }
+  .tree-branch::before {
+    content: ''; position: absolute;
+    top: -28px; left: 50%;
+    width: 2px; height: 28px;
+    background: var(--teal); transform: translateX(-1px);
+  }
+  .tree-branch-box {
+    background: var(--tag-analytical-bg); color: var(--deep-teal);
+    border-radius: var(--radius); padding: 14px 10px;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    text-align: center; line-height: 1.4;
+  }
+  .tree-branch-sub {
+    display: block; margin-top: 4px;
+    font-size: 11px; font-weight: 400; opacity: 0.75;
+  }
+
+  /* fishbone diagram — traditional spine + diagonal bones + effect head */
+  .fishbone-diagram {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 760 / 260;
+    margin-top: 8px;
+  }
+  .fishbone-diagram svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; display: block;
+  }
+  .fishbone-cat-label {
+    position: absolute; transform: translate(-50%, -50%);
+    background: white; color: var(--deep-teal);
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    text-align: center; border-radius: var(--radius);
+    padding: 10px 12px; white-space: normal;
+    max-width: 24%; line-height: 1.3;
+  }
+  .fishbone-cat-desc {
+    display: block; margin-top: 4px;
+    font-size: 11px; font-weight: 400; color: var(--navy); opacity: 0.85;
+  }
+  .fishbone-effect-label {
+    position: absolute; transform: translate(-50%, -50%);
+    color: var(--off-white);
+    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700;
+    text-align: center; line-height: 1.25;
+    width: 100px; white-space: normal;
+  }
+
+  /* ── MISTAKES ───────────────────────────────── */
+  .mistake {
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .mistake h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+  }
+  .mistake-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .mistake-cell-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 4px;
+  }
+  .mistake-cell p { font-size: 14px; margin: 0; line-height: 1.5; }
+
+  /* ── BEHAVIORAL INDICATORS ──────────────────── */
+  .continuum-bar {
+    display: flex;
+    gap: 6px;
+    max-width: var(--content-max);
+    margin: 24px 0 20px;
+  }
+  .continuum-segment {
+    flex: 1;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+  }
+  .continuum-segment.underuse { background: var(--tag-human-bg); color: var(--navy); }
+  .continuum-segment.target   { background: var(--tag-analytical-bg); color: var(--deep-teal); flex: 1.3; }
+  .continuum-segment.overuse  { background: var(--tag-growth-bg); color: var(--charcoal); }
+
+  .indicators-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+  }
+  .indicator-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .indicator-panel {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .indicator-panel.target   { border-top: 4px solid var(--teal); }
+  .indicator-panel.underuse { border-top: 3px solid var(--terracotta); }
+  .indicator-panel.overuse  { border-top: 3px solid var(--amber); }
+
+  .indicator-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .indicator-icon {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .indicator-icon svg {
+    width: 20px; height: 20px;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .indicator-panel.target   .indicator-icon { color: var(--teal); }
+  .indicator-panel.underuse .indicator-icon { color: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-icon { color: var(--amber); }
+  .indicator-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+  }
+
+  .indicator-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px 24px;
+  }
+  .indicator-list.cols-2 { grid-template-columns: 1fr 1fr; }
+  .indicator-list li {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 7px 10px 7px 18px;
+    margin: 0 -10px;
+    border-radius: 6px;
+    position: relative;
+    color: var(--navy);
+    transition: background 0.15s ease;
+  }
+  .indicator-list li::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 14px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+  .indicator-panel.target   .indicator-list li::before { background: var(--teal); }
+  .indicator-panel.underuse .indicator-list li::before { background: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-list li::before { background: var(--amber); }
+  .indicator-panel.target   .indicator-list li:hover { background: var(--tag-analytical-bg); }
+  .indicator-panel.underuse .indicator-list li:hover { background: var(--tag-human-bg); }
+  .indicator-panel.overuse  .indicator-list li:hover { background: var(--tag-growth-bg); }
+
+  @media (max-width: 640px) {
+    .indicator-row { grid-template-columns: 1fr; }
+    .indicator-list.cols-2 { grid-template-columns: 1fr; }
+  }
+
+  /* ── SCENARIOS ──────────────────────────────── */
+  .scenario {
+    max-width: var(--content-max);
+    margin-bottom: 32px;
+  }
+  .scenario h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin-bottom: 16px;
+  }
+  .scenario-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .scenario-col {
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .scenario-col.without {
+    background: #FDF0EC;
+    border-top: 3px solid var(--terracotta);
+  }
+  .scenario-col.with {
+    background: color-mix(in srgb, var(--tag-analytical-bg) 50%, transparent);
+    border-top: 3px solid var(--teal);
+  }
+  .scenario-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .without .scenario-col-label { color: var(--terracotta); }
+  .with    .scenario-col-label { color: var(--deep-teal); }
+  .scenario-col p { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+  .scenario-col p:last-child { margin-bottom: 0; }
+  .scenario-highlight { font-weight: 500; color: var(--deep-teal); }
+
+  /* ── REFLECTION ─────────────────────────────── */
+  .reflection-item {
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    border-left: 3px solid var(--slate-blue);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .reflection-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--slate-blue);
+    min-width: 28px;
+    padding-top: 1px;
+  }
+  .reflection-q {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--navy);
+  }
+  .reflection-time {
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 4px;
+  }
+
+  /* ── KNOWLEDGE CHECK ────────────────────────── */
+  .kc-question {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .kc-q-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 8px;
+  }
+  .kc-q-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .kc-options { display: flex; flex-direction: column; gap: 8px; }
+  .kc-option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background: var(--light-sage);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    font-size: 14px;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    line-height: 1.45;
+  }
+  .kc-option:hover:not(:disabled) {
+    border-color: var(--deep-teal);
+    background: var(--tag-structural-bg);
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(45, 117, 111, 0.25);
+  }
+  .kc-option.selected {
+    background: var(--tag-structural-bg);
+    border-color: var(--deep-teal);
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
+  }
+  .kc-option.correct  {
+    background: var(--tag-analytical-bg);
+    border-color: var(--teal);
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
+  }
+  .kc-option.incorrect {
+    background: #FDE8E0;
+    border-color: var(--terracotta);
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(199, 123, 95, 0.2);
+  }
+  .kc-reveal-btn {
+    display: none;
+    margin-top: 16px;
+    background: var(--deep-teal);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .kc-reveal-btn:hover { background: var(--navy); }
+  .kc-score {
+    display: none;
+    margin-top: 20px;
+    background: var(--tag-analytical-bg);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    max-width: var(--content-max);
+  }
+  .kc-score p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin: 0;
+  }
+  .kc-answer { display: none; margin-top: 10px; }
+  .kc-answer-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .kc-answer p { font-size: 13px; color: var(--navy); margin: 0; line-height: 1.5; }
+
+  /* ── HABIT BUILDER ──────────────────────────── */
+  .habit-day {
+    max-width: var(--content-max);
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid rgba(45,117,111,0.12);
+  }
+  .habit-day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: white;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .habit-day-header:hover { background: var(--light-sage); }
+  .habit-day-header.open  { background: var(--deep-teal); }
+  .habit-day-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 32px;
+  }
+  .habit-day-header.open .habit-day-num { color: var(--sage); }
+  .habit-day-title-wrap { flex: 1; }
+  .habit-day-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+  }
+  .habit-day-header.open .habit-day-title { color: var(--off-white); }
+  .habit-day-concept {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 2px;
+  }
+  .habit-day-header.open .habit-day-concept { color: var(--sage); }
+  .habit-day-chevron {
+    font-size: 14px;
+    color: var(--warm-gray);
+    transition: transform 0.25s;
+  }
+  .habit-day-header.open .habit-day-chevron { transform: rotate(180deg); color: var(--sage); }
+  .habit-day-body {
+    display: none;
+    padding: 24px 28px 24px 72px;
+    background: white;
+    border-top: 1px solid rgba(45,117,111,0.08);
+  }
+  .habit-day-body.open { display: block; }
+  .habit-focus {
+    margin-bottom: 20px;
+  }
+  .habit-focus strong {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .habit-focus p { font-size: 14px; margin: 0; }
+  .habit-tasks { margin-bottom: 20px; }
+  .habit-tasks-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .habit-task {
+    margin-bottom: 16px;
+  }
+  .habit-task-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .habit-task p { font-size: 14px; margin-bottom: 8px; line-height: 1.55; }
+  .habit-example {
+    background: var(--cream);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--navy);
+    line-height: 1.55;
+    margin-top: 8px;
+    border-left: 3px solid var(--amber);
+  }
+  .habit-example-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .habit-meta { display: flex; flex-direction: column; gap: 10px; }
+  .habit-meta-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .habit-meta-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    min-width: 90px;
+    padding-top: 2px;
+  }
+  .habit-meta-value { font-size: 14px; color: var(--navy); line-height: 1.5; }
+  .habit-meta-value strong { color: var(--deep-teal); }
+  .habit-not-clicking {
+    margin-top: 16px;
+    background: var(--light-sage);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--navy);
+    line-height: 1.55;
+    border-left: 3px solid var(--slate-blue);
+  }
+  .habit-not-clicking-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-blue);
+    margin-bottom: 4px;
+  }
+
+  /* ── PROGRESSION ────────────────────────────── */
+  .progression-stage {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    border-left: 4px solid var(--teal);
+  }
+  .progression-stage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .progression-stage h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--deep-teal);
+  }
+  .progression-cap {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(45,117,111,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .progression-cap-item label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .progression-cap-item p { font-size: 14px; line-height: 1.5; margin: 0; }
+
+  /* ── SUMMARY ────────────────────────────────── */
+  .summary-block {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-block::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.1;
+    top: -80px; right: -60px;
+  }
+  .summary-block blockquote {
+    border-left: 4px solid var(--sage);
+    padding-left: 28px;
+    position: relative;
+  }
+  .summary-block p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--off-white);
+    line-height: 1.6;
+    margin: 0 0 16px;
+    max-width: 620px;
+  }
+  .summary-block p:last-child { margin: 0; font-size: 16px; color: var(--sage); }
+
+  /* ── RESOURCE TABLE ─────────────────────────── */
+  .table-scroll {
+    width: 100%;
+    max-width: var(--content-max);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .resource-table {
+    width: 100%;
+    max-width: var(--content-max);
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+    background: #FFFFFF;
+    border: 1px solid var(--light-sage);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(31,77,74,0.06);
+  }
+  .resource-table th {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--off-white);
+    border-bottom: 2px solid var(--light-sage);
+  }
+  .resource-table td {
+    padding: 14px 14px;
+    border-bottom: 1px solid var(--light-sage);
+    vertical-align: top;
+    line-height: 1.5;
+    color: var(--navy);
+    background: #FFFFFF;
+  }
+  .resource-table tr:last-child td { border-bottom: none; }
+  .resource-table tr:hover td { background: color-mix(in srgb, var(--light-sage) 40%, transparent); }
+  .resource-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--warm-gray);
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .resource-time svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .resource-type {
+    white-space: nowrap;
+  }
+  .type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .type-pill svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .type-pill--book      { background: #DCEEEC; color: var(--deep-teal); }
+  .type-pill--article   { background: #DEE7EE; color: var(--slate-blue); }
+  .type-pill--video      { background: #F3E0D7; color: var(--terracotta); }
+  .type-pill--podcast   { background: #F6E6C8; color: #8A5A1E; }
+  .type-pill--paper     { background: #DCE6E5; color: var(--navy); }
+  .type-pill--factsheet { background: #E3EDE7; color: #4B6B5C; }
+  .resource-title { font-weight: 500; color: var(--deep-teal); }
+  .resource-why { color: var(--navy); font-size: 13px; }
+  .resource-links { white-space: nowrap; vertical-align: top; }
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--deep-teal);
+    text-decoration: none;
+    background: var(--tag-analytical-bg);
+    padding: 3px 10px;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+    margin-bottom: 4px;
+    margin-right: 4px;
+  }
+  .resource-link:hover { background: var(--deep-teal); color: var(--off-white); }
+
+  /* ── CROSS SKILL ────────────────────────────── */
+  .cross-skill-item {
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .cross-skill-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    min-width: 160px;
+  }
+  .cross-skill-desc { font-size: 14px; line-height: 1.6; color: var(--navy); }
+  .cross-skill-practice {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--teal);
+    font-style: italic;
+  }
+
+  /* ── SCOPE ──────────────────────────────────── */
+  .scope-list {
+    list-style: none;
+    max-width: var(--content-max);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .scope-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+    padding: 12px 16px;
+    background: white;
+    border-radius: 6px;
+  }
+  .scope-list li::before {
+    content: '✕';
+    font-size: 11px;
+    color: var(--terracotta);
+    font-weight: 700;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── ANIMATIONS ─────────────────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeInUp 0.4s ease both; }
+
+  /* ── SCROLLBAR ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(45,117,111,0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(45,117,111,0.5); }
+
+  /* ── ALTERNATING SECTION BACKGROUNDS ───────── */
+  /* Full-bleed: backgrounds span .main's full width (viewport minus nav rail),
+     while content stays in its existing 780px column flush against the nav
+     rail (left inset is a constant 80px from .content's padding; right inset
+     grows with viewport width since the column doesn't re-centre). */
+  .section { position: relative; z-index: 0; }
+  .section-odd::before,
+  .section-even::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: -80px;
+    right: min(-80px, calc(1120px - 100vw));
+    z-index: -1;
+  }
+  .section-odd::before  { background: var(--off-white); }
+  .section-even::before { background: var(--cream); }
+  /* On cream sections, white-background cards stay white for clear contrast */
+  .section-even .model-card,
+  .section-even .mistake,
+  .section-even .objectives-list li,
+  .section-even .reflection-item,
+  .section-even .kc-question,
+  .section-even .progression-stage,
+  .section-even .cross-skill-item,
+  .section-even .scope-list li { background: white; }
+
+  /* ── SECTION GHOST NUMERAL ───────────────────
+     Low-opacity numeral sitting behind each section's heading — a
+     quieter echo of the primer's per-slide numbering, giving each
+     section a visual landmark independent of background colour.
+     Sized so its lower edge clears the heading's margin before body
+     content begins (h2: 96–132px, margin-bottom 24px → content at
+     156px; numeral spans 38–138px, leaving an 18px gap). */
+  .section { counter-increment: section-counter; }
+  .section::after {
+    content: counter(section-counter, decimal-leading-zero);
+    position: absolute;
+    top: 38px;
+    left: 0;
+    z-index: -1;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 100px;
+    line-height: 1;
+    color: var(--deep-teal);
+    opacity: 0.10;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── SKIP NAVIGATION ─────────────────────────── */
+  .skip-link { position: absolute; top: -44px; left: 0; background: var(--deep-teal); color: var(--off-white); font-size: 14px; font-weight: 600; padding: 10px 18px; z-index: 9999; text-decoration: none; border-radius: 0 0 var(--radius) 0; transition: top .15s; }
+  .skip-link:focus { top: 0; }
+
+  /* ── FOCUS STYLES ────────────────────────────── */
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  /* ── REDUCED MOTION ──────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ── PRINT ──────────────────────────────────── */
+  @media print {
+    .principle-body, .model-body { display: block !important; }
+    .accordion-toggle { display: none; }
+    .principle-header, .model-header { cursor: default; }
+  }
+
+  /* ── RESUME BANNER ───────────────────────────── */
+  .resume-banner {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    left: calc(var(--nav-width) + 24px);
+    right: 24px;
+    max-width: 480px;
+    background: var(--charcoal);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+    padding: 14px 16px 14px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 200;
+    animation: bannerSlideUp 0.3s ease forwards;
+  }
+  .resume-banner.hidden {
+    display: none !important;
+  }
+  @keyframes bannerSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .resume-banner-text {
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.75);
+  }
+  .resume-banner-text strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 2px;
+  }
+  .resume-banner-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .resume-banner-btn.primary {
+    background: var(--teal);
+    color: var(--off-white);
+  }
+  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.dismiss {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    margin-left: 4px;
+  }
+  .resume-banner-btn.dismiss:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); }
+  .resume-banner-btn:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  @media (max-width: 768px) {
+    .resume-banner {
+      left: 12px;
+      right: 12px;
+      bottom: 80px;
+      max-width: none;
+    }
+  }
+
+</style>
+  <style id="site-nav-overrides">
+    /* Site nav offset — injected by wrapper */
+    body {
+      padding-top: 96px !important; /* 56px site nav + 40px skill bar */
+    }
+    .nav-rail {
+      top: 96px !important;
+      height: calc(100vh - 96px) !important;
+      min-height: calc(100vh - 96px) !important;
+    }
+  </style>
+  <style id="mobile-nav-overrides">
+    /* ── MOBILE (≤768px): nav-rail becomes a bottom toolbar ─────────────
+       Comes after #site-nav-overrides so its !important rules win at
+       this viewport width. The section TOC collapses into a panel that
+       pops up above the toolbar. Prev/Next + counter stay visible.
+    ──────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-rail {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0; right: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: auto !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+        overflow: visible;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.18);
+      }
+      .nav-rail .nav-brand { display: none; }
+
+      .nav-rail .nav-items {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 10px;
+        background: var(--charcoal);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-rail.open .nav-items { display: block; }
+
+      .nav-rail .nav-arrows {
+        flex: 1;
+        border-top: none;
+        margin-top: 0;
+        padding: 10px 12px;
+      }
+
+      .rail-toggle {
+        display: flex;
+        width: 44px; flex-shrink: 0;
+        align-self: stretch;
+        border-left: 1px solid rgba(255,255,255,0.08);
+      }
+      .rail-toggle:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); }
+
+      .main { margin-left: 0; min-width: 0; }
+
+      .hero { padding: 28px 20px 40px; }
+      .hero h1 {
+        font-size: clamp(28px, 8vw, 52px);
+        overflow-wrap: break-word;
+      }
+      .content { padding: 0 20px 110px; }
+
+      /* Multi-column grids that would otherwise overflow a 100%-width .content */
+      .snapshot-grid,
+      .mece-grid,
+      .mistake-row,
+      .scenario-cols,
+      .progression-cap {
+        grid-template-columns: 1fr;
+      }
+      .tree-branches { grid-template-columns: 1fr; }
+
+      /* Full-bleed alternating section backgrounds were sized to cancel
+         the desktop 80px .content padding. At the 20px mobile padding,
+         -20px exactly spans .main's full width instead. */
+      .section-odd::before,
+      .section-even::before {
+        left: -20px;
+        right: -20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="../../nav.js"></script>
+
+<!-- Screen reader live region for section announcements -->
+<div aria-live="polite" aria-atomic="true" class="sr-only" id="sectionAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
+
+<!-- ── LEFT NAV ───────────────────────────────── -->
+<nav class="nav-rail" aria-label="Section navigation">
+  <button type="button" id="railToggle" class="rail-toggle" aria-expanded="false" aria-controls="navItems" aria-label="Show section list">
+    <svg class="rail-icon-open"  viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>
+    <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-brand">
+    <div class="nav-series">Full Learning Plan</div>
+    <div class="nav-skill">Creative Thinking</div>
+  </div>
+  <ul class="nav-items" id="navItems">
+    <li class="nav-item"><a class="nav-link" href="#snapshot"   data-section="snapshot"><span class="nav-dot"></span>01 · Skill Snapshot</a></li>
+    <li class="nav-item"><a class="nav-link" href="#overview"   data-section="overview"><span class="nav-dot"></span>02 · Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="#objectives" data-section="objectives"><span class="nav-dot"></span>03 · Learning Objectives</a></li>
+    <li class="nav-item"><a class="nav-link" href="#principles" data-section="principles"><span class="nav-dot"></span>04 · First Principles</a></li>
+    <li class="nav-item"><a class="nav-link" href="#models"     data-section="models"><span class="nav-dot"></span>05 · Mental Models</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mistakes"   data-section="mistakes"><span class="nav-dot"></span>06 · Common Mistakes</a></li>
+    <li class="nav-item"><a class="nav-link" href="#indicators" data-section="indicators"><span class="nav-dot"></span>07 · Behavioral Indicators</a></li>
+    <li class="nav-item"><a class="nav-link" href="#scenarios"  data-section="scenarios"><span class="nav-dot"></span>08 · Practical Examples</a></li>
+    <li class="nav-item"><a class="nav-link" href="#reflection" data-section="reflection"><span class="nav-dot"></span>09 · Self-Reflection</a></li>
+    <li class="nav-item"><a class="nav-link" href="#check"      data-section="check"><span class="nav-dot"></span>10 · Knowledge Check</a></li>
+    <li class="nav-item"><a class="nav-link" href="#habits"     data-section="habits"><span class="nav-dot"></span>11 · 5-Day Habit Builder</a></li>
+    <li class="nav-item"><a class="nav-link" href="#progression" data-section="progression"><span class="nav-dot"></span>12 · Progression Path</a></li>
+    <li class="nav-item"><a class="nav-link" href="#summary"    data-section="summary"><span class="nav-dot"></span>13 · Summary</a></li>
+    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>14 · Explore Further</a></li>
+  </ul>
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="btnPrev" disabled>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Prev
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 14</span>
+    <button class="nav-arrow" id="btnNext">
+      Next
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────── -->
+<!-- ── RESUME BANNER ──────────────────────────── -->
+<div class="resume-banner hidden" id="resumeBanner" role="status" aria-live="polite">
+  <div class="resume-banner-text">
+    <strong>Welcome back</strong>
+    You were in <span id="resumeSectionLabel"></span>
+  </div>
+  <button class="resume-banner-btn primary" id="resumeBtn" type="button">Resume</button>
+  <button class="resume-banner-btn dismiss" id="resumeDismissBtn" type="button" aria-label="Dismiss, start from top">Start over</button>
+</div>
+
+<main class="main" id="main-content">
+
+  <!-- HERO -->
+  <div class="hero">    
+    <div class="hero-title-row">
+      <div class="hero-accent"></div>
+      <h1>Creative Thinking</h1>
+    </div>
+    <p class="hero-sub">The full learning plan. Work through it sequentially or use the navigation to jump to what you need.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- 0. SKILL SNAPSHOT -->
+    <div class="section section-odd" id="snapshot">
+      <h2>Skill Snapshot</h2>
+      <div class="snapshot-grid">
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Problem It Solves</div>
+          <p>Without Creative Thinking, the first workable idea becomes the only idea. Teams recombine what's familiar, brainstorms produce variations on one theme, and a process that's stopped working keeps getting optimized instead of questioned. The cost is invisible — until the same stuck problem is still stuck a year later.</p>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">When It Matters Most</div>
+          <ul class="snapshot-list">
+            <li>A problem has been "solved" the same way for years and nobody's questioned the framing</li>
+            <li>A brainstorm produces a handful of options that are really one option in different clothes</li>
+            <li>A stakeholder rejects the obvious fix and nobody has a second option ready</li>
+            <li>A process or offering has stayed static while the context around it has clearly moved</li>
+            <li class="ai-item">AI generates a dozen options in seconds — and the scarce skill becomes judging which ones are genuinely worth pursuing, not producing more of them</li>
+          </ul>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Outcome It Enables</div>
+          <p>The ability to take any stuck problem and generate a genuine range of alternatives — by naming the assumption behind the current approach, borrowing structure from somewhere unrelated, and separating the act of generating ideas from the act of judging them.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <div class="section section-even" id="overview">
+      <h2>Overview</h2>
+      <p>Creative Thinking is the discipline of generating original ideas by deliberately breaking pattern, recombining unrelated concepts, and expanding a problem's solution space before narrowing to what's worth pursuing.</p>
+      <p>The analogy that isolates it best: where Analytical Thinking works like a scalpel — precise, methodical, narrowing toward a single structured picture — Creative Thinking works like a paintbrush, generating enough genuinely different possibilities that a good answer has somewhere to come from. Analytical Thinking tells you what's actually happening. Creative Thinking asks what you could do about it. Most useful problem-solving needs both, in sequence.</p>
+      <h3>Where the boundaries are</h3>
+      <p><strong>Analytical Thinking</strong> produces the picture this skill works from. It decomposes a problem into its component parts and traces symptoms to causes — the structured, evidence-based output that comes before any idea generation starts. Creative Thinking doesn't redo that work; it takes the picture as given and asks what could be done about it. You need the picture before you can generate options that actually respond to it.</p>
+      <p><strong>Critical Thinking</strong> tests a conclusion and produces a judgment — this part is sound, this part is questionable, this is missing. Creative Thinking picks up from there: once a judgment exists, generating alternatives or proposing a fix is this skill's job. The sequence matters — evaluate first, then generate — and converging on an idea before the evaluation is finished is one of the most common ways both steps get cut short.</p>
+      <div class="definition-box">
+        <p>Creative Thinking is the practice of generating original ideas by deliberately breaking pattern, recombining unrelated concepts, and expanding a problem's solution space — before narrowing to what's worth pursuing.</p>
+      </div>
+      <h3>Out of scope</h3>
+      <ul class="scope-list">
+        <li>Artistic or expressive creativity — painting, music, and similar — unless directly applied to a professional problem</li>
+        <li>Long-form innovation project management, such as full product incubation cycles — the focus stays on everyday workplace applications</li>
+        <li>Resource-heavy facilitated methods like multi-day design sprints — the focus is self-directed, lightweight practice</li>
+        <li>Testing whether an idea is well-founded or evidence-backed — that is Critical Thinking</li>
+        <li>Choosing which idea to pursue and committing resources to it — that is Decision-Making</li>
+      </ul>
+    </div>
+
+    <!-- 2. OBJECTIVES -->
+    <div class="section section-odd" id="objectives">
+      <h2>Learning Objectives</h2>
+      <p>By the end of this learning plan, you will be able to:</p>
+      <ol class="objectives-list">
+        <li><span class="obj-num">01</span><span class="obj-text">Recognize creativity as a professional practice, not a personality trait, and identify at least one place you already apply it in your own work.</span></li>
+        <li><span class="obj-num">02</span><span class="obj-text">Apply a structured ideation technique to generate a genuine range of options for a real workplace problem, not variations on one idea.</span></li>
+        <li><span class="obj-num">03</span><span class="obj-text">Surface the hidden assumption behind a current approach and reframe the problem from at least two alternative angles.</span></li>
+        <li><span class="obj-num">04</span><span class="obj-text">Run a divergent-then-convergent cycle: generate without judging, then narrow to one actionable concept.</span></li>
+        <li><span class="obj-num">05</span><span class="obj-text">Distinguish a genuinely novel idea from a merely unusual one, and explain what separates novelty from value.</span></li>
+        <li><span class="obj-num">06</span><span class="obj-text">Produce an idea a colleague could act on without you in the room to explain where it came from.</span></li>
+      </ol>
+    </div>
+
+    <!-- 3. FIRST PRINCIPLES -->
+    <div class="section section-even" id="principles">
+      <h2>First Principles</h2>
+      <p class="principles-intro">Six principles, in sequence. Each builds on the one before it — divergence has to happen before convergence is possible, reframing opens the territory that generation then fills, and so on through to the constraints that sharpen a chosen idea. The mental models, behavioral indicators, and daily practices later in this plan are all applications of these six ideas.</p>
+
+      <div class="principle" id="principle-01">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 01</div>
+            <h3>Divergence before convergence</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-01-body">
+          <p>Generating and judging are two different acts, and doing them at the same time quietly kills the first one. The moment an idea gets evaluated the instant it's spoken, the pool of ideas that follow narrows to whatever feels safe to say next. Divergence means generating volume — deliberately, without commentary — before any idea is allowed to be judged.</p>
+          <p>This is not intuitive. Most workplace habits reward looking decisive, and judging ideas as they arrive feels like rigor. It's actually the fastest way to end up with three variations on the first idea instead of a genuine range.</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-02">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 02</div>
+            <h3>Reframing: the default framing is not the only one</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-02-body">
+          <p>Every problem arrives already framed — as a resourcing issue, a training gap, a process fix. That framing isn't neutral. It was inherited from however the problem was first described, and it quietly determines which solutions even occur to you. A problem framed as "we need more people" will never generate "we need to remove a step."</p>
+          <p>Reframing means treating the current framing as one option among several, not as the problem itself. Naming it explicitly — "we're currently framing this as X" — is what makes it possible to ask what else it could be.</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-03">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 03</div>
+            <h3>Association across domains</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-03-body">
+          <p>Creative Thinking is recombination, not invention from nothing. A genuinely original idea is usually two familiar things meeting for the first time — a structure borrowed from one domain, applied to a problem in another. Restaurants pioneered the buzzer-pager system for table waits; airports later borrowed it for gate boarding.</p>
+          <p>This is why staying inside one domain caps how far ideation can go. The people, publications, and conversations you draw from set a hard ceiling on what you can recombine — if every input is from the same field, every output will be a variation on what that field already does.</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-04">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 04</div>
+            <h3>Judgment deferred, not absent</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-04-body">
+          <p>Deferring judgment during generation doesn't mean judgment never happens — it means it happens later, deliberately, as its own step. Skipping the judgment step entirely isn't creative discipline, it's just an unfiltered list. The discipline is in the sequencing: generate first, evaluate second, and don't let the second step contaminate the first.</p>
+          <p>Knowing when generation has genuinely stopped — as opposed to just slowing down — is part of the skill. A forced quota (ten ideas, no fewer) is a common way to push past the first, easiest wave of ideas into the territory that actually requires effort to reach.</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-05">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 05</div>
+            <h3>Quantity as a lever for quality</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-05-body">
+          <p>More ideas raise the odds that a genuinely useful one is in the set. Early ideas in any session tend to be the most obvious, most familiar ones. Volume is what pushes past that first layer into combinations nobody would reach in the first three tries.</p>
+          <div class="ai-note">
+            <div class="ai-note-label">AI Context</div>
+            <p>AI tools generate volume effortlessly — ask for twenty ideas and you'll have them in seconds. That changes where the scarce skill sits. It's no longer generating options; it's judging which of the twenty are genuinely different from each other, and which are worth a second look. Producing more ideas stopped being the bottleneck. Recognizing a good one didn't.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-06">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-06')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 06</div>
+            <h3>Constraints sharpen creativity</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-06-body">
+          <p>Unlimited freedom tends to produce the safest, most obvious idea — with no boundary to push against, there's nothing forcing a departure from the familiar. A deliberate constraint — half the budget, a third of the time, no new headcount — removes the obvious options and forces a genuinely different combination to solve the same problem.</p>
+          <p>This is why "think outside the box" rarely works as an instruction, and a specific limit usually does. The constraint doesn't restrict creativity; it gives it something concrete to solve for.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. MENTAL MODELS -->
+    <div class="section section-odd" id="models">
+      <h2>Key Mental Models and Frameworks</h2>
+
+      <div class="model-card" id="model-scamper">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-scamper-body" onclick="toggleAccordion('model-scamper')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-scamper')}">
+          <div class="model-header-text">
+            <h3>SCAMPER</h3>
+            <div class="model-source">Bob Eberle · built on Alex Osborn's checklist · 1971</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-scamper-body">
+          <p>Seven prompts — Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse/Rearrange — applied one at a time to something that already exists. It doesn't wait for inspiration; it manufactures ideas on demand by forcing the same fixed thing through seven different lenses.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A monthly status report nobody reads. Running it through SCAMPER: <strong>Substitute</strong> a live call for the write-up. <strong>Combine</strong> it with an existing meeting. <strong>Eliminate</strong> it entirely and replace it with a 5-minute Q&amp;A at the start of standup. One checklist, several genuinely different directions — not variations on the same report.</p>
+          </div>
+          <div class="model-diagram">
+            <div class="scamper-grid">
+              <div class="scamper-cell"><span class="scamper-letter">S</span><span class="scamper-word">Substitute</span></div>
+              <div class="scamper-cell"><span class="scamper-letter">C</span><span class="scamper-word">Combine</span></div>
+              <div class="scamper-cell"><span class="scamper-letter">A</span><span class="scamper-word">Adapt</span></div>
+              <div class="scamper-cell"><span class="scamper-letter">M</span><span class="scamper-word">Modify</span></div>
+              <div class="scamper-cell"><span class="scamper-letter">P</span><span class="scamper-word">Put to other use</span></div>
+              <div class="scamper-cell"><span class="scamper-letter">E</span><span class="scamper-word">Eliminate</span></div>
+              <div class="scamper-cell" style="grid-column:span 2;"><span class="scamper-letter">R</span><span class="scamper-word">Reverse / Rearrange</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-divergent-convergent">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-divergent-convergent-body" onclick="toggleAccordion('model-divergent-convergent')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-divergent-convergent')}">
+          <div class="model-header-text">
+            <h3>The Divergent–Convergent Cycle</h3>
+            <div class="model-source">J.P. Guilford · popularized in design practice</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-divergent-convergent-body">
+          <p>Two phases, kept deliberately apart. Diverge: generate as many options as possible without judging any of them. Converge: apply judgment only once generation has genuinely stopped, narrowing the full set down to what's worth pursuing. Running both at once collapses back into evaluating the first idea as it arrives — which is exactly what this model exists to prevent.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A team stuck on a stalled onboarding process generates twelve ideas in a divergent session — no discussion, no filtering, just volume. Only once the list is exhausted do they switch modes and converge: grouping similar ideas, ranking by effort versus impact, and picking one to prototype. The idea they ship was ninth on the list — it wouldn't have survived if judgment had been running throughout.</p>
+          </div>
+          <div class="model-diagram">
+            <div class="funnel-wrap">
+              <div class="funnel-phase">
+                <div class="funnel-phase-label">Diverge</div>
+                <div class="funnel-dots-wide">
+                  <div class="funnel-dot"></div><div class="funnel-dot"></div><div class="funnel-dot"></div>
+                  <div class="funnel-dot"></div><div class="funnel-dot"></div><div class="funnel-dot"></div>
+                  <div class="funnel-dot"></div><div class="funnel-dot"></div><div class="funnel-dot"></div>
+                  <div class="funnel-dot"></div><div class="funnel-dot"></div><div class="funnel-dot"></div>
+                </div>
+              </div>
+              <div class="funnel-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+              <div class="funnel-phase">
+                <div class="funnel-phase-label">Converge</div>
+                <div class="funnel-dots-wide">
+                  <div class="funnel-dot kept"></div>
+                </div>
+              </div>
+            </div>
+            <p class="model-diagram-caption">Twelve ideas, generated without judgment. One selected, after.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-assumption-reversal">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-assumption-reversal-body" onclick="toggleAccordion('model-assumption-reversal')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-assumption-reversal')}">
+          <div class="model-header-text">
+            <h3>Assumption Reversal</h3>
+            <div class="model-source">Lateral thinking · Edward de Bono</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-assumption-reversal-body">
+          <p>Name the assumption baked into how a problem is currently framed, then deliberately invert it. The reversal usually isn't literally true or immediately workable — that's not the point. The point is that starting from an inverted premise forces a genuinely different set of ideas than starting from the familiar one.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <div class="step-chain">
+              <div class="step-item"><div class="step-num">1</div><p><span class="step-meta">Default framing: &nbsp;</span>"Training has to happen in a scheduled session"</p></div>
+              <div class="step-item"><div class="step-num">2</div><p><span class="step-meta">Hidden assumption: &nbsp;</span>Learning requires everyone in the same place at the same time</p></div>
+              <div class="step-item"><div class="step-num root">3</div><p style="color:var(--terracotta);font-weight:500;"><span class="step-meta">Reversed: &nbsp;</span>What if no one is ever in the same place at the same time?</p></div>
+            </div>
+            <div class="step-root-label">NEW STARTING POINT: ASYNCHRONOUS, SELF-PACED MODULES</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-mindmap">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-mindmap-body" onclick="toggleAccordion('model-mindmap')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-mindmap')}">
+          <div class="model-header-text">
+            <h3>Mind Mapping</h3>
+            <div class="model-source">Tony Buzan · popularized from the 1970s</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-mindmap-body">
+          <p>Puts a central problem in the middle of the page and radiates associations outward, branch by branch, without pre-sorting them into categories. The radial, non-linear structure is deliberate — linear lists push toward the most obvious next item, while a map lets one branch trigger a completely unrelated one elsewhere on the page.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>Mapping "low attendance at the monthly all-hands" from the center produces branches nobody would generate in a linear list: Timing, Format, Relevance, Trust. The Format branch spins off "borrowed from a podcast" and "borrowed from a product launch event" — associations that a top-to-bottom brainstorm tends not to surface.</p>
+          </div>
+          <div class="model-diagram">
+            <div class="mindmap-center">Low attendance at monthly all-hands</div>
+            <div class="mindmap-branches">
+              <div class="mindmap-branch">Timing<span class="mindmap-branch-sub">Always the same day, always the same hour</span></div>
+              <div class="mindmap-branch">Format<span class="mindmap-branch-sub">One-way presentation, no interaction</span></div>
+              <div class="mindmap-branch">Relevance<span class="mindmap-branch-sub">Content skews toward one function</span></div>
+              <div class="mindmap-branch">Trust<span class="mindmap-branch-sub">Past sessions felt scripted, not candid</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-reframing-matrix">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-reframing-matrix-body" onclick="toggleAccordion('model-reframing-matrix')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-reframing-matrix')}">
+          <div class="model-header-text">
+            <h3>The Reframing Matrix</h3>
+            <div class="model-source">Michael Morgan · 1993</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-reframing-matrix-body">
+          <p>Places the same problem in four quadrants, each viewed through a different lens — product, planning, potential, people. Working the same problem through all four in sequence surfaces ideas that a single-perspective discussion never reaches, because each lens asks a genuinely different question of the same material.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A hiring process that's crept longer every year, run through all four lenses: what would we change if this were a product with users (candidates)? If we were planning it from scratch today? If we ignored current constraints entirely? If we asked the people actually living the process — recruiters and hiring managers — what they'd cut first?</p>
+          </div>
+          <div class="model-diagram">
+            <div class="reframe-matrix">
+              <div class="reframe-cell"><div class="reframe-cell-label">Product Lens</div><p>If candidates were users, where would they abandon the funnel?</p></div>
+              <div class="reframe-cell"><div class="reframe-cell-label">Planning Lens</div><p>Designed from scratch today, what would the process look like?</p></div>
+              <div class="reframe-cell"><div class="reframe-cell-label">Potential Lens</div><p>With no current constraints, what's the ideal version?</p></div>
+              <div class="reframe-cell"><div class="reframe-cell-label">People Lens</div><p>What would the people running it cut first, if asked directly?</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. COMMON MISTAKES -->
+    <div class="section section-even" id="mistakes">
+      <h2>Common Mistakes</h2>
+
+      <div class="mistake">
+        <h4>Judging ideas as they're generated</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Reacting to each idea the moment it's spoken feels like engagement — nodding, critiquing, improving on the spot. It's actually evaluation running during generation, and it quietly narrows what anyone feels safe suggesting next.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Separate the two steps explicitly. Set a rule — no evaluation language, no "but," no ranking — until a fixed quantity of ideas is on the table. Converge only after generation has stopped.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Settling on the first workable idea</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>A workable idea removes the discomfort of an unsolved problem. Once something plausible exists, the motivation to keep generating drops sharply — even though the first idea is almost always the most obvious one, not the strongest.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Set a quota before starting — ten ideas, no fewer — regardless of how soon a workable one appears. The ideas generated after the "good enough" one tend to be where genuine novelty shows up.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Recombining only within the same domain</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>It's faster and feels safer to pull ideas from the same field the problem lives in — the same industry, the same function, the same handful of people already in the room.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Deliberately pull one input from somewhere unrelated before generating — a different industry, a completely different function, an analogy from outside work entirely. Association across domains is where genuinely new combinations come from.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Mistaking novelty for value</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>An unusual idea feels like evidence the divergent work paid off. Championing it for being different — rather than for what it actually solves — is an easy way to reward the exercise instead of the outcome.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>At convergence, ask what specifically the idea solves that the obvious option doesn't. If the honest answer is "it's more interesting," that's a signal it hasn't earned selection yet — testing whether it holds up is Critical Thinking's job, not this step's.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. BEHAVIORAL INDICATORS -->
+    <div class="section section-odd" id="indicators">
+      <h2>Behavioral Indicators</h2>
+      <p>Observable behaviors across a single spectrum: the target zone in the middle, flanked by the signals that show when the skill is under- or overused.</p>
+
+      <div class="continuum-bar" aria-hidden="true">
+        <div class="continuum-segment underuse">Underuse</div>
+        <div class="continuum-segment target">Target Zone</div>
+        <div class="continuum-segment overuse">Overuse</div>
+      </div>
+
+      <div class="indicators-stack">
+        <div class="indicator-panel target">
+          <div class="indicator-panel-header">
+            <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/></svg></div>
+            <div class="indicator-col-label">What Good Looks Like</div>
+          </div>
+          <ul class="indicator-list cols-2">
+            <li>Generates multiple divergent options before evaluating any of them</li>
+            <li>Names the assumption behind the current approach before proposing an alternative</li>
+            <li>Deliberately borrows a structure or analogy from an unrelated field</li>
+            <li>Keeps idea generation and idea evaluation as two distinct, sequenced steps</li>
+            <li>Treats the first workable idea as a starting point, not a conclusion</li>
+            <li>Asks what a novel idea actually solves before championing it</li>
+            <li>Uses a structured technique — SCAMPER, reframing, forced association — rather than waiting for inspiration</li>
+            <li>Sets a quota or constraint that pushes generation past the first, most obvious ideas</li>
+            <li>Can explain what unrelated input or reframe an idea came from, not just the idea itself</li>
+            <li>Hands off a set of alternatives another person could evaluate without needing the generation process explained</li>
+          </ul>
+        </div>
+
+        <div class="indicator-row">
+          <div class="indicator-panel underuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="indicator-col-label">Early Warning Signs</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Stops generating the moment one workable idea appears</li>
+              <li>Judges each idea out loud as it's suggested, before generation has finished</li>
+              <li>Treats "that's not how we've done it" as disqualifying rather than as the assumption to examine</li>
+              <li>Draws every idea from the same domain, team, or set of prior examples</li>
+              <li>Accepts AI-generated ideas without checking whether they're genuinely different from each other</li>
+              <li>Reframes a problem once, then treats that single reframe as final</li>
+              <li>Defaults to the most familiar framework or format regardless of the problem in front of them</li>
+              <li>Can't articulate why an idea was selected beyond "it felt right"</li>
+            </ul>
+          </div>
+          <div class="indicator-panel overuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="indicator-col-label">Overindexing Signals</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Ideation paralysis — keeps generating and reframing without ever converging on a direction</li>
+              <li>Champions novelty for its own sake, even when the familiar option would clearly serve the goal better</li>
+              <li>Reframes a working process repeatedly for its own sake, disrupting execution that didn't need disrupting</li>
+              <li>Treats every constraint as something to argue away rather than something to design within</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. PRACTICAL EXAMPLES -->
+    <div class="section section-even" id="scenarios">
+      <h2>Practical Examples</h2>
+
+      <div class="scenario">
+        <h4>A hiring process that's crept longer every year</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Creative Thinking</div>
+            <p>Time-to-hire has grown for three years running. Each year, the team adds a small process fix — an extra scorecard, a faster scheduling tool, a reminder system for interviewers. Time-to-hire keeps growing anyway.</p>
+            <p>Every fix stayed inside the same framing: the process is fundamentally right, it just needs tuning. Nobody questioned the framing itself.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Creative Thinking</div>
+            <p>The team runs the process through the Reframing Matrix. The Product Lens asks: if candidates were users, where would they abandon the funnel? That question surfaces something the process metrics never showed — most drop-off happens waiting for a single approval step, not anywhere in the interviews themselves.</p>
+            <p class="scenario-highlight">The fix isn't a faster interview — it's removing the approval bottleneck. A different question produced a different answer than three years of tuning the same process.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario">
+        <h4>A product feature stuck in the same shape for two years</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Creative Thinking</div>
+            <p>A feature has low adoption. The team's response each quarter is the same: polish the UI, add a tooltip, run another awareness campaign. Adoption ticks up briefly, then flattens again.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Creative Thinking</div>
+            <p>The team runs a divergent session pulling in one deliberately unrelated input — how airlines handle seat upgrades, a domain nobody on the team works in. The forced association produces an idea none of the UI tweaks had reached: surface the feature at the exact moment it would save the user time, the way an airline surfaces an upgrade at check-in, instead of leaving it sitting in a menu.</p>
+            <p class="scenario-highlight">The idea came from outside the product's own domain. Two years of in-domain iteration had never generated it, because every idea was recombined from the same small set of familiar inputs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. SELF-REFLECTION -->
+    <div class="section section-odd" id="reflection">
+      <h2>Self-Reflection Activities</h2>
+      <p>Three prompts to audit your current use of Creative Thinking. Each takes under five minutes to complete honestly.</p>
+
+      <div class="reflection-item">
+        <div class="reflection-num">1</div>
+        <div>
+          <div class="reflection-q">Think of the last time you or your team "solved" a stuck problem. Write down the idea you went with. Now write down how many other ideas were seriously considered before it. If the honest answer is one or none, what made that first idea feel sufficient — and what might have surfaced if generation had continued past it?</div>
+          <div class="reflection-time">Targets: divergence before convergence · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">2</div>
+        <div>
+          <div class="reflection-q">Pick a process or approach in your current work that hasn't changed in over a year. Write down the assumption baked into how it's currently framed — what does the current approach take for granted? Now write the reversed version of that assumption. Does the reversal point toward anything worth exploring, even if it isn't literally workable as stated?</div>
+          <div class="reflection-time">Targets: reframing · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">3</div>
+        <div>
+          <div class="reflection-q">Think about where your ideas usually come from at work — which people, which sources, which fields. Write down the last three sources of inspiration for something you built or proposed. Are all three from the same domain you work in? If so, name one genuinely unrelated field you could deliberately pull from next time, and what a first association from it might look like.</div>
+          <div class="reflection-time">Targets: association across domains · ~5 minutes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. KNOWLEDGE CHECK -->
+    <div class="section section-even" id="check">
+      <h2>Knowledge Check</h2>
+      <p>Five questions — two conceptual, two applied, one synthesis. Select your answers, then reveal results.</p>
+
+      <div class="kc-question" id="kc1">
+        <div class="kc-q-label">Conceptual · Question 1 of 5</div>
+        <div class="kc-q-text">What's the difference between divergent and convergent thinking, and why does mixing them undermine both?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc1', 0)">There's no real difference — they're two names for the same process</button>
+          <button class="kc-option" onclick="selectOption('kc1', 1)">Divergent thinking generates options and convergent thinking narrows them — running both at once lets premature judgment suppress the volume divergent thinking needs to work</button>
+          <button class="kc-option" onclick="selectOption('kc1', 2)">Divergent thinking is for individuals working alone, convergent thinking only works in groups</button>
+          <button class="kc-option" onclick="selectOption('kc1', 3)">Divergent thinking follows brainstorming rules, convergent thinking just means voting on favorites</button>
+        </div>
+        <div class="kc-answer" id="kc1-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Divergent thinking generates volume without judgment; convergent thinking applies judgment to narrow that volume down to what's worth pursuing. They're sequential, not simultaneous. Evaluating an idea the moment it's spoken collapses the two phases into one — and the pool of ideas that follow narrows to whatever feels safe to suggest next, defeating the purpose of divergence before it's had a chance to work.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc2">
+        <div class="kc-q-label">Conceptual · Question 2 of 5</div>
+        <div class="kc-q-text">Why does association across domains matter more than raw effort when generating original ideas?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc2', 0)">Effort doesn't matter at all — genuinely novel ideas require no work</button>
+          <button class="kc-option" onclick="selectOption('kc2', 1)">Working harder within a single, familiar domain still only produces variations on what's already available in that domain — the ceiling is set by the inputs, not the effort</button>
+          <button class="kc-option" onclick="selectOption('kc2', 2)">Cross-domain ideas are always objectively better than ideas generated within a single domain</button>
+          <button class="kc-option" onclick="selectOption('kc2', 3)">Domain expertise is a disadvantage when trying to generate creative ideas</button>
+        </div>
+        <div class="kc-answer" id="kc2-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Original ideas come from recombination, and recombination is limited by the range of inputs available. If every input comes from the same field, every possible output is bounded by what that field already contains, no matter how much effort goes into generating variations. Pulling a structure or analogy from an unrelated domain expands what's actually available to recombine — cross-domain ideas aren't inherently superior, they're simply inaccessible without deliberately looking outside the familiar domain.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc3">
+        <div class="kc-q-label">Application · Question 3 of 5</div>
+        <div class="kc-q-text">A team has "brainstormed" the same stuck problem for the third quarter running, using the same room, the same participants, and the same rough process each time. Using Creative Thinking principles, what's most likely limiting them, and what would you change first?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc3', 0)">They need a bigger room and more sticky notes</button>
+          <button class="kc-option" onclick="selectOption('kc3', 1)">Nothing is wrong with the process — the problem itself is simply unsolvable</button>
+          <button class="kc-option" onclick="selectOption('kc3', 2)">Same inputs, same domain, same framing every time caps what can be recombined — bring in one genuinely unrelated input, or reframe the problem itself, before generating again</button>
+          <button class="kc-option" onclick="selectOption('kc3', 3)">They should skip generation entirely and go straight to a decision</button>
+        </div>
+        <div class="kc-answer" id="kc3-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Repeating the same process with the same people and the same framing recombines the same limited set of inputs every time — it will keep producing the same narrow range of ideas regardless of how many sessions are run. The fix isn't more effort inside the existing structure; it's changing what goes into the recombination, either by pulling in a genuinely unrelated input (association across domains) or by naming and reversing the assumption baked into how the problem has always been framed.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc4">
+        <div class="kc-q-label">Application · Question 4 of 5</div>
+        <div class="kc-q-text">You ask an AI tool for ideas to improve a stalled internal process and get twenty options back in seconds. Using Creative Thinking principles, what should you actually do with them?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc4', 0)">Pick the first one that sounds reasonable and move on</button>
+          <button class="kc-option" onclick="selectOption('kc4', 1)">Discard all of them, since AI-generated ideas can't be genuinely creative</button>
+          <button class="kc-option" onclick="selectOption('kc4', 2)">Treat generating the twenty as done — the scarce step now is judging which are genuinely different from each other and which solve something real, since producing volume was never the hard part here</button>
+          <button class="kc-option" onclick="selectOption('kc4', 3)">Ask for twenty more, since more volume always means a better outcome regardless of what's already been generated</button>
+        </div>
+        <div class="kc-answer" id="kc4-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>AI tools remove the effort from generating volume, which changes where the human contribution matters. With twenty options already on the table, more volume for its own sake adds little. The genuinely useful work is judging which options are meaningfully distinct from each other rather than surface variations on the same idea, and which actually address the problem rather than sounding plausible. That judgment step — not the generation — is where the skill is now being tested.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc5">
+        <div class="kc-q-label">Synthesis · Question 5 of 5</div>
+        <div class="kc-q-text">A colleague proposes a genuinely unusual idea in a planning meeting — nobody has suggested anything like it before. The room is impressed by how different it is and starts building a plan around it immediately. What's the risk here, and what should happen before committing?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc5', 0)">There's no risk — novelty is the entire goal of Creative Thinking, so an unusual idea should always be pursued once it appears</button>
+          <button class="kc-option" onclick="selectOption('kc5', 1)">The idea should be immediately discarded, since unusual ideas are inherently too risky to act on</button>
+          <button class="kc-option" onclick="selectOption('kc5', 2)">Novelty alone doesn't establish value — being impressed by how different an idea is can substitute for judgment. The idea needs to be tested for what it actually solves before committing, and that testing is Critical Thinking's job, not a continuation of generating it</button>
+          <button class="kc-option" onclick="selectOption('kc5', 3)">The team should generate ten more unusual ideas before making any decision at all</button>
+        </div>
+        <div class="kc-answer" id="kc5-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Being struck by how different an idea is can feel like the same signal as the idea being good — it isn't. Novelty is the raw material Creative Thinking is meant to produce, not the standard it's meant to be judged against. Committing to an idea because it's unusual, without testing whether it's actually well-founded, skips the evaluation step entirely. That evaluation — checking whether the idea holds up — belongs to Critical Thinking, and jumping straight from "impressive" to "let's build a plan" is exactly the kind of premature convergence this skill exists to prevent.</p>
+        </div>
+      </div>
+
+      <button class="kc-reveal-btn" id="kcRevealBtn" onclick="revealAnswers()">Reveal answers and explanations</button>
+      <div class="kc-score" id="kcScore"><p id="kcScoreText"></p></div>
+    </div>
+
+    <!-- 10. HABIT BUILDER -->
+    <div class="section section-odd" id="habits">
+      <h2>5-Day Habit Builder</h2>
+      <p>Five daily practices, each under 15 minutes. Days build on each other — from Day 2 onward, every step uses output from the previous day. The thread running through all five days: declining attendance at your monthly all-hands. Open each day to see the full practice.</p>
+
+      <!-- Day 1 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">1</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Naming and Reversing the Assumption</div>
+            <div class="habit-day-concept">Concept: Reframing</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Name what the current approach takes for granted before trying to fix it.</strong>
+            Most stuck problems aren't stuck because nobody's tried to fix them — they're stuck because every fix has stayed inside the same unexamined framing.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Write down the problem as it's currently framed.</div>
+              <p>For the all-hands: "Attendance keeps dropping and we need to get people back in the room."</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Name the hidden assumption, then reverse it.</div>
+              <p>Ask what the current framing takes for granted. Write the assumption in one sentence. Then write its exact opposite — not because the reversal is true, but because it forces a different starting point.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example</div>
+                Current framing: "Attendance keeps dropping and we need to get people back in the room."<br>
+                Hidden assumption: "The all-hands needs everyone present, live, at the same time to work."<br>
+                Reversed: "What if the all-hands assumed almost nobody would attend live?"<br>
+                <strong>That reversal is today's output — it becomes tomorrow's starting point.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>right after you notice the problem come up in conversation</strong> — a complaint about turnout, a comment in a retro — while the framing is fresh in your head.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You end the day with a genuinely different starting point instead of another lap around the same framing.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If the reversal feels obviously silly rather than usefully uncomfortable, you may have reversed a surface detail instead of the real assumption. Push one level deeper: what does the current approach assume that, if untrue, would make the whole thing pointless? Reverse that instead.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 2 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">2</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Borrowing a Structure from Somewhere Unrelated</div>
+            <div class="habit-day-concept">Concept: Association across domains</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Pull one input from a field that has nothing to do with yours.</strong>
+            Today's reversed framing from Day 1 opens the door. Today's work is walking through it with an input your own field wouldn't generate.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Pick one unrelated domain.</div>
+              <p>Something you have no professional connection to — podcasting, live sports broadcasting, a hobby, a completely different industry. Spend two minutes thinking about how that domain handles keeping an audience engaged.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Force the connection back to yesterday's reversal.</div>
+              <p>Take one specific structure from that domain and ask how it would apply to an all-hands that assumes almost nobody attends live.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Day 1)</div>
+                Unrelated domain: Podcasting.<br>
+                Structure borrowed: Podcasts are built entirely for asynchronous listening — chapter markers let you jump to what's relevant, and episodes stand alone without requiring the live drop.<br>
+                Forced connection: What if the all-hands were recorded and chaptered like a podcast, so nobody needs to sit through the parts irrelevant to them?
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>during a commute, walk, or other low-stakes stretch of time</strong> — association works better with some mental space than at a desk under pressure.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You have one idea today that couldn't have come from anyone who only thinks about internal comms.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If your "unrelated" domain turns out to be adjacent to your own field, the association will feel too easy and produce a familiar answer. Go further afield — the more genuinely unrelated the domain, the more the connection has to be forced, and forcing it is where the useful idea tends to show up.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 3 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">3</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Running the SCAMPER Checklist</div>
+            <div class="habit-day-concept">Concept: SCAMPER</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Generate volume by force, not by waiting for inspiration.</strong>
+            Yesterday produced one idea from one association. Today's job is producing many, fast, by running the same fixed problem through all seven SCAMPER prompts.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Take the all-hands problem and run all seven SCAMPER prompts.</div>
+              <p>One line per prompt, no editing as you go. Include Tuesday's podcast idea as one of your Substitute or Adapt entries if it fits — otherwise let each prompt generate something fresh.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Resist judging any entry until all seven are written.</div>
+              <p>Some prompts will produce something unusable. Write it down anyway. The goal today is coverage across all seven angles, not quality control.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–2)</div>
+                Substitute: Replace the live session with a chaptered recording (Day 2's idea).<br>
+                Combine: Fold it into an existing team meeting instead of a standalone event.<br>
+                Eliminate: Remove the monthly cadence entirely, publish updates as they happen.<br>
+                Reverse: Let teams present to leadership instead of leadership presenting to teams.
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>in one sitting, timed to 12 minutes</strong> — the time pressure is part of what keeps judgment from creeping in.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You have seven candidate directions where yesterday you had one.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If you're stalling on a prompt, don't skip it — write down the worst, most obviously unusable idea that fits it and move on. A bad entry that keeps the list moving beats a blank space where judgment quietly crept back in.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 4 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">4</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Converging on One</div>
+            <div class="habit-day-concept">Concept: The Divergent–Convergent Cycle</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Switch modes deliberately — from generating to judging.</strong>
+            Three days of divergence have produced a real set of options. Today is the only day this week where evaluation is the point.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Lay out everything generated across Days 1–3.</div>
+              <p>The reversal, the borrowed structure, the seven SCAMPER entries. That's your full divergent set.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Score each on effort versus impact, then pick one.</div>
+              <p>Quick scoring, not a formal process — rough effort (low/medium/high) against rough impact (low/medium/high). Pick whichever survivor has genuine impact without requiring more than you can actually deliver.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–3)</div>
+                Highest impact, lowest effort: "Combine" — fold updates into an existing team meeting instead of running a separate event.<br>
+                Selected idea: Retire the standalone all-hands. Distribute a 5-minute chaptered recording, then use 10 minutes of an existing weekly meeting for live Q&amp;A.<br>
+                <strong>This is the one idea that moves to Day 5.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>at a fresh sitting, not immediately after Day 3</strong> — some distance from the generation session makes the scoring more honest.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You go from a pile of options to one specific, defensible direction.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If you're drawn to the most novel entry rather than the highest-scoring one, check whether you're selecting for impact or for how interesting the idea sounds. Novelty isn't the scoring criterion here — what it actually solves is.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 5 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">5</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Sharpening Under a Constraint</div>
+            <div class="habit-day-concept">Concept: Constraints sharpen creativity</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Force the surviving idea through a tight limit before calling it finished.</strong>
+            Day 4 chose a direction. Today's constraint tests whether it holds up under real limits — and often sharpens it into something more specific than the original version.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Pick one hard constraint for the Day 4 idea.</div>
+              <p>Zero additional budget, half the current prep time, or no new tooling — pick whichever constraint is most realistic for your context.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Redesign the idea to fit inside it.</div>
+              <p>Don't ask for an exception to the constraint. Ask what the idea has to become to work within it.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–4)</div>
+                Constraint: No new tooling, no production budget.<br>
+                Original: A polished 5-minute recording, chaptered like a podcast.<br>
+                Redesigned: A single unedited phone recording of the presenter walking through three slides, uploaded to the existing shared drive with plain-text timestamps in the description instead of formal chapter markers.<br>
+                <strong>Same core idea, delivered with what already exists — ready to pilot next month, not next quarter.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>as the last task before closing out your work for the week</strong> — it's a natural place to convert five days of practice into something you could actually propose on Monday.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You end the week with a specific, pilotable idea — not a concept that still needs a budget conversation before it can start.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If the constraint just makes you want to argue for an exception, that's a sign the constraint is doing its job — sit with it a little longer. The redesign that emerges under real limits is usually more useful than the polished version that depends on resources you don't currently have.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. PROGRESSION PATH -->
+    <div class="section section-even" id="progression">
+      <h2>Progression Path</h2>
+      <p>Three stages of developing mastery in Creative Thinking. Each stage has a new capability and an observable signal of progress.</p>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-structural">Foundation</span>
+          <h4>The Deliberate Divergent</h4>
+        </div>
+        <p>You apply the sequence deliberately and consciously: generate before judging, name the assumption before proposing a fix, pull in an unrelated input rather than defaulting to the familiar one. The process requires effort and reminders — a facilitator, a checklist, a quota you set for yourself. Your idea sets are genuinely wider than before, but you still need the structure present to get there.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can take a problem that's been "solved" the same way for years and generate a real set of alternatives, rather than another variation on the existing approach.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>A brainstorm you're part of produces options that are genuinely different from each other, not four versions of the same idea — and you can point to which technique got you there.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-analytical">Expansion</span>
+          <h4>The Cross-Pollinator</h4>
+        </div>
+        <p>Reframing and cross-domain association have become habitual — you reach for an unrelated field without needing a checklist to remind you. Your focus shifts to the quality of the divergent set: are you generating genuinely distinct options, or the same idea with different wording? You start noticing when others' brainstorms stayed inside one domain the whole time.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can look at someone else's set of "ideas" and identify which are genuinely distinct and which are variations wearing different words — and suggest a specific unrelated domain that would expand the set.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>Colleagues start pulling you into stuck problems specifically to widen the option set, not to pick the final answer.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-growth">Integration</span>
+          <h4>The Creative Standard-Setter</h4>
+        </div>
+        <p>Creative Thinking is no longer a technique you apply — it's how you naturally approach a stuck problem. You move fluidly between reframing, association, and structured checklists depending on what a situation needs, and you hold divergence and convergence as clearly separate modes without needing to force the distinction. You help others build the same habit by making the sequence visible.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can facilitate a divergent session for a group — helping a team generate a genuinely wide set of options in a single working session, then hand the set off for evaluation rather than converging prematurely yourself.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>Teams you work with start separating generation from judgment as a default, without you needing to introduce or enforce the distinction each time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. SUMMARY -->
+    <div class="section section-odd" id="summary">
+      <h2>Quick-Recall Summary</h2>
+      <div class="summary-block">
+        <blockquote>
+          <p>Creative Thinking is the discipline of expanding a problem's solution space before narrowing it. It means generating before judging, borrowing structure from unrelated domains, and treating the first idea as a starting point, not an answer.</p>
+          <p>The output is a genuine range of alternatives — not the final choice, but the raw material any good decision needs to draw from.</p>
+        </blockquote>
+      </div>
+
+      <div style="margin:40px 0 0;padding:28px 32px;background:var(--light-sage);border-left:4px solid var(--deep-teal);border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
+        <p style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
+        <p style="font-family:'Inter',sans-serif;font-size:15px;color:var(--navy);line-height:1.7;margin-bottom:16px;">Creative Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical produces the picture, Critical tests it, Creative generates what to do next. With all three in place, the next stretch is choosing between what's been generated — a Decision-Making skill that isn't live on Amplified yet.</p>
+        <p style="font-family:'Inter',sans-serif;font-size:15px;color:var(--navy);line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and podcasts below if you want to go deeper into the concepts behind this one first.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <a href="#resources" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);background:rgba(45,117,111,0.1);border:1.5px solid var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='rgba(45,117,111,0.18)'" onmouseout="this.style.background='rgba(45,117,111,0.1)'">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="../../future-skills.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:var(--navy);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='var(--deep-teal)'" onmouseout="this.style.background='var(--navy)'">Browse the Library <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. DEEP DIVE RESOURCES -->
+    <div class="section section-even" id="resources">
+      <h2>Explore Further</h2>
+      <p>Curated for what each resource adds beyond this learning plan — not a description of what it covers, but a reason it belongs here.</p>
+
+      <div class="table-scroll">
+      <table class="resource-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Author / Source</th>
+            <th>Est. Time</th>
+            <th>Why This Specifically</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- BOOK -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Book</span></td>
+            <td class="resource-title">Zig Zag: The Surprising Path to Greater Creativity</td>
+            <td>R. Keith Sawyer</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>6–8 hrs</span></td>
+            <td class="resource-why">An eight-step, research-backed program for building creativity as a practice rather than waiting on it as a trait — goes deeper than any single technique on how the stages actually connect.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.goodreads.com/book/show/16234940-zig-zag" target="_blank" rel="noopener">Goodreads</a>
+            </td>
+          </tr>
+
+          <!-- MENTAL MODEL RESOURCES -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">To Solve a Tough Problem, Reframe It</td>
+            <td>Julia Binder &amp; Michael D. Watkins · Harvard Business Review</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>12 min</span></td>
+            <td class="resource-why">Research-backed case for why teams jump to solving before framing the problem — the five-phase reframing approach here goes further than this plan's single Reframing Matrix model.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://hbr.org/2024/01/to-solve-a-tough-problem-reframe-it" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">The Reframing Matrix</td>
+            <td>Mind Tools · based on Michael Morgan, 1993</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>10 min</span></td>
+            <td class="resource-why">The clearest practitioner walkthrough of the original 4 Ps technique, plus a second "Professions" variant this plan doesn't cover — useful once the product/planning/potential/people version feels familiar.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.mindtools.com/atxpcmf/the-reframing-matrix/" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">Mind Mapping</td>
+            <td>Mind Tools · based on Tony Buzan</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>10 min</span></td>
+            <td class="resource-why">A step-by-step guide to building a full mind map by hand, including the radial "Basic Ordering Idea" structure this plan's single-branch example only hints at.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.mindtools.com/a2q80e8/mind-mapping/" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">Divergent and Convergent Thinking</td>
+            <td>Digital.gov · U.S. General Services Administration</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>8 min</span></td>
+            <td class="resource-why">A concise, practitioner-facing walkthrough of running divergent and convergent phases in sequence, with prompts for the common failure mode of fixating on an early idea.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://digital.gov/guides/hcd/design-operations/thinking" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+
+          <!-- VIDEO -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video</span></td>
+            <td class="resource-title">The Surprising Habits of Original Thinkers</td>
+            <td>Adam Grant · TED</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>15 min</span></td>
+            <td class="resource-why">Directly reinforces the quantity-as-a-lever-for-quality principle — Grant's research on prolific originals shows why volume, not certainty, predicts who produces the strongest ideas.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.youtube.com/watch?v=fxbCHn6gE3U" target="_blank" rel="noopener">YouTube</a>
+            </td>
+          </tr>
+
+          <!-- PODCAST -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v4"/></svg>Podcast</span></td>
+            <td class="resource-title">Unlock Creative Potential with SCAMPER</td>
+            <td>Claire Bridges · Now Go Create</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>20 min</span></td>
+            <td class="resource-why">Walks through real client examples of SCAMPER in food and product innovation — useful for seeing all seven prompts applied to one concrete problem in sequence, beyond this plan's single worked example.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://nowgocreate.co.uk/blog/unlock-creative-potential-with-scamper/" target="_blank" rel="noopener">Listen</a>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+      </div>
+
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ── STORAGE KEY ──────────────────────────────
+const STORAGE_KEY = 'amplified_plan_creative-thinking';
+
+// ── PROGRESS PERSISTENCE ─────────────────────
+function saveProgress() {
+  try {
+    // Capture habit day open states by index
+    const habitHeaders = Array.from(document.querySelectorAll('.habit-day-header'));
+    const habitOpen = habitHeaders.map(h => h.classList.contains('open'));
+
+    // Capture quiz state
+    const quizRevealed = document.getElementById('kcScore').style.display === 'block';
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      section:      lastActiveId,
+      visited:      Array.from(visited),
+      quizSelected: kcSelected,
+      quizRevealed: quizRevealed,
+      habitOpen:    habitOpen
+    }));
+  } catch (e) {
+    // localStorage unavailable — fail silently
+  }
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearProgress() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {}
+}
+
+function hideBanner() {
+  document.getElementById('resumeBanner').classList.add('hidden');
+}
+
+function restoreState(data) {
+  // Restore quiz selections
+  if (data.quizSelected) {
+    Object.keys(data.quizSelected).forEach(qId => {
+      const optionIdx = data.quizSelected[qId];
+      kcSelected[qId] = optionIdx;
+      const q = document.getElementById(qId);
+      if (!q) return;
+      q.querySelectorAll('.kc-option').forEach((o, i) => {
+        o.classList.toggle('selected', i === optionIdx);
+      });
+    });
+    checkAllAnswered();
+  }
+
+  // Restore revealed answers
+  if (data.quizRevealed) {
+    revealAnswers();
+  }
+
+  // Restore habit day open states
+  if (data.habitOpen) {
+    const habitHeaders = Array.from(document.querySelectorAll('.habit-day-header'));
+    data.habitOpen.forEach((isOpen, i) => {
+      if (isOpen && habitHeaders[i]) {
+        const body = habitHeaders[i].nextElementSibling;
+        habitHeaders[i].classList.add('open');
+        if (body) body.classList.add('open');
+        habitHeaders[i].setAttribute('aria-expanded', 'true');
+      }
+    });
+  }
+
+  // Restore visited sections in nav
+  if (data.visited) {
+    data.visited.forEach(s => visited.add(s));
+  }
+}
+
+// ── KNOWLEDGE CHECK ──────────────────────────
+const kcAnswers = { kc1: 1, kc2: 1, kc3: 2, kc4: 2, kc5: 2 };
+const kcSelected = {};
+
+function selectOption(qId, optionIdx) {
+  const q = document.getElementById(qId);
+  const options = q.querySelectorAll('.kc-option');
+  options.forEach((o, i) => {
+    o.classList.toggle('selected', i === optionIdx);
+  });
+  kcSelected[qId] = optionIdx;
+  checkAllAnswered();
+  saveProgress();
+}
+
+function checkAllAnswered() {
+  const allIds = Object.keys(kcAnswers);
+  const allDone = allIds.every(id => kcSelected[id] !== undefined);
+  const btn = document.getElementById('kcRevealBtn');
+  btn.style.display = allDone ? 'inline-block' : 'none';
+}
+
+function revealAnswers() {
+  let score = 0;
+  Object.keys(kcAnswers).forEach(qId => {
+    const correct = kcAnswers[qId];
+    const selected = kcSelected[qId];
+    const q = document.getElementById(qId);
+    const options = q.querySelectorAll('.kc-option');
+    options.forEach((o, i) => {
+      o.disabled = true;
+      if (i === correct) o.classList.add('correct');
+      else if (i === selected && i !== correct) o.classList.add('incorrect');
+      o.classList.remove('selected');
+    });
+    const answer = document.getElementById(qId + '-answer');
+    if (answer) answer.style.display = 'block';
+    if (selected === correct) score++;
+  });
+  document.getElementById('kcRevealBtn').style.display = 'none';
+  const scoreEl = document.getElementById('kcScore');
+  const scoreText = document.getElementById('kcScoreText');
+  scoreEl.style.display = 'block';
+  scoreText.textContent = score + ' of 5 correct — ' +
+    (score === 5 ? 'solid foundation. Move to the habit builder.' :
+     score >= 3 ? 'good understanding. Review the sections linked to any missed questions.' :
+     'worth revisiting the first principles and mental models before moving on.');
+  saveProgress();
+}
+
+// ── HABIT ACCORDION ──────────────────────────
+function toggleDay(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', !isOpen);
+  saveProgress();
+}
+
+// ── PRINCIPLES & MODELS ACCORDION ────────────
+function toggleAccordion(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const isOpen = card.classList.contains('open');
+  card.classList.toggle('open', !isOpen);
+  const header = card.querySelector('[aria-expanded]');
+  if (header) header.setAttribute('aria-expanded', !isOpen);
+  const label = card.querySelector('.accordion-label');
+  if (label) label.textContent = isOpen ? 'Expand' : 'Collapse';
+}
+
+// ── SCROLL SPY + PREV/NEXT ───────────────────
+const sections = document.querySelectorAll('.section[id]');
+const navLinks  = document.querySelectorAll('.nav-link[data-section]');
+const visited   = new Set();
+const total     = navLinks.length;
+const announce  = document.getElementById('sectionAnnounce');
+const btnPrev   = document.getElementById('btnPrev');
+const btnNext   = document.getElementById('btnNext');
+const counter   = document.getElementById('slideCounter');
+let   lastActiveId = null;
+let   currentIdx   = 0;
+
+const sectionIds = Array.from(navLinks).map(l => l.dataset.section);
+
+function updateNav() {
+  let activeId = null;
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top <= 120) activeId = sec.id;
+  });
+  navLinks.forEach(link => {
+    const s = link.dataset.section;
+    link.classList.remove('active');
+    link.removeAttribute('aria-current');
+    if (s === activeId) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'true');
+      visited.add(s);
+    }
+    if (visited.has(s) && s !== activeId) link.classList.add('visited');
+    else if (s !== activeId) link.classList.remove('visited');
+  });
+  if (activeId && activeId !== lastActiveId) {
+    const activeLink = document.querySelector('.nav-link[data-section="' + activeId + '"]');
+    if (activeLink && announce) {
+      announce.textContent = 'Now reading: ' + activeLink.textContent.trim();
+    }
+    lastActiveId = activeId;
+    const idx = sectionIds.indexOf(activeId);
+    if (idx !== -1) currentIdx = idx;
+    saveProgress();
+  }
+  updateButtons();
+  const pct = Math.round((visited.size / total) * 100);
+}
+
+function updateButtons() {
+  btnPrev.disabled = currentIdx === 0;
+  btnNext.disabled = currentIdx === sectionIds.length - 1;
+  counter.textContent = (currentIdx + 1) + ' / ' + sectionIds.length;
+}
+
+function getNavOffset() {
+  return parseInt(window.getComputedStyle(document.body).paddingTop, 10) || 96;
+}
+
+function scrollToSection(idx) {
+  if (idx < 0 || idx >= sectionIds.length) return;
+  const target = document.getElementById(sectionIds[idx]);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - getNavOffset();
+    window.scrollTo({ top: top, behavior: 'smooth' });
+    currentIdx = idx;
+    updateButtons();
+  }
+}
+
+// Intercept nav link clicks to use the same offset-aware scroll
+navLinks.forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const idx = sectionIds.indexOf(this.dataset.section);
+    if (idx !== -1) scrollToSection(idx);
+  });
+});
+
+btnPrev.addEventListener('click', function () { scrollToSection(currentIdx - 1); });
+btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1); });
+
+window.addEventListener('scroll', updateNav, { passive: true });
+
+// ── Init: restore saved progress if any ─────
+const savedData = loadProgress();
+if (savedData) {
+  restoreState(savedData);
+}
+updateNav();
+
+// Show resume banner if there's a saved section beyond the first
+if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
+  const resumeBanner      = document.getElementById('resumeBanner');
+  const resumeBtn         = document.getElementById('resumeBtn');
+  const resumeDismissBtn  = document.getElementById('resumeDismissBtn');
+  const resumeSectionLabel = document.getElementById('resumeSectionLabel');
+
+  // Find the display label from the nav link text
+  const savedLink = document.querySelector('.nav-link[data-section="' + savedData.section + '"]');
+  resumeSectionLabel.textContent = savedLink
+    ? savedLink.textContent.trim()
+    : savedData.section;
+
+  resumeBanner.classList.remove('hidden');
+
+  resumeBtn.addEventListener('click', function () {
+    hideBanner();
+    const idx = sectionIds.indexOf(savedData.section);
+    if (idx !== -1) scrollToSection(idx);
+  }, { once: true });
+
+  resumeDismissBtn.addEventListener('click', function () {
+    hideBanner();
+    clearProgress();
+  }, { once: true });
+}
+
+// ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
+var railToggle = document.getElementById('railToggle');
+if (railToggle) {
+  var rail = railToggle.closest('.nav-rail');
+
+  function closeRailPanel() {
+    rail.classList.remove('open');
+    railToggle.setAttribute('aria-expanded', 'false');
+    railToggle.setAttribute('aria-label', 'Show section list');
+  }
+  function openRailPanel() {
+    rail.classList.add('open');
+    railToggle.setAttribute('aria-expanded', 'true');
+    railToggle.setAttribute('aria-label', 'Hide section list');
+  }
+
+  railToggle.addEventListener('click', function () {
+    rail.classList.contains('open') ? closeRailPanel() : openRailPanel();
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!rail.classList.contains('open')) return;
+    if (e.target.closest('.nav-link')) { closeRailPanel(); return; }
+    if (!rail.contains(e.target)) closeRailPanel();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && rail.classList.contains('open')) {
+      closeRailPanel();
+      railToggle.focus();
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768 && rail.classList.contains('open')) closeRailPanel();
+  });
+}
+
+</script>
+</body>
+</html>
