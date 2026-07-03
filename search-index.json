@@ -36,7 +36,7 @@
     "type": "primer",
     "skill": "Analytical Thinking",
     "title": "Analytical Thinking — Skill Primer",
-    "description": "A 10-minute primer on Analytical Thinking — break complex problems into their parts before drawing conclusions. Core concepts, a worked example, and a knowledge check.",
+    "description": "A 10-minute primer on Analytical Thinking — break complex problems into their parts before drawing conclusions. Core concepts, mental models, and a real-world scenario showing the skill in practice.",
     "tags": ["analytical thinking", "MECE", "5 Whys", "issue tree", "problem decomposition", "structured thinking", "primer", "cognitive"],
     "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "Model: MECE", "Model: The 5 Whys", "Model: Issue Tree", "In Practice", "Summary"],
     "url": "skills/analytical-thinking/primer.html"
@@ -56,7 +56,7 @@
     "type": "primer",
     "skill": "Critical Thinking",
     "title": "Critical Thinking — Skill Primer",
-    "description": "A 10-minute primer on Critical Thinking — test whether a conclusion holds before you trust it. Core concepts, a worked example, and a knowledge check.",
+    "description": "A 10-minute primer on Critical Thinking — test whether a conclusion holds before you trust it. Core concepts, mental models, and a real-world scenario showing the skill in practice.",
     "tags": ["critical thinking", "evidence", "bias", "Ladder of Inference", "assumptions", "reasoning", "evaluation", "primer", "cognitive"],
     "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "The Evidence Filter", "Model: Ladder of Inference", "In Practice", "Summary"],
     "url": "skills/critical-thinking/primer.html"
@@ -76,7 +76,7 @@
     "type": "primer",
     "skill": "Creative Thinking",
     "title": "Creative Thinking — Skill Primer",
-    "description": "A quick primer on Creative Thinking — expand a problem's solution space before narrowing it. Core concepts, a worked example, and a knowledge check.",
+    "description": "A quick primer on Creative Thinking — expand a problem's solution space before narrowing it. Core concepts, mental models, and a real-world scenario showing the skill in practice.",
     "tags": ["creative thinking", "SCAMPER", "divergent thinking", "convergent thinking", "assumption reversal", "ideation", "lateral thinking", "primer", "cognitive", "Edward de Bono"],
     "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "Model: SCAMPER", "Model: Divergent–Convergent", "Model: Assumption Reversal", "In Practice", "Summary"],
     "url": "skills/creative-thinking/primer.html"
