@@ -589,14 +589,6 @@
     font-size: 12px; color: var(--warm-gray);
   }
 
-  /* MECE grid */
-  .mece-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .mece-cell {
-    border-radius: var(--radius); padding: 18px 16px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600; font-size: 15px; text-align: center;
-  }
-
   /* SCAMPER checklist grid */
   .scamper-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .scamper-cell {
@@ -687,47 +679,6 @@
     margin: 4px 0 0 48px;
     font-family: 'Poppins', sans-serif; font-weight: 600;
     font-size: 11px; color: var(--terracotta); letter-spacing: 0.04em;
-  }
-
-  /* issue tree */
-  .tree-root {
-    max-width: 420px; margin: 0 auto;
-    background: var(--terracotta); color: var(--off-white);
-    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px;
-    text-align: center; border-radius: var(--radius);
-    padding: 14px 22px; position: relative;
-  }
-  .tree-root::after {
-    content: ''; position: absolute;
-    left: 50%; bottom: -28px;
-    width: 2px; height: 28px;
-    background: var(--teal); transform: translateX(-1px);
-  }
-  .tree-branches {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    margin-top: 28px; position: relative;
-  }
-  .tree-branches::before {
-    content: ''; position: absolute;
-    top: -28px; left: 12.5%; right: 12.5%;
-    height: 2px; background: var(--teal);
-  }
-  .tree-branch { padding: 0 6px; position: relative; }
-  .tree-branch::before {
-    content: ''; position: absolute;
-    top: -28px; left: 50%;
-    width: 2px; height: 28px;
-    background: var(--teal); transform: translateX(-1px);
-  }
-  .tree-branch-box {
-    background: var(--tag-analytical-bg); color: var(--deep-teal);
-    border-radius: var(--radius); padding: 14px 10px;
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
-    text-align: center; line-height: 1.4;
-  }
-  .tree-branch-sub {
-    display: block; margin-top: 4px;
-    font-size: 11px; font-weight: 400; opacity: 0.75;
   }
 
   /* fishbone diagram — traditional spine + diagonal bones + effect head */
@@ -1709,13 +1660,11 @@
 
       /* Multi-column grids that would otherwise overflow a 100%-width .content */
       .snapshot-grid,
-      .mece-grid,
       .mistake-row,
       .scenario-cols,
       .progression-cap {
         grid-template-columns: 1fr;
       }
-      .tree-branches { grid-template-columns: 1fr; }
 
       /* Full-bleed alternating section backgrounds were sized to cancel
          the desktop 80px .content padding. At the 20px mobile padding,
@@ -3128,7 +3077,6 @@ function updateNav() {
     saveProgress();
   }
   updateButtons();
-  const pct = Math.round((visited.size / total) * 100);
 }
 
 function updateButtons() {

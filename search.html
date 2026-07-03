@@ -794,9 +794,7 @@
       windowStart--;
     }
 
-    var windowEnd = Math.min(text.length, windowStart + before + after + (matchStart - windowStart - (matchStart - before)));
-    // Simpler: just take before+after chars from the window start
-    windowEnd = Math.min(text.length, windowStart + before + after);
+    var windowEnd = Math.min(text.length, windowStart + before + after);
 
     return {
       text: text.slice(windowStart, windowEnd),

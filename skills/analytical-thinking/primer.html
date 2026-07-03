@@ -1030,6 +1030,8 @@
 
     resumeDismissBtn.addEventListener('click', function () {
       hideBanner();
+      visited = new Set([0]);
+      updateUI();
       clearProgress();
     }, { once: true });
   }
@@ -1045,11 +1047,11 @@
     }
 
     // Exit current
-    slides[current].classList.remove('active');
-    slides[current].classList.add('exit-up');
+    var outgoing = slides[current];
+    outgoing.classList.remove('active');
+    outgoing.classList.add('exit-up');
     setTimeout(function () {
-      slides[idx >= current ? idx - 1 : idx + 1] && slides[current] &&
-        slides[current].classList.remove('exit-up');
+      outgoing.classList.remove('exit-up');
     }, 280);
 
     current = idx;
