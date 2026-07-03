@@ -1086,6 +1086,22 @@
     color: var(--deep-teal);
     margin: 0;
   }
+  .kc-retake-btn {
+    display: none;
+    margin-top: 12px;
+    background: transparent;
+    color: var(--deep-teal);
+    border: 1.5px solid var(--deep-teal);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .kc-retake-btn:hover { background: var(--deep-teal); color: white; }
+  .kc-retake-btn:focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 2px; }
   .kc-answer { display: none; margin-top: 10px; }
   .kc-answer-label {
     font-family: 'Poppins', sans-serif;
@@ -2333,7 +2349,10 @@
       </div>
 
       <button class="kc-reveal-btn" id="kcRevealBtn" onclick="revealAnswers()">Reveal answers and explanations</button>
-      <div class="kc-score" id="kcScore"><p id="kcScoreText"></p></div>
+      <div class="kc-score" id="kcScore">
+        <p id="kcScoreText"></p>
+        <button class="kc-retake-btn" id="kcRetakeBtn" type="button" onclick="resetQuiz()">Retake knowledge check</button>
+      </div>
     </div>
 
     <!-- 12. HABIT BUILDER -->
@@ -2901,7 +2920,27 @@ function revealAnswers() {
     (score === 5 ? 'solid foundation. Move to the habit builder.' :
      score >= 3 ? 'good understanding. Review the principles linked to any missed questions.' :
      'worth revisiting the principles and the Ladder of Inference before moving on.');
+  document.getElementById('kcRetakeBtn').style.display = 'inline-block';
   saveProgress();
+}
+
+function resetQuiz() {
+  Object.keys(kcAnswers).forEach(qId => {
+    delete kcSelected[qId];
+    const q = document.getElementById(qId);
+    if (!q) return;
+    q.querySelectorAll('.kc-option').forEach(o => {
+      o.disabled = false;
+      o.classList.remove('selected', 'correct', 'incorrect');
+    });
+    const answer = document.getElementById(qId + '-answer');
+    if (answer) answer.style.display = 'none';
+  });
+  document.getElementById('kcScore').style.display = 'none';
+  document.getElementById('kcRetakeBtn').style.display = 'none';
+  checkAllAnswered();
+  saveProgress();
+  document.getElementById('kc1').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // ── HABIT BUILDER ACCORDION ───────────────────
