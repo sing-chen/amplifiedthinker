@@ -1072,6 +1072,22 @@
     color: var(--deep-teal);
     margin: 0;
   }
+  .kc-retake-btn {
+    display: none;
+    margin-top: 12px;
+    background: transparent;
+    color: var(--deep-teal);
+    border: 1.5px solid var(--deep-teal);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .kc-retake-btn:hover { background: var(--deep-teal); color: white; }
+  .kc-retake-btn:focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 2px; }
   .kc-answer { display: none; margin-top: 10px; }
   .kc-answer-label {
     font-family: 'Poppins', sans-serif;
@@ -1584,6 +1600,7 @@
     color: var(--teal);
     margin-bottom: 2px;
   }
+  .resume-banner-note.hidden { display: none; }
   .resume-banner-btn {
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
@@ -1763,6 +1780,7 @@
   <div class="resume-banner-text">
     <strong>Welcome back</strong>
     You were in <span id="resumeSectionLabel"></span>
+    <span class="resume-banner-note hidden" id="resumeBannerNote"> — starting over will also reset your knowledge check answers.</span>
   </div>
   <button class="resume-banner-btn primary" id="resumeBtn" type="button">Resume</button>
   <button class="resume-banner-btn dismiss" id="resumeDismissBtn" type="button" aria-label="Dismiss, start from top">Start over</button>
@@ -2383,7 +2401,10 @@
       </div>
 
       <button class="kc-reveal-btn" id="kcRevealBtn" onclick="revealAnswers()">Reveal answers and explanations</button>
-      <div class="kc-score" id="kcScore"><p id="kcScoreText"></p></div>
+      <div class="kc-score" id="kcScore">
+        <p id="kcScoreText"></p>
+        <button class="kc-retake-btn" id="kcRetakeBtn" type="button" onclick="resetQuiz()">Retake knowledge check</button>
+      </div>
     </div>
 
     <!-- 10. HABIT BUILDER -->
@@ -2846,6 +2867,7 @@ function saveProgress() {
       visited:      Array.from(visited),
       quizSelected: kcSelected,
       quizRevealed: quizRevealed,
+      quizOrder:    kcOrder,
       habitOpen:    habitOpen
     }));
   } catch (e) {
@@ -2915,6 +2937,37 @@ function restoreState(data) {
 // ── KNOWLEDGE CHECK ──────────────────────────
 const kcAnswers = { kc1: 1, kc2: 1, kc3: 2, kc4: 2, kc5: 2 };
 const kcSelected = {};
+let kcOrder = {};
+
+// Visual-only shuffle: each button keeps its original data-index (used by
+// selectOption/kcAnswers/kcSelected as before) and only its CSS flex `order`
+// changes, so restore logic and scoring never need to know about shuffling.
+function shuffledPositions(n) {
+  const positions = Array.from({ length: n }, (_, i) => i);
+  for (let i = positions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = positions[i]; positions[i] = positions[j]; positions[j] = tmp;
+  }
+  return positions; // positions[originalIndex] = visual position
+}
+
+function newQuizOrder() {
+  const order = {};
+  Object.keys(kcAnswers).forEach(qId => {
+    order[qId] = shuffledPositions(4);
+  });
+  return order;
+}
+
+function applyQuizOrder(order) {
+  Object.keys(order).forEach(qId => {
+    const q = document.getElementById(qId);
+    if (!q) return;
+    q.querySelectorAll('.kc-option').forEach((o, i) => {
+      o.style.order = order[qId][i];
+    });
+  });
+}
 
 function selectOption(qId, optionIdx) {
   const q = document.getElementById(qId);
@@ -2959,7 +3012,55 @@ function revealAnswers() {
     (score === 5 ? 'solid foundation. Move to the habit builder.' :
      score >= 3 ? 'good understanding. Review the sections linked to any missed questions.' :
      'worth revisiting the first principles and mental models before moving on.');
+  document.getElementById('kcRetakeBtn').style.display = 'inline-block';
   saveProgress();
+}
+
+function resetQuiz(scrollToQuiz) {
+  if (scrollToQuiz === undefined) scrollToQuiz = true;
+  kcOrder = newQuizOrder();
+  applyQuizOrder(kcOrder);
+  Object.keys(kcAnswers).forEach(qId => {
+    delete kcSelected[qId];
+    const q = document.getElementById(qId);
+    if (!q) return;
+    q.querySelectorAll('.kc-option').forEach(o => {
+      o.disabled = false;
+      o.classList.remove('selected', 'correct', 'incorrect');
+    });
+    const answer = document.getElementById(qId + '-answer');
+    if (answer) answer.style.display = 'none';
+  });
+  document.getElementById('kcScore').style.display = 'none';
+  document.getElementById('kcRetakeBtn').style.display = 'none';
+  checkAllAnswered();
+  saveProgress();
+  if (scrollToQuiz) {
+    document.getElementById('kc1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function resetAllProgress() {
+  resetQuiz(false);
+
+  // Collapse any habit accordions that restoreState() opened
+  document.querySelectorAll('.habit-day-header.open').forEach(header => {
+    const body = header.nextElementSibling;
+    header.classList.remove('open');
+    if (body) body.classList.remove('open');
+    header.setAttribute('aria-expanded', 'false');
+  });
+
+  // Clear visited-nav highlighting restored from storage
+  visited.clear();
+  navLinks.forEach(link => link.classList.remove('visited'));
+
+  clearProgress();
+
+  // "Start from top" per the button's label. Instant, not smooth —
+  // a smooth scroll fires updateNav() at every section boundary on
+  // the way up, which re-marks everything as visited and re-saves it.
+  window.scrollTo(0, 0);
 }
 
 // ── HABIT ACCORDION ──────────────────────────
@@ -3067,6 +3168,8 @@ window.addEventListener('scroll', updateNav, { passive: true });
 
 // ── Init: restore saved progress if any ─────
 const savedData = loadProgress();
+kcOrder = (savedData && savedData.quizOrder) ? savedData.quizOrder : newQuizOrder();
+applyQuizOrder(kcOrder);
 if (savedData) {
   restoreState(savedData);
 }
@@ -3085,6 +3188,10 @@ if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
     ? savedLink.textContent.trim()
     : savedData.section;
 
+  const hasQuizProgress = savedData.quizRevealed ||
+    (savedData.quizSelected && Object.keys(savedData.quizSelected).length > 0);
+  document.getElementById('resumeBannerNote').classList.toggle('hidden', !hasQuizProgress);
+
   resumeBanner.classList.remove('hidden');
 
   resumeBtn.addEventListener('click', function () {
@@ -3095,7 +3202,7 @@ if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
 
   resumeDismissBtn.addEventListener('click', function () {
     hideBanner();
-    clearProgress();
+    resetAllProgress();
   }, { once: true });
 }
 
