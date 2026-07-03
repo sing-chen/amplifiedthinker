@@ -2924,7 +2924,31 @@ function revealAnswers() {
   saveProgress();
 }
 
-function resetQuiz() {
+function resetAllProgress() {
+  resetQuiz(false);
+
+  // Collapse any habit accordions that restoreState() opened
+  document.querySelectorAll('.habit-day-header.open').forEach(header => {
+    const body = header.nextElementSibling;
+    header.classList.remove('open');
+    if (body) body.classList.remove('open');
+    header.setAttribute('aria-expanded', 'false');
+  });
+
+  // Clear visited-nav highlighting restored from storage
+  visited.clear();
+  navLinks.forEach(link => link.classList.remove('visited'));
+
+  clearProgress();
+
+  // "Start from top" per the button's label. Instant, not smooth —
+  // a smooth scroll fires updateNav() at every section boundary on
+  // the way up, which re-marks everything as visited and re-saves it.
+  window.scrollTo(0, 0);
+}
+
+function resetQuiz(scrollToQuiz) {
+  if (scrollToQuiz === undefined) scrollToQuiz = true;
   Object.keys(kcAnswers).forEach(qId => {
     delete kcSelected[qId];
     const q = document.getElementById(qId);
@@ -2940,7 +2964,9 @@ function resetQuiz() {
   document.getElementById('kcRetakeBtn').style.display = 'none';
   checkAllAnswered();
   saveProgress();
-  document.getElementById('kc1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (scrollToQuiz) {
+    document.getElementById('kc1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 // ── HABIT BUILDER ACCORDION ───────────────────
@@ -3176,7 +3202,7 @@ if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
 
   resumeDismissBtn.addEventListener('click', function () {
     hideBanner();
-    clearProgress();
+    resetAllProgress();
   }, { once: true });
 }
 
