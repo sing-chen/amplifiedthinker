@@ -1595,6 +1595,7 @@
     color: var(--teal);
     margin-bottom: 2px;
   }
+  .resume-banner-note.hidden { display: none; }
   .resume-banner-btn {
     font-family: 'Poppins', sans-serif;
     font-size: 12px;
@@ -1778,6 +1779,7 @@
   <div class="resume-banner-text">
     <strong>Welcome back</strong>
     You were in <span id="resumeSectionLabel"></span>
+    <span class="resume-banner-note hidden" id="resumeBannerNote"> — starting over will also reset your knowledge check answers.</span>
   </div>
   <button class="resume-banner-btn primary" id="resumeBtn" type="button">Resume</button>
   <button class="resume-banner-btn dismiss" id="resumeDismissBtn" type="button" aria-label="Dismiss, start from top">Start over</button>
@@ -2807,6 +2809,7 @@ function saveProgress() {
       visited:      Array.from(visited),
       quizSelected: kcSelected,
       quizRevealed: quizRevealed,
+      quizOrder:    kcOrder,
       habitOpen:    habitOpen
     }));
   } catch (e) {
@@ -2876,6 +2879,37 @@ function restoreState(data) {
 // ── KNOWLEDGE CHECK ───────────────────────────
 const kcAnswers = { kc1: 1, kc2: 1, kc3: 1, kc4: 2, kc5: 2 };
 const kcSelected = {};
+let kcOrder = {};
+
+// Visual-only shuffle: each button keeps its original data-index (used by
+// selectOption/kcAnswers/kcSelected as before) and only its CSS flex `order`
+// changes, so restore logic and scoring never need to know about shuffling.
+function shuffledPositions(n) {
+  const positions = Array.from({ length: n }, (_, i) => i);
+  for (let i = positions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = positions[i]; positions[i] = positions[j]; positions[j] = tmp;
+  }
+  return positions; // positions[originalIndex] = visual position
+}
+
+function newQuizOrder() {
+  const order = {};
+  Object.keys(kcAnswers).forEach(qId => {
+    order[qId] = shuffledPositions(4);
+  });
+  return order;
+}
+
+function applyQuizOrder(order) {
+  Object.keys(order).forEach(qId => {
+    const q = document.getElementById(qId);
+    if (!q) return;
+    q.querySelectorAll('.kc-option').forEach((o, i) => {
+      o.style.order = order[qId][i];
+    });
+  });
+}
 
 function selectOption(qId, optionIdx) {
   const q = document.getElementById(qId);
@@ -2949,6 +2983,8 @@ function resetAllProgress() {
 
 function resetQuiz(scrollToQuiz) {
   if (scrollToQuiz === undefined) scrollToQuiz = true;
+  kcOrder = newQuizOrder();
+  applyQuizOrder(kcOrder);
   Object.keys(kcAnswers).forEach(qId => {
     delete kcSelected[qId];
     const q = document.getElementById(qId);
@@ -3175,6 +3211,8 @@ window.addEventListener('scroll', updateNav, { passive: true });
 
 // ── Init: restore saved progress if any ─────
 const savedData = loadProgress();
+kcOrder = (savedData && savedData.quizOrder) ? savedData.quizOrder : newQuizOrder();
+applyQuizOrder(kcOrder);
 if (savedData) {
   restoreState(savedData);
 }
@@ -3191,6 +3229,10 @@ if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
   resumeSectionLabel.textContent = savedLink
     ? savedLink.textContent.trim()
     : savedData.section;
+
+  const hasQuizProgress = savedData.quizRevealed ||
+    (savedData.quizSelected && Object.keys(savedData.quizSelected).length > 0);
+  document.getElementById('resumeBannerNote').classList.toggle('hidden', !hasQuizProgress);
 
   resumeBanner.classList.remove('hidden');
 
