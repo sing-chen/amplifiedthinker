@@ -167,6 +167,11 @@
     color: var(--deep-teal); margin-bottom: 20px;
     display: block;
   }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
   .eyebrow-lt { color: var(--sage); }
 
   .h-display {
@@ -190,7 +195,6 @@
     letter-spacing: -0.01em;
     color: var(--deep-teal); margin-bottom: 16px;
   }
-  .h-light { color: var(--off-white); }
   .h-lt   { color: var(--off-white); }
 
   .t-body {
@@ -897,6 +901,7 @@
     <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
     <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
     <span class="eyebrow" style="margin-bottom:32px;">Quick-Recall Summary</span>
+    <h2 class="sr-only">Quick-Recall Summary</h2>
     <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">
       <p>Creative Thinking is the discipline of expanding a problem's solution space before narrowing it. It means generating before judging, borrowing structure from unrelated domains, and treating the first idea as a starting point, not an answer.</p>
     </div>
@@ -1147,7 +1152,7 @@
 
   // ── Init: restore saved progress if any ─────
   var savedData = loadProgress();
-  if (savedData && typeof savedData.current === 'number' && savedData.current > 0) {
+  if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
     visited = new Set(savedData.visited || [0]);
     updateUI();
     showResumeBanner(savedData.current);

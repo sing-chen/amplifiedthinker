@@ -446,9 +446,9 @@
   }
 
   /* ── ACCORDION (shared: principles + mental model) ────
-     Principles default open (sequential read); the model
-     card defaults open too, since there's only one. Toggled
-     via .open class on the parent .principle / .model-card. */
+     Principles default closed; the model card defaults open
+     in markup, since there's only one. Toggled via .open
+     class on the parent .principle / .model-card. */
   .principle-header,
   .model-header {
     display: flex;
@@ -2974,6 +2974,10 @@ function resetAllProgress() {
   navLinks.forEach(link => link.classList.remove('visited'));
 
   clearProgress();
+
+  // Prevent the scrollTo below from re-triggering a save: updateNav() only
+  // calls saveProgress() when the active section differs from lastActiveId.
+  lastActiveId = sectionIds[0];
 
   // "Start from top" per the button's label. Instant, not smooth —
   // a smooth scroll fires updateNav() at every section boundary on

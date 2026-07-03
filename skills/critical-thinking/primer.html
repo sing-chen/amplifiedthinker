@@ -161,6 +161,11 @@
     color: var(--deep-teal); margin-bottom: 20px;
     display: block;
   }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
   .eyebrow-lt { color: var(--sage); }
 
   .h-display {
@@ -873,6 +878,7 @@
     <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
     <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
     <span class="eyebrow" style="margin-bottom:32px;">Quick-Recall Summary</span>
+    <h2 class="sr-only">Quick-Recall Summary</h2>
     <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">
       <p>Critical Thinking is the discipline of testing whether a conclusion holds before deciding what to trust. It means separating what's claimed from what's evidenced, checking that evidence against its source, method, currency, and motive, watching for bias in the source, the data, and yourself, and tracing surprising conclusions back to the point where an assumption took over from observation.</p>
     </div>
@@ -1124,7 +1130,7 @@
 
   // ── Init: restore saved progress if any ─────
   var savedData = loadProgress();
-  if (savedData && typeof savedData.current === 'number' && savedData.current > 0) {
+  if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
     // Restore visited set so nav rail shows correct state on slide 0
     visited = new Set(savedData.visited || [0]);
     updateUI();

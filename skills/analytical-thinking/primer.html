@@ -167,6 +167,11 @@
     color: var(--deep-teal); margin-bottom: 20px;
     display: block;
   }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
   .eyebrow-lt { color: var(--sage); }
 
   .h-display {
@@ -764,7 +769,7 @@
         <p>Escaping this cycle requires analytical thinking — the discipline of breaking a complex problem down into a structured, evidence-based picture before you draw a single conclusion. People often confuse this with critical thinking, but they serve different functions. Analytical thinking produces the picture of what is happening; critical thinking evaluates whether that picture is trustworthy.</p>
         <p>Think of a mechanic diagnosing an engine fault. They never guess — they systematically separate the failing system into components to organise the diagnostic territory. If we apply this to our failed project, we can use a framework called MECE, which stands for Mutually Exclusive, Collectively Exhaustive. This illustrates the MECE principle: sorting data into four buckets — people, technology, process, and scope. Every piece fits into one category with zero overlap. Structuring the problem this way ensures no variables are double-counted, preventing root causes from hiding in the spaces between. Establishing this structure is a mandatory first step — it ensures hard evidence replaces human assumptions before the analysis even begins.</p>
         <p>Mapping just one bucket — process — using an issue tree breaks a single "process delays" node into branching sub-questions, making the full analytical territory visible. Without this, teams lock onto the most obvious branch and stop, missing compounding partial causes.</p>
-        <p>To trace these branches down to their origin, we use the Five Whys framework, developed by Taiichi Ono in the 1950s. Ono designed the practice for the Toyota Production System, to interrupt the human tendency to stop at the first plausible explanation. In a dense environment like an assembly line, the sheer number of variables makes it easy for systemic problems to hide.</p>
+        <p>To trace these branches down to their origin, we use the Five Whys framework, developed by Taiichi Ohno in the 1950s. Ohno designed the practice for the Toyota Production System, to interrupt the human tendency to stop at the first plausible explanation. In a dense environment like an assembly line, the sheer number of variables makes it easy for systemic problems to hide.</p>
         <p>We apply this by asking why the project is running late — which points to a specific process stage. Why is that stage an outlier? Because the handoff consumes three days per cycle. Why is it consistently slow? Because ownership at that boundary is undefined. Tracking a symptom backward along its causal chain strips away the chaos. What initially looked like a massive, undifferentiated disaster becomes a specific, solvable fault.</p>
         <p>This reveals the root of the issue: an unowned handoff step consuming three days per cycle. The analytical process isolated a strictly relational issue — the workflow map shows a clear ownership void between the two teams. While headcount was the intuitive guess, evidence shows the real friction is a lack of clarity between the people already in the room. Armed with this precise diagnosis, the manager resolves the recurring delay with a single clarifying conversation. The problem is fixed without requiring a single new hire.</p>
         <p>This is the core discipline of the practice: you have to build a structure before you can accurately analyse the situation, carefully separating what the evidence shows from what you assume. Analytical thinking provides the structured picture of what is actually happening — and that clarity is the necessary precursor to an effective solution.</p>
@@ -905,6 +910,7 @@
     <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
     <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
     <span class="eyebrow" style="margin-bottom:32px;">Quick-Recall Summary</span>
+    <h2 class="sr-only">Quick-Recall Summary</h2>
     <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">
       <p>Analytical Thinking is the discipline of breaking complexity into its parts before drawing conclusions from it. Build a structure before you analyse. Trace symptoms to their source rather than stopping at the first plausible cause. Know the difference between what the evidence shows and what you are assuming.</p>
     </div>
@@ -1155,7 +1161,7 @@
 
   // ── Init: restore saved progress if any ─────
   var savedData = loadProgress();
-  if (savedData && typeof savedData.current === 'number' && savedData.current > 0) {
+  if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
     visited = new Set(savedData.visited || [0]);
     updateUI();
     showResumeBanner(savedData.current);
