@@ -242,9 +242,9 @@
   var navHTML = [
     '<nav id="site-nav" role="navigation" aria-label="Site navigation">',
     '  <a href="' + root('index.html') + '" class="snav-brand">',
-    '    <img src="' + root('images/amplified_site_logo.png') + '" alt="Amplified" class="snav-brand-logo" width="36" height="36">',
+    '    <img src="' + root('images/amplified_site_logo.png') + '" alt="Amplified Thinker" class="snav-brand-logo" width="36" height="36">',
     '    <span class="snav-brand-text">',
-    '      <span class="snav-brand-name">Amplified</span>',
+    '      <span class="snav-brand-name">Amplified Thinker</span>',
     '      <span class="snav-brand-tag">Build the capability that keeps compounding.</span>',
     '    </span>',
     '  </a>',

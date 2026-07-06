@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sing-chen.github.io/amplified/sitemap.xml
+Sitemap: https://amplifiedthinker.com/sitemap.xml

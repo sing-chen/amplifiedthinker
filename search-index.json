@@ -2,9 +2,9 @@
   {
     "id": "home",
     "type": "page",
-    "title": "Amplified",
+    "title": "Amplified Thinker",
     "description": "How work changes. How people keep up. Skills, systems, and the thinkers who shaped how I see both — documented from the inside, as the work unfolds.",
-    "tags": ["amplified", "future skills", "capability", "AI", "human skills"],
+    "tags": ["amplified thinker", "future skills", "capability", "AI", "human skills"],
     "url": "index.html"
   },
   {
@@ -26,8 +26,8 @@
   {
     "id": "about",
     "type": "page",
-    "title": "About · Amplified",
-    "description": "Amplified is where Sing Chen builds thinking in public — practical, research-grounded resources for the durable human skills that compound as AI handles more of the work.",
+    "title": "About · Amplified Thinker",
+    "description": "Amplified Thinker is where Sing Chen builds thinking in public — practical, research-grounded resources for the durable human skills that compound as AI handles more of the work.",
     "tags": ["about", "Sing Chen", "capability", "human skills", "AI adoption", "process architect"],
     "url": "about.html"
   },

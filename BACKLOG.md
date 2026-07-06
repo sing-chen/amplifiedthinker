@@ -1,4 +1,4 @@
-# Amplified — Project Backlog
+# Amplified Thinker — Project Backlog
 
 Ideas and future enhancements. Not prioritised — review periodically and promote to active work when ready.
 
