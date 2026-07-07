@@ -245,7 +245,7 @@
     '    <img src="' + root('images/amplified_site_logo.png') + '" alt="Amplified Thinker" class="snav-brand-logo" width="36" height="36">',
     '    <span class="snav-brand-text">',
     '      <span class="snav-brand-name">Amplified Thinker</span>',
-    '      <span class="snav-brand-tag">Build the capability that keeps compounding.</span>',
+    '      <span class="snav-brand-tag">Built for a world that keeps changing.</span>',
     '    </span>',
     '  </a>',
     '  <ul class="snav-links" id="snav-links">',
