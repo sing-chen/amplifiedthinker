@@ -80,10 +80,9 @@
   .scard-news .scard-cta{color:#C77B5F}
 
   /* News card — headline ticker */
-  .scard-ticker{height:44px;overflow:hidden;position:relative;border-top:1px solid rgba(199,123,95,.3);border-bottom:1px solid rgba(199,123,95,.3);margin-bottom:20px}
+  .scard-ticker{height:56px;overflow:hidden;position:relative;background:#F6F0DD;border-radius:var(--radius);margin-bottom:20px}
   .scard-ticker-track{position:absolute;top:0;left:0;width:100%;transition:transform .6s ease}
-  .scard-ticker-item{height:44px;display:flex;align-items:center;gap:8px}
-  .scard-ticker-dot{width:5px;height:5px;border-radius:50%;background:#C77B5F;flex-shrink:0}
+  .scard-ticker-item{height:56px;box-sizing:border-box;display:flex;align-items:center;padding:0 14px}
   .scard-ticker-headline{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#7A4530;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   a.scard-ticker-item{text-decoration:none;position:relative;z-index:1}
   a.scard-ticker-item:hover .scard-ticker-headline{color:#A8593C}
@@ -202,7 +201,7 @@
         <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
       </div>
       <div class="scard-title">News</div>
-      <div class="scard-desc">A curated feed of the skills and workplace shifts worth knowing about — from WEF, McKinsey, Deloitte, and other institutional sources.</div>
+      <div class="scard-desc">A curated feed of the skills and workplace shifts worth knowing about.</div>
       <div class="scard-ticker" id="news-ticker" aria-label="Latest news worth knowing" hidden>
         <div class="scard-ticker-track" id="news-ticker-track"></div>
       </div>
@@ -246,7 +245,7 @@
     });
   }
 
-  var TICKER_ITEM_HEIGHT = 44;
+  var TICKER_ITEM_HEIGHT = 56;
   var TICKER_INTERVAL_MS = 3800;
 
   fetch('news.json')
@@ -276,7 +275,6 @@
       var track = document.getElementById('news-ticker-track');
       track.innerHTML = tickerEntries.map(function (x) {
         return '<a class="scard-ticker-item" href="news.html?story=' + encodeURIComponent(x.id) + '">' +
-          '<span class="scard-ticker-dot" aria-hidden="true"></span>' +
           '<span class="scard-ticker-headline">' + escapeHTML(x.story.title || '') + '</span>' +
           '</a>';
       }).join('');
