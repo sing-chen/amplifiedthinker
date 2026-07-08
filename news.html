@@ -78,6 +78,12 @@
   .story-tags{display:flex;flex-wrap:wrap;gap:6px}
   .story-tag{font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:999px;background:var(--light-sage);color:var(--navy)}
 
+  .story-share{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:22px 0 0;padding-top:20px;border-top:1px solid var(--light-sage)}
+  .share-label{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);margin-right:2px}
+  .share-btn{display:inline-flex;align-items:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;padding:6px 13px;border-radius:999px;border:1px solid rgba(31,77,74,.2);background:var(--white);color:var(--text-mid);cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s}
+  .share-btn:hover{border-color:rgba(31,77,74,.4);background:var(--off-white)}
+  .share-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+
   .empty-state{font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
 
   footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
@@ -339,12 +345,28 @@
     });
     html += '</div>';
 
+    var shareUrl = window.location.origin + '/news.html?story=' + encodeURIComponent(story.id);
+    html += '<div class="story-share" aria-label="Share this story">' +
+      '<span class="share-label">Share</span>' +
+      '<a class="share-btn share-linkedin" target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl) + '">LinkedIn</a>' +
+      '<a class="share-btn share-x" target="_blank" rel="noopener noreferrer" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(story.title || '') + '&url=' + encodeURIComponent(shareUrl) + '">X</a>' +
+      '<button type="button" class="share-btn share-copy" data-share-url="' + escapeHTML(shareUrl) + '">Copy link</button>' +
+      '</div>';
+
     storyPanel.innerHTML = html;
 
     var backBtn = document.getElementById('story-back');
     if (backBtn) backBtn.addEventListener('click', function () {
       layoutEl.classList.remove('show-detail');
       headlinePanel.focus();
+    });
+
+    var copyBtn = storyPanel.querySelector('.share-copy');
+    if (copyBtn) copyBtn.addEventListener('click', function () {
+      navigator.clipboard.writeText(copyBtn.getAttribute('data-share-url')).then(function () {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(function () { copyBtn.textContent = 'Copy link'; }, 1800);
+      });
     });
   }
 
