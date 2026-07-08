@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News · Amplified Thinker</title>
+<meta name="description" content="A curated, dated feed of workforce, skills, and organizational-readiness stories — hand-picked from a daily research scan of WEF, McKinsey, Deloitte, and other institutional sources.">
+<link rel="canonical" href="https://amplifiedthinker.com/news.html">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Amplified Thinker">
+<meta property="og:title" content="News · Amplified Thinker">
+<meta property="og:description" content="A curated, dated feed of workforce, skills, and organizational-readiness stories — hand-picked from a daily research scan of WEF, McKinsey, Deloitte, and other institutional sources.">
+<meta property="og:url" content="https://amplifiedthinker.com/news.html">
+<meta property="og:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ── HERO ── */
+  .hero{background:#1B4A44;padding:76px 40px 56px;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,rgba(91,167,159,.07) 0%,transparent 68%);pointer-events:none}
+  .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
+  .eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:20px}
+  .hero-hl{font-family:'Poppins',sans-serif;font-size:clamp(28px,3.6vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.02em;margin-bottom:16px;max-width:760px}
+  .hero-sub{font-family:'Inter',sans-serif;font-size:16px;line-height:1.7;color:rgba(255,255,255,.75);max-width:600px}
+
+  /* ── MAIN / FILTER BAR ── */
+  main{max-width:var(--page-max);margin:0 auto;padding:32px 40px 88px}
+  .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;position:sticky;top:var(--site-total-offset,56px);background:var(--off-white);padding:14px 0;z-index:10}
+  .filter-chip{display:inline-flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;padding:7px 14px;border-radius:999px;border:1px solid rgba(31,77,74,.2);background:var(--white);color:var(--text-mid);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+  .filter-chip:hover{border-color:rgba(31,77,74,.4)}
+  .filter-chip.active{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
+  .filter-chip[style].active{border-color:transparent;box-shadow:inset 0 0 0 2px currentColor}
+  .filter-chip:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+  .filter-chip svg{width:13px;height:13px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ── MASTER-DETAIL LAYOUT ── */
+  .news-layout{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
+
+  /* ── HEADLINE PANEL (left) ── */
+  .headline-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow-y:auto;padding:8px}
+  .headline-date{display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid-teal);padding:14px 12px 8px;margin:0 4px;border-bottom:1px solid var(--light-sage);margin-bottom:4px}
+  .headline-date svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .headline-pinned-label{display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);padding:14px 12px 8px;margin:0 4px;border-bottom:1px solid var(--light-sage);margin-bottom:4px}
+  .headline-pinned-label svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .headline-item{display:block;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px 9px 10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.4;color:var(--text-muted);transition:background .15s,color .15s,border-color .15s}
+  .headline-item:hover{background:var(--off-white);color:var(--text-dark)}
+  .headline-item:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
+  .headline-item.active{background:var(--off-white);border-left-color:var(--terracotta);color:var(--navy);font-weight:600}
+  .headline-archive{margin-top:6px;border-top:1px solid var(--light-sage);padding-top:4px}
+  .headline-archive-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:10px 12px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid-teal);cursor:pointer;border-radius:var(--radius)}
+  .headline-archive-toggle:hover{background:var(--off-white)}
+  .headline-archive-toggle:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
+  .headline-archive-toggle svg{width:12px;height:12px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+  .headline-archive-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+  .headline-archive-body{display:none}
+  .headline-archive.expanded .headline-archive-body{display:block}
+
+  /* ── STORY PANEL (right) ── */
+  .story-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);padding:32px 36px}
+  .story-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--mid-teal);cursor:pointer}
+  .story-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
+  .story-source{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);margin-bottom:10px}
+  .story-title{font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;line-height:1.3;letter-spacing:-.01em;color:var(--navy);margin:0 0 14px}
+  .story-summary{font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.75;color:var(--text-muted);margin-bottom:22px}
+  .story-implications{border-left:3px solid var(--light-sage);padding-left:14px;margin-bottom:22px}
+  .story-implications-label{display:block;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:6px}
+  .story-implications p{font-family:'Inter',sans-serif;font-size:14px;line-height:1.7;color:var(--text-muted);font-style:italic;margin:0}
+  .story-source-link{display:inline-flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--story-accent, var(--mid-teal));text-decoration:none;margin-bottom:22px}
+  .story-source-link:hover{color:var(--terracotta)}
+  .story-source-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
+  .story-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .story-tag{font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:999px;background:var(--light-sage);color:var(--navy)}
+
+  .empty-state{font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
+
+  footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
+  .fi{max-width:var(--page-max);margin:0 auto}
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.02em}
+  .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .15s}
+  .footer-nav a:hover{color:rgba(255,255,255,.7)}
+  .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+  .footer-sep{color:rgba(255,255,255,.15);user-select:none}
+  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.25);margin-top:12px}
+
+  @media(max-width:800px){
+    .news-layout{grid-template-columns:1fr}
+    .headline-panel{max-height:none}
+    .story-panel{display:none}
+    .story-back{display:inline-flex}
+    .news-layout.show-detail .headline-panel{display:none}
+    .news-layout.show-detail .story-panel{display:block}
+    .story-panel{padding:24px 20px}
+    .story-title{font-size:20px}
+  }
+  @media(max-width:700px){
+    .hero,main{padding-left:20px;padding-right:20px}
+    footer{padding-left:20px;padding-right:20px}
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="nav.js"></script>
+
+<section class="hero" aria-label="Introduction">
+  <div class="hi">
+    <p class="eyebrow">Amplified Thinker</p>
+    <h1 class="hero-hl">News</h1>
+    <p class="hero-sub">A curated feed of the skills and workplace shifts worth knowing about — from WEF, McKinsey, Deloitte, and other institutional sources.</p>
+  </div>
+</section>
+
+<main id="main-content">
+  <div class="filter-bar" id="filter-bar" role="group" aria-label="Filter by theme"></div>
+  <div class="news-layout" id="news-layout">
+    <nav class="headline-panel" id="headline-panel" aria-label="Story list"></nav>
+    <article class="story-panel" id="story-panel"></article>
+  </div>
+</main>
+
+<footer>
+  <div class="fi">
+    <div class="footer-inner">
+      <p class="footer-tagline">Built for a world that keeps changing.</p>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="future-skills.html">Future Skills</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="my-people.html">My People</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="news.html">News</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="about.html">About</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="about.html#updates">What's New</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </nav>
+    </div>
+    <div class="fn">© <span id="yr"></span> Sing Chen</div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var THEME_ORDER = [
+    'skills development', 'workforce transformation', 'organizational readiness',
+    'motivation and meaning', 'macro signals', 'leadership and design',
+    'research release', 'futures and foresight'
+  ];
+
+  var THEME_ICON_PATHS = {
+    'skills development': '<path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8z"/>',
+    'workforce transformation': '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    'organizational readiness': '<path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>',
+    'motivation and meaning': '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6Z"/>',
+    'macro signals': '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/>',
+    'leadership and design': '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+    'research release': '<path d="M9 2v6L3.5 18a2 2 0 0 0 1.8 3h13.4a2 2 0 0 0 1.8-3L15 8V2"/><path d="M9 2h6"/>',
+    'futures and foresight': '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'
+  };
+  var ALL_ICON_PATH = '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>';
+  var CALENDAR_ICON_PATH = '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>';
+  var PIN_ICON_PATH = '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/>';
+  var ARCHIVE_CHEVRON_ICON_PATH = '<polyline points="6 9 12 15 18 9"/>';
+
+  var THEME_COLORS = {
+    'skills development': { bg: '#D8E4DD', text: '#1B4A44' },
+    'workforce transformation': { bg: '#D5DFE6', text: '#1E3A4A' },
+    'organizational readiness': { bg: '#C9DDD8', text: '#14413C' },
+    'motivation and meaning': { bg: '#F0D9CE', text: '#7A3B22' },
+    'macro signals': { bg: '#DADDD2', text: '#4A4A3C' },
+    'leadership and design': { bg: '#EDE5C5', text: '#6B5416' },
+    'research release': { bg: '#D6E0E6', text: '#2C4A5C' },
+    'futures and foresight': { bg: '#E3D9EA', text: '#4A3768' }
+  };
+  var TITLE_CASE_LOWER = { and: 1, or: 1, of: 1, the: 1, in: 1, on: 1 };
+
+  function themeIconSVG(paths) {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + paths + '</svg>';
+  }
+
+  function titleCase(s) {
+    return String(s).split(' ').map(function (w, i) {
+      if (i > 0 && TITLE_CASE_LOWER[w.toLowerCase()]) return w.toLowerCase();
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    }).join(' ');
+  }
+
+  var layoutEl = document.getElementById('news-layout');
+  var headlinePanel = document.getElementById('headline-panel');
+  var storyPanel = document.getElementById('story-panel');
+  var filterBar = document.getElementById('filter-bar');
+  var activeTag = 'all';
+  var digests = [];
+  var flatStories = []; // { id, date, ...story }
+  var activeId = null;
+  var archiveExpanded = false;
+  var ARCHIVE_CUTOFF_DAYS = 30;
+
+  function fmtDateLong(iso) {
+    var d = new Date(iso + 'T00:00:00');
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  function fmtDateShort(iso) {
+    var d = new Date(iso + 'T00:00:00');
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function buildFlatStories() {
+    flatStories = [];
+    digests.forEach(function (group) {
+      (group.stories || []).forEach(function (s, i) {
+        flatStories.push(Object.assign({}, s, { id: group.date + '-' + i, date: group.date }));
+      });
+    });
+  }
+
+  function storyMatchesFilter(s) {
+    return activeTag === 'all' || (s.tags || []).indexOf(activeTag) !== -1;
+  }
+
+  function findPinnedStory() {
+    for (var i = 0; i < flatStories.length; i++) {
+      if (flatStories[i].pinned) return flatStories[i];
+    }
+    return null;
+  }
+
+  function headlineButtonHTML(s) {
+    var cls = 'headline-item' + (s.id === activeId ? ' active' : '');
+    return '<button type="button" class="' + cls + '" data-id="' + escapeHTML(s.id) + '"' +
+      (s.id === activeId ? ' aria-current="true"' : '') + '>' + escapeHTML(s.title || '') + '</button>';
+  }
+
+  function renderHeadlines() {
+    var html = '';
+    var visibleIds = [];
+
+    var cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - ARCHIVE_CUTOFF_DAYS);
+
+    var pinned = findPinnedStory();
+    var pinnedVisible = pinned && storyMatchesFilter(pinned);
+
+    if (pinnedVisible) {
+      visibleIds.push(pinned.id);
+      html += '<div class="headline-pinned-label">' + themeIconSVG(PIN_ICON_PATH) + 'Pinned</div>';
+      html += headlineButtonHTML(pinned);
+    }
+
+    var olderHTML = '';
+    var olderIds = [];
+
+    digests.forEach(function (group) {
+      var stories = flatStories.filter(function (s) {
+        return s.date === group.date && storyMatchesFilter(s) && (!pinned || s.id !== pinned.id);
+      });
+      if (!stories.length) return;
+
+      var groupHTML = '<div class="headline-date">' + themeIconSVG(CALENDAR_ICON_PATH) + escapeHTML(fmtDateShort(group.date)) + '</div>';
+      stories.forEach(function (s) {
+        groupHTML += headlineButtonHTML(s);
+      });
+
+      var groupDate = new Date(group.date + 'T00:00:00');
+      var isOlder = !isNaN(groupDate) && groupDate < cutoff;
+
+      if (isOlder) {
+        olderHTML += groupHTML;
+        stories.forEach(function (s) { olderIds.push(s.id); });
+      } else {
+        html += groupHTML;
+        stories.forEach(function (s) { visibleIds.push(s.id); });
+      }
+    });
+
+    if (olderIds.indexOf(activeId) !== -1) {
+      archiveExpanded = true;
+    }
+
+    if (olderIds.length) {
+      visibleIds = visibleIds.concat(olderIds);
+      var expandedCls = archiveExpanded ? ' expanded' : '';
+      html += '<div class="headline-archive' + expandedCls + '">' +
+        '<button type="button" class="headline-archive-toggle" id="headline-archive-toggle" aria-expanded="' + (archiveExpanded ? 'true' : 'false') + '">' +
+        'Older stories (' + olderIds.length + ')' + themeIconSVG(ARCHIVE_CHEVRON_ICON_PATH) + '</button>' +
+        '<div class="headline-archive-body">' + olderHTML + '</div>' +
+        '</div>';
+    }
+
+    headlinePanel.innerHTML = html || '<p class="empty-state">No stories match this filter yet.</p>';
+    return visibleIds;
+  }
+
+  function renderStory(story) {
+    if (!story) {
+      storyPanel.innerHTML = '<p class="empty-state">No stories match this filter yet.</p>';
+      return;
+    }
+    var primaryTag = (story.tags || [])[0];
+    var accentColor = (THEME_COLORS[primaryTag] || {}).text;
+    var accentStyle = accentColor ? ' style="--story-accent:' + accentColor + '"' : '';
+
+    var html = '';
+    html += '<button type="button" class="story-back" id="story-back">‹ All headlines</button>';
+    html += '<div class="story-source">' + escapeHTML(fmtDateLong(story.date)) + '</div>';
+    html += '<h2 class="story-title">' + escapeHTML(story.title || '') + '</h2>';
+    html += '<p class="story-summary">' + escapeHTML(story.summary || '') + '</p>';
+    if (story.implications) {
+      html += '<div class="story-implications"><span class="story-implications-label">Why it matters</span><p>' + escapeHTML(story.implications) + '</p></div>';
+    }
+    if (story.url) {
+      html += '<a class="story-source-link" href="' + escapeHTML(story.url) + '" target="_blank" rel="noopener noreferrer"' + accentStyle + '>Read at ' + escapeHTML(story.source || 'source') + ' <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>';
+    }
+    html += '<div class="story-tags">';
+    (story.tags || []).forEach(function (t) {
+      var c = THEME_COLORS[t] || { bg: '#D8E4DD', text: '#1F4D4A' };
+      html += '<span class="story-tag" style="background:' + c.bg + ';color:' + c.text + '">' + escapeHTML(titleCase(t)) + '</span>';
+    });
+    html += '</div>';
+
+    storyPanel.innerHTML = html;
+
+    var backBtn = document.getElementById('story-back');
+    if (backBtn) backBtn.addEventListener('click', function () {
+      layoutEl.classList.remove('show-detail');
+      headlinePanel.focus();
+    });
+  }
+
+  function selectStory(id, opts) {
+    opts = opts || {};
+    var story = flatStories.filter(function (s) { return s.id === id; })[0];
+    if (!story) return;
+    activeId = id;
+
+    var url = new URL(window.location.href);
+    url.searchParams.set('story', id);
+    if (opts.replace) {
+      window.history.replaceState({}, '', url);
+    } else {
+      window.history.pushState({}, '', url);
+    }
+
+    renderHeadlines();
+    renderStory(story);
+    layoutEl.classList.add('show-detail');
+
+    if (opts.scrollIntoHeadline) {
+      var activeEl = headlinePanel.querySelector('.headline-item.active');
+      if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function pickDefaultStory() {
+    var pinned = findPinnedStory();
+    if (pinned && storyMatchesFilter(pinned)) return pinned.id;
+    var visible = flatStories.filter(storyMatchesFilter);
+    return visible[0] ? visible[0].id : (flatStories[0] ? flatStories[0].id : null);
+  }
+
+  function buildFilterBar() {
+    var tagsInUse = {};
+    flatStories.forEach(function (s) {
+      (s.tags || []).forEach(function (t) { tagsInUse[t] = true; });
+    });
+    var tags = THEME_ORDER.filter(function (t) { return tagsInUse[t]; });
+
+    var chips = [{ key: 'all', label: 'All stories', icon: ALL_ICON_PATH }].concat(
+      tags.map(function (t) { return { key: t, label: titleCase(t), icon: THEME_ICON_PATHS[t] }; })
+    );
+
+    filterBar.innerHTML = chips.map(function (c) {
+      var cls = 'filter-chip' + (c.key === activeTag ? ' active' : '');
+      var colors = THEME_COLORS[c.key];
+      var style = colors ? ' style="background:' + colors.bg + ';color:' + colors.text + '"' : '';
+      return '<button type="button" class="' + cls + '" data-tag="' + escapeHTML(c.key) + '"' + style + '>' +
+        themeIconSVG(c.icon) + escapeHTML(c.label) + '</button>';
+    }).join('');
+  }
+
+  filterBar.addEventListener('click', function (e) {
+    var btn = e.target.closest('.filter-chip');
+    if (!btn) return;
+    activeTag = btn.getAttribute('data-tag');
+    buildFilterBar();
+
+    var visibleIds = renderHeadlines();
+    if (visibleIds.indexOf(activeId) === -1) {
+      var fallback = pickDefaultStory();
+      if (fallback) selectStory(fallback, { replace: true });
+    }
+  });
+
+  headlinePanel.addEventListener('click', function (e) {
+    var toggle = e.target.closest('#headline-archive-toggle');
+    if (toggle) {
+      archiveExpanded = !archiveExpanded;
+      renderHeadlines();
+      return;
+    }
+    var btn = e.target.closest('.headline-item');
+    if (!btn) return;
+    selectStory(btn.getAttribute('data-id'), { scrollIntoHeadline: true });
+  });
+
+  window.addEventListener('popstate', function () {
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('story');
+    if (id && flatStories.some(function (s) { return s.id === id; })) {
+      activeId = id;
+      renderHeadlines();
+      renderStory(flatStories.filter(function (s) { return s.id === id; })[0]);
+    }
+  });
+
+  fetch('news.json')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      digests = (data || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+      buildFlatStories();
+      buildFilterBar();
+
+      var params = new URLSearchParams(window.location.search);
+      var requestedId = params.get('story');
+      var initialId = (requestedId && flatStories.some(function (s) { return s.id === requestedId; }))
+        ? requestedId
+        : pickDefaultStory();
+
+      if (initialId) {
+        selectStory(initialId, { replace: true, scrollIntoHeadline: true });
+      } else {
+        renderHeadlines();
+        renderStory(null);
+      }
+    })
+    .catch(function () {
+      headlinePanel.innerHTML = '<p class="empty-state">Couldn\'t load the news feed. Try refreshing.</p>';
+    });
+})();
+</script>
+</body>
+</html>

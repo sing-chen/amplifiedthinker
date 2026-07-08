@@ -24,6 +24,14 @@
     "url": "my-people.html"
   },
   {
+    "id": "news",
+    "type": "page",
+    "title": "News",
+    "description": "A dated, hand-picked feed of workforce, skills, and organizational-readiness stories curated from a daily research scan of WEF, McKinsey, Deloitte, BLS, and other institutional sources.",
+    "tags": ["news", "workforce", "skills development", "macro signals", "research release", "digest"],
+    "url": "news.html"
+  },
+  {
     "id": "about",
     "type": "page",
     "title": "About · Amplified Thinker",

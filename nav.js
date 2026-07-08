@@ -41,6 +41,7 @@
   var activePage = (function () {
     if (/future-skills/i.test(pathname))             return 'future-skills';
     if (/my-people/i.test(pathname))                 return 'my-people';
+    if (/\/news/i.test(pathname))                    return 'news';
     if (/about/i.test(pathname))                     return 'about';
     if (/\/search/i.test(pathname))                  return 'search';
     if (/\/skills\//i.test(pathname))                return 'skill';
@@ -252,6 +253,7 @@
     link('index.html',         'Home',          'home'),
     link('future-skills.html', 'Future Skills', 'future-skills'),
     link('my-people.html',     'My People',     'my-people'),
+    link('news.html',          'News',          'news'),
     link('about.html',         'About',         'about'),
     '  </ul>',
     '  <a href="' + root('search.html') + '" class="snav-search' + searchActiveCls + '" aria-label="Search">',

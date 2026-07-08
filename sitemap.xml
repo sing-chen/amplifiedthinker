@@ -17,6 +17,10 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://amplifiedthinker.com/news.html</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://amplifiedthinker.com/skills/analytical-thinking/primer.html</loc>
     <priority>0.8</priority>
   </url>

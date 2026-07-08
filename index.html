@@ -37,7 +37,7 @@
   /* ── EXPLORE ── */
   .explore{padding:72px 40px 88px;max-width:var(--page-max);margin:0 auto}
   .explore-label{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--mid-teal);margin-bottom:32px}
-  .explore-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .explore-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
 
   /* ── SECTION CARDS ── */
   .scard{display:block;text-decoration:none;border-radius:var(--radius-xl);padding:32px 36px 36px;transition:border-color .2s,box-shadow .2s,transform .2s;position:relative;overflow:hidden;border:1px solid transparent}
@@ -47,7 +47,8 @@
   .scard-icon svg{width:18px;height:18px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .scard-title{font-family:'Poppins',sans-serif;font-size:20px;font-weight:700;line-height:1.2;margin-bottom:10px;letter-spacing:-.01em}
   .scard-desc{font-family:'Inter',sans-serif;font-size:14px;line-height:1.7;margin-bottom:24px}
-  .scard-cta{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;letter-spacing:.02em}
+  .scard-cta{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;letter-spacing:.02em;text-decoration:none}
+  a.scard-cta:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:2px}
   .scard-cta svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
   .scard:hover .scard-cta svg{transform:translateX(3px)}
 
@@ -69,10 +70,30 @@
   .scard-people .scard-desc{color:#2C3F4A}
   .scard-people .scard-cta{color:#3D5F70}
 
+  /* News card — warm cream tint */
+  .scard-news{background:#EDE5C5;border-color:rgba(199,123,95,.2);display:flex;flex-direction:column}
+  .scard-news:hover{border-color:rgba(199,123,95,.4)}
+  .scard-news .scard-icon{background:#C77B5F;}
+  .scard-news .scard-icon svg{stroke:#F5EFDD;}
+  .scard-news .scard-title{color:#7A4530}
+  .scard-news .scard-desc{color:#5C4A2E;margin-bottom:16px;flex:1}
+  .scard-news .scard-cta{color:#C77B5F}
+
+  /* News card — headline ticker */
+  .scard-ticker{height:44px;overflow:hidden;position:relative;border-top:1px solid rgba(199,123,95,.3);border-bottom:1px solid rgba(199,123,95,.3);margin-bottom:20px}
+  .scard-ticker-track{position:absolute;top:0;left:0;width:100%;transition:transform .6s ease}
+  .scard-ticker-item{height:44px;display:flex;align-items:center;gap:8px}
+  .scard-ticker-dot{width:5px;height:5px;border-radius:50%;background:#C77B5F;flex-shrink:0}
+  .scard-ticker-headline{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#7A4530;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  a.scard-ticker-item{text-decoration:none;position:relative;z-index:1}
+  a.scard-ticker-item:hover .scard-ticker-headline{color:#A8593C}
+  a.scard-ticker-item:focus-visible{outline:2px solid #C77B5F;outline-offset:2px;border-radius:2px}
+
   /* accent stripe on hover */
   .scard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s}
   .scard-skills::after{background:#2D756F}
   .scard-people::after{background:#3D5F70}
+  .scard-news::after{background:#C77B5F}
   .scard:hover::after{opacity:1}
 
   footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
@@ -86,13 +107,16 @@
   .footer-sep{color:rgba(255,255,255,.15);user-select:none}
   .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.25);margin-top:12px}
 
+  @media(max-width:900px){
+    .explore-grid{grid-template-columns:1fr 1fr}
+  }
   @media(max-width:700px){
     .explore-grid{grid-template-columns:1fr}
     .hero,.explore{padding-left:20px;padding-right:20px}
     footer{padding-left:20px;padding-right:20px}
   }
   @media(prefers-reduced-motion:reduce){
-    .scard,.scard::after,.scard-cta svg{transition:none}
+    .scard,.scard::after,.scard-cta svg,.scard-ticker-track{transition:none}
   }
 </style>
 </head>
@@ -173,6 +197,18 @@
       <div class="scard-cta">Meet them <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
+    <div class="scard scard-news" role="listitem">
+      <div class="scard-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+      </div>
+      <div class="scard-title">News</div>
+      <div class="scard-desc">A curated feed of the skills and workplace shifts worth knowing about — from WEF, McKinsey, Deloitte, and other institutional sources.</div>
+      <div class="scard-ticker" id="news-ticker" aria-label="Latest news worth knowing" hidden>
+        <div class="scard-ticker-track" id="news-ticker-track"></div>
+      </div>
+      <a href="news.html" class="scard-cta">Read the feed <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    </div>
+
   </div>
 </section>
 
@@ -187,7 +223,11 @@
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href="my-people.html">My People</a>
         <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="news.html">News</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
         <a href="about.html">About</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="about.html#updates">What's New</a>
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </nav>
@@ -195,5 +235,65 @@
     <div class="fn">© <span id="yr"></span> Sing Chen</div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
   </div>
 </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  var TICKER_ITEM_HEIGHT = 44;
+  var TICKER_INTERVAL_MS = 3800;
+
+  fetch('news.json')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      var digests = (data || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+      var latest = digests[0];
+      if (!latest || !latest.stories || !latest.stories.length) return;
+
+      var pinnedEntry = null;
+      digests.some(function (group) {
+        return (group.stories || []).some(function (s, i) {
+          if (s.pinned) { pinnedEntry = { id: group.date + '-' + i, story: s }; return true; }
+          return false;
+        });
+      });
+
+      var latestStories = latest.stories.map(function (s, i) {
+        return { id: latest.date + '-' + i, story: s };
+      });
+      if (pinnedEntry) {
+        latestStories = latestStories.filter(function (x) { return x.id !== pinnedEntry.id; });
+        latestStories = [pinnedEntry].concat(latestStories);
+      }
+      var tickerEntries = latestStories.slice(0, 5);
+
+      var track = document.getElementById('news-ticker-track');
+      track.innerHTML = tickerEntries.map(function (x) {
+        return '<a class="scard-ticker-item" href="news.html?story=' + encodeURIComponent(x.id) + '">' +
+          '<span class="scard-ticker-dot" aria-hidden="true"></span>' +
+          '<span class="scard-ticker-headline">' + escapeHTML(x.story.title || '') + '</span>' +
+          '</a>';
+      }).join('');
+
+      document.getElementById('news-ticker').hidden = false;
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion || tickerEntries.length < 2) return;
+
+      var i = 0;
+      setInterval(function () {
+        i = (i + 1) % tickerEntries.length;
+        track.style.transform = 'translateY(-' + (i * TICKER_ITEM_HEIGHT) + 'px)';
+      }, TICKER_INTERVAL_MS);
+    })
+    .catch(function () { /* leave ticker hidden if news.json can't be loaded */ });
+})();
+</script>
 </body>
 </html>
