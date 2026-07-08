@@ -345,6 +345,7 @@
     });
     html += '</div>';
 
+    /* -- share bar temporarily disabled --
     var shareUrl = window.location.origin + '/news.html?story=' + encodeURIComponent(story.id);
     html += '<div class="story-share" aria-label="Share this story">' +
       '<span class="share-label">Share</span>' +
@@ -352,6 +353,7 @@
       '<a class="share-btn share-x" target="_blank" rel="noopener noreferrer" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(story.title || '') + '&url=' + encodeURIComponent(shareUrl) + '">X</a>' +
       '<button type="button" class="share-btn share-copy" data-share-url="' + escapeHTML(shareUrl) + '">Copy link</button>' +
       '</div>';
+    -- */
 
     storyPanel.innerHTML = html;
 
@@ -361,6 +363,7 @@
       headlinePanel.focus();
     });
 
+    /* -- share bar temporarily disabled --
     var copyBtn = storyPanel.querySelector('.share-copy');
     if (copyBtn) copyBtn.addEventListener('click', function () {
       navigator.clipboard.writeText(copyBtn.getAttribute('data-share-url')).then(function () {
@@ -368,6 +371,7 @@
         setTimeout(function () { copyBtn.textContent = 'Copy link'; }, 1800);
       });
     });
+    -- */
   }
 
   function selectStory(id, opts) {
