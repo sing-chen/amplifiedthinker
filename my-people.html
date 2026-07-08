@@ -32,59 +32,37 @@
   .hero-body{font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:640px}
 
   /* ── PEOPLE SECTION ── */
-  .people-section{padding:52px 40px 80px;max-width:1400px;margin:0 auto}
+  .people-section{padding:52px 40px 80px;max-width:var(--page-max);margin:0 auto}
 
-  /* ── PEOPLE GRID ── */
-  .people-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start}
+  /* ── MASTER-DETAIL LAYOUT ── */
+  .people-layout{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
 
-  /* ── PERSON CARD ── */
-  .pcard{
-    background:var(--white);
-    border:1px solid rgba(172,196,182,.25);
-    border-radius:var(--radius-xl);
-    overflow:hidden;
-    transition:border-color .2s,box-shadow .2s,transform .2s;
-    /* scroll-in animation initial state */
-    opacity:0;
-    transform:translateY(20px);
-  }
-  .pcard.is-visible{
-    opacity:1;
-    transform:translateY(0);
-    transition:opacity .5s ease,transform .5s ease,border-color .2s,box-shadow .2s;
-  }
-  @media(prefers-reduced-motion:reduce){
-    .pcard{opacity:1;transform:none;transition:none}
-    .pcard.is-visible{transition:none}
-    .pcard-photo img{transition:none}
-    .pcard:hover .pcard-photo img{transform:none}
-  }
-  .pcard:hover{border-color:rgba(45,117,111,.45);box-shadow:0 10px 30px rgba(27,74,68,.1);transform:translateY(-3px)}
-  .pcard.is-visible:hover{transform:translateY(-3px)}
+  /* ── PERSON LIST PANEL (left) ── */
+  .person-list-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow-y:auto;padding:8px}
 
+  .person-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;border-radius:0 var(--radius) var(--radius) 0;padding:8px 12px 8px 9px;cursor:pointer;transition:background .15s,border-color .15s}
+  .person-row:hover{background:var(--off-white)}
+  .person-row:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
+  .person-row.active{background:var(--off-white);border-left-color:var(--terracotta)}
 
+  .person-row-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;object-position:center top;flex-shrink:0}
+  .person-row-text{min-width:0;flex:1}
+  .person-row-name{display:block;font-family:'Poppins',sans-serif;font-size:13.5px;font-weight:600;color:var(--text-dark);line-height:1.3;margin-bottom:4px}
+  .person-row.active .person-row-name{color:var(--navy)}
+  .person-row-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 
-  /* ── CATEGORY PHOTO HEADER TINTS ── */
-  .pcard[data-categories~="leadership"]   .pcard-photo{background:#3D2218}
-  .pcard[data-categories~="psychology"]   .pcard-photo{background:#1E2D38}
-  .pcard[data-categories~="communication"] .pcard-photo{background:#3A2C0A}
-  .pcard[data-categories~="influence"]    .pcard-photo{background:#3A2218}
-  .pcard[data-categories~="productivity"] .pcard-photo{background:#1B3D38}
-  .pcard[data-categories~="ai"]           .pcard-photo{background:#1B4A44}
+  /* ── PERSON DETAIL PANEL (right) ── */
+  .person-detail-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);padding:32px 36px}
+  .person-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--mid-teal);cursor:pointer}
+  .person-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
 
-  /* photo */
-  .pcard-photo{height:220px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-  .pcard-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0;transition:transform .4s ease}
-  .pcard:hover .pcard-photo img{transform:scale(1.1)}
-  .pcard-placeholder{width:72px;height:72px;flex-shrink:0}
+  .person-detail-photo{height:220px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;margin-bottom:20px}
+  .person-detail-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0}
 
-  /* card body */
-  .pcard-body{padding:18px 20px 20px}
-
-  /* name + external link */
+  /* name + external link (reused inside detail pane) */
   .pcard-top{display:flex;flex-direction:column;gap:0;margin-bottom:12px}
-  .pname{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--text-dark);line-height:1.25;margin-bottom:6px}
-  .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#5BA79F;text-decoration:none;border-radius:4px;padding:2px 0;margin-top:6px;margin-bottom:0;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+  .pname{font-family:'Poppins',sans-serif;font-size:18px;font-weight:600;color:var(--text-dark);line-height:1.25;margin-bottom:6px}
+  .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#5BA79F;text-decoration:none;border-radius:4px;padding:2px 0;margin-top:6px;margin-bottom:0;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
   .pext-link:hover{color:#2D756F;text-decoration:underline}
   .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
   .pext-link svg{width:13px;height:13px;flex-shrink:0;opacity:.7}
@@ -110,16 +88,6 @@
     padding-bottom:12px;
     border-bottom:1px solid rgba(172,196,182,.2);
   }
-
-  /* Related Skill */
-  .pskill-section{display:none}
-  .pskill-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3A6EA8;margin-bottom:6px}
-  .pskill-pill{display:inline-flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:20px;background:#DDEAF7;color:#1D4E8F;line-height:1.3;text-decoration:none;transition:background .15s,color .15s}
-  .pskill-pill:hover{background:#C5D9F2;color:#163C70}
-  .pskill-pill:focus-visible{outline:2px solid #3A6EA8;outline-offset:2px}
-  .pskill-pill.cs{background:#EEF3FA;color:#7A94B8;cursor:default;pointer-events:none}
-  .pskill-pill.cs .pskill-cs{font-size:10px;opacity:.75;font-style:italic}
-  .pskill-icon{width:11px;height:11px;flex-shrink:0;opacity:.7}
 
   /* ── QUOTE — decorative oversized mark ── */
   .pquote{margin:0 0 14px;padding:0;position:relative}
@@ -151,16 +119,15 @@
   .pcard-divider{height:1px;background:rgba(172,196,182,.2);margin-bottom:14px}
 
   /* key works */
-  .pworks-toggle{display:flex;align-items:center;gap:6px;background:none;border:none;padding:0;cursor:pointer;font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:0;width:100%}
-  .pworks-toggle:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px;border-radius:2px}
-  .pworks-chevron{width:12px;height:12px;transition:transform .2s;flex-shrink:0}
-  .pworks-toggle[aria-expanded="true"] .pworks-chevron{transform:rotate(180deg)}
-  .pworks-body{overflow:hidden;max-height:0;transition:max-height .25s ease}
-  .pworks-body.open{max-height:200px}
-  .pworks-pills{display:flex;flex-wrap:wrap;gap:5px;padding-top:8px}
+  .pworks-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:8px}
+  .pworks-pills{display:flex;flex-wrap:wrap;gap:6px}
   .pwork-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
   .pwork-pill{display:inline-flex;align-items:center;gap:4px}
-  .pwork-pill{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:20px;padding:2px 9px;line-height:1.6}
+  .pwork-pill{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:20px;padding:2px 9px;line-height:1.6;text-decoration:none}
+  .pwork-pill:hover{background:rgba(172,196,182,.28)}
+  .pwork-pill:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+
+  .empty-state{font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
 
   footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
   .fi{max-width:var(--page-max);margin:0 auto}
@@ -173,10 +140,17 @@
   .footer-sep{color:rgba(255,255,255,.15);user-select:none}
   .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.25);margin-top:12px}
 
-  @media(max-width:1200px){.people-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:800px){
+    .people-layout{grid-template-columns:1fr}
+    .person-list-panel{max-height:none}
+    .person-detail-panel{display:none}
+    .person-back{display:inline-flex}
+    .people-layout.show-detail .person-list-panel{display:none}
+    .people-layout.show-detail .person-detail-panel{display:block}
+    .person-detail-panel{padding:24px 20px}
+  }
   @media(max-width:600px){
     .hero,.people-section{padding-left:20px;padding-right:20px}
-    .people-grid{grid-template-columns:1fr}
     footer{padding-left:20px;padding-right:20px}
   }
 </style>
@@ -237,292 +211,10 @@
 
 <section class="people-section" aria-label="My People">
 
-  <div class="people-grid" role="list">
-
-    <!-- SIMON SINEK -->
-    <div class="pcard" id="simon-sinek" data-categories="leadership" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/simon-sinek.jpg" alt="Simon Sinek">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Simon Sinek</div>
-          <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
-          <a href="https://simonsinek.com" target="_blank" rel="noopener" aria-label="Simon Sinek website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>simonsinek.com</a>
-        </div>
-        <p class="pannotation">Sinek's work reframed how I view leadership. Does someone feel safe enough to say what they actually think before a decision locks in, not just whether they nod along afterward? Do they have the right environment to operate at their natural best? That shows up in how you run meetings, how you handle disagreement, and how far out you think about consequences before committing to something. Empathy and long-term thinking used to feel like traits some leaders happened to have, they have changed the way I think about work.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">People don't buy what you do; they buy why you do it.</div>
-          <div class="pquote-source">— Start With Why</div>
-        </div>
-        <div class="pdesc">Simon Sinek is a prominent figure in the fields of leadership, motivation, and organisational culture. He is renowned for his groundbreaking Golden Circle concept — his theory that individuals and organisations who inspire genuine action do so by starting with "why": their purpose, cause, or belief.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <span class="pskill-pill cs"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Leadership &amp; Social Influence <span class="pskill-cs">· coming soon</span></span>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-sinek">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-sinek">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/7108725-start-with-why" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Start With Why</a>
-            <a href="https://www.goodreads.com/book/show/38390751-the-infinite-game" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>The Infinite Game</a>
-            <a href="https://www.goodreads.com/book/show/16144853-leaders-eat-last" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Leaders Eat Last</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- VANESSA VAN EDWARDS -->
-    <div class="pcard" id="vanessa-van-edwards" data-categories="communication" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/vanessa-van-edwards.jpg" alt="Vanessa Van Edwards">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Vanessa Van Edwards</div>
-          <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
-          <a href="https://www.scienceofpeople.com" target="_blank" rel="noopener" aria-label="Vanessa Van Edwards website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>scienceofpeople.com</a>
-        </div>
-        <p class="pannotation">Van Edwards changed what I notice in the first few minutes of meeting someone. Tone shifts, hesitation, how someone answers a real question versus a scripted one, all of it used to pass by unregistered. This changed how I approach my conversations.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">Vulnerability is what truly elevates relationships.</div>
-          <div class="pquote-source">— Captivate</div>
-        </div>
-        <div class="pdesc">Vanessa Van Edwards is a behavioural investigator and author known for decoding human behaviour, communication, and charisma. Her expertise provides practical insights into effective communication, relationship-building, leadership, and negotiation skills.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <span class="pskill-pill cs"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Empathy &amp; Active Listening <span class="pskill-cs">· coming soon</span></span>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-vve">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-vve">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/29483376-captivate" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Captivate</a>
-            <a href="https://www.goodreads.com/book/show/55838980-cues" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Cues</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CHRIS VOSS -->
-    <div class="pcard" id="chris-voss" data-categories="communication" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/chris-voss.jpg" alt="Chris Voss">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Chris Voss</div>
-          <div class="ppills"><span class="ppill pp-communication">Communication</span></div>
-          <a href="https://www.blackswanltd.com" target="_blank" rel="noopener" aria-label="Chris Voss website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>blackswanltd.com</a>
-        </div>
-        <p class="pannotation">Never Split the Difference feels like the book that changed how I look at personal growth. It was the catalyst for how I broke down the areas of my development I wanted to focus on. Voss has taught me that starting the process of communication and negotiation with listening using what he calls Tactical Empathy works more reliably than starting with any argument you can make.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">Listening is not a passive activity. It is the most active thing you can do.</div>
-          <div class="pquote-source">— Never Split the Difference</div>
-        </div>
-        <div class="pdesc">Chris Voss is an author, instructor, keynote speaker, and former FBI hostage negotiator who successfully resolved numerous high-stakes situations. He is a renowned expert in human behaviour, psychology, and communication and persuasion techniques.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <span class="pskill-pill cs"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Empathy &amp; Active Listening <span class="pskill-cs">· coming soon</span></span>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-voss">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-voss">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/26156469-never-split-the-difference" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Never Split the Difference</a>
-            <a href="https://www.blackswanltd.com" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Black Swan Group</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ADAM GRANT -->
-    <div class="pcard" id="adam-grant" data-categories="psychology" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/adam-grant.jpg" alt="Adam Grant">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Adam Grant</div>
-          <div class="ppills"><span class="ppill pp-psychology">Psychology</span></div>
-          <a href="https://adamgrant.net" target="_blank" rel="noopener" aria-label="Adam Grant website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>adamgrant.net</a>
-        </div>
-        <p class="pannotation">Grant challenges assumptions before I even notice I'm carrying them. Think Again is the book I come back to again and again; its more like a manual for staying intellectually honest with myself. Rethinking a position used to feel like a loss, evidence that the first take was wrong. Now it reads like the thing that separates someone building an accurate picture from someone just defending an earlier one.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">If knowledge is power, knowing what we don't know is wisdom.</div>
-          <div class="pquote-source">— Think Again</div>
-        </div>
-        <div class="pdesc">Adam Grant is an organisational psychologist, bestselling author, and professor at the Wharton School. His research challenges conventional thinking on motivation, generosity, and how we form and revise our beliefs — exploring what drives people to perform, contribute, and change their minds.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <a href="skills/critical-thinking/primer.html" class="pskill-pill"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Critical Thinking</a>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-grant">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-grant">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/55539565-think-again" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Think Again</a>
-            <a href="https://www.goodreads.com/book/show/16158498-give-and-take" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Give and Take</a>
-            <a href="https://www.goodreads.com/book/show/25614523-originals" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Originals</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ETHAN MOLLICK -->
-    <div class="pcard" id="ethan-mollick" data-categories="ai" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/ethan-mollick.webp" alt="Ethan Mollick">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Ethan Mollick</div>
-          <div class="ppills"><span class="ppill pp-ai">AI</span></div>
-          <a href="https://www.oneusefulthing.org" target="_blank" rel="noopener" aria-label="Ethan Mollick website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>oneusefulthing.org</a>
-        </div>
-        <p class="pannotation">The most rigorous empirical voice on what AI actually does to how people work. Cuts through the noise in a space that has a lot of it.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">We have invented a kind of alien mind.</div>
-          <div class="pquote-source">— Co-Intelligence</div>
-        </div>
-        <div class="pdesc">Ethan Mollick is a professor at the Wharton School and one of the most rigorous researchers studying how AI is changing the way people work and learn. His work cuts through the noise with empirical evidence on human-AI collaboration, adoption patterns, and what it actually takes to integrate AI into how organisations operate.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <a href="skills/analytical-thinking/primer.html" class="pskill-pill"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Analytical Thinking</a>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-mollick">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-mollick">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/198678736-co-intelligence" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Co-Intelligence</a>
-            <a href="https://www.oneusefulthing.org" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>One Useful Thing</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SHADE ZAHRAI -->
-    <div class="pcard" id="shade-zahrai" data-categories="influence" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/shade-zahrai.jpg" alt="Shade Zahrai">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Shade Zahrai</div>
-          <div class="ppills"><span class="ppill pp-influence">Influence</span></div>
-          <a href="https://www.shadezahrai.com" target="_blank" rel="noopener" aria-label="Shade Zahrai website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>shadezahrai.com</a>
-        </div>
-        <p class="pannotation">Her research targets the internal aspect of influence before having you focus on the external, emphasising trust-building and self-awareness. Her material treating both as trainable skills, not fixed traits, opened my mind to what is possible.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">Stepping outside your comfort zone doesn't mean you become immunized to pain.</div>
-          <div class="pquote-source">— Big Trust</div>
-        </div>
-        <div class="pdesc">A renowned leadership consultant, author, and speaker, Shade's expertise lies in developing authentic leadership practices, empowering employees, fostering a positive work culture, navigating complex business challenges, and promoting personal and professional well-being.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <span class="pskill-pill cs"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Motivation &amp; Self-Awareness <span class="pskill-cs">· coming soon</span></span>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-zahrai">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-zahrai">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/233902510-big-trust" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Big Trust</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BRENÉ BROWN -->
-    <div class="pcard" id="brene-brown" data-categories="leadership" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/brene-brown.jpg" alt="Brené Brown">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Brené Brown</div>
-          <div class="ppills"><span class="ppill pp-leadership">Leadership</span></div>
-          <a href="https://brenebrown.com" target="_blank" rel="noopener" aria-label="Brené Brown website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>brenebrown.com</a>
-        </div>
-        <p class="pannotation">Brown's research gave me language for the gap that stalls most transformation work: the moment a team has to admit a decision isn't working. What it taught me about vulnerability is that it functions less like a soft skill and more like the condition that decides whether problems surface early or get managed as appearances instead.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">I define a leader as anyone who takes responsibility for finding the potential in people and processes.</div>
-          <div class="pquote-source">— Dare to Lead</div>
-        </div>
-        <div class="pdesc">Brené Brown is a research professor, author, and speaker whose work centres on vulnerability, courage, and the human conditions that underpin authentic leadership. Her decades of research make the empirical case that the qualities often dismissed as soft — empathy, shame resilience, and emotional honesty — are the foundations of high-performing cultures.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <span class="pskill-pill cs"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Leadership &amp; Social Influence <span class="pskill-cs">· coming soon</span></span>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-brown">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-brown">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/40109367-dare-to-lead" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Dare to Lead</a>
-            <a href="https://www.goodreads.com/book/show/13588356-daring-greatly" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Daring Greatly</a>
-            <a href="https://www.goodreads.com/book/show/58330567-atlas-of-the-heart" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Atlas of the Heart</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CAL NEWPORT -->
-    <div class="pcard" id="cal-newport" data-categories="productivity" role="listitem">
-      <div class="pcard-photo">
-        <img src="images/people/cal-newport.jpg" alt="Cal Newport">
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-top">
-          <div class="pname">Cal Newport</div>
-          <div class="ppills"><span class="ppill pp-productivity">Productivity</span></div>
-          <a href="https://calnewport.com" target="_blank" rel="noopener" aria-label="Cal Newport website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>calnewport.com</a>
-        </div>
-        <p class="pannotation">Deep work sounds like a personal discipline problem until you watch it fail at the team level. Someone blocks focus time and still gets pulled into three conversations  because the system around them wasn't built to protect it. Newport's argument that stuck with me is that attention is structural, not just willpower. A calendar full of open-door meetings and instant-response norms will beat anyone's discipline eventually. The fix isn't a personal productivity hack. It's redesigning the conditions people are trying to focus inside of.</p>
-        <div class="pquote">
-          <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-          <div class="pquote-text">Who you are, what you think, feel, and do, what you love — is the sum of what you focus on.</div>
-          <div class="pquote-source">— Deep Work</div>
-        </div>
-        <div class="pdesc">Cal Newport is a computer science professor, author, and one of the most compelling voices on how to do meaningful work in a world designed for distraction. His writing makes the case for depth over constant connectivity, and for building a professional life around focused effort rather than busyness.</div>
-        <div class="pskill-section">
-          <div class="pskill-label">Related Skill</div>
-          <span class="pskill-pill cs"><svg class="pskill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Resilience, Flexibility &amp; Agility <span class="pskill-cs">· coming soon</span></span>
-        </div>
-        <div class="pcard-divider"></div>
-        <button class="pworks-toggle" aria-expanded="false" aria-controls="works-newport">
-          Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="pworks-body" id="works-newport">
-          <div class="pworks-pills">
-            <a href="https://www.goodreads.com/book/show/25744928-deep-work" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Deep Work</a>
-            <a href="https://www.goodreads.com/book/show/40672036-digital-minimalism" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Digital Minimalism</a>
-            <a href="https://www.goodreads.com/book/show/197773418-slow-productivity" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Slow Productivity</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /.people-grid -->
+  <div class="people-layout" id="people-layout">
+    <nav class="person-list-panel" id="person-list-panel" aria-label="People list"></nav>
+    <article class="person-detail-panel" id="person-detail-panel"></article>
+  </div>
 
 </section>
 
@@ -550,102 +242,293 @@
   </div>
 </footer>
 
-
-<!-- ═══════════════════════════════════════════════════════
-     NEW CARD TEMPLATE — copy, paste, and fill in to add a new person.
-     Insert the new card anywhere inside .people-grid — HTML order = display order.
-     ═══════════════════════════════════════════════════════
-
-<div class="pcard" data-categories="[category]" role="listitem">
-  <div class="pcard-photo">
-    OPTION A — real photo (preferred):
-      <img src="images/people/[slug].webp" alt="[Full Name]">
-    OPTION B — placeholder (remove once photo is added):
-      <svg class="pcard-placeholder" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="28" r="18" fill="#5BA79F"/><path d="M4 78 Q4 52 40 52 Q76 52 76 78" fill="#5BA79F"/></svg>
-  </div>
-  <div class="pcard-body">
-    <div class="pcard-top">
-      <div class="pname">[Full Name]</div>
-      <div class="ppills"><span class="ppill pp-[category]">[Category]</span></div>
-      <a href="[URL]" target="_blank" rel="noopener" aria-label="[Full Name] website" class="pext-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>[domain.com]
-      </a>
-    </div>
-    <p class="pannotation">[Why this person — one or two sentences in your voice. Why do you return to them specifically?]</p>
-    <div class="pquote">
-      <span class="pquote-mark" aria-hidden="true">&ldquo;</span>
-      <div class="pquote-text">[Quote text]</div>
-      <div class="pquote-source">— [Source]</div>
-    </div>
-    <div class="pdesc">[2–3 sentences: what they cover and what it does for how you think.]</div>
-    <div class="pcard-divider"></div>
-    <button class="pworks-toggle" aria-expanded="false" aria-controls="works-[slug]">
-      Key Works <svg class="pworks-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-    <div class="pworks-body" id="works-[slug]">
-      <div class="pworks-pills">
-        <a href="[goodreads-url]" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>[Work 1]</a>
-        <a href="[goodreads-url]" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>[Work 2]</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-     Categories — data-categories value and matching ppill class:
-       leadership      → pp-leadership
-       communication   → pp-communication
-       influence       → pp-influence
-       psychology      → pp-psychology
-       productivity    → pp-productivity
-       ai              → pp-ai
-     Multiple categories: data-categories="leadership influence"
-     ═══════════════════════════════════════════════════════ -->
-
+<!-- To add a new person, add an entry to the PEOPLE array below.
+     Category values (and matching pill class, set in CATEGORY_META):
+       leadership · communication · influence · psychology · productivity · ai -->
 <script>
-// ── KEY WORKS TOGGLE ──
-document.querySelectorAll('.pworks-toggle').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    var expanded = this.getAttribute('aria-expanded') === 'true';
-    this.setAttribute('aria-expanded', String(!expanded));
-    var body = document.getElementById(this.getAttribute('aria-controls'));
-    body.classList.toggle('open', !expanded);
-  });
-});
+(function () {
+  'use strict';
 
-// ── SCROLL-IN ANIMATION ──
-// Respects prefers-reduced-motion — cards start visible if motion is off (handled via CSS).
-(function() {
-  var cards = document.querySelectorAll('.pcard');
-  if (!cards.length) return;
+  var EXT_ICON = '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>';
 
-  // If IntersectionObserver isn't available, just show everything
-  if (!('IntersectionObserver' in window)) {
-    cards.forEach(function(c) { c.classList.add('is-visible'); });
-    return;
+  var ICON_PATHS = {
+    book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    mail: '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>'
+  };
+
+  var CATEGORY_META = {
+    leadership:    { pillClass: 'pp-leadership',    label: 'Leadership',    tint: '#3D2218' },
+    communication: { pillClass: 'pp-communication', label: 'Communication', tint: '#3A2C0A' },
+    influence:     { pillClass: 'pp-influence',     label: 'Influence',     tint: '#3A2218' },
+    psychology:    { pillClass: 'pp-psychology',    label: 'Psychology',    tint: '#1E2D38' },
+    productivity:  { pillClass: 'pp-productivity',  label: 'Productivity',  tint: '#1B3D38' },
+    ai:            { pillClass: 'pp-ai',            label: 'AI',            tint: '#1B4A44' }
+  };
+
+  var PEOPLE = [
+    {
+      id: 'simon-sinek',
+      name: 'Simon Sinek',
+      category: 'leadership',
+      image: 'images/people/simon-sinek.jpg',
+      imageAlt: 'Simon Sinek',
+      url: 'https://simonsinek.com',
+      urlDisplay: 'simonsinek.com',
+      annotation: "Sinek's work reframed how I view leadership. Does someone feel safe enough to say what they actually think before a decision locks in, not just whether they nod along afterward? Do they have the right environment to operate at their natural best? That shows up in how you run meetings, how you handle disagreement, and how far out you think about consequences before committing to something. Empathy and long-term thinking used to feel like traits some leaders happened to have, they have changed the way I think about work.",
+      quoteText: "People don't buy what you do; they buy why you do it.",
+      quoteSource: 'Start With Why',
+      description: 'Simon Sinek is a prominent figure in the fields of leadership, motivation, and organisational culture. He is renowned for his groundbreaking Golden Circle concept — his theory that individuals and organisations who inspire genuine action do so by starting with "why": their purpose, cause, or belief.',
+      works: [
+        { title: 'Start With Why', href: 'https://www.goodreads.com/book/show/7108725-start-with-why', icon: 'book' },
+        { title: 'The Infinite Game', href: 'https://www.goodreads.com/book/show/38390751-the-infinite-game', icon: 'book' },
+        { title: 'Leaders Eat Last', href: 'https://www.goodreads.com/book/show/16144853-leaders-eat-last', icon: 'book' }
+      ]
+    },
+    {
+      id: 'vanessa-van-edwards',
+      name: 'Vanessa Van Edwards',
+      category: 'communication',
+      image: 'images/people/vanessa-van-edwards.jpg',
+      imageAlt: 'Vanessa Van Edwards',
+      url: 'https://www.scienceofpeople.com',
+      urlDisplay: 'scienceofpeople.com',
+      annotation: 'Van Edwards changed what I notice in the first few minutes of meeting someone. Tone shifts, hesitation, how someone answers a real question versus a scripted one, all of it used to pass by unregistered. This changed how I approach my conversations.',
+      quoteText: 'Vulnerability is what truly elevates relationships.',
+      quoteSource: 'Captivate',
+      description: 'Vanessa Van Edwards is a behavioural investigator and author known for decoding human behaviour, communication, and charisma. Her expertise provides practical insights into effective communication, relationship-building, leadership, and negotiation skills.',
+      works: [
+        { title: 'Captivate', href: 'https://www.goodreads.com/book/show/29483376-captivate', icon: 'book' },
+        { title: 'Cues', href: 'https://www.goodreads.com/book/show/55838980-cues', icon: 'book' }
+      ]
+    },
+    {
+      id: 'chris-voss',
+      name: 'Chris Voss',
+      category: 'communication',
+      image: 'images/people/chris-voss.jpg',
+      imageAlt: 'Chris Voss',
+      url: 'https://www.blackswanltd.com',
+      urlDisplay: 'blackswanltd.com',
+      annotation: 'Never Split the Difference feels like the book that changed how I look at personal growth. It was the catalyst for how I broke down the areas of my development I wanted to focus on. Voss has taught me that starting the process of communication and negotiation with listening using what he calls Tactical Empathy works more reliably than starting with any argument you can make.',
+      quoteText: 'Listening is not a passive activity. It is the most active thing you can do.',
+      quoteSource: 'Never Split the Difference',
+      description: 'Chris Voss is an author, instructor, keynote speaker, and former FBI hostage negotiator who successfully resolved numerous high-stakes situations. He is a renowned expert in human behaviour, psychology, and communication and persuasion techniques.',
+      works: [
+        { title: 'Never Split the Difference', href: 'https://www.goodreads.com/book/show/26156469-never-split-the-difference', icon: 'book' },
+        { title: 'Black Swan Group', href: 'https://www.blackswanltd.com', icon: 'globe' }
+      ]
+    },
+    {
+      id: 'adam-grant',
+      name: 'Adam Grant',
+      category: 'psychology',
+      image: 'images/people/adam-grant.jpg',
+      imageAlt: 'Adam Grant',
+      url: 'https://adamgrant.net',
+      urlDisplay: 'adamgrant.net',
+      annotation: "Grant challenges assumptions before I even notice I'm carrying them. Think Again is the book I come back to again and again; its more like a manual for staying intellectually honest with myself. Rethinking a position used to feel like a loss, evidence that the first take was wrong. Now it reads like the thing that separates someone building an accurate picture from someone just defending an earlier one.",
+      quoteText: "If knowledge is power, knowing what we don't know is wisdom.",
+      quoteSource: 'Think Again',
+      description: 'Adam Grant is an organisational psychologist, bestselling author, and professor at the Wharton School. His research challenges conventional thinking on motivation, generosity, and how we form and revise our beliefs — exploring what drives people to perform, contribute, and change their minds.',
+      works: [
+        { title: 'Think Again', href: 'https://www.goodreads.com/book/show/55539565-think-again', icon: 'book' },
+        { title: 'Give and Take', href: 'https://www.goodreads.com/book/show/16158498-give-and-take', icon: 'book' },
+        { title: 'Originals', href: 'https://www.goodreads.com/book/show/25614523-originals', icon: 'book' }
+      ]
+    },
+    {
+      id: 'ethan-mollick',
+      name: 'Ethan Mollick',
+      category: 'ai',
+      image: 'images/people/ethan-mollick.webp',
+      imageAlt: 'Ethan Mollick',
+      url: 'https://www.oneusefulthing.org',
+      urlDisplay: 'oneusefulthing.org',
+      annotation: 'The most rigorous empirical voice on what AI actually does to how people work. Cuts through the noise in a space that has a lot of it.',
+      quoteText: 'We have invented a kind of alien mind.',
+      quoteSource: 'Co-Intelligence',
+      description: 'Ethan Mollick is a professor at the Wharton School and one of the most rigorous researchers studying how AI is changing the way people work and learn. His work cuts through the noise with empirical evidence on human-AI collaboration, adoption patterns, and what it actually takes to integrate AI into how organisations operate.',
+      works: [
+        { title: 'Co-Intelligence', href: 'https://www.goodreads.com/book/show/198678736-co-intelligence', icon: 'book' },
+        { title: 'One Useful Thing', href: 'https://www.oneusefulthing.org', icon: 'mail' }
+      ]
+    },
+    {
+      id: 'shade-zahrai',
+      name: 'Shade Zahrai',
+      category: 'influence',
+      image: 'images/people/shade-zahrai.jpg',
+      imageAlt: 'Shade Zahrai',
+      url: 'https://www.shadezahrai.com',
+      urlDisplay: 'shadezahrai.com',
+      annotation: 'Her research targets the internal aspect of influence before having you focus on the external, emphasising trust-building and self-awareness. Her material treating both as trainable skills, not fixed traits, opened my mind to what is possible.',
+      quoteText: "Stepping outside your comfort zone doesn't mean you become immunized to pain.",
+      quoteSource: 'Big Trust',
+      description: "A renowned leadership consultant, author, and speaker, Shade's expertise lies in developing authentic leadership practices, empowering employees, fostering a positive work culture, navigating complex business challenges, and promoting personal and professional well-being.",
+      works: [
+        { title: 'Big Trust', href: 'https://www.goodreads.com/book/show/233902510-big-trust', icon: 'book' }
+      ]
+    },
+    {
+      id: 'brene-brown',
+      name: 'Brené Brown',
+      category: 'leadership',
+      image: 'images/people/brene-brown.jpg',
+      imageAlt: 'Brené Brown',
+      url: 'https://brenebrown.com',
+      urlDisplay: 'brenebrown.com',
+      annotation: "Brown's research gave me language for the gap that stalls most transformation work: the moment a team has to admit a decision isn't working. What it taught me about vulnerability is that it functions less like a soft skill and more like the condition that decides whether problems surface early or get managed as appearances instead.",
+      quoteText: 'I define a leader as anyone who takes responsibility for finding the potential in people and processes.',
+      quoteSource: 'Dare to Lead',
+      description: 'Brené Brown is a research professor, author, and speaker whose work centres on vulnerability, courage, and the human conditions that underpin authentic leadership. Her decades of research make the empirical case that the qualities often dismissed as soft — empathy, shame resilience, and emotional honesty — are the foundations of high-performing cultures.',
+      works: [
+        { title: 'Dare to Lead', href: 'https://www.goodreads.com/book/show/40109367-dare-to-lead', icon: 'book' },
+        { title: 'Daring Greatly', href: 'https://www.goodreads.com/book/show/13588356-daring-greatly', icon: 'book' },
+        { title: 'Atlas of the Heart', href: 'https://www.goodreads.com/book/show/58330567-atlas-of-the-heart', icon: 'book' }
+      ]
+    },
+    {
+      id: 'cal-newport',
+      name: 'Cal Newport',
+      category: 'productivity',
+      image: 'images/people/cal-newport.jpg',
+      imageAlt: 'Cal Newport',
+      url: 'https://calnewport.com',
+      urlDisplay: 'calnewport.com',
+      annotation: "Deep work sounds like a personal discipline problem until you watch it fail at the team level. Someone blocks focus time and still gets pulled into three conversations  because the system around them wasn't built to protect it. Newport's argument that stuck with me is that attention is structural, not just willpower. A calendar full of open-door meetings and instant-response norms will beat anyone's discipline eventually. The fix isn't a personal productivity hack. It's redesigning the conditions people are trying to focus inside of.",
+      quoteText: 'Who you are, what you think, feel, and do, what you love — is the sum of what you focus on.',
+      quoteSource: 'Deep Work',
+      description: 'Cal Newport is a computer science professor, author, and one of the most compelling voices on how to do meaningful work in a world designed for distraction. His writing makes the case for depth over constant connectivity, and for building a professional life around focused effort rather than busyness.',
+      works: [
+        { title: 'Deep Work', href: 'https://www.goodreads.com/book/show/25744928-deep-work', icon: 'book' },
+        { title: 'Digital Minimalism', href: 'https://www.goodreads.com/book/show/40672036-digital-minimalism', icon: 'book' },
+        { title: 'Slow Productivity', href: 'https://www.goodreads.com/book/show/197773418-slow-productivity', icon: 'book' }
+      ]
+    }
+  ];
+
+  var layoutEl = document.getElementById('people-layout');
+  var listPanel = document.getElementById('person-list-panel');
+  var detailPanel = document.getElementById('person-detail-panel');
+  var activeId = null;
+
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
   }
 
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        var card = entry.target;
-        // Stagger based on position within the grid row
-        var siblings = Array.from(card.parentNode.children);
-        var index = siblings.indexOf(card);
-        var delay = (index % 4) * 80; // 80ms between cards in a row
-        setTimeout(function() {
-          card.classList.add('is-visible');
-        }, delay);
-        observer.unobserve(card);
-      }
+  function personRowHTML(p) {
+    var meta = CATEGORY_META[p.category];
+    var cls = 'person-row' + (p.id === activeId ? ' active' : '');
+    return '<button type="button" class="' + cls + '" data-id="' + escapeHTML(p.id) + '"' +
+      (p.id === activeId ? ' aria-current="true"' : '') + '>' +
+      '<img class="person-row-thumb" src="' + escapeHTML(p.image) + '" alt="" loading="lazy">' +
+      '<span class="person-row-text">' +
+        '<span class="person-row-name">' + escapeHTML(p.name) + '</span>' +
+        '<span class="person-row-meta">' +
+          '<span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span>' +
+        '</span>' +
+      '</span>' +
+      '</button>';
+  }
+
+  function renderList() {
+    listPanel.innerHTML = PEOPLE.map(personRowHTML).join('');
+  }
+
+  function renderDetail(person) {
+    if (!person) {
+      detailPanel.innerHTML = '<p class="empty-state">Select someone from the list to see their details.</p>';
+      return;
+    }
+    var meta = CATEGORY_META[person.category];
+    var html = '';
+    html += '<button type="button" class="person-back" id="person-back">‹ All people</button>';
+    html += '<div class="person-detail-photo" style="background:' + meta.tint + '"><img src="' + escapeHTML(person.image) + '" alt="' + escapeHTML(person.imageAlt) + '"></div>';
+    html += '<div class="pcard-top">';
+    html += '<div class="pname">' + escapeHTML(person.name) + '</div>';
+    html += '<div class="ppills"><span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span></div>';
+    html += '<a href="' + escapeHTML(person.url) + '" target="_blank" rel="noopener" aria-label="' + escapeHTML(person.name) + ' website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + EXT_ICON + '</svg>' + escapeHTML(person.urlDisplay) + '</a>';
+    html += '</div>';
+    html += '<p class="pannotation">' + escapeHTML(person.annotation) + '</p>';
+    html += '<div class="pquote"><span class="pquote-mark" aria-hidden="true">&ldquo;</span><div class="pquote-text">' + escapeHTML(person.quoteText) + '</div><div class="pquote-source">— ' + escapeHTML(person.quoteSource) + '</div></div>';
+    html += '<div class="pdesc">' + escapeHTML(person.description) + '</div>';
+    html += '<div class="pcard-divider"></div>';
+    html += '<div class="pworks-label">Key Works</div>';
+    html += '<div class="pworks-pills">';
+    (person.works || []).forEach(function (w) {
+      var icon = ICON_PATHS[w.icon || 'book'];
+      html += '<a href="' + escapeHTML(w.href) + '" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' + icon + '</svg>' + escapeHTML(w.title) + '</a>';
     });
-  }, {
-    threshold: 0.08,
-    rootMargin: '0px 0px -40px 0px'
+    html += '</div>';
+
+    detailPanel.innerHTML = html;
+
+    var backBtn = document.getElementById('person-back');
+    if (backBtn) backBtn.addEventListener('click', function () {
+      layoutEl.classList.remove('show-detail');
+      listPanel.focus();
+    });
+  }
+
+  function selectPerson(id, opts) {
+    opts = opts || {};
+    var person = PEOPLE.filter(function (p) { return p.id === id; })[0];
+    if (!person) return;
+    activeId = id;
+
+    var url = new URL(window.location.href);
+    url.searchParams.set('person', id);
+    if (opts.replace) {
+      window.history.replaceState({}, '', url);
+    } else {
+      window.history.pushState({}, '', url);
+    }
+
+    renderList();
+    renderDetail(person);
+    layoutEl.classList.add('show-detail');
+
+    if (opts.scrollIntoList) {
+      var activeEl = listPanel.querySelector('.person-row.active');
+      if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function pickDefaultPerson() {
+    return PEOPLE[0] ? PEOPLE[0].id : null;
+  }
+
+  listPanel.addEventListener('click', function (e) {
+    var btn = e.target.closest('.person-row');
+    if (!btn) return;
+    selectPerson(btn.getAttribute('data-id'), { scrollIntoList: true });
   });
 
-  cards.forEach(function(card) {
-    observer.observe(card);
+  window.addEventListener('popstate', function () {
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('person');
+    if (id && PEOPLE.some(function (p) { return p.id === id; })) {
+      activeId = id;
+      renderList();
+      renderDetail(PEOPLE.filter(function (p) { return p.id === id; })[0]);
+    }
   });
+
+  var params = new URLSearchParams(window.location.search);
+  var requestedId = params.get('person');
+  var initialId = (requestedId && PEOPLE.some(function (p) { return p.id === requestedId; }))
+    ? requestedId
+    : pickDefaultPerson();
+
+  if (initialId) {
+    selectPerson(initialId, { replace: true, scrollIntoList: true });
+  } else {
+    renderList();
+    renderDetail(null);
+  }
 })();
 </script>
 </body>

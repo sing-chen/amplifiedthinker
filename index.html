@@ -249,13 +249,17 @@
 
   var TICKER_ITEM_HEIGHT = 56;
   var TICKER_INTERVAL_MS = 3800;
+  var TICKER_MAX = 5;
+  var TICKER_UNPINNED_MAX_AGE_DAYS = 28;
 
   fetch('news.json')
     .then(function (r) { return r.json(); })
     .then(function (data) {
       var digests = (data || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
-      var latest = digests[0];
-      if (!latest || !latest.stories || !latest.stories.length) return;
+      if (!digests.length) return;
+
+      var cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - TICKER_UNPINNED_MAX_AGE_DAYS);
 
       var pinnedEntry = null;
       digests.some(function (group) {
@@ -265,14 +269,21 @@
         });
       });
 
-      var latestStories = latest.stories.map(function (s, i) {
-        return { id: latest.date + '-' + i, story: s };
+      var candidates = [];
+      digests.forEach(function (group) {
+        var groupDate = new Date(group.date + 'T00:00:00');
+        if (isNaN(groupDate) || groupDate < cutoff) return;
+        (group.stories || []).forEach(function (s, i) {
+          if (s.pinned) return;
+          candidates.push({ id: group.date + '-' + i, story: s });
+        });
       });
-      if (pinnedEntry) {
-        latestStories = latestStories.filter(function (x) { return x.id !== pinnedEntry.id; });
-        latestStories = [pinnedEntry].concat(latestStories);
-      }
-      var tickerEntries = latestStories.slice(0, 5);
+
+      var slotsForOthers = pinnedEntry ? TICKER_MAX - 1 : TICKER_MAX;
+      var others = candidates.slice(0, slotsForOthers);
+      var tickerEntries = pinnedEntry ? [pinnedEntry].concat(others) : others;
+
+      if (!tickerEntries.length) return;
 
       var track = document.getElementById('news-ticker-track');
       track.innerHTML = tickerEntries.map(function (x) {
