@@ -83,6 +83,7 @@
   .scard-ticker{height:56px;overflow:hidden;position:relative;background:#F6F0DD;border-radius:var(--radius);margin-bottom:20px}
   .scard-ticker-track{position:absolute;top:0;left:0;width:100%;transition:transform .6s ease}
   .scard-ticker-item{height:56px;box-sizing:border-box;display:flex;align-items:center;padding:0 14px}
+  .scard-ticker-progress{position:absolute;bottom:0;left:0;height:2px;background:#C77B5F;width:0%}
   .scard-ticker-headline{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#7A4530;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   a.scard-ticker-item{text-decoration:none;position:relative;z-index:1}
   a.scard-ticker-item:hover .scard-ticker-headline{color:#A8593C}
@@ -204,6 +205,7 @@
       <div class="scard-desc">A curated feed of the skills and workplace shifts worth knowing about.</div>
       <div class="scard-ticker" id="news-ticker" aria-label="Latest news worth knowing" hidden>
         <div class="scard-ticker-track" id="news-ticker-track"></div>
+        <div class="scard-ticker-progress" id="news-ticker-progress"></div>
       </div>
       <a href="news.html" class="scard-cta">Read the feed <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     </div>
@@ -284,10 +286,22 @@
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduceMotion || tickerEntries.length < 2) return;
 
+      var progress = document.getElementById('news-ticker-progress');
+      function restartProgress() {
+        if (!progress) return;
+        progress.style.transition = 'none';
+        progress.style.width = '0%';
+        void progress.offsetWidth;
+        progress.style.transition = 'width ' + TICKER_INTERVAL_MS + 'ms linear';
+        progress.style.width = '100%';
+      }
+      restartProgress();
+
       var i = 0;
       setInterval(function () {
         i = (i + 1) % tickerEntries.length;
         track.style.transform = 'translateY(-' + (i * TICKER_ITEM_HEIGHT) + 'px)';
+        restartProgress();
       }, TICKER_INTERVAL_MS);
     })
     .catch(function () { /* leave ticker hidden if news.json can't be loaded */ });
