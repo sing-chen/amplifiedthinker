@@ -24,7 +24,8 @@
         "url": "https://reports.weforum.org/docs/WEF_Artificial_Intelligence_and_the_Future_of_Entry_Level_Work_2026.pdf",
         "summary": "WEF and PwC find more than one in three young workers globally (37%) are in occupations with medium-to-high exposure to AI-driven task change, rising to three in four in some regions — with entry-level hiring already slowing in higher-exposure roles, though broader economic factors are contributing too. The report proposes a four-part framework — job access, job design, talent pipelines, and education-system alignment — for redesigning entry-level roles rather than eliminating them, noting a parallel shift where 42% of Gen Z workers (including 37% of bachelor's degree holders) are now in or pursuing blue-collar and skilled trades.",
         "implications": "The prescription is redesign, not preservation as-is: leaders should treat entry-level roles as a pipeline to actively re-engineer for AI-era work rather than either freezing hiring or restructuring around it passively.",
-        "tags": ["workforce transformation", "skills development", "research and insights"]
+        "tags": ["workforce transformation", "skills development", "research and insights"],
+        "pinned": true
       }
     ]
   },
@@ -103,8 +104,7 @@
         "url": "https://www.forbes.com/sites/courtney-connley-hampton/2026/07/02/ai-is-changing-work-these-are-the-human-skills-employers-are-hiring-for/",
         "summary": "Drawing on the 2026 Corporate Recruiters Survey (600+ recruiters, 39 countries), communication and problem-solving top employer priorities, with hiring increasingly weighted toward learning mindset and leadership capability over narrow technical depth.",
         "implications": "Durable human capabilities are becoming the differentiator, not a hedge against AI.",
-        "tags": ["skills development", "leadership and culture"],
-        "pinned": true
+        "tags": ["skills development", "leadership and culture"]
       }
     ]
   },
