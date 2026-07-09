@@ -212,7 +212,14 @@
     'workforce transformation': { bg: '#D5DFE6', text: '#1E3A4A' },
     'leadership and culture': { bg: '#EDE5C5', text: '#6B5416' },
     'macro signals': { bg: '#DADDD2', text: '#4A4A3C' },
-    'research and insights': { bg: '#D6E0E6', text: '#2C4A5C' }
+    'research and insights': { bg: '#F0D9CE', text: '#7A3B22' }
+  };
+  var THEME_LABELS = {
+    'skills development': 'Skills Development',
+    'workforce transformation': 'Workforce Transformation',
+    'leadership and culture': 'Leadership & Culture',
+    'macro signals': 'Macro Signals',
+    'research and insights': 'Research & Insights'
   };
   var TITLE_CASE_LOWER = { and: 1, or: 1, of: 1, the: 1, in: 1, on: 1 };
 
@@ -402,7 +409,7 @@
     html += '<div class="story-tags">';
     (story.tags || []).forEach(function (t) {
       var c = THEME_COLORS[t] || { bg: '#D8E4DD', text: '#1F4D4A' };
-      html += '<span class="story-tag" style="background:' + c.bg + ';color:' + c.text + '">' + escapeHTML(titleCase(t)) + '</span>';
+      html += '<span class="story-tag" style="background:' + c.bg + ';color:' + c.text + '">' + escapeHTML(THEME_LABELS[t] || titleCase(t)) + '</span>';
     });
     html += '</div>';
 
@@ -485,7 +492,7 @@
     var tags = THEME_ORDER.filter(function (t) { return tagsInUse[t]; });
 
     var chips = [{ key: 'all', label: 'All stories', icon: ALL_ICON_PATH }].concat(
-      tags.map(function (t) { return { key: t, label: titleCase(t), icon: THEME_ICON_PATHS[t] }; })
+      tags.map(function (t) { return { key: t, label: THEME_LABELS[t] || titleCase(t), icon: THEME_ICON_PATHS[t] }; })
     );
 
     filterBar.innerHTML = chips.map(function (c) {
