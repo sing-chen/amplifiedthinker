@@ -109,7 +109,7 @@
     "quote": "People don't buy what you do; they buy why you do it.",
     "quoteSource": "Start With Why",
     "tags": ["Simon Sinek", "leadership", "purpose", "Start With Why", "Golden Circle", "Infinite Game", "Leaders Eat Last", "why", "motivation"],
-    "url": "my-people.html#simon-sinek"
+    "url": "my-people.html?person=simon-sinek"
   },
   {
     "id": "person-vanessa-van-edwards",
@@ -121,7 +121,7 @@
     "quote": "Vulnerability is what truly elevates relationships.",
     "quoteSource": "Captivate",
     "tags": ["Vanessa Van Edwards", "communication", "body language", "cues", "Captivate", "Science of People", "charisma", "first impressions", "influence"],
-    "url": "my-people.html#vanessa-van-edwards"
+    "url": "my-people.html?person=vanessa-van-edwards"
   },
   {
     "id": "person-chris-voss",
@@ -133,7 +133,7 @@
     "quote": "Listening is not a passive activity. It is the most active thing you can do.",
     "quoteSource": "Never Split the Difference",
     "tags": ["Chris Voss", "negotiation", "communication", "Never Split the Difference", "FBI", "hostage negotiation", "listening", "Black Swan", "influence"],
-    "url": "my-people.html#chris-voss"
+    "url": "my-people.html?person=chris-voss"
   },
   {
     "id": "person-adam-grant",
@@ -145,7 +145,7 @@
     "quote": "If knowledge is power, knowing what we don't know is wisdom.",
     "quoteSource": "Think Again",
     "tags": ["Adam Grant", "psychology", "Think Again", "Give and Take", "Originals", "Wharton", "intellectual honesty", "rethinking", "organisational psychology"],
-    "url": "my-people.html#adam-grant"
+    "url": "my-people.html?person=adam-grant"
   },
   {
     "id": "person-ethan-mollick",
@@ -157,7 +157,7 @@
     "quote": "We have invented a kind of alien mind.",
     "quoteSource": "Co-Intelligence",
     "tags": ["Ethan Mollick", "AI", "artificial intelligence", "Co-Intelligence", "One Useful Thing", "Wharton", "human-AI collaboration", "AI adoption", "future of work"],
-    "url": "my-people.html#ethan-mollick"
+    "url": "my-people.html?person=ethan-mollick"
   },
   {
     "id": "person-shade-zahrai",
@@ -169,7 +169,7 @@
     "quote": "Stepping outside your comfort zone doesn't mean you become immunized to pain.",
     "quoteSource": "Big Trust",
     "tags": ["Shade Zahrai", "influence", "leadership", "Big Trust", "authentic leadership", "psychology", "self-awareness", "workplace culture"],
-    "url": "my-people.html#shade-zahrai"
+    "url": "my-people.html?person=shade-zahrai"
   },
   {
     "id": "person-brene-brown",
@@ -181,7 +181,7 @@
     "quote": "I define a leader as anyone who takes responsibility for finding the potential in people and processes.",
     "quoteSource": "Dare to Lead",
     "tags": ["Brené Brown", "leadership", "vulnerability", "courage", "Dare to Lead", "Daring Greatly", "Atlas of the Heart", "shame resilience", "culture"],
-    "url": "my-people.html#brene-brown"
+    "url": "my-people.html?person=brene-brown"
   },
   {
     "id": "person-cal-newport",
@@ -193,6 +193,6 @@
     "quote": "Who you are, what you think, feel, and do, what you love — is the sum of what you focus on.",
     "quoteSource": "Deep Work",
     "tags": ["Cal Newport", "productivity", "Deep Work", "Digital Minimalism", "Slow Productivity", "focus", "distraction", "deep work", "attention"],
-    "url": "my-people.html#cal-newport"
+    "url": "my-people.html?person=cal-newport"
   }
 ]
