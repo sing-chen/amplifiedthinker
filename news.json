@@ -8,7 +8,7 @@
         "url": "https://blogs.microsoft.com/blog/2026/07/06/the-latest-in-our-company-transformation/",
         "summary": "Chief People Officer Amy Coleman announced the elimination of roughly 4,800 roles (2.1% of global headcount), hitting Xbox and commercial sales hardest. Coleman explicitly stated the cuts are not AI replacing workers, but framed them as part of an ongoing reorganization driven by how technology, customer expectations, and business models are shifting, with \"more changes ahead.\"",
         "implications": "A test case for how much \"this isn't about AI\" messaging holds up under scrutiny — leaders watching this space should note the gap between the stated rationale and the AI-infrastructure spending driving it.",
-        "tags": ["workforce transformation", "organizational readiness", "leadership and design"]
+        "tags": ["workforce transformation", "leadership and culture"]
       },
       {
         "title": "OECD: skills-first hiring is becoming structural, not experimental",
@@ -16,7 +16,7 @@
         "url": "https://www.oecd.org/en/publications/a-skills-first-labour-market_2e1b85f0-en.html",
         "summary": "The OECD's follow-up report argues skills-first approaches to hiring, talent management, and development are moving from pilot to necessity for labor market functioning and productivity, while flagging persistent barriers: uneven digital access, weak skills-validation infrastructure, and employer distrust of non-traditional credentials.",
         "implications": "The barriers named here are the same ones that stall most skills-based transformation efforts internally — credentialing trust and validation infrastructure, not employee willingness, are the binding constraint.",
-        "tags": ["skills development", "research release", "organizational readiness"]
+        "tags": ["skills development", "research and insights", "workforce transformation"]
       },
       {
         "title": "Green and AI skills are converging into a \"twin transition,\" and supply isn't keeping up",
@@ -37,7 +37,7 @@
         "url": "https://www.pwc.com/gx/en/news-room/press-releases/2026/pwc-2026-ai-jobs-barometer.html",
         "summary": "PwC's analysis of job postings and wage data finds AI is splitting roles into \"professionalised\" (AI automates routine tasks, human judgment gets emphasized) and \"democratised\" (AI lowers the skill floor) tracks. Professionalised roles are growing twice as fast with 42% faster wage growth; the AI skills wage premium hit 62%, up from 57% a year earlier.",
         "implications": "Gives leaders and practitioners a data-backed way to argue that augmentation-track roles — not automation-track ones — are where career and compensation upside concentrates right now.",
-        "tags": ["skills development", "macro signals", "research release"]
+        "tags": ["skills development", "macro signals", "research and insights"]
       },
       {
         "title": "McKinsey's State of Organizations 2026: \"$5 on people for every $1 on tech\" as the AI value threshold",
@@ -45,7 +45,7 @@
         "url": "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/the-state-of-organizations",
         "summary": "Drawing on a survey of 10,000+ senior executives across 15 countries, McKinsey identifies three converging forces reshaping organizations — AI/tech acceleration, economic and geopolitical disruption, and shifting employee expectations — and reports one executive's estimate that realizing AI value requires spending roughly $5 on people for every $1 spent on technology.",
         "implications": "The $5-to-1 ratio is a concrete, quotable frame for practitioners trying to get leadership buy-in for capability-building budgets alongside tech spend.",
-        "tags": ["organizational readiness", "leadership and design", "research release"]
+        "tags": ["workforce transformation", "leadership and culture", "research and insights"]
       }
     ]
   },
@@ -58,7 +58,7 @@
         "url": "https://www.cnbc.com/2026/07/01/employers-who-laid-off-workers-for-ai-are-reversing-their-decisions.html",
         "summary": "Ford, Commonwealth Bank of Australia, and IBM are all reversing AI-driven layoffs after automation couldn't cover the full scope of the work: Ford rehired engineers for quality issues, CBA restored customer service staff after AI voice bots couldn't handle call volume, and IBM is tripling entry-level hiring after its AI handled only 94% of HR requests, missing the ethically complex 6%.",
         "implications": "Concrete evidence that cutting headcount before building the human oversight layer is proving costly and reversible.",
-        "tags": ["workforce transformation", "organizational readiness", "leadership and design"]
+        "tags": ["workforce transformation", "leadership and culture"]
       },
       {
         "title": "Challenger Report: June layoffs cool to 45,849, down 53% from May; AI leads reasons for fourth consecutive month",
@@ -74,7 +74,7 @@
         "url": "https://www.forbes.com/sites/courtney-connley-hampton/2026/07/02/ai-is-changing-work-these-are-the-human-skills-employers-are-hiring-for/",
         "summary": "Drawing on the 2026 Corporate Recruiters Survey (600+ recruiters, 39 countries), communication and problem-solving top employer priorities, with hiring increasingly weighted toward learning mindset and leadership capability over narrow technical depth.",
         "implications": "Durable human capabilities are becoming the differentiator, not a hedge against AI.",
-        "tags": ["skills development", "motivation and meaning", "leadership and design"],
+        "tags": ["skills development", "leadership and culture"],
         "pinned": true
       }
     ]
@@ -96,7 +96,7 @@
         "url": "https://www.weforum.org/stories/2026/06/ai-workplace-adoption-readiness/",
         "summary": "Research identifies a split between a top-down narrative from tech leaders focused on breakthroughs, and a bottom-up narrative from employees shaped by job-loss fears, concerns about eroding critical thinking, and distrust of leadership framing. The piece segments workforce reactions into five distinct readiness profiles rather than treating adoption as binary.",
         "implications": "Reinforces that \"readiness\" isn't a single organizational dial — leaders managing AI rollouts are managing five different conversations at once, not one.",
-        "tags": ["organizational readiness", "leadership and design", "motivation and meaning"]
+        "tags": ["workforce transformation", "leadership and culture"]
       },
       {
         "title": "Deloitte: Winning Organizations Will Build the \"Human Advantage\"",
@@ -104,7 +104,7 @@
         "url": "https://www.prnewswire.com/news-releases/deloitte-in-a-new-era-of-work-winning-organizations-will-build-the-human-advantage-302703266.html",
         "summary": "7 in 10 business leaders say speed and agility are now their primary competitive strategy, with orchestrating people and resources cited as the top driver. Only 6% of leaders say they're making real progress designing effective human-AI interaction, despite it being flagged as the key differentiator.",
         "implications": "The 6% figure is the sharpest evidence yet of the pilot-to-production gap showing up not in technology metrics but in workforce design — most organizations haven't done the human-side work regardless of tool maturity.",
-        "tags": ["leadership and design", "organizational readiness", "research release"]
+        "tags": ["leadership and culture", "workforce transformation", "research and insights"]
       }
     ]
   },
@@ -117,7 +117,7 @@
         "url": "https://hbr.org/2026/06/ai-adoption-is-overloading-your-middle-managers",
         "summary": "Harvard Business School research (18 interviews across two consulting firms) found senior leaders capturing AI's strategic upside while middle managers absorb new work — validating AI outputs, catching errors, coaching teams — without added support or relief from existing delivery pressure.",
         "implications": "Middle-management capacity, not model capability, is emerging as the real adoption bottleneck.",
-        "tags": ["leadership and design", "workforce transformation", "organizational readiness"]
+        "tags": ["leadership and culture", "workforce transformation"]
       }
     ]
   },
@@ -130,7 +130,7 @@
         "url": "https://digitaleconomy.stanford.edu/publication/canaries-in-the-coal-mine-six-facts-about-the-recent-employment-effects-of-artificial-intelligence/",
         "summary": "Using ADP payroll data across tens of thousands of firms, researchers find a 16% relative decline in employment for 22–25 year-olds in AI-exposed occupations (software developers down nearly 20%), while more experienced workers in the same roles are largely unaffected. The effect is concentrated specifically in roles where AI automates rather than augments tasks — adjustment is happening through hiring, not compensation.",
         "implications": "Early-career hiring pipelines in automation-exposed roles are the leading indicator to watch, not aggregate headcount.",
-        "tags": ["macro signals", "workforce transformation", "research release"]
+        "tags": ["macro signals", "workforce transformation", "research and insights"]
       },
       {
         "title": "2026 People Readiness Report",
@@ -138,7 +138,7 @@
         "url": "https://www.kyndryl.com/us/en/insights/people-readiness-report-2026",
         "summary": "Survey of 1,100 senior leaders across 8 countries finds only 23% believe their workforce is ready for AI, a 6-point drop from 2025, even as AI adoption accelerated. A small \"Pacesetters\" cohort (9%) that paired workforce investment with job/workflow redesign was 1.5x more likely to report AI-driven revenue growth.",
         "implications": "Readiness is falling as adoption rises — a widening, not narrowing, gap that argues against \"wait and see\" capability-building approaches.",
-        "tags": ["organizational readiness", "research release", "leadership and design"]
+        "tags": ["workforce transformation", "research and insights", "leadership and culture"]
       },
       {
         "title": "88% of Leaders Are Confident Their Reorganization Will Deliver, Only 36% of Employees Agree",
@@ -146,7 +146,7 @@
         "url": "https://www.bain.com/about/media-center/press-releases/2026/88-of-leaders-are-confident-their-reorganization-will-deliver--only-36-of-employees-agree-bain--co-research/",
         "summary": "Survey of nearly 1,000 global executives and employees post-reorganization finds a sharp leadership-employee perception gap: only 22% of employees felt they got sufficient training or tools to adapt, and only 57% of middle managers agreed leadership had adequately supported the transition, versus 80%+ of leaders who believed they had.",
         "implications": "Structural redesign without matched investment in transition support is a recurring, measurable failure mode — worth citing whenever \"restructuring\" is proposed as a fix.",
-        "tags": ["leadership and design", "organizational readiness"]
+        "tags": ["leadership and culture", "workforce transformation"]
       },
       {
         "title": "Top Future of Work Trends for CHROs in 2026",
@@ -154,7 +154,7 @@
         "url": "https://www.gartner.com/en/newsroom/press-releases/2026-01-12-gartner-identifies-the-top-future-of-work-trends-for-chros-in-2026",
         "summary": "Gartner's forward-looking framework names \"workslop\" — fast, low-quality AI-assisted output from employees pressured to use AI everywhere — as a defining 2026 risk, alongside warnings that only 1 in 50 AI initiatives is delivering transformative value despite bold CEO growth targets tied to AI.",
         "implications": "\"Workslop\" gives leaders a concrete term for a cost that's easy to overlook when adoption metrics look strong but output quality doesn't.",
-        "tags": ["futures and foresight", "skills development", "organizational readiness"]
+        "tags": ["skills development", "workforce transformation"]
       }
     ]
   }

@@ -194,14 +194,17 @@
       <a href="https://www.linkedin.com/in/singchen" class="cta-link-ghost" target="_blank" rel="noopener noreferrer">Connect on LinkedIn →</a>
     </div>
 
-    <!-- Contact: hidden until amplifiedthinker.com clears NRD threshold and the mailto/vercel.app redirect is resolved -->
-    <!--
-    <div class="contact-block">
+    <!-- Contact: only shown when accessed via the amplifiedthinker.com custom domain, not the github.io URL -->
+    <div class="contact-block" id="contact-block" style="display:none;">
       <p class="contact-label">Get in touch</p>
       <p class="contact-body">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out, I'd love to hear from you.</p>
       <a href="mailto:singchen@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" class="cta-link-ghost">Email me →</a>
     </div>
-    -->
+    <script>
+      if (/(^|\.)amplifiedthinker\.com$/.test(window.location.hostname)) {
+        document.getElementById('contact-block').style.display = '';
+      }
+    </script>
 
     <div class="updates-block" id="updates">
       <button class="updates-toggle" type="button" aria-expanded="false" aria-controls="updates-body">

@@ -72,7 +72,13 @@
   .story-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);padding:32px 36px}
   .story-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--mid-teal);cursor:pointer}
   .story-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
+  .story-toprow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .story-source{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);margin-bottom:10px}
+  .story-nav{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .story-nav-btn{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;background:none;border:1px solid rgba(31,77,74,.2);border-radius:999px;padding:5px 12px;color:var(--mid-teal);cursor:pointer;transition:background .15s,border-color .15s}
+  .story-nav-btn:hover:not(:disabled){background:var(--off-white);border-color:rgba(31,77,74,.4)}
+  .story-nav-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+  .story-nav-btn:disabled{opacity:.35;cursor:default}
   .story-title{font-family:'Poppins',sans-serif;font-size:24px;font-weight:700;line-height:1.3;letter-spacing:-.01em;color:var(--navy);margin:0 0 14px}
   .story-summary{font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.75;color:var(--text-muted);margin-bottom:22px}
   .story-implications{border-left:3px solid var(--light-sage);padding-left:14px;margin-bottom:22px}
@@ -112,6 +118,7 @@
     .news-layout.show-detail .story-panel{display:block}
     .story-panel{padding:24px 20px}
     .story-title{font-size:20px}
+    .story-toprow{flex-wrap:wrap;gap:10px 12px}
     .filter-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:34px;padding-right:34px;mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent)}
     .filter-bar::-webkit-scrollbar{display:none}
     .filter-chip{flex-shrink:0}
@@ -178,20 +185,16 @@
   'use strict';
 
   var THEME_ORDER = [
-    'skills development', 'workforce transformation', 'organizational readiness',
-    'motivation and meaning', 'macro signals', 'leadership and design',
-    'research release', 'futures and foresight'
+    'skills development', 'workforce transformation',
+    'leadership and culture', 'macro signals', 'research and insights'
   ];
 
   var THEME_ICON_PATHS = {
     'skills development': '<path d="M2 4h7a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-7a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h8z"/>',
     'workforce transformation': '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-    'organizational readiness': '<path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>',
-    'motivation and meaning': '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6Z"/>',
+    'leadership and culture': '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
     'macro signals': '<polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/>',
-    'leadership and design': '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
-    'research release': '<path d="M9 2v6L3.5 18a2 2 0 0 0 1.8 3h13.4a2 2 0 0 0 1.8-3L15 8V2"/><path d="M9 2h6"/>',
-    'futures and foresight': '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>'
+    'research and insights': '<path d="M9 2v6L3.5 18a2 2 0 0 0 1.8 3h13.4a2 2 0 0 0 1.8-3L15 8V2"/><path d="M9 2h6"/>'
   };
   var ALL_ICON_PATH = '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>';
   var CALENDAR_ICON_PATH = '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>';
@@ -201,12 +204,9 @@
   var THEME_COLORS = {
     'skills development': { bg: '#D8E4DD', text: '#1B4A44' },
     'workforce transformation': { bg: '#D5DFE6', text: '#1E3A4A' },
-    'organizational readiness': { bg: '#C9DDD8', text: '#14413C' },
-    'motivation and meaning': { bg: '#F0D9CE', text: '#7A3B22' },
+    'leadership and culture': { bg: '#EDE5C5', text: '#6B5416' },
     'macro signals': { bg: '#DADDD2', text: '#4A4A3C' },
-    'leadership and design': { bg: '#EDE5C5', text: '#6B5416' },
-    'research release': { bg: '#D6E0E6', text: '#2C4A5C' },
-    'futures and foresight': { bg: '#E3D9EA', text: '#4A3768' }
+    'research and insights': { bg: '#D6E0E6', text: '#2C4A5C' }
   };
   var TITLE_CASE_LOWER = { and: 1, or: 1, of: 1, the: 1, in: 1, on: 1 };
 
@@ -338,6 +338,25 @@
     return visibleIds;
   }
 
+  function getNavigableIds() {
+    var ids = [];
+    var cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - ARCHIVE_CUTOFF_DAYS);
+
+    var pinned = findPinnedStory();
+    if (pinned && storyMatchesFilter(pinned)) ids.push(pinned.id);
+
+    digests.forEach(function (group) {
+      var groupDate = new Date(group.date + 'T00:00:00');
+      if (!isNaN(groupDate) && groupDate < cutoff) return;
+      flatStories.filter(function (s) {
+        return s.date === group.date && storyMatchesFilter(s) && (!pinned || s.id !== pinned.id);
+      }).forEach(function (s) { ids.push(s.id); });
+    });
+
+    return ids;
+  }
+
   function renderStory(story) {
     if (!story) {
       storyPanel.innerHTML = '<p class="empty-state">No stories match this filter yet.</p>';
@@ -347,9 +366,20 @@
     var accentColor = (THEME_COLORS[primaryTag] || {}).text;
     var accentStyle = accentColor ? ' style="--story-accent:' + accentColor + '"' : '';
 
+    var navIds = getNavigableIds();
+    var navIndex = navIds.indexOf(story.id);
+    var prevId = navIndex > 0 ? navIds[navIndex - 1] : null;
+    var nextId = navIndex !== -1 && navIndex < navIds.length - 1 ? navIds[navIndex + 1] : null;
+
     var html = '';
     html += '<button type="button" class="story-back" id="story-back">‹ All headlines</button>';
+    html += '<div class="story-toprow">';
     html += '<div class="story-source">' + escapeHTML(fmtDateLong(story.date)) + '</div>';
+    html += '<div class="story-nav">';
+    html += '<button type="button" class="story-nav-btn" id="story-prev"' + (prevId ? ' data-id="' + escapeHTML(prevId) + '"' : ' disabled') + '>‹ Previous</button>';
+    html += '<button type="button" class="story-nav-btn" id="story-next"' + (nextId ? ' data-id="' + escapeHTML(nextId) + '"' : ' disabled') + '>Next ›</button>';
+    html += '</div>';
+    html += '</div>';
     html += '<h2 class="story-title">' + escapeHTML(story.title || '') + '</h2>';
     html += '<p class="story-summary">' + escapeHTML(story.summary || '') + '</p>';
     if (story.implications) {
@@ -381,6 +411,17 @@
     if (backBtn) backBtn.addEventListener('click', function () {
       layoutEl.classList.remove('show-detail');
       headlinePanel.focus();
+    });
+
+    var prevBtn = document.getElementById('story-prev');
+    if (prevBtn) prevBtn.addEventListener('click', function () {
+      var id = prevBtn.getAttribute('data-id');
+      if (id) selectStory(id, { scrollIntoHeadline: true });
+    });
+    var nextBtn = document.getElementById('story-next');
+    if (nextBtn) nextBtn.addEventListener('click', function () {
+      var id = nextBtn.getAttribute('data-id');
+      if (id) selectStory(id, { scrollIntoHeadline: true });
     });
 
     /* -- share bar temporarily disabled --
