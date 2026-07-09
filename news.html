@@ -32,7 +32,13 @@
 
   /* ── MAIN / FILTER BAR ── */
   main{max-width:var(--page-max);margin:0 auto;padding:32px 40px 88px}
+  .filter-bar-wrap{position:relative}
   .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;position:sticky;top:var(--site-total-offset,56px);background:var(--off-white);padding:14px 0;z-index:10}
+  .filter-scroll-btn{display:none;position:absolute;top:28px;transform:translateY(-50%);align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--white);border:1px solid rgba(31,77,74,.2);box-shadow:0 2px 8px rgba(27,74,68,.15);color:var(--mid-teal);cursor:pointer;z-index:11;padding:0}
+  .filter-scroll-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+  .filter-scroll-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .filter-scroll-prev{left:-4px}
+  .filter-scroll-next{right:-4px}
   .filter-chip{display:inline-flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;padding:7px 14px;border-radius:999px;border:1px solid rgba(31,77,74,.2);background:var(--white);color:var(--text-mid);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
   .filter-chip:hover{border-color:rgba(31,77,74,.4)}
   .filter-chip.active{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
@@ -106,9 +112,10 @@
     .news-layout.show-detail .story-panel{display:block}
     .story-panel{padding:24px 20px}
     .story-title{font-size:20px}
-    .filter-bar{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;mask-image:linear-gradient(to right,transparent,black 12px,black calc(100% - 20px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 12px,black calc(100% - 20px),transparent)}
+    .filter-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:34px;padding-right:34px;mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent)}
     .filter-bar::-webkit-scrollbar{display:none}
-    .filter-chip{flex-shrink:0;scroll-snap-align:start}
+    .filter-chip{flex-shrink:0}
+    .filter-scroll-btn:not([hidden]){display:flex}
   }
   @media(max-width:700px){
     .hero,main{padding-left:20px;padding-right:20px}
@@ -129,7 +136,15 @@
 </section>
 
 <main id="main-content">
-  <div class="filter-bar" id="filter-bar" role="group" aria-label="Filter by theme"></div>
+  <div class="filter-bar-wrap" id="filter-bar-wrap">
+    <div class="filter-bar" id="filter-bar" role="group" aria-label="Filter by theme"></div>
+    <button type="button" class="filter-scroll-btn filter-scroll-prev" id="filter-scroll-prev" aria-label="Scroll filters left" hidden>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button type="button" class="filter-scroll-btn filter-scroll-next" id="filter-scroll-next" aria-label="Scroll filters right" hidden>
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
   <div class="news-layout" id="news-layout">
     <nav class="headline-panel" id="headline-panel" aria-label="Story list"></nav>
     <article class="story-panel" id="story-panel"></article>
@@ -210,6 +225,8 @@
   var headlinePanel = document.getElementById('headline-panel');
   var storyPanel = document.getElementById('story-panel');
   var filterBar = document.getElementById('filter-bar');
+  var filterScrollPrev = document.getElementById('filter-scroll-prev');
+  var filterScrollNext = document.getElementById('filter-scroll-next');
   var activeTag = 'all';
   var digests = [];
   var flatStories = []; // { id, date, ...story }
@@ -428,7 +445,25 @@
     }).join('');
 
     if (resetScroll) filterBar.scrollLeft = 0;
+    updateScrollArrows();
   }
+
+  function updateScrollArrows() {
+    if (!filterScrollPrev || !filterScrollNext) return;
+    var maxScroll = filterBar.scrollWidth - filterBar.clientWidth;
+    filterScrollPrev.hidden = filterBar.scrollLeft <= 4;
+    filterScrollNext.hidden = maxScroll <= 4 || filterBar.scrollLeft >= maxScroll - 4;
+  }
+
+  filterBar.addEventListener('scroll', updateScrollArrows);
+  window.addEventListener('resize', updateScrollArrows);
+
+  if (filterScrollPrev) filterScrollPrev.addEventListener('click', function () {
+    filterBar.scrollBy({ left: -filterBar.clientWidth * 0.7, behavior: 'smooth' });
+  });
+  if (filterScrollNext) filterScrollNext.addEventListener('click', function () {
+    filterBar.scrollBy({ left: filterBar.clientWidth * 0.7, behavior: 'smooth' });
+  });
 
   filterBar.addEventListener('click', function (e) {
     var btn = e.target.closest('.filter-chip');
