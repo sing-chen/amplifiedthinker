@@ -59,6 +59,9 @@
   .headline-item:hover{background:var(--off-white);color:var(--text-dark)}
   .headline-item:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
   .headline-item.active{background:var(--off-white);border-left-color:var(--terracotta);color:var(--navy);font-weight:600}
+  .headline-item.pinned{background:rgba(199,123,95,.08)}
+  .headline-item.pinned:hover{background:rgba(199,123,95,.14)}
+  .headline-item.pinned.active{background:rgba(199,123,95,.16)}
   .headline-archive{margin-top:6px;border-top:1px solid var(--light-sage);padding-top:4px}
   .headline-archive-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:10px 12px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid-teal);cursor:pointer;border-radius:var(--radius)}
   .headline-archive-toggle:hover{background:var(--off-white)}
@@ -73,7 +76,10 @@
   .story-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--mid-teal);cursor:pointer}
   .story-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
   .story-toprow{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:20px}
+  .story-meta{display:flex;flex-direction:column;gap:6px}
   .story-source{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);white-space:nowrap}
+  .story-pinned-badge{display:inline-flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);white-space:nowrap}
+  .story-pinned-badge svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .story-nav{display:flex;align-items:center;gap:8px;flex-shrink:0}
   .story-nav-btn{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;background:none;border:1px solid rgba(31,77,74,.2);border-radius:999px;padding:5px 12px;color:var(--mid-teal);cursor:pointer;transition:background .15s,border-color .15s}
   .story-nav-btn:hover:not(:disabled){background:var(--off-white);border-color:rgba(31,77,74,.4)}
@@ -273,7 +279,7 @@
   }
 
   function headlineButtonHTML(s) {
-    var cls = 'headline-item' + (s.id === activeId ? ' active' : '');
+    var cls = 'headline-item' + (s.id === activeId ? ' active' : '') + (s.pinned ? ' pinned' : '');
     return '<button type="button" class="' + cls + '" data-id="' + escapeHTML(s.id) + '"' +
       (s.id === activeId ? ' aria-current="true"' : '') + '>' + escapeHTML(s.title || '') + '</button>';
   }
@@ -374,7 +380,12 @@
     var html = '';
     html += '<button type="button" class="story-back" id="story-back">‹ All headlines</button>';
     html += '<div class="story-toprow">';
+    html += '<div class="story-meta">';
     html += '<div class="story-source">' + escapeHTML(fmtDateLong(story.date)) + '</div>';
+    if (story.pinned) {
+      html += '<div class="story-pinned-badge">' + themeIconSVG(PIN_ICON_PATH) + 'Pinned story</div>';
+    }
+    html += '</div>';
     html += '<div class="story-nav">';
     html += '<button type="button" class="story-nav-btn" id="story-prev"' + (prevId ? ' data-id="' + escapeHTML(prevId) + '"' : ' disabled') + '>‹ Previous</button>';
     html += '<button type="button" class="story-nav-btn" id="story-next"' + (nextId ? ' data-id="' + escapeHTML(nextId) + '"' : ' disabled') + '>Next ›</button>';
