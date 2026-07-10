@@ -505,10 +505,9 @@
     activeId = id;
 
     var pinned = findPinnedStory();
-    if (!pinned || story.id !== pinned.id) {
-      var key = bucketKey(daysAgo(story.date));
-      if (key !== 'Today') expandedGroups[key] = true;
-    }
+    var targetKey = (!pinned || story.id !== pinned.id) ? bucketKey(daysAgo(story.date)) : null;
+    if (targetKey === 'Today') targetKey = null;
+    Object.keys(expandedGroups).forEach(function (k) { expandedGroups[k] = (k === targetKey); });
 
     var url = new URL(window.location.href);
     url.searchParams.set('story', id);
@@ -600,7 +599,9 @@
     var toggle = e.target.closest('.headline-archive-toggle');
     if (toggle) {
       var key = toggle.getAttribute('data-group-toggle');
-      expandedGroups[key] = !expandedGroups[key];
+      var opening = !expandedGroups[key];
+      Object.keys(expandedGroups).forEach(function (k) { expandedGroups[k] = false; });
+      expandedGroups[key] = opening;
       renderHeadlines();
       return;
     }
