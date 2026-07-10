@@ -1,5 +1,50 @@
 [
   {
+    "date": "2026-07-10",
+    "stories": [
+      {
+        "title": "The Emergence of the \"AI Work Architect\" and \"AI Steward\"",
+        "source": "World Economic Forum",
+        "url": "https://www.weforum.org/stories/2026/06/future-of-work-define-roles-humans-ai/",
+        "summary": "As autonomous agentic systems absorb the corporate execution layer — data synthesis, drafting, optimization — the WEF outlines a structural shift toward high-leverage human responsibility. The research introduces two critical human roles required to maintain operational guardrails: the AI Work Architect, who designs real-world constraints, assumptions, and objectives for technical processing, and the AI Steward, who audits automated outputs for context, safety, and human risk. The analysis stresses that corporate learning must look past simple interface training to blend domain expertise with rigorous decision rights and risk evaluation.",
+        "implications": "Knowledge workers must actively transition their career identities from execution specialists to systems overseers, mastering the workflow loops before and after an automated system operates.",
+        "tags": ["skills development", "workforce transformation", "leadership and culture"]
+      },
+      {
+        "title": "McKinsey HR Monitor 2026: A Feedback Vacuum and a Risk-Averse Talent Freeze",
+        "source": "McKinsey & Company",
+        "url": "https://www.mckinsey.com/~/media/mckinsey/business%20functions/people%20and%20organizational%20performance/our-insights/hr%20monitor%202026%20a%20turning%20point%20for%20the%20people%20function/hr-monitor-2026-a-turning-point-for-the-people-function_final.pdf",
+        "summary": "McKinsey's global HR Monitor 2026 survey of 1,300 HR professionals and 5,500 employees surfaces two connected structural gaps. On feedback and development: HR believes only 3% of employees miss performance evaluations, but 20% of workers report receiving no career development or feedback meetings at all — and HR overestimates training time by nearly double, masking that 24% of the global knowledge workforce did zero training in the past year. On mobility: the same tracking shows voluntary attrition down 2 points year-over-year, with workers ranking compensation (52%), work-life balance (46%), and job security (45%) above career exploration when deciding to stay.",
+        "implications": "Corporate capability builders must move past policy tracking to ground-level audits of where feedback and training loops are actually breaking down — and shouldn't read flat turnover as healthy retention rather than risk-averse stagnation; internal mobility, transparency, and fair workload distribution matter more than external recruitment liquidity right now.",
+        "tags": ["workforce transformation", "leadership and culture", "macro signals", "research and insights"]
+      },
+      {
+        "title": "Ten-Year Metro Analysis Proves Native Workers Benefit From Immigration",
+        "source": "Brookings Institution",
+        "url": "https://www.brookings.edu/articles/metro-monitor-2026-immigration-and-regional-economic-performance/",
+        "summary": "A decade-long analysis of the 196 largest U.S. metropolitan areas directly undercuts protectionist claims regarding mass immigration and domestic labor opportunities. The data shows metro areas with the highest increases in their foreign-born working-age populations recorded employment rates 3 percentage points higher for native-born workers compared to regions with minimal immigration. High immigration rates also strongly correlate with elevated gross metropolitan product, improved baseline productivity, and significant median earnings growth for both local and foreign-born professional talent.",
+        "implications": "Global B2B talent planners should leverage geographically diverse, immigrant-dense metropolitan hubs to build resilient engineering and operational pipelines, as open immigration complements and elevates high-skilled knowledge tasks.",
+        "tags": ["macro signals", "research and insights", "workforce transformation"]
+      },
+      {
+        "title": "Study Finds CEOs Pushing Return-to-Office Mandates Share One Trait: Narcissism",
+        "source": "Fortune",
+        "url": "https://fortune.com/2026/06/25/return-to-office-ceos-ego-research/",
+        "summary": "A six-year study by Wharton's Adam Grant with Marissa Shandell and Courtney Elliott, using proxies like CEO pay-package size and photo size in annual reports, found narcissism predicts RTO enthusiasm — in-person settings let leaders \"direct and inspire\" (and be admired) in ways video calls don't. An experimental prime (reflecting on Steve Jobs' and Larry Ellison's egos) causally increased opposition to remote work among the same leaders.",
+        "implications": "This reframes RTO mandates as a leadership-psychology issue rather than a pure productivity argument, which matters for anyone advising on change management around hybrid policy — the stated rationale and the actual driver may not be the same thing.",
+        "tags": ["leadership and culture", "research and insights"]
+      },
+      {
+        "title": "AI Literacy Named the Top Human Skill as UK Employers De-Prioritize Credentials",
+        "source": "MyPerfectCV (via Allwork.Space)",
+        "url": "https://allwork.space/2026/07/ai-literacy-is-now-an-essential-human-skill-as-tech-rapidly-reshapes-the-u-k-workforce",
+        "summary": "A vendor-commissioned UK study found 68% of employers rate enthusiasm as the top success predictor versus 8% for university degree, with AI literacy — defined as prompting effectively and critically evaluating output — now the number one in-demand skill. Separately, FutureDotNow data cited in the piece shows 54% of UK workers lack baseline digital competencies, a substantial barrier to AI adoption. Note: this is a vendor-commissioned study promoted as a press release — the topline framing is marketing-adjacent, and the underlying stats are directionally useful rather than rigorously validated.",
+        "implications": "The credential-to-capability shift is showing up as clearly in the UK as in the US; leaders should read AI literacy as one entry in a broader human-skills stack (alongside adaptability, judgment, communication), not a standalone technical requirement.",
+        "tags": ["skills development", "macro signals"]
+      }
+    ]
+  },
+  {
     "date": "2026-07-09",
     "stories": [
       {
