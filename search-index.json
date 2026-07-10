@@ -459,23 +459,16 @@
   {
     "id": "news-2026-07-10-2",
     "type": "news",
-    "title": "Ten-Year Metro Analysis Proves Native Workers Benefit From Immigration",
-    "description": "A decade-long analysis of the 196 largest U.S. metropolitan areas directly undercuts protectionist claims regarding mass immigration and domestic labor opportunities. The data shows metro areas with the highest increases in their foreign-born working-age populations recorded employment rates 3 percentage points higher for native-born workers compared to regions with minimal immigration. High immigration rates also strongly correlate with elevated gross metropolitan product, improved baseline productivity, and significant median earnings growth for both local and foreign-born professional talent.",
+    "title": "Study Finds CEOs Pushing Return-to-Office Mandates Share One Trait: Narcissism",
+    "description": "A six-year study by Wharton's Adam Grant with Marissa Shandell and Courtney Elliott, using proxies like CEO pay-package size and photo size in annual reports, found narcissism predicts RTO enthusiasm — in-person settings let leaders \"direct and inspire\" (and be admired) in ways video calls don't. An experimental prime (reflecting on Steve Jobs' and Larry Ellison's egos) causally increased opposition to remote work among the same leaders.",
     "url": "news.html?story=2026-07-10-2"
   },
   {
     "id": "news-2026-07-10-3",
     "type": "news",
-    "title": "Study Finds CEOs Pushing Return-to-Office Mandates Share One Trait: Narcissism",
-    "description": "A six-year study by Wharton's Adam Grant with Marissa Shandell and Courtney Elliott, using proxies like CEO pay-package size and photo size in annual reports, found narcissism predicts RTO enthusiasm — in-person settings let leaders \"direct and inspire\" (and be admired) in ways video calls don't. An experimental prime (reflecting on Steve Jobs' and Larry Ellison's egos) causally increased opposition to remote work among the same leaders.",
-    "url": "news.html?story=2026-07-10-3"
-  },
-  {
-    "id": "news-2026-07-10-4",
-    "type": "news",
     "title": "AI Literacy Named the Top Human Skill as UK Employers De-Prioritize Credentials",
     "description": "A vendor-commissioned UK study found 68% of employers rate enthusiasm as the top success predictor versus 8% for university degree, with AI literacy — defined as prompting effectively and critically evaluating output — now the number one in-demand skill. Separately, FutureDotNow data cited in the piece shows 54% of UK workers lack baseline digital competencies, a substantial barrier to AI adoption. Note: this is a vendor-commissioned study promoted as a press release — the topline framing is marketing-adjacent, and the underlying stats are directionally useful rather than rigorously validated.",
-    "url": "news.html?story=2026-07-10-4"
+    "url": "news.html?story=2026-07-10-3"
   },
   {
     "id": "news-2026-07-09-0",
