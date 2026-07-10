@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-07-10",
-    "html": "<a href=\"search.html\">Search</a> now indexes individual News stories, not just the News page."
+    "html": "<a href=\"search.html\">Search</a> now indexes individual News stories, not just the News page, and supports extended search with a range of search term operators."
   },
   {
     "date": "2026-07-08",
