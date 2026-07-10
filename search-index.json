@@ -4,7 +4,13 @@
     "type": "page",
     "title": "Amplified Thinker",
     "description": "How work changes. How people keep up. The skills that compound as AI changes the rest, and the leaders, scholars, and practitioners whose ideas shape how you think and act, not just what you know.",
-    "tags": ["amplified thinker", "future skills", "capability", "AI", "human skills"],
+    "tags": [
+      "amplified thinker",
+      "future skills",
+      "capability",
+      "AI",
+      "human skills"
+    ],
     "url": "index.html"
   },
   {
@@ -12,7 +18,14 @@
     "type": "page",
     "title": "Future Skills Library",
     "description": "A growing library of skills drawn from the WEF Core Skills 2030 framework. Each skill includes a primer and a full learning plan built for deliberate practice in daily work.",
-    "tags": ["future skills", "WEF", "skills library", "learning", "2030", "core skills"],
+    "tags": [
+      "future skills",
+      "WEF",
+      "skills library",
+      "learning",
+      "2030",
+      "core skills"
+    ],
     "url": "future-skills.html"
   },
   {
@@ -20,7 +33,15 @@
     "type": "page",
     "title": "My People",
     "description": "The thinkers, coaches, and practitioners I return to — a virtual board of advisors. Each one sharpens a different dimension of how I think and operate.",
-    "tags": ["people", "thinkers", "advisors", "coaches", "books", "leadership", "psychology"],
+    "tags": [
+      "people",
+      "thinkers",
+      "advisors",
+      "coaches",
+      "books",
+      "leadership",
+      "psychology"
+    ],
     "url": "my-people.html"
   },
   {
@@ -28,7 +49,14 @@
     "type": "page",
     "title": "News",
     "description": "A dated, hand-picked feed of workforce, skills, and organizational-readiness stories curated from a daily research scan of WEF, McKinsey, Deloitte, BLS, and other institutional sources.",
-    "tags": ["news", "workforce", "skills development", "macro signals", "research release", "digest"],
+    "tags": [
+      "news",
+      "workforce",
+      "skills development",
+      "macro signals",
+      "research release",
+      "digest"
+    ],
     "url": "news.html"
   },
   {
@@ -36,7 +64,14 @@
     "type": "page",
     "title": "About · Amplified Thinker",
     "description": "Amplified Thinker is where Sing Chen builds thinking in public — practical, research-grounded resources for the durable human skills that compound as AI handles more of the work.",
-    "tags": ["about", "Sing Chen", "capability", "human skills", "AI adoption", "process architect"],
+    "tags": [
+      "about",
+      "Sing Chen",
+      "capability",
+      "human skills",
+      "AI adoption",
+      "process architect"
+    ],
     "url": "about.html"
   },
   {
@@ -45,8 +80,28 @@
     "skill": "Analytical Thinking",
     "title": "Analytical Thinking — Skill Primer",
     "description": "A 10-minute primer on Analytical Thinking — break complex problems into their parts before drawing conclusions. Core concepts, mental models, and a real-world scenario showing the skill in practice.",
-    "tags": ["analytical thinking", "MECE", "5 Whys", "issue tree", "problem decomposition", "structured thinking", "primer", "cognitive"],
-    "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "Model: MECE", "Model: The 5 Whys", "Model: Issue Tree", "In Practice", "Summary"],
+    "tags": [
+      "analytical thinking",
+      "MECE",
+      "5 Whys",
+      "issue tree",
+      "problem decomposition",
+      "structured thinking",
+      "primer",
+      "cognitive"
+    ],
+    "slides": [
+      "Introduction",
+      "The Problem",
+      "When It Matters",
+      "The Outcome",
+      "What It Is",
+      "Model: MECE",
+      "Model: The 5 Whys",
+      "Model: Issue Tree",
+      "In Practice",
+      "Summary"
+    ],
     "url": "skills/analytical-thinking/primer.html"
   },
   {
@@ -55,8 +110,36 @@
     "skill": "Analytical Thinking",
     "title": "Analytical Thinking — Full Learning Plan",
     "description": "The full Analytical Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.",
-    "tags": ["analytical thinking", "MECE", "5 Whys", "issue tree", "first principles", "mental models", "habit builder", "behavioral indicators", "progression", "cognitive", "Barbara Minto", "pyramid principle"],
-    "sections": ["Skill Snapshot", "Overview", "Learning Objectives", "First Principles", "Key Mental Models and Frameworks", "Common Mistakes", "Behavioral Indicators", "Practical Examples", "Self-Reflection", "Knowledge Check", "5-Day Habit Builder", "Progression Path", "Summary", "Explore Further"],
+    "tags": [
+      "analytical thinking",
+      "MECE",
+      "5 Whys",
+      "issue tree",
+      "first principles",
+      "mental models",
+      "habit builder",
+      "behavioral indicators",
+      "progression",
+      "cognitive",
+      "Barbara Minto",
+      "pyramid principle"
+    ],
+    "sections": [
+      "Skill Snapshot",
+      "Overview",
+      "Learning Objectives",
+      "First Principles",
+      "Key Mental Models and Frameworks",
+      "Common Mistakes",
+      "Behavioral Indicators",
+      "Practical Examples",
+      "Self-Reflection",
+      "Knowledge Check",
+      "5-Day Habit Builder",
+      "Progression Path",
+      "Summary",
+      "Explore Further"
+    ],
     "url": "skills/analytical-thinking/plan.html"
   },
   {
@@ -65,8 +148,28 @@
     "skill": "Critical Thinking",
     "title": "Critical Thinking — Skill Primer",
     "description": "A 10-minute primer on Critical Thinking — test whether a conclusion holds before you trust it. Core concepts, mental models, and a real-world scenario showing the skill in practice.",
-    "tags": ["critical thinking", "evidence", "bias", "Ladder of Inference", "assumptions", "reasoning", "evaluation", "primer", "cognitive"],
-    "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "The Evidence Filter", "Model: Ladder of Inference", "In Practice", "Summary"],
+    "tags": [
+      "critical thinking",
+      "evidence",
+      "bias",
+      "Ladder of Inference",
+      "assumptions",
+      "reasoning",
+      "evaluation",
+      "primer",
+      "cognitive"
+    ],
+    "slides": [
+      "Introduction",
+      "The Problem",
+      "When It Matters",
+      "The Outcome",
+      "What It Is",
+      "The Evidence Filter",
+      "Model: Ladder of Inference",
+      "In Practice",
+      "Summary"
+    ],
     "url": "skills/critical-thinking/primer.html"
   },
   {
@@ -75,8 +178,35 @@
     "skill": "Critical Thinking",
     "title": "Critical Thinking — Full Learning Plan",
     "description": "The full Critical Thinking learning plan — principles of evaluation, the Ladder of Inference, behavioural indicators, curated resources, and a 5-day habit builder.",
-    "tags": ["critical thinking", "Ladder of Inference", "bias field guide", "cognitive bias", "evidence", "principles of evaluation", "habit builder", "behavioral indicators", "cognitive", "Chris Argyris"],
-    "sections": ["Skill Snapshot", "Overview", "Learning Objectives", "Principles of Evaluation", "Bias Field Guide", "Mental Model", "Common Mistakes", "Behavioral Indicators", "Practical Examples", "Self-Reflection", "Knowledge Check", "5-Day Habit Builder", "Progression Path", "Summary", "Explore Further"],
+    "tags": [
+      "critical thinking",
+      "Ladder of Inference",
+      "bias field guide",
+      "cognitive bias",
+      "evidence",
+      "principles of evaluation",
+      "habit builder",
+      "behavioral indicators",
+      "cognitive",
+      "Chris Argyris"
+    ],
+    "sections": [
+      "Skill Snapshot",
+      "Overview",
+      "Learning Objectives",
+      "Principles of Evaluation",
+      "Bias Field Guide",
+      "Mental Model",
+      "Common Mistakes",
+      "Behavioral Indicators",
+      "Practical Examples",
+      "Self-Reflection",
+      "Knowledge Check",
+      "5-Day Habit Builder",
+      "Progression Path",
+      "Summary",
+      "Explore Further"
+    ],
     "url": "skills/critical-thinking/plan.html"
   },
   {
@@ -85,8 +215,30 @@
     "skill": "Creative Thinking",
     "title": "Creative Thinking — Skill Primer",
     "description": "A quick primer on Creative Thinking — expand a problem's solution space before narrowing it. Core concepts, mental models, and a real-world scenario showing the skill in practice.",
-    "tags": ["creative thinking", "SCAMPER", "divergent thinking", "convergent thinking", "assumption reversal", "ideation", "lateral thinking", "primer", "cognitive", "Edward de Bono"],
-    "slides": ["Introduction", "The Problem", "When It Matters", "The Outcome", "What It Is", "Model: SCAMPER", "Model: Divergent–Convergent", "Model: Assumption Reversal", "In Practice", "Summary"],
+    "tags": [
+      "creative thinking",
+      "SCAMPER",
+      "divergent thinking",
+      "convergent thinking",
+      "assumption reversal",
+      "ideation",
+      "lateral thinking",
+      "primer",
+      "cognitive",
+      "Edward de Bono"
+    ],
+    "slides": [
+      "Introduction",
+      "The Problem",
+      "When It Matters",
+      "The Outcome",
+      "What It Is",
+      "Model: SCAMPER",
+      "Model: Divergent–Convergent",
+      "Model: Assumption Reversal",
+      "In Practice",
+      "Summary"
+    ],
     "url": "skills/creative-thinking/primer.html"
   },
   {
@@ -95,8 +247,36 @@
     "skill": "Creative Thinking",
     "title": "Creative Thinking — Full Learning Plan",
     "description": "The full Creative Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.",
-    "tags": ["creative thinking", "SCAMPER", "divergent thinking", "convergent thinking", "assumption reversal", "mind mapping", "reframing matrix", "ideation", "habit builder", "behavioral indicators", "cognitive", "Tony Buzan"],
-    "sections": ["Skill Snapshot", "Overview", "Learning Objectives", "First Principles", "Key Mental Models and Frameworks", "Common Mistakes", "Behavioral Indicators", "Practical Examples", "Self-Reflection", "Knowledge Check", "5-Day Habit Builder", "Progression Path", "Summary", "Explore Further"],
+    "tags": [
+      "creative thinking",
+      "SCAMPER",
+      "divergent thinking",
+      "convergent thinking",
+      "assumption reversal",
+      "mind mapping",
+      "reframing matrix",
+      "ideation",
+      "habit builder",
+      "behavioral indicators",
+      "cognitive",
+      "Tony Buzan"
+    ],
+    "sections": [
+      "Skill Snapshot",
+      "Overview",
+      "Learning Objectives",
+      "First Principles",
+      "Key Mental Models and Frameworks",
+      "Common Mistakes",
+      "Behavioral Indicators",
+      "Practical Examples",
+      "Self-Reflection",
+      "Knowledge Check",
+      "5-Day Habit Builder",
+      "Progression Path",
+      "Summary",
+      "Explore Further"
+    ],
     "url": "skills/creative-thinking/plan.html"
   },
   {
@@ -108,7 +288,17 @@
     "description": "The clearest articulation I've found of why purpose isn't a slogan — and what actually drives people to follow, stay, and contribute.",
     "quote": "People don't buy what you do; they buy why you do it.",
     "quoteSource": "Start With Why",
-    "tags": ["Simon Sinek", "leadership", "purpose", "Start With Why", "Golden Circle", "Infinite Game", "Leaders Eat Last", "why", "motivation"],
+    "tags": [
+      "Simon Sinek",
+      "leadership",
+      "purpose",
+      "Start With Why",
+      "Golden Circle",
+      "Infinite Game",
+      "Leaders Eat Last",
+      "why",
+      "motivation"
+    ],
     "url": "my-people.html?person=simon-sinek"
   },
   {
@@ -120,7 +310,17 @@
     "description": "The science of how people read each other — signals, cues, first impressions. Useful for anyone who works across cultures or needs to land ideas quickly.",
     "quote": "Vulnerability is what truly elevates relationships.",
     "quoteSource": "Captivate",
-    "tags": ["Vanessa Van Edwards", "communication", "body language", "cues", "Captivate", "Science of People", "charisma", "first impressions", "influence"],
+    "tags": [
+      "Vanessa Van Edwards",
+      "communication",
+      "body language",
+      "cues",
+      "Captivate",
+      "Science of People",
+      "charisma",
+      "first impressions",
+      "influence"
+    ],
     "url": "my-people.html?person=vanessa-van-edwards"
   },
   {
@@ -132,7 +332,17 @@
     "description": "Negotiation reframed as listening and calibration rather than persuasion. The practical translation from hostage negotiation to everyday high-stakes conversations is surprisingly direct.",
     "quote": "Listening is not a passive activity. It is the most active thing you can do.",
     "quoteSource": "Never Split the Difference",
-    "tags": ["Chris Voss", "negotiation", "communication", "Never Split the Difference", "FBI", "hostage negotiation", "listening", "Black Swan", "influence"],
+    "tags": [
+      "Chris Voss",
+      "negotiation",
+      "communication",
+      "Never Split the Difference",
+      "FBI",
+      "hostage negotiation",
+      "listening",
+      "Black Swan",
+      "influence"
+    ],
     "url": "my-people.html?person=chris-voss"
   },
   {
@@ -144,7 +354,17 @@
     "description": "Challenges assumptions I didn't know I was carrying. Think Again is the one I return to most — it's essentially a manual for intellectual honesty.",
     "quote": "If knowledge is power, knowing what we don't know is wisdom.",
     "quoteSource": "Think Again",
-    "tags": ["Adam Grant", "psychology", "Think Again", "Give and Take", "Originals", "Wharton", "intellectual honesty", "rethinking", "organisational psychology"],
+    "tags": [
+      "Adam Grant",
+      "psychology",
+      "Think Again",
+      "Give and Take",
+      "Originals",
+      "Wharton",
+      "intellectual honesty",
+      "rethinking",
+      "organisational psychology"
+    ],
     "url": "my-people.html?person=adam-grant"
   },
   {
@@ -156,7 +376,17 @@
     "description": "The most rigorous empirical voice on what AI actually does to how people work. Cuts through the noise in a space that has a lot of it.",
     "quote": "We have invented a kind of alien mind.",
     "quoteSource": "Co-Intelligence",
-    "tags": ["Ethan Mollick", "AI", "artificial intelligence", "Co-Intelligence", "One Useful Thing", "Wharton", "human-AI collaboration", "AI adoption", "future of work"],
+    "tags": [
+      "Ethan Mollick",
+      "AI",
+      "artificial intelligence",
+      "Co-Intelligence",
+      "One Useful Thing",
+      "Wharton",
+      "human-AI collaboration",
+      "AI adoption",
+      "future of work"
+    ],
     "url": "my-people.html?person=ethan-mollick"
   },
   {
@@ -168,7 +398,16 @@
     "description": "Authentic leadership without the corporate veneer. Her work sits at the intersection of psychology and practice in a way that feels genuinely earned.",
     "quote": "Stepping outside your comfort zone doesn't mean you become immunized to pain.",
     "quoteSource": "Big Trust",
-    "tags": ["Shade Zahrai", "influence", "leadership", "Big Trust", "authentic leadership", "psychology", "self-awareness", "workplace culture"],
+    "tags": [
+      "Shade Zahrai",
+      "influence",
+      "leadership",
+      "Big Trust",
+      "authentic leadership",
+      "psychology",
+      "self-awareness",
+      "workplace culture"
+    ],
     "url": "my-people.html?person=shade-zahrai"
   },
   {
@@ -180,7 +419,17 @@
     "description": "Research that makes the empirical case for things most organisations still treat as soft. Vulnerability and courage aren't opposites of rigour — they're preconditions for it.",
     "quote": "I define a leader as anyone who takes responsibility for finding the potential in people and processes.",
     "quoteSource": "Dare to Lead",
-    "tags": ["Brené Brown", "leadership", "vulnerability", "courage", "Dare to Lead", "Daring Greatly", "Atlas of the Heart", "shame resilience", "culture"],
+    "tags": [
+      "Brené Brown",
+      "leadership",
+      "vulnerability",
+      "courage",
+      "Dare to Lead",
+      "Daring Greatly",
+      "Atlas of the Heart",
+      "shame resilience",
+      "culture"
+    ],
     "url": "my-people.html?person=brene-brown"
   },
   {
@@ -192,7 +441,237 @@
     "description": "A sustained argument for depth over busyness at a time when most productivity advice optimises for the wrong thing. His work shaped how I protect my mornings.",
     "quote": "Who you are, what you think, feel, and do, what you love — is the sum of what you focus on.",
     "quoteSource": "Deep Work",
-    "tags": ["Cal Newport", "productivity", "Deep Work", "Digital Minimalism", "Slow Productivity", "focus", "distraction", "deep work", "attention"],
+    "tags": [
+      "Cal Newport",
+      "productivity",
+      "Deep Work",
+      "Digital Minimalism",
+      "Slow Productivity",
+      "focus",
+      "distraction",
+      "deep work",
+      "attention"
+    ],
     "url": "my-people.html?person=cal-newport"
+  },
+  {
+    "id": "news-2026-07-09-0",
+    "type": "news",
+    "title": "How Investing in People Can Support Future Economic Growth",
+    "description": "China's 15th Five-Year Plan (2026–2030) sets out a dual growth strategy investing in both physical assets and people, marking a shift from the country's traditional infrastructure-led model. WEF argues that stronger human capital — higher skills, better health, greater adaptability — boosts productivity, absorbs new technology, and builds labor-market resilience, citing the US, Germany, Singapore, and South Korea as economies that escaped the middle-income trap by building education hubs before technology hubs.",
+    "tags": [
+      "workforce transformation",
+      "macro signals",
+      "research and insights"
+    ],
+    "url": "news.html?story=2026-07-09-0"
+  },
+  {
+    "id": "news-2026-07-09-1",
+    "type": "news",
+    "title": "From Jobs to Skills to Outcomes: Rethinking How Work Gets Done",
+    "description": "Deloitte finds organizations shifting workforce planning away from rigid job structures toward task- and skills-based approaches for greater flexibility — but argues the next frontier is outcome-driven planning, where roles are defined by problems solved rather than tasks performed, giving workers autonomy within clear guardrails. 93% of surveyed leaders say moving away from the job construct matters for organizational success, yet only 22% of organizations can effectively break jobs into component tasks today, and 71% of workers already perform duties outside their job descriptions.",
+    "tags": [
+      "workforce transformation",
+      "skills development",
+      "research and insights"
+    ],
+    "url": "news.html?story=2026-07-09-1"
+  },
+  {
+    "id": "news-2026-07-09-2",
+    "type": "news",
+    "title": "AI and the Future of Entry-Level Work: A Framework for Safeguarding Early-Career Pathways",
+    "description": "WEF and PwC find more than one in three young workers globally (37%) are in occupations with medium-to-high exposure to AI-driven task change, rising to three in four in some regions — with entry-level hiring already slowing in higher-exposure roles, though broader economic factors are contributing too. The report proposes a four-part framework — job access, job design, talent pipelines, and education-system alignment — for redesigning entry-level roles rather than eliminating them, noting a parallel shift where 42% of Gen Z workers (including 37% of bachelor's degree holders) are now in or pursuing blue-collar and skilled trades.",
+    "tags": [
+      "workforce transformation",
+      "skills development",
+      "research and insights"
+    ],
+    "url": "news.html?story=2026-07-09-2"
+  },
+  {
+    "id": "news-2026-07-08-0",
+    "type": "news",
+    "title": "Microsoft cuts 4,800 jobs, frames it as business transformation, not AI replacement",
+    "description": "Chief People Officer Amy Coleman announced the elimination of roughly 4,800 roles (2.1% of global headcount), hitting Xbox and commercial sales hardest. Coleman explicitly stated the cuts are not AI replacing workers, but framed them as part of an ongoing reorganization driven by how technology, customer expectations, and business models are shifting, with \"more changes ahead.\"",
+    "tags": [
+      "workforce transformation",
+      "leadership and culture"
+    ],
+    "url": "news.html?story=2026-07-08-0"
+  },
+  {
+    "id": "news-2026-07-08-1",
+    "type": "news",
+    "title": "OECD: skills-first hiring is becoming structural, not experimental",
+    "description": "The OECD's follow-up report argues skills-first approaches to hiring, talent management, and development are moving from pilot to necessity for labor market functioning and productivity, while flagging persistent barriers: uneven digital access, weak skills-validation infrastructure, and employer distrust of non-traditional credentials.",
+    "tags": [
+      "skills development",
+      "research and insights",
+      "workforce transformation"
+    ],
+    "url": "news.html?story=2026-07-08-1"
+  },
+  {
+    "id": "news-2026-07-08-2",
+    "type": "news",
+    "title": "Green and AI skills are converging into a \"twin transition,\" and supply isn't keeping up",
+    "description": "LinkedIn's Economic Graph data shows AI talent rapidly adding green skills (operational efficiency use up 579%, lifecycle management up 152%), while overall climate-skill growth has slowed from 5.5% (2023–24) to 4.3% (2024–25). Only about a third of Europe's AI workforce holds meaningful green expertise, even as green hiring grows twice as fast as green-skills acquisition.",
+    "tags": [
+      "skills development",
+      "macro signals"
+    ],
+    "url": "news.html?story=2026-07-08-2"
+  },
+  {
+    "id": "news-2026-07-07-0",
+    "type": "news",
+    "title": "PwC's 2026 Global AI Jobs Barometer finds a \"two-track\" labor market emerging",
+    "description": "PwC's analysis of job postings and wage data finds AI is splitting roles into \"professionalised\" (AI automates routine tasks, human judgment gets emphasized) and \"democratised\" (AI lowers the skill floor) tracks. Professionalised roles are growing twice as fast with 42% faster wage growth; the AI skills wage premium hit 62%, up from 57% a year earlier.",
+    "tags": [
+      "skills development",
+      "macro signals",
+      "research and insights"
+    ],
+    "url": "news.html?story=2026-07-07-0"
+  },
+  {
+    "id": "news-2026-07-07-1",
+    "type": "news",
+    "title": "McKinsey's State of Organizations 2026: \"$5 on people for every $1 on tech\" as the AI value threshold",
+    "description": "Drawing on a survey of 10,000+ senior executives across 15 countries, McKinsey identifies three converging forces reshaping organizations — AI/tech acceleration, economic and geopolitical disruption, and shifting employee expectations — and reports one executive's estimate that realizing AI value requires spending roughly $5 on people for every $1 spent on technology.",
+    "tags": [
+      "workforce transformation",
+      "leadership and culture",
+      "research and insights"
+    ],
+    "url": "news.html?story=2026-07-07-1"
+  },
+  {
+    "id": "news-2026-07-06-0",
+    "type": "news",
+    "title": "Employers who laid off workers citing AI are already starting to regret it",
+    "description": "Ford, Commonwealth Bank of Australia, and IBM are all reversing AI-driven layoffs after automation couldn't cover the full scope of the work: Ford rehired engineers for quality issues, CBA restored customer service staff after AI voice bots couldn't handle call volume, and IBM is tripling entry-level hiring after its AI handled only 94% of HR requests, missing the ethically complex 6%.",
+    "tags": [
+      "workforce transformation",
+      "leadership and culture"
+    ],
+    "url": "news.html?story=2026-07-06-0"
+  },
+  {
+    "id": "news-2026-07-06-1",
+    "type": "news",
+    "title": "Challenger Report: June layoffs cool to 45,849, down 53% from May; AI leads reasons for fourth consecutive month",
+    "description": "Total job cuts fell sharply month over month, but AI remained the top-cited reason for cuts (31% of June's total) for a fourth straight month; tech now accounts for nearly a third of all 2026 layoffs.",
+    "tags": [
+      "macro signals",
+      "workforce transformation"
+    ],
+    "url": "news.html?story=2026-07-06-1"
+  },
+  {
+    "id": "news-2026-07-06-2",
+    "type": "news",
+    "title": "The Human Skills Employers Are Hiring For That Can't Be Replaced By AI",
+    "description": "Drawing on the 2026 Corporate Recruiters Survey (600+ recruiters, 39 countries), communication and problem-solving top employer priorities, with hiring increasingly weighted toward learning mindset and leadership capability over narrow technical depth.",
+    "tags": [
+      "skills development",
+      "leadership and culture"
+    ],
+    "url": "news.html?story=2026-07-06-2"
+  },
+  {
+    "id": "news-2026-07-05-0",
+    "type": "news",
+    "title": "Gartner: 20% of Finance Organizations Will Pivot All Talent Investment to Digital Capabilities by 2028",
+    "description": "Gartner projects that by 2028, a fifth of finance organizations will stop hiring or developing talent that lacks digital fluency, redirecting all talent investment toward advanced digital capabilities. Current finance teams are 50% basic tech users, 35% digitally literate, and only 15% \"digital talent\" — a mix Gartner says is misaligned with AI-driven finance functions.",
+    "tags": [
+      "skills development",
+      "workforce transformation",
+      "macro signals"
+    ],
+    "url": "news.html?story=2026-07-05-0"
+  },
+  {
+    "id": "news-2026-07-05-1",
+    "type": "news",
+    "title": "WEF: The Five Faces of Human Readiness for AI Adoption",
+    "description": "Research identifies a split between a top-down narrative from tech leaders focused on breakthroughs, and a bottom-up narrative from employees shaped by job-loss fears, concerns about eroding critical thinking, and distrust of leadership framing. The piece segments workforce reactions into five distinct readiness profiles rather than treating adoption as binary.",
+    "tags": [
+      "workforce transformation",
+      "leadership and culture"
+    ],
+    "url": "news.html?story=2026-07-05-1"
+  },
+  {
+    "id": "news-2026-07-05-2",
+    "type": "news",
+    "title": "Deloitte: Winning Organizations Will Build the \"Human Advantage\"",
+    "description": "7 in 10 business leaders say speed and agility are now their primary competitive strategy, with orchestrating people and resources cited as the top driver. Only 6% of leaders say they're making real progress designing effective human-AI interaction, despite it being flagged as the key differentiator.",
+    "tags": [
+      "leadership and culture",
+      "workforce transformation",
+      "research and insights"
+    ],
+    "url": "news.html?story=2026-07-05-2"
+  },
+  {
+    "id": "news-2026-07-03-0",
+    "type": "news",
+    "title": "Middle managers are absorbing the cost of AI adoption",
+    "description": "Harvard Business School research (18 interviews across two consulting firms) found senior leaders capturing AI's strategic upside while middle managers absorb new work — validating AI outputs, catching errors, coaching teams — without added support or relief from existing delivery pressure.",
+    "tags": [
+      "leadership and culture",
+      "workforce transformation"
+    ],
+    "url": "news.html?story=2026-07-03-0"
+  },
+  {
+    "id": "news-2026-07-02-0",
+    "type": "news",
+    "title": "Canaries in the Coal Mine? Six Facts About the Recent Employment Effects of AI",
+    "description": "Using ADP payroll data across tens of thousands of firms, researchers find a 16% relative decline in employment for 22–25 year-olds in AI-exposed occupations (software developers down nearly 20%), while more experienced workers in the same roles are largely unaffected. The effect is concentrated specifically in roles where AI automates rather than augments tasks — adjustment is happening through hiring, not compensation.",
+    "tags": [
+      "macro signals",
+      "workforce transformation",
+      "research and insights"
+    ],
+    "url": "news.html?story=2026-07-02-0"
+  },
+  {
+    "id": "news-2026-07-02-1",
+    "type": "news",
+    "title": "2026 People Readiness Report",
+    "description": "Survey of 1,100 senior leaders across 8 countries finds only 23% believe their workforce is ready for AI, a 6-point drop from 2025, even as AI adoption accelerated. A small \"Pacesetters\" cohort (9%) that paired workforce investment with job/workflow redesign was 1.5x more likely to report AI-driven revenue growth.",
+    "tags": [
+      "workforce transformation",
+      "research and insights",
+      "leadership and culture"
+    ],
+    "url": "news.html?story=2026-07-02-1"
+  },
+  {
+    "id": "news-2026-07-02-2",
+    "type": "news",
+    "title": "88% of Leaders Are Confident Their Reorganization Will Deliver, Only 36% of Employees Agree",
+    "description": "Survey of nearly 1,000 global executives and employees post-reorganization finds a sharp leadership-employee perception gap: only 22% of employees felt they got sufficient training or tools to adapt, and only 57% of middle managers agreed leadership had adequately supported the transition, versus 80%+ of leaders who believed they had.",
+    "tags": [
+      "leadership and culture",
+      "workforce transformation"
+    ],
+    "url": "news.html?story=2026-07-02-2"
+  },
+  {
+    "id": "news-2026-07-02-3",
+    "type": "news",
+    "title": "Top Future of Work Trends for CHROs in 2026",
+    "description": "Gartner's 2026 CHRO framework names \"workslop\" — fast, low-quality AI-assisted output from employees pressured to use AI everywhere — as a defining risk, alongside warnings that only 1 in 50 AI initiatives is delivering transformative value despite bold CEO growth targets tied to AI. As technology platforms become commoditized, Gartner also finds enterprise value shifting to \"process experts\" over \"technical prodigies\": top firms are reweighting recruitment toward systems thinking and end-to-end workflow re-engineering, while reintroducing high-touch practices like live skill assessments and AI-free behavioral checkouts to counter AI-padded application fraud.",
+    "tags": [
+      "skills development",
+      "workforce transformation",
+      "leadership and culture"
+    ],
+    "url": "news.html?story=2026-07-02-3"
   }
 ]

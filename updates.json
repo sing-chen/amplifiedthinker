@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-07-10",
+    "html": "<a href=\"search.html\">Search</a> now indexes individual News stories, not just the News page."
+  },
+  {
     "date": "2026-07-08",
     "html": "<a href=\"news.html\">News</a> section added — a curated, dated feed of workforce and skills stories."
   },
