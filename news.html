@@ -51,10 +51,10 @@
 
   /* ── HEADLINE PANEL (left) ── */
   .headline-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow-y:auto;padding:8px}
-  .headline-date{display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid-teal);padding:14px 12px 8px;margin:0 4px;border-bottom:1px solid var(--light-sage);margin-bottom:4px}
-  .headline-date svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .headline-pinned-label{display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);padding:14px 12px 8px;margin:0 4px;border-bottom:1px solid var(--light-sage);margin-bottom:4px}
-  .headline-pinned-label svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .headline-date-prefix{color:var(--mid-teal);font-weight:600}
+  .headline-pin-icon{display:inline-flex;vertical-align:-1px;color:var(--terracotta);margin-right:3px}
+  .headline-pin-icon svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .headline-divider{height:1px;background:var(--light-sage);margin:6px 10px}
   .headline-item{display:block;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px 9px 10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.4;color:var(--text-muted);transition:background .15s,color .15s,border-color .15s}
   .headline-item:hover{background:var(--off-white);color:var(--text-dark)}
   .headline-item:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
@@ -203,7 +203,6 @@
     'research and insights': '<path d="M9 2v6L3.5 18a2 2 0 0 0 1.8 3h13.4a2 2 0 0 0 1.8-3L15 8V2"/><path d="M9 2h6"/>'
   };
   var ALL_ICON_PATH = '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>';
-  var CALENDAR_ICON_PATH = '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>';
   var PIN_ICON_PATH = '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/>';
   var ARCHIVE_CHEVRON_ICON_PATH = '<polyline points="6 9 12 15 18 9"/>';
 
@@ -253,10 +252,12 @@
     return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   }
 
-  function fmtDateShort(iso) {
+  function fmtDatePrefix(iso) {
     var d = new Date(iso + 'T00:00:00');
     if (isNaN(d)) return iso;
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    var day = String(d.getDate()).padStart(2, '0');
+    var month = d.toLocaleDateString('en-US', { month: 'short' });
+    return day + ' ' + month;
   }
 
   function escapeHTML(s) {
@@ -287,8 +288,10 @@
 
   function headlineButtonHTML(s) {
     var cls = 'headline-item' + (s.id === activeId ? ' active' : '') + (s.pinned ? ' pinned' : '');
+    var prefix = (s.pinned ? '<span class="headline-pin-icon">' + themeIconSVG(PIN_ICON_PATH) + '</span>' : '') +
+      '<span class="headline-date-prefix">' + escapeHTML(fmtDatePrefix(s.date)) + ':</span> ';
     return '<button type="button" class="' + cls + '" data-id="' + escapeHTML(s.id) + '"' +
-      (s.id === activeId ? ' aria-current="true"' : '') + '>' + escapeHTML(s.title || '') + '</button>';
+      (s.id === activeId ? ' aria-current="true"' : '') + '>' + prefix + escapeHTML(s.title || '') + '</button>';
   }
 
   function renderHeadlines() {
@@ -303,10 +306,10 @@
 
     if (pinnedVisible) {
       visibleIds.push(pinned.id);
-      html += '<div class="headline-pinned-label">' + themeIconSVG(PIN_ICON_PATH) + 'Pinned</div>';
       html += headlineButtonHTML(pinned);
     }
 
+    var restHTML = '';
     var olderHTML = '';
     var olderIds = [];
 
@@ -316,7 +319,7 @@
       });
       if (!stories.length) return;
 
-      var groupHTML = '<div class="headline-date">' + themeIconSVG(CALENDAR_ICON_PATH) + escapeHTML(fmtDateShort(group.date)) + '</div>';
+      var groupHTML = '';
       stories.forEach(function (s) {
         groupHTML += headlineButtonHTML(s);
       });
@@ -328,7 +331,7 @@
         olderHTML += groupHTML;
         stories.forEach(function (s) { olderIds.push(s.id); });
       } else {
-        html += groupHTML;
+        restHTML += groupHTML;
         stories.forEach(function (s) { visibleIds.push(s.id); });
       }
     });
@@ -340,12 +343,17 @@
     if (olderIds.length) {
       visibleIds = visibleIds.concat(olderIds);
       var expandedCls = archiveExpanded ? ' expanded' : '';
-      html += '<div class="headline-archive' + expandedCls + '">' +
+      restHTML += '<div class="headline-archive' + expandedCls + '">' +
         '<button type="button" class="headline-archive-toggle" id="headline-archive-toggle" aria-expanded="' + (archiveExpanded ? 'true' : 'false') + '">' +
         'Older stories (' + olderIds.length + ')' + themeIconSVG(ARCHIVE_CHEVRON_ICON_PATH) + '</button>' +
         '<div class="headline-archive-body">' + olderHTML + '</div>' +
         '</div>';
     }
+
+    if (pinnedVisible && restHTML) {
+      html += '<div class="headline-divider"></div>';
+    }
+    html += restHTML;
 
     headlinePanel.innerHTML = html || '<p class="empty-state">No stories match this filter yet.</p>';
     return visibleIds;
