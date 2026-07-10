@@ -255,7 +255,7 @@
   var digests = [];
   var flatStories = []; // { id, date, ...story }
   var activeId = null;
-  var archiveExpanded = false;
+  var expandedGroups = { Yesterday: false, 'This Week': false, Older: false };
   var ARCHIVE_CUTOFF_DAYS = 7;
   var searchQuery = '';
   var headlineSearchInput = document.getElementById('headline-search');
@@ -282,11 +282,12 @@
     return Math.round((today - d) / 86400000);
   }
 
-  function bucketLabel(days) {
-    if (days === null) return '';
+  function bucketKey(days) {
+    if (days === null) return 'Older';
     if (days <= 0) return 'Today';
     if (days === 1) return 'Yesterday';
-    return 'This Week';
+    if (days < ARCHIVE_CUTOFF_DAYS) return 'This Week';
+    return 'Older';
   }
 
   function escapeHTML(s) {
@@ -347,10 +348,9 @@
       html += headlineButtonHTML(pinned);
     }
 
-    var restHTML = '';
-    var olderHTML = '';
-    var olderIds = [];
-    var lastBucket = null;
+    var bucketOrder = ['Today', 'Yesterday', 'This Week', 'Older'];
+    var bucketHTML = { Today: '', Yesterday: '', 'This Week': '', Older: '' };
+    var bucketIds = { Today: [], Yesterday: [], 'This Week': [], Older: [] };
 
     digests.forEach(function (group) {
       var stories = flatStories.filter(function (s) {
@@ -363,36 +363,33 @@
         groupHTML += headlineButtonHTML(s);
       });
 
-      var days = daysAgo(group.date);
-      var isOlder = days !== null && days >= ARCHIVE_CUTOFF_DAYS;
-
-      if (isOlder) {
-        olderHTML += groupHTML;
-        stories.forEach(function (s) { olderIds.push(s.id); });
-      } else {
-        var bucket = bucketLabel(days);
-        if (bucket && bucket !== lastBucket) {
-          restHTML += '<div class="headline-group-header">' + escapeHTML(bucket) + '</div>';
-          lastBucket = bucket;
-        }
-        restHTML += groupHTML;
-        stories.forEach(function (s) { visibleIds.push(s.id); });
-      }
+      var key = bucketKey(daysAgo(group.date));
+      bucketHTML[key] += groupHTML;
+      stories.forEach(function (s) { bucketIds[key].push(s.id); });
     });
 
-    if (olderIds.indexOf(activeId) !== -1) {
-      archiveExpanded = true;
-    }
+    var restHTML = '';
+    bucketOrder.forEach(function (key) {
+      var ids = bucketIds[key];
+      if (!ids.length) return;
+      visibleIds = visibleIds.concat(ids);
 
-    if (olderIds.length) {
-      visibleIds = visibleIds.concat(olderIds);
-      var expandedCls = archiveExpanded ? ' expanded' : '';
-      restHTML += '<div class="headline-archive' + expandedCls + '">' +
-        '<button type="button" class="headline-archive-toggle" id="headline-archive-toggle" aria-expanded="' + (archiveExpanded ? 'true' : 'false') + '">' +
-        'Older stories (' + olderIds.length + ')' + themeIconSVG(ARCHIVE_CHEVRON_ICON_PATH) + '</button>' +
-        '<div class="headline-archive-body">' + olderHTML + '</div>' +
+      if (key === 'Today') {
+        restHTML += '<div class="headline-group-header">Today</div>' + bucketHTML[key];
+        return;
+      }
+
+      if (ids.indexOf(activeId) !== -1) {
+        expandedGroups[key] = true;
+      }
+      var expanded = !!expandedGroups[key];
+      var label = key === 'Older' ? 'Older stories' : key;
+      restHTML += '<div class="headline-archive' + (expanded ? ' expanded' : '') + '">' +
+        '<button type="button" class="headline-archive-toggle" data-group-toggle="' + key + '" aria-expanded="' + (expanded ? 'true' : 'false') + '">' +
+        escapeHTML(label) + ' (' + ids.length + ')' + themeIconSVG(ARCHIVE_CHEVRON_ICON_PATH) + '</button>' +
+        '<div class="headline-archive-body">' + bucketHTML[key] + '</div>' +
         '</div>';
-    }
+    });
 
     if (pinnedVisible && restHTML) {
       html += '<div class="headline-divider"></div>';
@@ -413,8 +410,6 @@
     if (pinned && storyMatchesFilter(pinned)) ids.push(pinned.id);
 
     digests.forEach(function (group) {
-      var days = daysAgo(group.date);
-      if (days !== null && days >= ARCHIVE_CUTOFF_DAYS) return;
       flatStories.filter(function (s) {
         return s.date === group.date && storyMatchesFilter(s) && (!pinned || s.id !== pinned.id);
       }).forEach(function (s) { ids.push(s.id); });
@@ -591,9 +586,10 @@
   });
 
   headlinePanel.addEventListener('click', function (e) {
-    var toggle = e.target.closest('#headline-archive-toggle');
+    var toggle = e.target.closest('.headline-archive-toggle');
     if (toggle) {
-      archiveExpanded = !archiveExpanded;
+      var key = toggle.getAttribute('data-group-toggle');
+      expandedGroups[key] = !expandedGroups[key];
       renderHeadlines();
       return;
     }
