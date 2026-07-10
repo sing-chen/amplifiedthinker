@@ -515,13 +515,21 @@
       window.history.pushState({}, '', url);
     }
 
+    var hadFocusInPanel = headlinePanel.contains(document.activeElement);
+
     renderHeadlines();
     renderStory(story);
     layoutEl.classList.add('show-detail');
 
     if (opts.scrollIntoHeadline) {
       var activeEl = headlinePanel.querySelector('.headline-item.active');
-      if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: 'nearest' });
+        // Re-rendering replaces the button the browser just focused, silently
+        // dropping focus to <body> — restore it so arrow keys keep navigating
+        // the list instead of falling through to native page scroll.
+        if (hadFocusInPanel) activeEl.focus();
+      }
     }
   }
 
