@@ -600,9 +600,17 @@
     if (toggle) {
       var key = toggle.getAttribute('data-group-toggle');
       var opening = !expandedGroups[key];
+      var hadFocusInPanel = headlinePanel.contains(document.activeElement);
       Object.keys(expandedGroups).forEach(function (k) { expandedGroups[k] = false; });
       expandedGroups[key] = opening;
       renderHeadlines();
+      // Re-rendering replaces the toggle button that just received focus (via
+      // click or Enter/Space), silently dropping focus to <body> — restore it
+      // so arrow keys keep navigating the list instead of scrolling the page.
+      if (hadFocusInPanel) {
+        var newToggle = headlinePanel.querySelector('[data-group-toggle="' + key + '"]');
+        if (newToggle) newToggle.focus();
+      }
       return;
     }
     var btn = e.target.closest('.headline-item');
