@@ -379,9 +379,6 @@
         return;
       }
 
-      if (ids.indexOf(activeId) !== -1) {
-        expandedGroups[key] = true;
-      }
       var expanded = !!expandedGroups[key];
       var label = key === 'Older' ? 'Older stories' : key;
       restHTML += '<div class="headline-archive' + (expanded ? ' expanded' : '') + '">' +
@@ -506,6 +503,12 @@
     var story = flatStories.filter(function (s) { return s.id === id; })[0];
     if (!story) return;
     activeId = id;
+
+    var pinned = findPinnedStory();
+    if (!pinned || story.id !== pinned.id) {
+      var key = bucketKey(daysAgo(story.date));
+      if (key !== 'Today') expandedGroups[key] = true;
+    }
 
     var url = new URL(window.location.href);
     url.searchParams.set('story', id);
