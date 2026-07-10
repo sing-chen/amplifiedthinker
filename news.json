@@ -33,6 +33,14 @@
         "summary": "A vendor-commissioned UK study found 68% of employers rate enthusiasm as the top success predictor versus 8% for university degree, with AI literacy — defined as prompting effectively and critically evaluating output — now the number one in-demand skill. Separately, FutureDotNow data cited in the piece shows 54% of UK workers lack baseline digital competencies, a substantial barrier to AI adoption. Note: this is a vendor-commissioned study promoted as a press release — the topline framing is marketing-adjacent, and the underlying stats are directionally useful rather than rigorously validated.",
         "implications": "The credential-to-capability shift is showing up as clearly in the UK as in the US; leaders should read AI literacy as one entry in a broader human-skills stack (alongside adaptability, judgment, communication), not a standalone technical requirement.",
         "tags": ["skills development", "macro signals"]
+      },
+      {
+        "title": "Chief People Officers' Outlook: What Geopolitics and the AI \"Scaling Stage\" Mean for Your Day-to-Day",
+        "source": "World Economic Forum",
+        "url": "https://reports.weforum.org/docs/WEF_Chief_People_Officers_Outlook_May_2026.pdf",
+        "summary": "The WEF's May 2026 Chief People Officers' Outlook — a survey of 140+ HR leaders at large global employers, fielded January–March 2026 — shows the ground shifting under knowledge workers in two ways. First, 83% of CPOs now expect their companies to move into the \"scaling\" stage of AI deployment within 6–12 months, meaning AI tools stop being optional pilots and start getting embedded into how your actual workflows and role expectations are defined — a marked jump from the exploratory phase most organizations were still in a year ago. Second, employers say the real bottleneck isn't headcount, it's matching — companies report they can't find people with the specific, current skills they need, even where job openings exist, and are prioritizing organizational redesign (74%) and upskilling (70%) to close that gap.",
+        "implications": "If your employer is entering the \"scaling\" phase, expect your role and workflows to get actively redesigned around AI tools in the next year, not just handed new software — the workers who benefit are the ones who treat this as a chance to move into higher-judgment, oversight-style work rather than waiting to be told what changed. And since companies are explicitly rewarding skills-matching over tenure or headcount, the practical move is to make your current, specific skills visible and current (not just \"AI-aware\" in general) — internal mobility and upskilling programs are where employers say they're putting resources, so that's where to lean in first.",
+        "tags": ["workforce transformation", "skills development", "macro signals"]
       }
     ]
   },
