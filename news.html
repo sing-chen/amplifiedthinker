@@ -50,7 +50,13 @@
   .news-layout{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
 
   /* ── HEADLINE PANEL (left) ── */
-  .headline-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow-y:auto;padding:8px}
+  .headline-col{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);display:flex;flex-direction:column;max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow:hidden}
+  .headline-search-wrap{position:relative;flex-shrink:0;border-bottom:1px solid var(--light-sage);padding:10px}
+  .headline-search-icon{position:absolute;left:20px;top:50%;transform:translateY(-50%);width:14px;height:14px;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+  .headline-search-input{width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text-dark);background:var(--off-white)}
+  .headline-search-input:focus-visible,.headline-search-input:focus{outline:2px solid var(--mid-teal);outline-offset:1px}
+  .headline-panel{border:none;border-radius:0;background:none;flex:1;max-height:none;overflow-y:auto;padding:8px}
+  .headline-group-header{position:sticky;top:0;z-index:1;background:var(--white);padding:10px 12px 4px;font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid-teal)}
   .headline-date-prefix{color:var(--mid-teal);font-weight:600}
   .headline-pin-icon{display:inline-flex;vertical-align:-1px;color:var(--terracotta);margin-right:3px}
   .headline-pin-icon svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -117,10 +123,10 @@
 
   @media(max-width:800px){
     .news-layout{grid-template-columns:1fr}
-    .headline-panel{max-height:none}
+    .headline-col{max-height:none}
     .story-panel{display:none}
     .story-back{display:inline-flex}
-    .news-layout.show-detail .headline-panel{display:none}
+    .news-layout.show-detail .headline-col{display:none}
     .news-layout.show-detail .story-panel{display:block}
     .story-panel{padding:24px 20px}
     .story-title{font-size:20px}
@@ -159,7 +165,13 @@
     </button>
   </div>
   <div class="news-layout" id="news-layout">
-    <nav class="headline-panel" id="headline-panel" aria-label="Story list"></nav>
+    <div class="headline-col">
+      <div class="headline-search-wrap">
+        <svg class="headline-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="headline-search" class="headline-search-input" placeholder="Filter headlines" aria-label="Filter headlines by title">
+      </div>
+      <nav class="headline-panel" id="headline-panel" aria-label="Story list"></nav>
+    </div>
     <article class="story-panel" id="story-panel"></article>
   </div>
 </main>
@@ -244,7 +256,9 @@
   var flatStories = []; // { id, date, ...story }
   var activeId = null;
   var archiveExpanded = false;
-  var ARCHIVE_CUTOFF_DAYS = 30;
+  var ARCHIVE_CUTOFF_DAYS = 7;
+  var searchQuery = '';
+  var headlineSearchInput = document.getElementById('headline-search');
 
   function fmtDateLong(iso) {
     var d = new Date(iso + 'T00:00:00');
@@ -258,6 +272,21 @@
     var day = String(d.getDate()).padStart(2, '0');
     var month = d.toLocaleDateString('en-US', { month: 'short' });
     return day + ' ' + month;
+  }
+
+  function daysAgo(iso) {
+    var d = new Date(iso + 'T00:00:00');
+    if (isNaN(d)) return null;
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Math.round((today - d) / 86400000);
+  }
+
+  function bucketLabel(days) {
+    if (days === null) return '';
+    if (days <= 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    return 'This Week';
   }
 
   function escapeHTML(s) {
@@ -276,7 +305,9 @@
   }
 
   function storyMatchesFilter(s) {
-    return activeTag === 'all' || (s.tags || []).indexOf(activeTag) !== -1;
+    if (activeTag !== 'all' && (s.tags || []).indexOf(activeTag) === -1) return false;
+    if (searchQuery && (s.title || '').toLowerCase().indexOf(searchQuery) === -1) return false;
+    return true;
   }
 
   function findPinnedStory() {
@@ -295,11 +326,18 @@
   }
 
   function renderHeadlines() {
-    var html = '';
     var visibleIds = [];
 
-    var cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - ARCHIVE_CUTOFF_DAYS);
+    if (searchQuery) {
+      var matches = flatStories.filter(storyMatchesFilter);
+      visibleIds = matches.map(function (s) { return s.id; });
+      headlinePanel.innerHTML = matches.length
+        ? matches.map(headlineButtonHTML).join('')
+        : '<p class="empty-state">No headlines match "' + escapeHTML(headlineSearchInput.value.trim()) + '".</p>';
+      return visibleIds;
+    }
+
+    var html = '';
 
     var pinned = findPinnedStory();
     var pinnedVisible = pinned && storyMatchesFilter(pinned);
@@ -312,6 +350,7 @@
     var restHTML = '';
     var olderHTML = '';
     var olderIds = [];
+    var lastBucket = null;
 
     digests.forEach(function (group) {
       var stories = flatStories.filter(function (s) {
@@ -324,13 +363,18 @@
         groupHTML += headlineButtonHTML(s);
       });
 
-      var groupDate = new Date(group.date + 'T00:00:00');
-      var isOlder = !isNaN(groupDate) && groupDate < cutoff;
+      var days = daysAgo(group.date);
+      var isOlder = days !== null && days >= ARCHIVE_CUTOFF_DAYS;
 
       if (isOlder) {
         olderHTML += groupHTML;
         stories.forEach(function (s) { olderIds.push(s.id); });
       } else {
+        var bucket = bucketLabel(days);
+        if (bucket && bucket !== lastBucket) {
+          restHTML += '<div class="headline-group-header">' + escapeHTML(bucket) + '</div>';
+          lastBucket = bucket;
+        }
         restHTML += groupHTML;
         stories.forEach(function (s) { visibleIds.push(s.id); });
       }
@@ -360,16 +404,17 @@
   }
 
   function getNavigableIds() {
-    var ids = [];
-    var cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - ARCHIVE_CUTOFF_DAYS);
+    if (searchQuery) {
+      return flatStories.filter(storyMatchesFilter).map(function (s) { return s.id; });
+    }
 
+    var ids = [];
     var pinned = findPinnedStory();
     if (pinned && storyMatchesFilter(pinned)) ids.push(pinned.id);
 
     digests.forEach(function (group) {
-      var groupDate = new Date(group.date + 'T00:00:00');
-      if (!isNaN(groupDate) && groupDate < cutoff) return;
+      var days = daysAgo(group.date);
+      if (days !== null && days >= ARCHIVE_CUTOFF_DAYS) return;
       flatStories.filter(function (s) {
         return s.date === group.date && storyMatchesFilter(s) && (!pinned || s.id !== pinned.id);
       }).forEach(function (s) { ids.push(s.id); });
@@ -555,6 +600,74 @@
     var btn = e.target.closest('.headline-item');
     if (!btn) return;
     selectStory(btn.getAttribute('data-id'), { scrollIntoHeadline: true });
+  });
+
+  function getVisibleHeadlineButtons() {
+    return Array.prototype.filter.call(headlinePanel.querySelectorAll('.headline-item'), function (el) {
+      return el.offsetParent !== null;
+    });
+  }
+
+  headlinePanel.addEventListener('keydown', function (e) {
+    var target = e.target;
+    if (!target.classList || !target.classList.contains('headline-item')) return;
+    var buttons = getVisibleHeadlineButtons();
+    var idx = buttons.indexOf(target);
+    if (idx === -1) return;
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      var delta = e.key === 'ArrowDown' ? 1 : -1;
+      var next = buttons[(idx + delta + buttons.length) % buttons.length];
+      next.focus();
+      next.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      buttons[0].focus();
+      buttons[0].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      buttons[buttons.length - 1].focus();
+      buttons[buttons.length - 1].scrollIntoView({ block: 'nearest' });
+    } else if (/^[a-z0-9]$/i.test(e.key)) {
+      var ch = e.key.toLowerCase();
+      for (var offset = 1; offset <= buttons.length; offset++) {
+        var cand = buttons[(idx + offset) % buttons.length];
+        var titleText = (cand.textContent || '').replace(/^\d{1,2}\s+\w+:\s*/, '').trim();
+        if (titleText.toLowerCase().indexOf(ch) === 0) {
+          cand.focus();
+          cand.scrollIntoView({ block: 'nearest' });
+          break;
+        }
+      }
+    }
+  });
+
+  headlineSearchInput.addEventListener('input', function () {
+    searchQuery = this.value.trim().toLowerCase();
+    var visibleIds = renderHeadlines();
+    if (visibleIds.indexOf(activeId) === -1) {
+      var fallback = pickDefaultStory();
+      if (fallback) selectStory(fallback, { replace: true });
+      else renderStory(null);
+    }
+  });
+
+  headlineSearchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && this.value) {
+      this.value = '';
+      searchQuery = '';
+      var visibleIds = renderHeadlines();
+      if (visibleIds.indexOf(activeId) === -1) {
+        var fallback = pickDefaultStory();
+        if (fallback) selectStory(fallback, { replace: true });
+        else renderStory(null);
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      var first = headlinePanel.querySelector('.headline-item');
+      if (first) first.focus();
+    }
   });
 
   window.addEventListener('popstate', function () {
