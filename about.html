@@ -63,10 +63,6 @@
 
 
   .about-cta{margin-top:16px;padding-top:40px;border-top:1px solid rgba(172,196,182,.25);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .cta-link{display:inline-flex;align-items:center;gap:8px;background:var(--mid-teal);color:var(--white);font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;padding:11px 22px;border-radius:var(--radius);text-decoration:none;transition:background .15s,transform .1s}
-  .cta-link:hover{background:var(--teal);transform:translateY(-1px)}
-  .cta-link-ghost{display:inline-flex;align-items:center;gap:8px;color:var(--mid-teal);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;text-decoration:none;padding:11px 4px;border-bottom:1px solid rgba(45,117,111,.3);transition:border-color .15s,color .15s}
-  .cta-link-ghost:hover{color:var(--teal);border-color:var(--teal)}
 
   /* ── CONTACT ── */
   .contact-block{margin-top:8px;padding-top:32px;border-top:1px solid rgba(172,196,182,.25);display:flex;flex-direction:column;gap:10px}
@@ -188,17 +184,10 @@
       </div>
     </div>
 
-    <!-- CTA -->
-    <div class="about-cta">
-      <a href="future-skills.html" class="cta-link">Browse the skills library →</a>
-      <a href="https://www.linkedin.com/in/singchen" class="cta-link-ghost" target="_blank" rel="noopener noreferrer">Connect on LinkedIn →</a>
-    </div>
-
     <!-- Contact: only shown when accessed via the amplifiedthinker.com custom domain, not the github.io URL -->
     <div class="contact-block" id="contact-block" style="display:none;">
       <p class="contact-label">Get in touch</p>
-      <p class="contact-body">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out, I'd love to hear from you.</p>
-      <a href="mailto:singchen@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" class="cta-link-ghost">Email me →</a>
+      <p class="contact-body">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, whether that's by <a href="mailto:singchen@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" style="color:var(--navy);font-weight:500;text-decoration:underline;text-decoration-color:rgba(45,117,111,.35);text-underline-offset:2px;">email</a> or on <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" style="color:var(--navy);font-weight:500;text-decoration:underline;text-decoration-color:rgba(45,117,111,.35);text-underline-offset:2px;">LinkedIn</a>.</p>
     </div>
     <script>
       if (/(^|\.)amplifiedthinker\.com$/.test(window.location.hostname)) {
