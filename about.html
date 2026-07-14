@@ -39,7 +39,7 @@
   .about-prose{display:flex;flex-direction:column;gap:32px}
   .about-prose p{font-family:'Inter',sans-serif;font-size:16px;line-height:1.85;color:var(--navy)}
   .about-prose p strong{color:var(--text-dark);font-weight:500}
-  .prose-heading{font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;color:var(--text-dark);letter-spacing:-.01em;line-height:1.2;margin-bottom:-16px}
+  .prose-heading{font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:var(--mid-teal);letter-spacing:.1em;text-transform:uppercase;line-height:1.2;margin-bottom:10px}
 
   /* ── SECTION BREAK ── */
   .prose-divider{height:1px;background:rgba(172,196,182,.25);margin:8px 0}
@@ -52,8 +52,7 @@
   /* ── WHO THIS IS FOR ── */
   .audience{display:flex;flex-direction:column;gap:0;margin:8px 0}
   .audience-label{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:14px}
-  .aud-item{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-top:1px solid rgba(172,196,182,.2)}
-  .aud-item:last-child{border-bottom:1px solid rgba(172,196,182,.2)}
+  .aud-item{display:flex;gap:16px;align-items:flex-start;padding:18px 0}
   .aud-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
   .aud-icon svg{width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .ai-teal .aud-icon{background:#D4EAE7;} .ai-teal .aud-icon svg{stroke:#2D756F;}
@@ -172,24 +171,6 @@
 
     <div class="audience">
       <p class="audience-label">Who this is for</p>
-      <div class="aud-item ai-teal">
-        <div class="aud-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        </div>
-        <div>
-          <div class="aud-title">Practitioners in the middle</div>
-          <div class="aud-body">Mid-to-senior individual contributors absorbing the friction of AI adoption their organisation isn't ready for — and building capability anyway.</div>
-        </div>
-      </div>
-      <div class="aud-item ai-terracotta">
-        <div class="aud-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <div>
-          <div class="aud-title">Leaders with an adoption problem</div>
-          <div class="aud-body">Directors and VPs who approved the tools, see inconsistent results, and need someone who translates capability and readiness into terms they can act on.</div>
-        </div>
-      </div>
       <div class="aud-item ai-slate">
         <div class="aud-icon">
           <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -197,6 +178,24 @@
         <div>
           <div class="aud-title">Early-career professionals recalibrating</div>
           <div class="aud-body">Three to seven years in, sensing the ladder has moved, actively building durable capabilities before the next disruption cycle.</div>
+        </div>
+      </div>
+      <div class="aud-item ai-teal">
+        <div class="aud-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div>
+          <div class="aud-title">Practitioners in the middle</div>
+          <div class="aud-body">Mid-to-senior individual contributors absorbing the friction of change their organisation isn't ready for — AI is this decade's version — and building capability anyway.</div>
+        </div>
+      </div>
+      <div class="aud-item ai-terracotta">
+        <div class="aud-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <div class="aud-title">Leaders setting the pace of change</div>
+          <div class="aud-body">Directors and VPs whose decisions ripple through how their people work, looking to think more clearly about the human capabilities their teams need to keep pace with the change they're driving.</div>
         </div>
       </div>
     </div>
