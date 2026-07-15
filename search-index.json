@@ -443,6 +443,20 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-07-15-0",
+    "type": "news",
+    "title": "Future of Remote Work: Trends Every Professional Should Know",
+    "description": "Remote work has moved from a temporary pandemic-era experiment to a permanent, cross-industry model, with hybrid arrangements emerging as the dominant preference for balancing flexibility and collaboration. AI now handles high-volume applicant screening and matching, but human judgment still decides final hires. Global, borderless hiring and a mainstream freelance economy are expanding access to opportunity, while employers increasingly weight demonstrated skills over credentials alone.",
+    "url": "news.html?story=2026-07-15-0"
+  },
+  {
+    "id": "news-2026-07-15-1",
+    "type": "news",
+    "title": "Deloitte's 2026 Gen Z and Millennial Survey: AI Adoption Is Outpacing Organizational Readiness",
+    "description": "Deloitte's 15th annual Gen Z and Millennial Survey (22,500+ respondents, 44 countries) finds AI use has gone mainstream — 74% of both Gen Zs and millennials now use AI at work, up sharply from 57%/56% a year ago — with many also using it for learning, career advice, and coping with work stress. But individual adoption is outpacing organizational readiness: roughly 30% say their employer isn't prepared for AI-driven change, over a third don't trust AI outputs, and Deloitte's own 2026 State of AI in the Enterprise report found 84% of companies haven't redesigned jobs around AI capabilities. Separately, the survey finds both generations deprioritizing traditional leadership tracks (only 6% cite it as their top career goal, citing burnout/work-life balance) in favor of continuous skill-building — AI fluency, leadership, and creativity top the list of skills they want to develop next.",
+    "url": "news.html?story=2026-07-15-1"
+  },
+  {
     "id": "news-2026-07-10-0",
     "type": "news",
     "title": "The Emergence of the \"AI Work Architect\" and \"AI Steward\"",
