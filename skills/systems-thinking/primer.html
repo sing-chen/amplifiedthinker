@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Systems Thinking — Skill Primer</title>
+<meta name="description" content="A quick primer on Systems Thinking — see the structure behind a recurring problem before patching the symptom again. Core concepts, mental models, and a real-world scenario showing the skill in practice.">
+<link rel="canonical" href="https://amplifiedthinker.com/skills/systems-thinking/primer.html">
+<link rel="icon" type="image/png" href="../../images/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Amplified Thinker">
+<meta property="og:title" content="Systems Thinking: Primer · Amplified Thinker">
+<meta property="og:description" content="A quick primer on Systems Thinking — see the structure behind a recurring problem before patching the symptom again. Core concepts, mental models, and a real-world scenario showing the skill in practice.">
+<meta property="og:url" content="https://amplifiedthinker.com/skills/systems-thinking/primer.html">
+<meta property="og:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<style>
+  /* ── BRAND TOKENS ───────────────────────────── */
+  :root {
+    --sage:        #ACC4B6;
+    --teal:        #5BA79F;
+    --deep-teal:   #2D756F;
+    --off-white:   #F5F7F6;
+    --light-sage:  #D8E4DD;
+    --terracotta:  #C77B5F;
+    --amber:       #D9A05B;
+    --navy:        #1F4D4A;
+    --charcoal:    #2D3330;
+    --warm-gray:   #8B8A85;
+    --white:       #FFFFFF;
+    --nav-width:   260px;
+    --radius:      8px;
+  }
+
+  /* ── RESET ──────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--navy);
+    background: var(--off-white);
+    display: flex;
+  }
+
+  /* ── LEFT NAV RAIL ──────────────────────────── */
+  .nav-rail {
+    width: var(--nav-width);
+    height: 100%;
+    background: var(--charcoal);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 40px;
+    z-index: 100;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .nav-brand {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
+  }
+  .nav-series {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--sage); margin-bottom: 6px;
+  }
+  .nav-skill {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--off-white); line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .nav-type {
+    font-size: 11px; color: rgba(255,255,255,0.35);
+    letter-spacing: 0.04em;
+  }
+  .nav-items { list-style: none; padding: 0 12px; flex: 1; }
+  .nav-item { margin-bottom: 2px; }
+  .nav-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px; font-weight: 400;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none; cursor: pointer;
+    transition: all 0.15s; border: none; background: none;
+    width: 100%; text-align: left;
+  }
+  .nav-link:hover  { color: var(--off-white); background: rgba(255,255,255,0.06); }
+  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.22); }
+  .nav-link.visited { color: rgba(255,255,255,0.65); }
+  .nav-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.2);
+    min-width: 18px; flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .nav-link.active .nav-num  { color: var(--teal); }
+  .nav-link.visited .nav-num { color: var(--sage); opacity: 0.7; }
+  .nav-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); flex-shrink: 0;
+    margin-left: auto; transition: background 0.15s;
+  }
+  .nav-link.active .nav-dot  { background: var(--teal); }
+  .nav-link.visited .nav-dot { background: var(--sage); opacity: 0.6; }
+
+  /* ── SLIDE STAGE ────────────────────────────── */
+  .stage {
+    margin-left: var(--nav-width);
+    width: calc(100% - var(--nav-width));
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── SLIDES ─────────────────────────────────── */
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 72px 96px 80px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(16px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    overflow-y: auto; overflow-x: hidden;
+  }
+  .slide.active {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+  .slide.exit-up {
+    opacity: 0; transform: translateY(-16px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  /* slide backgrounds */
+  .slide-sage   { background: var(--light-sage); }
+  .slide-white  { background: var(--off-white); }
+  .slide-navy   { background: var(--navy); }
+  .slide-teal   { background: #1B4A44; }
+  .slide-cream  { background: #EDE5C5; }
+
+  /* decorative circle */
+  .bg-circle {
+    position: absolute; border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* ── TYPOGRAPHY ─────────────────────────────── */
+  .eyebrow {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--deep-teal); margin-bottom: 20px;
+    display: block;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .eyebrow-lt { color: var(--sage); }
+
+  .h-display {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(52px, 5.5vw, 80px);
+    font-weight: 400; line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--navy); margin-bottom: 28px;
+  }
+  .h-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(36px, 3.8vw, 54px);
+    font-weight: 400; line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--deep-teal); margin-bottom: 28px;
+  }
+  .h-heading {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(28px, 2.8vw, 40px);
+    font-weight: 400; line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--deep-teal); margin-bottom: 16px;
+  }
+  .h-lt   { color: var(--off-white); }
+
+  .t-body {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(16px, 1.5vw, 20px);
+    line-height: 1.65; color: var(--navy);
+  }
+  .t-lead {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(17px, 1.7vw, 22px);
+    line-height: 1.65; color: var(--navy);
+  }
+  .t-light { color: rgba(245,247,246,0.82); }
+  .t-terra { color: var(--terracotta); }
+  .t-teal  { color: var(--deep-teal); }
+  .t-meta  { font-size: 13px; color: var(--warm-gray); }
+
+  /* accent bar */
+  .accent-bar {
+    width: 4px; height: 56px;
+    background: var(--terracotta);
+    border-radius: 2px; flex-shrink: 0;
+  }
+
+  /* tags */
+  .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+  .tag {
+    display: inline-block;
+    padding: 7px 18px; border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 500;
+  }
+  .tag-a { background: #C5DDD9; color: var(--deep-teal); }
+  .tag-s { background: var(--light-sage); color: var(--navy); }
+  .tag-g { background: #F2DDB8; color: var(--charcoal); }
+
+  /* callouts */
+  .callout-sage {
+    background: var(--light-sage);
+    border-left: 4px solid var(--terracotta);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 28px;
+  }
+  .callout-dark {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius); padding: 22px 28px;
+  }
+  .callout-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--deep-teal); margin-bottom: 8px;
+  }
+
+  /* two-col */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .card {
+    background: var(--white);
+    border-radius: var(--radius); padding: 24px 28px;
+    border: 1px solid rgba(45,51,48,0.08);
+  }
+  .card-top-teal { border-top: 3px solid var(--teal); }
+  .card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--deep-teal); margin-bottom: 10px;
+  }
+
+  /* num list */
+  .num-list { display: flex; flex-direction: column; gap: 14px; }
+  .num-item { display: flex; align-items: flex-start; gap: 20px; }
+  .num-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--teal); min-width: 28px; flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  /* comparison cards */
+  .comp-card { border-radius: var(--radius); padding: 24px 28px; }
+  .comp-without { background: #FDF0EC; border-top: 3px solid var(--terracotta); }
+  .comp-with    { background: rgba(197,221,217,0.35); border-top: 3px solid var(--teal); }
+  .comp-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .comp-label-terra { color: var(--terracotta); }
+  .comp-label-teal  { color: var(--deep-teal); }
+
+  /* icon-card grid (feedback loop pair) */
+  .icon-card-icon {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+  }
+  .icon-card-icon svg {
+    width: 26px; height: 26px;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* step chain (Iceberg Model) */
+  .step-chain { display: flex; flex-direction: column; gap: 12px; }
+  .step-item  { display: flex; align-items: flex-start; gap: 16px; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #C5DDD9;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700; font-size: 12px; color: var(--deep-teal);
+    flex-shrink: 0;
+  }
+  .step-num.root { background: var(--terracotta); color: var(--off-white); }
+
+  /* pull quote */
+  .pull-quote {
+    border-left: 4px solid var(--terracotta);
+    padding-left: 36px;
+  }
+  .pull-quote p {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: clamp(18px, 1.8vw, 24px);
+    line-height: 1.6; font-style: italic;
+    color: var(--navy);
+  }
+
+  /* quiz */
+  .quiz-q {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(15px, 1.4vw, 18px);
+    font-weight: 600; color: var(--navy);
+    line-height: 1.4; margin-bottom: 16px;
+  }
+  .quiz-opts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .quiz-opt {
+    background: var(--light-sage);
+    border: 2px solid transparent;
+    border-radius: 6px; padding: 9px 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(13px, 1.2vw, 16px);
+    color: var(--navy); cursor: pointer; text-align: left;
+    line-height: 1.4; transition: border-color 0.15s;
+  }
+  .quiz-opt:hover     { border-color: var(--teal); }
+  .quiz-opt.selected  { border-color: var(--deep-teal); background: rgba(91,167,159,0.15); }
+  .quiz-opt.correct   { background: #C5DDD9; border-color: var(--teal); }
+  .quiz-opt.incorrect { background: #FDE8E0; border-color: var(--terracotta); }
+  .quiz-feedback {
+    font-size: 13px; font-weight: 500; min-height: 20px;
+    transition: opacity 0.2s;
+  }
+  .quiz-feedback.correct  { color: var(--deep-teal); }
+  .quiz-feedback.incorrect { color: var(--terracotta); }
+
+  /* ── PREV / NEXT ARROWS ─────────────────────── */
+  .nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 16px;
+  }
+  .nav-arrow {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,0.6); cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    text-decoration: none;
+  }
+  .nav-arrow:hover:not(:disabled) {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(172,196,182,0.35);
+    color: rgba(255,255,255,0.9);
+  }
+  .nav-arrow:disabled { opacity: 0.25; cursor: default; }
+  .nav-arrow svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .slide-counter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── RAIL TOGGLE (mobile bottom-toolbar trigger, hidden on desktop) ── */
+  .rail-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: rgba(255,255,255,0.6);
+  }
+  .rail-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .rail-toggle .rail-icon-close { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-open  { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-close { display: block; }
+
+  /* ── DENSE SLIDE ADJUSTMENT ─────────────────── */
+  .slide-dense { padding-top: 48px; padding-bottom: 48px; justify-content: flex-start; }
+
+  /* ── SKIP NAVIGATION ─────────────────────────── */
+  .skip-link {
+    position: absolute; top: -44px; left: 0;
+    background: var(--deep-teal); color: var(--off-white);
+    font-size: 14px; font-weight: 600; padding: 10px 18px;
+    z-index: 9999; text-decoration: none;
+    border-radius: 0 0 var(--radius) 0; transition: top .15s;
+  }
+  .skip-link:focus { top: 0; }
+
+  /* ── FOCUS STYLES ────────────────────────────── */
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .nav-arrow:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  /* ── REDUCED MOTION ──────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    .slide { transition: none; }
+  }
+
+  /* ── RESUME BANNER ───────────────────────────── */
+  .resume-banner {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    left: calc(var(--nav-width) + 24px);
+    right: 24px;
+    max-width: 480px;
+    background: var(--charcoal);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+    padding: 14px 16px 14px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 200;
+    animation: bannerSlideUp 0.3s ease forwards;
+  }
+  .resume-banner.hidden {
+    display: none !important;
+  }
+  @keyframes bannerSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .resume-banner-text {
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.75);
+  }
+  .resume-banner-text strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 2px;
+  }
+  .resume-banner-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .resume-banner-btn.primary {
+    background: var(--teal);
+    color: var(--off-white);
+  }
+  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.dismiss {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    margin-left: 4px;
+  }
+  .resume-banner-btn.dismiss:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); }
+  .resume-banner-btn:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  @media (max-width: 768px) {
+    .resume-banner {
+      left: 12px;
+      right: 12px;
+      bottom: 80px;
+      max-width: none;
+    }
+  }
+</style>
+  <style id="site-nav-overrides">
+    /* Site nav offset — injected by wrapper */
+    body {
+      padding-top: 96px !important; /* 56px site nav + 40px skill bar */
+    }
+    .nav-rail {
+      top: 96px !important;
+      height: calc(100vh - 96px) !important;
+    }
+  </style>
+  <style id="mobile-nav-overrides">
+    /* ── MOBILE (≤768px): nav-rail becomes a bottom toolbar ─────────────
+       Comes after #site-nav-overrides so its !important rules win at
+       this viewport width. The slide-title list collapses into a
+       "Sections" panel that pops up above the toolbar. Prev/Next +
+       counter stay visible at all times.
+    ──────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-rail {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0; right: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: auto !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+        overflow: visible;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.18);
+      }
+      .nav-rail .nav-brand { display: none; }
+
+      .nav-rail .nav-items {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 10px;
+        background: var(--charcoal);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-rail.open .nav-items { display: block; }
+
+      .nav-rail .nav-arrows {
+        flex: 1;
+        border-top: none;
+        margin-top: 0;
+        padding: 10px 12px;
+      }
+
+      .rail-toggle {
+        display: flex;
+        width: 44px; flex-shrink: 0;
+        align-self: stretch;
+        border-left: 1px solid rgba(255,255,255,0.08);
+      }
+      .rail-toggle:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); }
+
+      .stage { margin-left: 0; width: 100%; }
+
+      .slide { padding: 28px 20px 92px; }
+    }
+  </style>
+</head>
+<body>
+<a href="#slide-stage" class="skip-link">Skip to slide content</a>
+
+<script src="../../nav.js"></script>
+
+<!-- Screen reader live region for slide announcements -->
+<div aria-live="polite" aria-atomic="true" id="slideAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
+
+<!-- ── LEFT NAV RAIL ─────────────────────────── -->
+<nav class="nav-rail" aria-label="Slide navigation">
+  <button type="button" id="railToggle" class="rail-toggle" aria-expanded="false" aria-controls="slideNav" aria-label="Show all slides">
+    <svg class="rail-icon-open"  viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>
+    <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-brand">
+    <div class="nav-series">Skill Primer</div>
+    <div class="nav-skill">Systems Thinking</div>
+  </div>
+  <ul class="nav-items" id="slideNav">
+    <li class="nav-item"><button class="nav-link active" data-slide="0" aria-current="true"><span class="nav-num">01</span><span>Introduction</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="1"><span class="nav-num">02</span><span>The Problem</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="2"><span class="nav-num">03</span><span>When It Matters</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="3"><span class="nav-num">04</span><span>The Outcome</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="4"><span class="nav-num">05</span><span>What It Is</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="5"><span class="nav-num">06</span><span>Model: Feedback Loops</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="6"><span class="nav-num">07</span><span>Model: The Iceberg Model</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="7"><span class="nav-num">08</span><span>Model: Leverage Points</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="8"><span class="nav-num">09</span><span>In Practice</span><span class="nav-dot"></span></button></li>
+    <li class="nav-item"><button class="nav-link" data-slide="9"><span class="nav-num">10</span><span>Summary</span><span class="nav-dot"></span></button></li>
+  </ul>
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="btnPrev" disabled>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Prev
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 10</span>
+    <button class="nav-arrow" id="btnNext">
+      Next
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── RESUME BANNER ──────────────────────────── -->
+<div class="resume-banner hidden" id="resumeBanner" role="status" aria-live="polite">
+  <div class="resume-banner-text">
+    <strong>Welcome back</strong>
+    You were on slide <span id="resumeSlideLabel"></span>
+  </div>
+  <button class="resume-banner-btn primary" id="resumeBtn" type="button">Resume</button>
+  <button class="resume-banner-btn dismiss" id="resumeDismissBtn" type="button" aria-label="Dismiss, start from beginning">Start over</button>
+</div>
+
+<!-- ── SLIDE STAGE ───────────────────────────── -->
+<div class="stage" id="slide-stage" role="region" aria-label="Systems Thinking primer slides" tabindex="-1">
+
+  <!-- 01 · TITLE -->
+  <div class="slide slide-sage active" data-index="0">
+    <div class="bg-circle" style="width:480px;height:480px;top:-120px;right:-100px;background:var(--teal);opacity:0.09;"></div>
+    <div class="bg-circle" style="width:180px;height:180px;bottom:100px;right:340px;background:var(--terracotta);opacity:0.07;"></div>
+    <div style="display:flex;align-items:flex-start;gap:28px;margin-bottom:24px;">
+      <div class="accent-bar" style="margin-top:8px;"></div>
+      <h1 class="h-display">Systems Thinking</h1>
+    </div>
+    <p class="t-lead" style="max-width:680px;">Every recurring problem is being produced by something. This skill builds the discipline to find the structure behind it — before patching the same symptom one more time.</p>
+  </div>
+
+  <!-- 02 · THE PROBLEM -->
+  <div class="slide slide-white" data-index="1">
+    <div class="bg-circle" style="width:300px;height:300px;bottom:-70px;left:-70px;background:var(--teal);opacity:0.07;"></div>
+    <span class="eyebrow">The Problem</span>
+    <h2 class="h-title" style="max-width:720px;">Every fire gets fought. The thing producing the fires never gets touched.</h2>
+    <p class="t-body" style="max-width:680px;margin-bottom:24px;">Without Systems Thinking, teams treat each flare-up as its own isolated event — a bug here, a missed deadline there, a customer complaint somewhere else. Each one gets patched. None of them get traced back to the structure that keeps producing them. The cost compounds quietly: the same fire keeps returning, dressed as a new one.</p>
+    <div class="callout-sage" style="max-width:620px;">
+      <p class="t-body t-terra" style="font-weight:500;">A release that ships late for the third quarter running, "fixed" each time with another approval step. A support queue that grows every launch, answered each time with another headcount request. The pattern is the same — the response never addresses it.</p>
+    </div>
+  </div>
+
+  <!-- 03 · WHEN IT MATTERS -->
+  <div class="slide slide-white" data-index="2">
+    <div class="bg-circle" style="width:240px;height:240px;top:-50px;right:-50px;background:var(--teal);opacity:0.07;"></div>
+    <span class="eyebrow">When It Matters Most</span>
+    <h2 class="h-title" style="max-width:600px;">Five moments where this skill makes the difference.</h2>
+    <div class="num-list" style="max-width:760px;">
+      <div class="num-item"><span class="num-badge">01</span><span class="t-body">The same problem keeps recurring despite being "fixed" multiple times in a row</span></div>
+      <div class="num-item"><span class="num-badge">02</span><span class="t-body">A fix in one area quietly makes things worse somewhere else, and nobody connects the two</span></div>
+      <div class="num-item"><span class="num-badge">03</span><span class="t-body">A team keeps adding more of something — people, steps, approvals — and the underlying metric doesn't move</span></div>
+      <div class="num-item"><span class="num-badge">04</span><span class="t-body">A decision needs input from more than one discipline, and each one is only seeing its own slice of the problem</span></div>
+      <div class="num-item"><span class="num-badge">05</span><span class="t-body t-teal" style="font-style:italic;">AI can draw a plausible-looking systems map or root-cause diagram in seconds — the scarce skill becomes verifying which interdependencies are real, not generating the diagram</span></div>
+    </div>
+  </div>
+
+  <!-- 04 · THE OUTCOME (dark) -->
+  <div class="slide slide-teal" data-index="3">
+    <div class="bg-circle" style="width:500px;height:500px;top:-140px;right:-140px;background:var(--teal);opacity:0.12;"></div>
+    <div class="bg-circle" style="width:240px;height:240px;bottom:-40px;left:60px;background:var(--amber);opacity:0.08;"></div>
+    <span class="eyebrow eyebrow-lt">The Outcome It Enables</span>
+    <h2 class="h-title h-lt" style="max-width:780px;">The structure behind the symptom, made visible.</h2>
+    <p class="t-body t-light" style="max-width:640px;margin-bottom:28px;">The ability to take any recurring problem and trace it to what's actually producing it — the interdependencies connecting it to the rest of the system, the feedback loop keeping it alive, and the point where a change would actually hold.</p>
+    <div class="callout-dark" style="max-width:640px;">
+      <p class="t-body" style="color:var(--off-white);opacity:0.92;font-weight:500;">Systems Thinking is the practice of seeing how parts of a whole connect — the interdependencies, the feedback loops, the ripple effects — and finding where a change actually holds, rather than treating each symptom as its own isolated event.</p>
+    </div>
+  </div>
+
+  <!-- 05 · WHAT IT IS -->
+  <div class="slide slide-sage" data-index="4">
+    <div class="bg-circle" style="width:360px;height:360px;bottom:-80px;right:-80px;background:var(--teal);opacity:0.08;"></div>
+    <span class="eyebrow">What It Is — And What It Isn't</span>
+    <h2 class="h-title" style="max-width:680px;">Where Analytical Thinking works within a boundary, this questions it.</h2>
+    <p class="t-body" style="max-width:700px;margin-bottom:28px;">Analytical Thinking decomposes a problem within a defined scope. Systems Thinking asks what lies beyond that scope — and how it's connected. Both are trainable disciplines, most useful in sequence.</p>
+    <div class="two-col" style="max-width:820px;">
+      <div class="card card-top-teal">
+        <div class="card-label">Analytical Thinking</div>
+        <p class="t-body">Breaks a defined problem into its component parts and traces symptoms to causes within a fixed boundary. Systems Thinking picks up where that boundary ends, asking what else the problem is connected to.</p>
+      </div>
+      <div class="card card-top-teal">
+        <div class="card-label">Critical Thinking</div>
+        <p class="t-body">Tests whether a conclusion holds up — sound, questionable, missing. Systems Thinking supplies the structural picture, the loops and interdependencies, that testing draws on in the first place.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 · MENTAL MODEL: FEEDBACK LOOPS -->
+  <div class="slide slide-white slide-dense" data-index="5">
+    <span class="eyebrow" style="margin-bottom:8px;">Mental Model 1 of 3</span>
+    <h2 class="h-heading" style="margin-bottom:4px;">Feedback Loops</h2>
+    <p class="t-meta" style="margin-bottom:24px;">Systems dynamics · reinforcing vs. balancing</p>
+    <div style="max-width:800px;">
+      <p class="t-body" style="margin-bottom:20px;">A reinforcing loop amplifies whatever's already happening. A balancing loop resists a deviation and pulls things back toward a target. Every recurring problem is being kept alive by one of these — usually a reinforcing loop nobody's named yet.</p>
+      <div class="two-col" style="margin-bottom:20px;">
+        <div class="card card-top-teal">
+          <div class="icon-card-icon" style="color:var(--terracotta);"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.5 0-8 3-8 6.5 0 3 2.8 5.5 6.5 5.5 3 0 5.5-2 5.5-4.5"/><polyline points="14.5 8.5 16.5 10.5 19 8"/></svg></div>
+          <div class="card-label">Reinforcing</div>
+          <p class="t-body">Compounds instead of settling. More of one thing produces more of another, which produces more of the first — like compound interest, or a schedule slip that causes rushed testing that causes the next slip.</p>
+        </div>
+        <div class="card card-top-teal">
+          <div class="icon-card-icon" style="color:var(--teal);"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+          <div class="card-label">Balancing</div>
+          <p class="t-body">Resists change and pulls a system back toward a target — a thermostat correcting drifted temperature, or a review gate that catches quality issues before they compound further.</p>
+        </div>
+      </div>
+      <div class="callout-sage">
+        <div class="callout-label">Applied</div>
+        <p class="t-body">A team ships under deadline pressure, skipping tests to hit the date. Skipped tests mean more bugs. More bugs mean more firefighting. Less time is left to test the next release — a reinforcing loop, with nothing currently balancing it.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 · MENTAL MODEL: THE ICEBERG MODEL -->
+  <div class="slide slide-white slide-dense" data-index="6">
+    <div class="bg-circle" style="width:220px;height:220px;top:-50px;right:80px;background:var(--amber);opacity:0.08;"></div>
+    <span class="eyebrow" style="margin-bottom:8px;">Mental Model 2 of 3</span>
+    <h2 class="h-heading" style="margin-bottom:4px;">The Iceberg Model</h2>
+    <p class="t-meta" style="margin-bottom:20px;">Systems thinking practice · four levels of depth</p>
+    <p class="t-body" style="max-width:700px;margin-bottom:28px;">Most problem-solving stops at the event — the visible tip. The Iceberg Model pushes deeper: from the event, to the pattern it belongs to, to the structure producing that pattern, to the mental model that keeps the structure in place.</p>
+    <div class="step-chain" style="max-width:760px;">
+      <div class="step-item"><div class="step-num">1</div><p class="t-body" style="padding-top:4px;"><span class="t-meta">Event: &nbsp;</span>This release shipped with three bugs the team didn't catch.</p></div>
+      <div class="step-item"><div class="step-num">2</div><p class="t-body" style="padding-top:4px;"><span class="t-meta">Pattern: &nbsp;</span>Every release for the last two quarters has shipped with bugs found only after launch.</p></div>
+      <div class="step-item"><div class="step-num">3</div><p class="t-body" style="padding-top:4px;"><span class="t-meta">Structure: &nbsp;</span>No dedicated testing time exists between "code complete" and the release date.</p></div>
+      <div class="step-item"><div class="step-num root">4</div><p class="t-body t-terra" style="padding-top:4px;font-weight:500;"><span class="t-meta">Mental model: &nbsp;</span>The team assumes hitting the date matters more than the release being clean — so testing is the first thing cut when the schedule tightens.</p></div>
+    </div>
+    <p style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:var(--terracotta);letter-spacing:0.04em;">THE REAL FIX LIVES AT LEVEL 3 OR 4, NOT LEVEL 1</p>
+  </div>
+
+  <!-- 08 · MENTAL MODEL: LEVERAGE POINTS -->
+  <div class="slide slide-white slide-dense" data-index="7">
+    <span class="eyebrow" style="margin-bottom:8px;">Mental Model 3 of 3</span>
+    <h2 class="h-heading" style="margin-bottom:4px;">Leverage Points</h2>
+    <p class="t-meta" style="margin-bottom:20px;">Donella Meadows · "Places to Intervene in a System," 1999</p>
+    <p class="t-body" style="max-width:700px;margin-bottom:24px;">Not every intervention is equal. Meadows ranked twelve places to intervene in a system, from shallow — adjusting a number — to deep — shifting the goal or the paradigm the system runs on. The deeper the intervention, the harder it is to make, and the more it actually changes.</p>
+    <div class="num-list" style="max-width:760px;">
+      <div class="num-item"><span class="num-badge">01</span><span class="t-body">Parameters — a number or rate, like adding one more approval step. Easiest to change, weakest effect.</span></div>
+      <div class="num-item"><span class="num-badge">02</span><span class="t-body">Buffers — capacity held in reserve, like a contractor added for crunch weeks.</span></div>
+      <div class="num-item"><span class="num-badge">03</span><span class="t-body">Rules — who has authority to decide, like changing who can sign off on a release.</span></div>
+      <div class="num-item"><span class="num-badge">04</span><span class="t-body t-terra" style="font-style:italic;">Goals and paradigms — what the system is actually optimizing for, like redefining "done" as clean, not just shipped. Hardest to shift, and where the deepest change happens.</span></div>
+    </div>
+  </div>
+
+  <!-- 09 · IN PRACTICE -->
+  <div class="slide slide-white" data-index="8">
+    <span class="eyebrow">In Practice</span>
+    <h2 class="h-title" style="max-width:820px;">A release that keeps shipping with bugs — same problem, two approaches.</h2>
+    <div class="two-col" style="max-width:900px;">
+      <div class="comp-card comp-without">
+        <div class="comp-label comp-label-terra">Without Systems Thinking</div>
+        <p class="t-body" style="margin-bottom:14px;">Each bug gets patched as it's reported. The team works late to hit the next date too. Three months later, the bug count hasn't moved — it's the same reinforcing loop, run again.</p>
+        <p class="t-body">Every fix stayed at the level of the individual bug. Nobody named the loop keeping the pattern alive.</p>
+      </div>
+      <div class="comp-card comp-with">
+        <div class="comp-label comp-label-teal">With Systems Thinking</div>
+        <p class="t-body" style="margin-bottom:14px;">The team names the reinforcing loop: rushed release → skipped tests → more bugs → more firefighting → less time to test the next one. They target the loop itself, not the latest bug.</p>
+        <p class="t-body t-teal" style="font-weight:500;">A fixed testing buffer gets built into the schedule — untouchable, even under deadline pressure. The loop breaks. Fixing the structure took one change; patching bugs individually never would have.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 10 · SUMMARY -->
+  <div class="slide slide-sage" data-index="9">
+    <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
+    <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
+    <span class="eyebrow" style="margin-bottom:32px;">Quick-Recall Summary</span>
+    <h2 class="sr-only">Quick-Recall Summary</h2>
+    <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">
+      <p>Systems Thinking is the discipline of seeing the structure behind a recurring problem — the interdependencies, the feedback loops, the leverage points — instead of treating each symptom as a fresh, unrelated fire.</p>
+    </div>
+    <p class="t-body" style="max-width:620px;opacity:0.75;">The output is a map of what's actually connected and where a change would hold — not another patch on the latest symptom.</p>
+    <div style="margin-top:40px;padding:24px 28px;background:rgba(27,74,68,0.08);border-left:3px solid var(--deep-teal);border-radius:0 8px 8px 0;max-width:560px;">
+      <p style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
+      <p style="font-family:'Inter',sans-serif;font-size:14px;color:var(--navy);line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
+      <a href="plan.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--white);background:var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#5BA79F'" onmouseout="this.style.background='var(--deep-teal)'">Open Full Learning Plan <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+
+
+<script>
+(function () {
+  var TOTAL = 10;
+  var current = 0;
+  var visited = new Set([0]);
+
+  // ── localStorage key for this primer ───────
+  var STORAGE_KEY = 'amplified_primer_systems-thinking';
+
+  var slides   = Array.from(document.querySelectorAll('.slide'));
+  var navLinks = Array.from(document.querySelectorAll('.nav-link'));
+  var btnPrev  = document.getElementById('btnPrev');
+  var btnNext  = document.getElementById('btnNext');
+  var counter  = document.getElementById('slideCounter');
+  var announce = document.getElementById('slideAnnounce');
+
+  // ── Resume banner elements ──────────────────
+  var resumeBanner      = document.getElementById('resumeBanner');
+  var resumeBtn         = document.getElementById('resumeBtn');
+  var resumeDismissBtn  = document.getElementById('resumeDismissBtn');
+  var resumeSlideLabel  = document.getElementById('resumeSlideLabel');
+
+  var slideTitles = [
+    'Introduction', 'The Problem', 'When It Matters', 'The Outcome',
+    'What It Is', 'Model: Feedback Loops', 'Model: The Iceberg Model', 'Model: Leverage Points',
+    'In Practice', 'Summary'
+  ];
+
+  // ── Progress persistence ─────────────────────
+
+  function saveProgress() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        current: current,
+        visited: Array.from(visited)
+      }));
+    } catch (e) {
+      // localStorage unavailable (private browsing, storage full) — fail silently
+    }
+  }
+
+  function loadProgress() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearProgress() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {}
+  }
+
+  function hideBanner() {
+    resumeBanner.classList.add('hidden');
+  }
+
+  function showResumeBanner(savedSlide) {
+    var slideNum   = savedSlide + 1;
+    var slideTitle = slideTitles[savedSlide] || ('Slide ' + slideNum);
+    resumeSlideLabel.textContent = slideNum + ' — ' + slideTitle;
+    resumeBanner.classList.remove('hidden');
+
+    resumeBtn.addEventListener('click', function () {
+      hideBanner();
+      slides[current].classList.remove('active');
+      current = savedSlide;
+      visited = new Set(savedData.visited || [savedSlide]);
+      slides[current].classList.add('active');
+      updateUI();
+      saveProgress();
+    }, { once: true });
+
+    resumeDismissBtn.addEventListener('click', function () {
+      hideBanner();
+      visited = new Set([0]);
+      updateUI();
+      clearProgress();
+    }, { once: true });
+  }
+
+  // ── Navigation ───────────────────────────────
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= TOTAL || idx === current) return;
+
+    // Exit current
+    var outgoing = slides[current];
+    outgoing.classList.remove('active');
+    outgoing.classList.add('exit-up');
+    setTimeout(function () {
+      outgoing.classList.remove('exit-up');
+    }, 280);
+
+    current = idx;
+    visited.add(current);
+
+    // Activate new
+    slides[current].classList.remove('exit-up');
+    slides[current].classList.add('active');
+
+    // Dismiss banner if still showing
+    if (!resumeBanner.classList.contains('hidden')) hideBanner();
+
+    updateUI();
+    saveProgress();
+  }
+
+  function updateUI() {
+    // Nav links
+    navLinks.forEach(function (link) {
+      var i = parseInt(link.dataset.slide, 10);
+      link.classList.toggle('active',  i === current);
+      link.classList.toggle('visited', visited.has(i) && i !== current);
+      if (i === current) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+
+    // Arrows
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === TOTAL - 1;
+    btnNext.textContent = '';
+    btnNext.innerHTML = current === TOTAL - 1
+      ? 'Done'
+      : 'Next <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+
+    // Counter
+    counter.textContent = (current + 1) + ' / ' + TOTAL;
+
+    // Screen reader announcement
+    if (announce) {
+      announce.textContent = 'Slide ' + (current + 1) + ' of ' + TOTAL + ': ' + slideTitles[current];
+    }
+  }
+
+  // Button events
+  btnPrev.addEventListener('click', function () { goTo(current - 1); });
+  btnNext.addEventListener('click', function () { goTo(current + 1); });
+
+  // Rail link events
+  navLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      goTo(parseInt(link.dataset.slide, 10));
+    });
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  // ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
+  var railToggle = document.getElementById('railToggle');
+  if (railToggle) {
+    var rail = railToggle.closest('.nav-rail');
+
+    function closeRailPanel() {
+      rail.classList.remove('open');
+      railToggle.setAttribute('aria-expanded', 'false');
+      railToggle.setAttribute('aria-label', 'Show all slides');
+    }
+    function openRailPanel() {
+      rail.classList.add('open');
+      railToggle.setAttribute('aria-expanded', 'true');
+      railToggle.setAttribute('aria-label', 'Hide all slides');
+    }
+
+    railToggle.addEventListener('click', function () {
+      rail.classList.contains('open') ? closeRailPanel() : openRailPanel();
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!rail.classList.contains('open')) return;
+      if (e.target.closest('.nav-link')) { closeRailPanel(); return; }
+      if (!rail.contains(e.target)) closeRailPanel();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && rail.classList.contains('open')) {
+        closeRailPanel();
+        railToggle.focus();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 768 && rail.classList.contains('open')) closeRailPanel();
+    });
+  }
+
+  // ── Init: restore saved progress if any ─────
+  var savedData = loadProgress();
+  if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
+    visited = new Set(savedData.visited || [0]);
+    updateUI();
+    showResumeBanner(savedData.current);
+  } else {
+    updateUI();
+  }
+
+})();
+</script>
+
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

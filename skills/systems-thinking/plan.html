@@ -1,0 +1,3108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Systems Thinking: Full Learning Plan · Amplified Thinker</title>
+<meta name="description" content="The full Systems Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.">
+<link rel="canonical" href="https://amplifiedthinker.com/skills/systems-thinking/plan.html">
+<link rel="icon" type="image/png" href="../../images/favicon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Amplified Thinker">
+<meta property="og:title" content="Systems Thinking: Full Learning Plan · Amplified Thinker">
+<meta property="og:description" content="The full Systems Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.">
+<meta property="og:url" content="https://amplifiedthinker.com/skills/systems-thinking/plan.html">
+<meta property="og:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── BRAND TOKENS ───────────────────────────── */
+  :root {
+    --sage:       #ACC4B6;
+    --teal:       #5BA79F;
+    --deep-teal:  #2D756F;
+    --off-white:  #F5F7F6;
+    --cream:      #EDE5C5;
+    --terracotta: #C77B5F;
+    --amber:      #D9A05B;
+    --navy:       #1F4D4A;
+    --charcoal:   #2D3330;
+    --light-sage: #D8E4DD;
+    --warm-gray:  #8B8A85;
+    --slate-blue: #5B7C8F;
+    --tag-analytical-bg: #C5DDD9;
+    --tag-analytical-tx: #2D756F;
+    --tag-structural-bg: #D8E4DD;
+    --tag-structural-tx: #1F4D4A;
+    --tag-human-bg:      #EDD5CB;
+    --tag-human-tx:      #1F4D4A;
+    --tag-growth-bg:     #F2DDB8;
+    --tag-growth-tx:     #2D3330;
+    --tag-insight-bg:    #C8D4DC;
+    --tag-insight-tx:    #2D3330;
+    --nav-width: 260px;
+    --content-max: 780px;
+    --radius: 8px;
+  }
+
+  /* ── RESET ──────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--navy);
+    background: var(--off-white);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── LEFT NAV ───────────────────────────────── */
+  .nav-rail {
+    width: var(--nav-width);
+    min-height: 100vh;
+    background: var(--charcoal);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 40px;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .nav-brand {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 20px;
+  }
+  .nav-series {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 6px;
+  }
+  .nav-skill {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--off-white);
+    line-height: 1.2;
+  }
+  .nav-items { list-style: none; padding: 0 12px; flex: 1; }
+  .nav-item { margin-bottom: 2px; }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .nav-link:hover { color: var(--off-white); background: rgba(255,255,255,0.06); }
+  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.2); }
+  .nav-link.visited { color: rgba(255,255,255,0.85); }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .nav-link.active .nav-dot  { background: var(--teal); }
+  .nav-link.visited .nav-dot { background: var(--sage); }
+  /* ── PREV / NEXT ARROWS ─────────────────────── */
+  .nav-arrows {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 16px;
+  }
+  .nav-arrow {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 5px;
+    padding: 7px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: #E8EDEB;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .nav-arrow:hover {
+    background: rgba(91,167,159,0.28);
+    border-color: var(--teal);
+    color: #FFFFFF;
+  }
+  .nav-arrow svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    flex-shrink: 0;
+  }
+  .nav-arrow:disabled { opacity: 0.3; cursor: default; }
+  .slide-counter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── RAIL TOGGLE (mobile bottom-toolbar trigger, hidden on desktop) ── */
+  .rail-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; padding: 0;
+    color: rgba(255,255,255,0.6);
+  }
+  .rail-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .rail-toggle .rail-icon-close { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-open  { display: none; }
+  .nav-rail.open .rail-toggle .rail-icon-close { display: block; }
+
+  /* ── MAIN CONTENT ───────────────────────────── */
+  .main {
+    margin-left: var(--nav-width);
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* ── HERO ───────────────────────────────────── */
+  .hero {
+    background: var(--cream);
+    padding: 72px 80px 64px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(45,117,111,0.12);
+    width: 100%;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.07;
+    top: -100px; right: -80px;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    opacity: 0.06;
+    bottom: -40px; right: 200px;
+  }
+  .hero-series {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+  .hero-title-row { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; }
+  .hero-accent { width: 4px; height: 56px; background: var(--terracotta); border-radius: 2px; flex-shrink: 0; }
+  .hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.1;
+    margin-bottom: 0;
+    max-width: 600px;
+  }
+  .hero-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+
+  /* ── TAGS ───────────────────────────────────── */
+  .tag {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    display: inline-block;
+  }
+  .tag-analytical { background: var(--tag-analytical-bg); color: var(--tag-analytical-tx); }
+  .tag-structural  { background: var(--tag-structural-bg); color: var(--tag-structural-tx); }
+  .tag-human       { background: var(--tag-human-bg);      color: var(--tag-human-tx); }
+  .tag-growth      { background: var(--tag-growth-bg);     color: var(--tag-growth-tx); }
+  .tag-insight     { background: var(--tag-insight-bg);    color: var(--tag-insight-tx); }
+
+  /* ── CONTENT SECTIONS ───────────────────────── */
+  .content { max-width: calc(var(--content-max) + 160px); padding: 0 80px 120px; width: 100%; counter-reset: section-counter; }
+
+  .section {
+    padding-top: 96px;
+    padding-bottom: 16px;
+  }
+  .section h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--deep-teal);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    max-width: var(--content-max);
+  }
+  .section h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+    margin-bottom: 12px;
+    margin-top: 36px;
+  }
+  .section p {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    color: var(--navy);
+  }
+  .principles-intro {
+    padding-bottom: 32px;
+    border-bottom: 1px solid rgba(45,117,111,0.08);
+  }
+
+  /* ── SNAPSHOT CARDS ─────────────────────────── */
+  .snapshot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .snapshot-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    border-top: 3px solid var(--teal);
+  }
+  .snapshot-card-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .snapshot-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0;
+    color: var(--navy);
+  }
+  .snapshot-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+  }
+  .snapshot-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+  }
+  .snapshot-list li::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .snapshot-list li.ai-item { font-style: italic; color: var(--deep-teal); }
+
+  /* ── CALLOUT ────────────────────────────────── */
+  .callout {
+    background: var(--light-sage);
+    border-left: 4px solid var(--terracotta);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 20px 24px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .callout p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--terracotta);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .callout-teal {
+    background: var(--tag-analytical-bg);
+    border-left-color: var(--deep-teal);
+  }
+  .callout-teal p { color: var(--deep-teal); }
+
+  /* ── DEFINITION BOX ─────────────────────────── */
+  .definition-box {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    max-width: var(--content-max);
+    margin: 28px 0;
+  }
+  .definition-box p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* ── OBJECTIVES LIST ────────────────────────── */
+  .objectives-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+  }
+  .objectives-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 20px;
+    background: white;
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+  }
+  .obj-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 24px;
+    padding-top: 1px;
+  }
+  .obj-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  /* ── PRINCIPLE BLOCKS ───────────────────────── */
+  .principle {
+    max-width: var(--content-max);
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(45,117,111,0.08);
+  }
+  .principle:last-child { border-bottom: none; }
+  .principle:first-child {
+    border-top: 1px solid rgba(45,117,111,0.08);
+    padding-top: 32px;
+    margin-top: 28px;
+  }
+  .principle-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .principle h3 {
+    margin-top: 0;
+    color: var(--deep-teal);
+  }
+
+  /* ── ACCORDION (shared: principles + mental models) ──
+     All principles and model cards default closed. Toggled
+     via .open class on the parent .principle / .model-card. */
+  .principle-header,
+  .model-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    cursor: pointer;
+    border-radius: var(--radius);
+  }
+  .principle-header-text,
+  .model-header-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .principle-body,
+  .model-body { display: none; }
+  .principle.open .principle-body,
+  .model-card.open .model-body { display: block; }
+  .accordion-control {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .accordion-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    white-space: nowrap;
+  }
+  .accordion-toggle {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--teal);
+  }
+  .accordion-toggle svg {
+    width: 18px; height: 18px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s ease;
+  }
+  .open .accordion-toggle svg { transform: rotate(180deg); }
+  .principle-header:hover .accordion-label,
+  .model-header:hover .accordion-label,
+  .principle-header:hover .accordion-toggle,
+  .model-header:hover .accordion-toggle { color: var(--deep-teal); }
+  .principle-header:focus-visible,
+  .model-header:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  @media (max-width: 560px) {
+    .accordion-label { display: none; }
+  }
+  .ai-note {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--tag-growth-bg);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-top: 16px;
+    border-left: 3px solid var(--amber);
+  }
+  .ai-note-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .ai-note p {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--navy);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* ── MENTAL MODEL CARDS ─────────────────────── */
+  .model-card {
+    background: white;
+    border-radius: var(--radius);
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    border-top: 3px solid var(--teal);
+    overflow: hidden;
+  }
+  .model-header { padding: 24px 32px; }
+  .model-body { padding: 0 32px 28px; }
+  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header .model-source { margin-bottom: 0; }
+  .model-source {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--warm-gray);
+    margin-bottom: 14px;
+  }
+  .model-applied {
+    background: var(--light-sage);
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    margin-top: 16px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .model-applied-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+    margin-bottom: 6px;
+  }
+  .model-applied p { font-size: 14px; margin: 0; }
+
+  /* model diagrams — ported from the primer for visual continuity */
+  .model-diagram { margin-top: 20px; }
+  .model-diagram-caption {
+    text-align: center; margin-top: 10px;
+    font-size: 12px; color: var(--warm-gray);
+  }
+
+  /* Feedback Loops icon-card pair */
+  .loop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .loop-card { border-radius: var(--radius); padding: 20px 22px; background: var(--light-sage); }
+  .loop-icon {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .loop-icon svg {
+    width: 24px; height: 24px;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .loop-label {
+    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px;
+    letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .loop-card p { font-family: 'Inter', sans-serif; font-size: 13.5px; margin: 0; line-height: 1.55; color: var(--navy); }
+
+  /* Iceberg Model step chain (shared pattern with Assumption-Reversal-style models) */
+  .step-chain { display: flex; flex-direction: column; gap: 12px; }
+  .step-item  { display: flex; align-items: flex-start; gap: 16px; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--tag-analytical-bg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700; font-size: 12px; color: var(--deep-teal);
+    flex-shrink: 0;
+  }
+  .step-num.root { background: var(--terracotta); color: var(--off-white); }
+  .step-item p { font-size: 14px; margin: 0; padding-top: 4px; line-height: 1.5; }
+  .step-meta { font-size: 12px; color: var(--warm-gray); }
+  .model-applied .step-meta { color: var(--navy); }
+  .model-applied .step-num { background: white; }
+  .model-applied .step-num.root { background: var(--terracotta); }
+  .step-root-label {
+    margin: 4px 0 0 48px;
+    font-family: 'Poppins', sans-serif; font-weight: 600;
+    font-size: 11px; color: var(--terracotta); letter-spacing: 0.04em;
+  }
+
+  /* Leverage Points ladder (num-list pattern) */
+  .ladder-list { display: flex; flex-direction: column; gap: 12px; }
+  .ladder-item { display: flex; align-items: flex-start; gap: 18px; }
+  .ladder-badge {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px; font-weight: 700;
+    color: var(--teal); min-width: 26px; flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .ladder-item p { font-size: 14px; margin: 0; line-height: 1.5; color: var(--navy); }
+  .ladder-item.deepest .ladder-badge { color: var(--terracotta); }
+  .ladder-item.deepest p { color: var(--terracotta); font-weight: 500; font-style: italic; }
+
+  /* Connection Circles diagram */
+  .circle-diagram-wrap { display: flex; justify-content: center; padding: 12px 0 4px; }
+  .circle-diagram { position: relative; width: 100%; max-width: 420px; aspect-ratio: 1 / 1; }
+  .circle-diagram svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .circle-node {
+    position: absolute; transform: translate(-50%, -50%);
+    background: white; border: 1.5px solid var(--teal);
+    border-radius: 999px; padding: 8px 14px;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    color: var(--deep-teal); text-align: center; white-space: nowrap;
+    z-index: 2;
+  }
+  .circle-node.origin { border-color: var(--terracotta); color: var(--terracotta); }
+
+  /* fishbone diagram — traditional spine + diagonal bones + effect head */
+  .fishbone-diagram {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 760 / 260;
+    margin-top: 8px;
+  }
+  .fishbone-diagram svg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; display: block;
+  }
+
+  /* ── MISTAKES ───────────────────────────────── */
+  .mistake {
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    border-left: 3px solid var(--terracotta);
+  }
+  .mistake h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+  }
+  .mistake-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .mistake-cell-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 4px;
+  }
+  .mistake-cell p { font-size: 14px; margin: 0; line-height: 1.5; }
+
+  /* ── BEHAVIORAL INDICATORS ──────────────────── */
+  .continuum-bar {
+    display: flex;
+    gap: 6px;
+    max-width: var(--content-max);
+    margin: 24px 0 20px;
+  }
+  .continuum-segment {
+    flex: 1;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+  }
+  .continuum-segment.underuse { background: var(--tag-human-bg); color: var(--navy); }
+  .continuum-segment.target   { background: var(--tag-analytical-bg); color: var(--deep-teal); flex: 1.3; }
+  .continuum-segment.overuse  { background: var(--tag-growth-bg); color: var(--charcoal); }
+
+  .indicators-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: var(--content-max);
+    margin-bottom: 24px;
+  }
+  .indicator-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .indicator-panel {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .indicator-panel.target   { border-top: 4px solid var(--teal); }
+  .indicator-panel.underuse { border-top: 3px solid var(--terracotta); }
+  .indicator-panel.overuse  { border-top: 3px solid var(--amber); }
+
+  .indicator-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .indicator-icon {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .indicator-icon svg {
+    width: 20px; height: 20px;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .indicator-panel.target   .indicator-icon { color: var(--teal); }
+  .indicator-panel.underuse .indicator-icon { color: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-icon { color: var(--amber); }
+  .indicator-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--deep-teal);
+  }
+
+  .indicator-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px 24px;
+  }
+  .indicator-list.cols-2 { grid-template-columns: 1fr 1fr; }
+  .indicator-list li {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 7px 10px 7px 18px;
+    margin: 0 -10px;
+    border-radius: 6px;
+    position: relative;
+    color: var(--navy);
+    transition: background 0.15s ease;
+  }
+  .indicator-list li::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 14px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+  .indicator-panel.target   .indicator-list li::before { background: var(--teal); }
+  .indicator-panel.underuse .indicator-list li::before { background: var(--terracotta); }
+  .indicator-panel.overuse  .indicator-list li::before { background: var(--amber); }
+  .indicator-panel.target   .indicator-list li:hover { background: var(--tag-analytical-bg); }
+  .indicator-panel.underuse .indicator-list li:hover { background: var(--tag-human-bg); }
+  .indicator-panel.overuse  .indicator-list li:hover { background: var(--tag-growth-bg); }
+
+  @media (max-width: 640px) {
+    .indicator-row { grid-template-columns: 1fr; }
+    .indicator-list.cols-2 { grid-template-columns: 1fr; }
+  }
+
+  /* ── SCENARIOS ──────────────────────────────── */
+  .scenario {
+    max-width: var(--content-max);
+    margin-bottom: 32px;
+  }
+  .scenario h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin-bottom: 16px;
+  }
+  .scenario-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .scenario-col {
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .scenario-col.without {
+    background: #FDF0EC;
+    border-top: 3px solid var(--terracotta);
+  }
+  .scenario-col.with {
+    background: color-mix(in srgb, var(--tag-analytical-bg) 50%, transparent);
+    border-top: 3px solid var(--teal);
+  }
+  .scenario-col-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .without .scenario-col-label { color: var(--terracotta); }
+  .with    .scenario-col-label { color: var(--deep-teal); }
+  .scenario-col p { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+  .scenario-col p:last-child { margin-bottom: 0; }
+  .scenario-highlight { font-weight: 500; color: var(--deep-teal); }
+
+  /* ── REFLECTION ─────────────────────────────── */
+  .reflection-item {
+    max-width: var(--content-max);
+    margin-bottom: 16px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    border-left: 3px solid var(--slate-blue);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .reflection-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--slate-blue);
+    min-width: 28px;
+    padding-top: 1px;
+  }
+  .reflection-q {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--navy);
+  }
+  .reflection-time {
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 4px;
+  }
+
+  /* ── KNOWLEDGE CHECK ────────────────────────── */
+  .kc-question {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+  }
+  .kc-q-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 8px;
+  }
+  .kc-q-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .kc-options { display: flex; flex-direction: column; gap: 8px; }
+  .kc-option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background: var(--light-sage);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    font-size: 14px;
+    color: var(--navy);
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+    line-height: 1.45;
+  }
+  .kc-option:hover:not(:disabled) {
+    border-color: var(--deep-teal);
+    background: var(--tag-structural-bg);
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(45, 117, 111, 0.25);
+  }
+  .kc-option.selected {
+    background: var(--tag-structural-bg);
+    border-color: var(--deep-teal);
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
+  }
+  .kc-option.correct  {
+    background: var(--tag-analytical-bg);
+    border-color: var(--teal);
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
+  }
+  .kc-option.incorrect {
+    background: #FDE8E0;
+    border-color: var(--terracotta);
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(199, 123, 95, 0.2);
+  }
+  .kc-reveal-btn {
+    display: none;
+    margin-top: 16px;
+    background: var(--deep-teal);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .kc-reveal-btn:hover { background: var(--navy); }
+  .kc-score {
+    display: none;
+    margin-top: 20px;
+    background: var(--tag-analytical-bg);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    max-width: var(--content-max);
+  }
+  .kc-score p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    margin: 0;
+  }
+  .kc-retake-btn {
+    display: none;
+    margin-top: 12px;
+    background: transparent;
+    color: var(--deep-teal);
+    border: 1.5px solid var(--deep-teal);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .kc-retake-btn:hover { background: var(--deep-teal); color: white; }
+  .kc-retake-btn:focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 2px; }
+  .kc-answer { display: none; margin-top: 10px; }
+  .kc-answer-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .kc-answer p { font-size: 13px; color: var(--navy); margin: 0; line-height: 1.5; }
+
+  /* ── HABIT BUILDER ──────────────────────────── */
+  .habit-day {
+    max-width: var(--content-max);
+    margin-bottom: 12px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid rgba(45,117,111,0.12);
+  }
+  .habit-day-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: white;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .habit-day-header:hover { background: var(--light-sage); }
+  .habit-day-header.open  { background: var(--deep-teal); }
+  .habit-day-num {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--teal);
+    min-width: 32px;
+  }
+  .habit-day-header.open .habit-day-num { color: var(--sage); }
+  .habit-day-title-wrap { flex: 1; }
+  .habit-day-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    line-height: 1.3;
+  }
+  .habit-day-header.open .habit-day-title { color: var(--off-white); }
+  .habit-day-concept {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--warm-gray);
+    margin-top: 2px;
+  }
+  .habit-day-header.open .habit-day-concept { color: var(--sage); }
+  .habit-day-chevron {
+    font-size: 14px;
+    color: var(--warm-gray);
+    transition: transform 0.25s;
+  }
+  .habit-day-header.open .habit-day-chevron { transform: rotate(180deg); color: var(--sage); }
+  .habit-day-body {
+    display: none;
+    padding: 24px 28px 24px 72px;
+    background: white;
+    border-top: 1px solid rgba(45,117,111,0.08);
+  }
+  .habit-day-body.open { display: block; }
+  .habit-focus {
+    margin-bottom: 20px;
+  }
+  .habit-focus strong {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--deep-teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .habit-focus p { font-size: 14px; margin: 0; }
+  .habit-tasks { margin-bottom: 20px; }
+  .habit-tasks-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .habit-task {
+    margin-bottom: 16px;
+  }
+  .habit-task-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .habit-task p { font-size: 14px; margin-bottom: 8px; line-height: 1.55; }
+  .habit-example {
+    background: var(--cream);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--navy);
+    line-height: 1.55;
+    margin-top: 8px;
+    border-left: 3px solid var(--amber);
+  }
+  .habit-example-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .habit-meta { display: flex; flex-direction: column; gap: 10px; }
+  .habit-meta-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .habit-meta-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    min-width: 90px;
+    padding-top: 2px;
+  }
+  .habit-meta-value { font-size: 14px; color: var(--navy); line-height: 1.5; }
+  .habit-meta-value strong { color: var(--deep-teal); }
+  .habit-not-clicking {
+    margin-top: 16px;
+    background: var(--light-sage);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--navy);
+    line-height: 1.55;
+    border-left: 3px solid var(--slate-blue);
+  }
+  .habit-not-clicking-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-blue);
+    margin-bottom: 4px;
+  }
+
+  /* ── PROGRESSION ────────────────────────────── */
+  .progression-stage {
+    max-width: var(--content-max);
+    margin-bottom: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    border-left: 4px solid var(--teal);
+  }
+  .progression-stage-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .progression-stage h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--deep-teal);
+  }
+  .progression-cap {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(45,117,111,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .progression-cap-item label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .progression-cap-item p { font-size: 14px; line-height: 1.5; margin: 0; }
+
+  /* ── SUMMARY ────────────────────────────────── */
+  .summary-block {
+    background: var(--deep-teal);
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    max-width: var(--content-max);
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-block::before {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: var(--teal);
+    opacity: 0.1;
+    top: -80px; right: -60px;
+  }
+  .summary-block blockquote {
+    border-left: 4px solid var(--sage);
+    padding-left: 28px;
+    position: relative;
+  }
+  .summary-block p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--off-white);
+    line-height: 1.6;
+    margin: 0 0 16px;
+    max-width: 620px;
+  }
+  .summary-block p:last-child { margin: 0; font-size: 16px; color: var(--sage); }
+
+  /* ── RESOURCE TABLE ─────────────────────────── */
+  .table-scroll {
+    width: 100%;
+    max-width: var(--content-max);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .resource-table {
+    width: 100%;
+    max-width: var(--content-max);
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+    background: #FFFFFF;
+    border: 1px solid var(--light-sage);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(31,77,74,0.06);
+  }
+  .resource-table th {
+    font-family: 'Poppins', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--off-white);
+    border-bottom: 2px solid var(--light-sage);
+  }
+  .resource-table td {
+    padding: 14px 14px;
+    border-bottom: 1px solid var(--light-sage);
+    vertical-align: top;
+    line-height: 1.5;
+    color: var(--navy);
+    background: #FFFFFF;
+  }
+  .resource-table tr:last-child td { border-bottom: none; }
+  .resource-table tr:hover td { background: color-mix(in srgb, var(--light-sage) 40%, transparent); }
+  .resource-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--warm-gray);
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+  .resource-time svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .resource-type {
+    white-space: nowrap;
+  }
+  .type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px 4px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .type-pill svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .type-pill--book      { background: #DCEEEC; color: var(--deep-teal); }
+  .type-pill--article   { background: #DEE7EE; color: var(--slate-blue); }
+  .type-pill--video      { background: #F3E0D7; color: var(--terracotta); }
+  .type-pill--podcast   { background: #F6E6C8; color: #8A5A1E; }
+  .type-pill--paper     { background: #DCE6E5; color: var(--navy); }
+  .type-pill--factsheet { background: #E3EDE7; color: #4B6B5C; }
+  .resource-title { font-weight: 500; color: var(--deep-teal); }
+  .resource-why { color: var(--navy); font-size: 13px; }
+  .resource-links { white-space: nowrap; vertical-align: top; }
+  .resource-link {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--deep-teal);
+    text-decoration: none;
+    background: var(--tag-analytical-bg);
+    padding: 3px 10px;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+    margin-bottom: 4px;
+    margin-right: 4px;
+  }
+  .resource-link:hover { background: var(--deep-teal); color: var(--off-white); }
+
+  /* ── SCOPE ──────────────────────────────────── */
+  .scope-list {
+    list-style: none;
+    max-width: var(--content-max);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .scope-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--navy);
+    padding: 12px 16px;
+    background: white;
+    border-radius: 6px;
+  }
+  .scope-list li::before {
+    content: '✕';
+    font-size: 11px;
+    color: var(--terracotta);
+    font-weight: 700;
+    padding-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── ANIMATIONS ─────────────────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section { animation: fadeInUp 0.4s ease both; }
+
+  /* ── SCROLLBAR ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(45,117,111,0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(45,117,111,0.5); }
+
+  /* ── ALTERNATING SECTION BACKGROUNDS ───────── */
+  /* Full-bleed: backgrounds span .main's full width (viewport minus nav rail),
+     while content stays in its existing 780px column flush against the nav
+     rail (left inset is a constant 80px from .content's padding; right inset
+     grows with viewport width since the column doesn't re-centre). */
+  .section { position: relative; z-index: 0; }
+  .section-odd::before,
+  .section-even::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: -80px;
+    right: min(-80px, calc(1120px - 100vw));
+    z-index: -1;
+  }
+  .section-odd::before  { background: var(--off-white); }
+  .section-even::before { background: var(--cream); }
+  /* On cream sections, white-background cards stay white for clear contrast */
+  .section-even .model-card,
+  .section-even .mistake,
+  .section-even .objectives-list li,
+  .section-even .reflection-item,
+  .section-even .kc-question,
+  .section-even .progression-stage,
+  .section-even .cross-skill-item,
+  .section-even .scope-list li { background: white; }
+
+  /* ── SECTION GHOST NUMERAL ───────────────────
+     Low-opacity numeral sitting behind each section's heading — a
+     quieter echo of the primer's per-slide numbering, giving each
+     section a visual landmark independent of background colour.
+     Sized so its lower edge clears the heading's margin before body
+     content begins (h2: 96–132px, margin-bottom 24px → content at
+     156px; numeral spans 38–138px, leaving an 18px gap). */
+  .section { counter-increment: section-counter; }
+  .section::after {
+    content: counter(section-counter, decimal-leading-zero);
+    position: absolute;
+    top: 38px;
+    left: 0;
+    z-index: -1;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 100px;
+    line-height: 1;
+    color: var(--deep-teal);
+    opacity: 0.10;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── SKIP NAVIGATION ─────────────────────────── */
+  .skip-link { position: absolute; top: -44px; left: 0; background: var(--deep-teal); color: var(--off-white); font-size: 14px; font-weight: 600; padding: 10px 18px; z-index: 9999; text-decoration: none; border-radius: 0 0 var(--radius) 0; transition: top .15s; }
+  .skip-link:focus { top: 0; }
+
+  /* ── FOCUS STYLES ────────────────────────────── */
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  /* ── REDUCED MOTION ──────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ── PRINT ──────────────────────────────────── */
+  @media print {
+    .principle-body, .model-body { display: block !important; }
+    .accordion-toggle { display: none; }
+    .principle-header, .model-header { cursor: default; }
+  }
+
+  /* ── RESUME BANNER ───────────────────────────── */
+  .resume-banner {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    left: calc(var(--nav-width) + 24px);
+    right: 24px;
+    max-width: 480px;
+    background: var(--charcoal);
+    border-radius: var(--radius);
+    border-left: 3px solid var(--teal);
+    padding: 14px 16px 14px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 200;
+    animation: bannerSlideUp 0.3s ease forwards;
+  }
+  .resume-banner.hidden {
+    display: none !important;
+  }
+  @keyframes bannerSlideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .resume-banner-text {
+    flex: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255,255,255,0.75);
+  }
+  .resume-banner-text strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 2px;
+  }
+  .resume-banner-note.hidden { display: none; }
+  .resume-banner-btn {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .resume-banner-btn.primary {
+    background: var(--teal);
+    color: var(--off-white);
+  }
+  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.dismiss {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    margin-left: 4px;
+  }
+  .resume-banner-btn.dismiss:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); }
+  .resume-banner-btn:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+
+  @media (max-width: 768px) {
+    .resume-banner {
+      left: 12px;
+      right: 12px;
+      bottom: 80px;
+      max-width: none;
+    }
+  }
+
+</style>
+  <style id="site-nav-overrides">
+    /* Site nav offset — injected by wrapper */
+    body {
+      padding-top: 96px !important; /* 56px site nav + 40px skill bar */
+    }
+    .nav-rail {
+      top: 96px !important;
+      height: calc(100vh - 96px) !important;
+      min-height: calc(100vh - 96px) !important;
+    }
+  </style>
+  <style id="mobile-nav-overrides">
+    /* ── MOBILE (≤768px): nav-rail becomes a bottom toolbar ─────────────
+       Comes after #site-nav-overrides so its !important rules win at
+       this viewport width. The section TOC collapses into a panel that
+       pops up above the toolbar. Prev/Next + counter stay visible.
+    ──────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-rail {
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0; right: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: auto !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+        overflow: visible;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.18);
+      }
+      .nav-rail .nav-brand { display: none; }
+
+      .nav-rail .nav-items {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        max-height: 60vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 10px;
+        background: var(--charcoal);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-rail.open .nav-items { display: block; }
+
+      .nav-rail .nav-arrows {
+        flex: 1;
+        border-top: none;
+        margin-top: 0;
+        padding: 10px 12px;
+      }
+
+      .rail-toggle {
+        display: flex;
+        width: 44px; flex-shrink: 0;
+        align-self: stretch;
+        border-left: 1px solid rgba(255,255,255,0.08);
+      }
+      .rail-toggle:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.06); }
+
+      .main { margin-left: 0; min-width: 0; }
+
+      .hero { padding: 28px 20px 40px; }
+      .hero h1 {
+        font-size: clamp(28px, 8vw, 52px);
+        overflow-wrap: break-word;
+      }
+      .content { padding: 0 20px 110px; }
+
+      /* Multi-column grids that would otherwise overflow a 100%-width .content */
+      .snapshot-grid,
+      .mistake-row,
+      .scenario-cols,
+      .progression-cap,
+      .loop-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Full-bleed alternating section backgrounds were sized to cancel
+         the desktop 80px .content padding. At the 20px mobile padding,
+         -20px exactly spans .main's full width instead. */
+      .section-odd::before,
+      .section-even::before {
+        left: -20px;
+        right: -20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="../../nav.js"></script>
+
+<!-- Screen reader live region for section announcements -->
+<div aria-live="polite" aria-atomic="true" class="sr-only" id="sectionAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
+
+<!-- ── LEFT NAV ───────────────────────────────── -->
+<nav class="nav-rail" aria-label="Section navigation">
+  <button type="button" id="railToggle" class="rail-toggle" aria-expanded="false" aria-controls="navItems" aria-label="Show section list">
+    <svg class="rail-icon-open"  viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>
+    <svg class="rail-icon-close" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-brand">
+    <div class="nav-series">Full Learning Plan</div>
+    <div class="nav-skill">Systems Thinking</div>
+  </div>
+  <ul class="nav-items" id="navItems">
+    <li class="nav-item"><a class="nav-link" href="#snapshot"   data-section="snapshot"><span class="nav-dot"></span>01 · Skill Snapshot</a></li>
+    <li class="nav-item"><a class="nav-link" href="#overview"   data-section="overview"><span class="nav-dot"></span>02 · Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="#objectives" data-section="objectives"><span class="nav-dot"></span>03 · Learning Objectives</a></li>
+    <li class="nav-item"><a class="nav-link" href="#principles" data-section="principles"><span class="nav-dot"></span>04 · First Principles</a></li>
+    <li class="nav-item"><a class="nav-link" href="#models"     data-section="models"><span class="nav-dot"></span>05 · Mental Models</a></li>
+    <li class="nav-item"><a class="nav-link" href="#mistakes"   data-section="mistakes"><span class="nav-dot"></span>06 · Common Mistakes</a></li>
+    <li class="nav-item"><a class="nav-link" href="#indicators" data-section="indicators"><span class="nav-dot"></span>07 · Behavioral Indicators</a></li>
+    <li class="nav-item"><a class="nav-link" href="#scenarios"  data-section="scenarios"><span class="nav-dot"></span>08 · Practical Examples</a></li>
+    <li class="nav-item"><a class="nav-link" href="#reflection" data-section="reflection"><span class="nav-dot"></span>09 · Self-Reflection</a></li>
+    <li class="nav-item"><a class="nav-link" href="#check"      data-section="check"><span class="nav-dot"></span>10 · Knowledge Check</a></li>
+    <li class="nav-item"><a class="nav-link" href="#habits"     data-section="habits"><span class="nav-dot"></span>11 · 5-Day Habit Builder</a></li>
+    <li class="nav-item"><a class="nav-link" href="#progression" data-section="progression"><span class="nav-dot"></span>12 · Progression Path</a></li>
+    <li class="nav-item"><a class="nav-link" href="#summary"    data-section="summary"><span class="nav-dot"></span>13 · Summary</a></li>
+    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>14 · Explore Further</a></li>
+  </ul>
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="btnPrev" disabled>
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Prev
+    </button>
+    <span class="slide-counter" id="slideCounter">1 / 14</span>
+    <button class="nav-arrow" id="btnNext">
+      Next
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ── MAIN ───────────────────────────────────── -->
+<!-- ── RESUME BANNER ──────────────────────────── -->
+<div class="resume-banner hidden" id="resumeBanner" role="status" aria-live="polite">
+  <div class="resume-banner-text">
+    <strong>Welcome back</strong>
+    You were in <span id="resumeSectionLabel"></span>
+    <span class="resume-banner-note hidden" id="resumeBannerNote"> — starting over will also reset your knowledge check answers.</span>
+  </div>
+  <button class="resume-banner-btn primary" id="resumeBtn" type="button">Resume</button>
+  <button class="resume-banner-btn dismiss" id="resumeDismissBtn" type="button" aria-label="Dismiss, start from top">Start over</button>
+</div>
+
+<main class="main" id="main-content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-title-row">
+      <div class="hero-accent"></div>
+      <h1>Systems Thinking</h1>
+    </div>
+    <p class="hero-sub">The full learning plan. Work through it sequentially or use the navigation to jump to what you need.</p>
+  </div>
+
+  <div class="content">
+
+    <!-- 0. SKILL SNAPSHOT -->
+    <div class="section section-odd" id="snapshot">
+      <h2>Skill Snapshot</h2>
+      <div class="snapshot-grid">
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Problem It Solves</div>
+          <p>Without Systems Thinking, every recurring problem gets treated as its own isolated event. Each symptom gets patched — a bug here, a missed deadline there — and none of it gets traced back to the structure producing it. The cost is invisible until the same fire returns, dressed as a new one.</p>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">When It Matters Most</div>
+          <ul class="snapshot-list">
+            <li>The same problem keeps recurring despite being "fixed" multiple times in a row</li>
+            <li>A fix in one area quietly makes things worse somewhere else, and nobody connects the two</li>
+            <li>A team keeps adding more of something — people, steps, approvals — and the underlying metric doesn't move</li>
+            <li>A decision needs input from more than one discipline, and each one is only seeing its own slice of the problem</li>
+            <li class="ai-item">AI can draw a plausible-looking systems map or root-cause diagram in seconds — the scarce skill becomes verifying which interdependencies are real, not generating the diagram</li>
+          </ul>
+        </div>
+        <div class="snapshot-card">
+          <div class="snapshot-card-label">The Outcome It Enables</div>
+          <p>The ability to take any recurring problem and trace it to what's actually producing it — the interdependencies connecting it to the rest of the system, the feedback loop keeping it alive, and the point where a change would actually hold.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <div class="section section-even" id="overview">
+      <h2>Overview</h2>
+      <p>Systems Thinking is the discipline of seeing how parts of a whole connect — the interdependencies, the feedback loops, the ripple effects — and finding where a change actually holds, rather than treating each symptom as its own isolated event.</p>
+      <p>The analogy that isolates it best: if Analytical Thinking is a scalpel, cutting a defined problem into its component parts, Systems Thinking is the map of the whole body those parts sit inside — showing what else moves when you touch one of them. Analytical Thinking tells you what's happening inside a boundary. Systems Thinking asks what lies outside that boundary, and how it's connected. Most consequential problems need both.</p>
+      <h3>Where the boundaries are</h3>
+      <p><strong>Analytical Thinking</strong> decomposes a problem into its component parts within a boundary that's been drawn around it — separating symptoms from causes inside that defined scope. Systems Thinking doesn't redo that decomposition; it picks up at the boundary itself, asking what the problem is connected to beyond it, and whether the boundary was drawn in the right place at all.</p>
+      <p><strong>Critical Thinking</strong> tests whether a conclusion holds up — sound, questionable, missing evidence. Systems Thinking supplies part of what gets tested: the structural picture of which loops, patterns, and interdependencies are actually in play. Get the structure wrong, and even careful critical testing is evaluating the wrong picture.</p>
+      <div class="definition-box">
+        <p>Systems Thinking is the practice of seeing how parts of a whole connect — the interdependencies, the feedback loops, the ripple effects — and finding where a change actually holds, rather than treating each symptom as a fresh, unrelated fire.</p>
+      </div>
+      <h3>Out of scope</h3>
+      <ul class="scope-list">
+        <li>Deep mathematical or system-dynamics modeling — stock-and-flow simulation software, formal quantitative modeling — the focus stays qualitative and practical</li>
+        <li>Highly specialized domains like ecological systems or mechanical/engineering systems, and academic theory disconnected from everyday knowledge work</li>
+        <li>Enterprise-wide organizational transformation playbooks — the focus stays at the individual and team level, not full-scale change design</li>
+        <li>Generating alternative solutions once the structure is understood — that is Creative Thinking</li>
+        <li>Testing whether a specific conclusion is well-founded — that is Critical Thinking</li>
+      </ul>
+    </div>
+
+    <!-- 2. OBJECTIVES -->
+    <div class="section section-odd" id="objectives">
+      <h2>Learning Objectives</h2>
+      <p>By the end of this learning plan, you will be able to:</p>
+      <ol class="objectives-list">
+        <li><span class="obj-num">01</span><span class="obj-text">Map a real workplace problem by naming at least three interdependencies — people, process, and tools — and explaining how each affects the others.</span></li>
+        <li><span class="obj-num">02</span><span class="obj-text">Distinguish a systemic pattern from a one-off issue by checking whether the same dynamic has recurred more than once.</span></li>
+        <li><span class="obj-num">03</span><span class="obj-text">Name a reinforcing or balancing feedback loop that's keeping a recurring problem alive, rather than treating each occurrence as unrelated.</span></li>
+        <li><span class="obj-num">04</span><span class="obj-text">Use the Iceberg Model to trace a visible event down to the structure and mental model producing it.</span></li>
+        <li><span class="obj-num">05</span><span class="obj-text">Identify a genuine leverage point for a stuck problem, distinguishing it from a shallow parameter tweak that won't hold.</span></li>
+        <li><span class="obj-num">06</span><span class="obj-text">Reframe a problem from a single-discipline or linear view to a multidisciplinary, systemic one, surfacing at least one alternative the original framing missed.</span></li>
+      </ol>
+    </div>
+
+    <!-- 3. FIRST PRINCIPLES -->
+    <div class="section section-even" id="principles">
+      <h2>First Principles</h2>
+      <p class="principles-intro">Six principles, in sequence. Each builds on the one before it — you have to draw the boundary before you can map what's connected, and you have to see the loop before you can find a leverage point that actually holds. The mental models, behavioral indicators, and daily practices later in this plan are all applications of these six ideas.</p>
+
+      <div class="principle" id="principle-01">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 01</div>
+            <h3>The boundary is a choice, not a given</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-01-body">
+          <p>Every system analysis starts by drawing a line around what counts as "in scope." That line isn't neutral — it was inherited from however the problem first got described, and it quietly decides what you'll treat as connected versus irrelevant. Draw the boundary around one team's workflow, and a dependency on another team's tooling simply disappears from view.</p>
+          <p>Naming the boundary explicitly — "we're currently only looking at X" — is what makes it possible to ask whether it's drawn in the right place, and to widen it deliberately when a symptom keeps returning from just outside it.</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-02">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 02</div>
+            <h3>Structure drives behavior</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-02-body">
+          <p>A recurring problem is rarely a people problem — it's what the current structure is built to produce. If the same failure keeps happening under different people, in different circumstances, the common factor is the structure surrounding all of them, not any individual's effort or judgment.</p>
+          <p>This reframes where blame naturally lands. "The team keeps missing this" becomes "the structure keeps producing this outcome regardless of who's in the team" — a very different, and far more solvable, question.</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-03">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 03</div>
+            <h3>Everything is connected by feedback, not just cause-and-effect</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-03-body">
+          <p>Linear cause-and-effect assumes A causes B and stops there. Most workplace systems loop back: B goes on to affect A again, either amplifying the original change (a reinforcing loop) or resisting it (a balancing loop). Missing the loop means missing why a problem persists after the "obvious" cause was already addressed once.</p>
+          <p>Spotting the loop is what separates "we fixed the bug" from "we fixed the thing that keeps producing bugs."</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-04">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 04</div>
+            <h3>The obvious symptom is rarely the leverage point</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-04-body">
+          <p>Some interventions barely move a system; others transform it. The shallow ones — adjusting a number, adding a step — are the easiest to reach for and the weakest in effect. The deep ones — changing a rule, a goal, or the shared assumption underneath a structure — are harder to touch and are where lasting change actually happens.</p>
+          <div class="ai-note">
+            <div class="ai-note-label">AI Context</div>
+            <p>AI tools can suggest a plausible-sounding fix in seconds — often a shallow parameter tweak dressed up in confident language. It has no way to know which lever in your specific system is actually load-bearing. Verifying that a suggested fix is a genuine leverage point, not a comfortable-sounding surface adjustment, is the part that still requires a human who knows the system.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-05">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 05</div>
+            <h3>Second-order effects are the real cost of any intervention</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-05-body">
+          <p>Every fix ripples further than its first, intended effect. Removing a bottleneck in one place can quietly create a new gap somewhere else that was depending on that bottleneck for a reason nobody stated out loud. The fix isn't finished until the ripple has been traced, not just the immediate improvement.</p>
+          <p>This is why "did it work" needs a follow-up question: what else changed that we weren't looking for?</p>
+        </div>
+      </div>
+
+      <div class="principle" id="principle-06">
+        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-06')}">
+          <div class="principle-header-text">
+            <div class="principle-number">Principle 06</div>
+            <h3>No single discipline sees the whole system</h3>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="principle-body" id="principle-06-body">
+          <p>A product lens, an operations lens, and a people lens each surface a genuinely different part of the same system — none of them see the whole. A problem framed entirely in one discipline's terms will only ever generate that discipline's kind of fix.</p>
+          <p>Reframing the same problem through a second, unrelated lens isn't a formality — it's often the step that surfaces the interdependency the first lens structurally couldn't see.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. MENTAL MODELS -->
+    <div class="section section-odd" id="models">
+      <h2>Key Mental Models and Frameworks</h2>
+
+      <div class="model-card" id="model-feedback-loops">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-feedback-loops-body" onclick="toggleAccordion('model-feedback-loops')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-feedback-loops')}">
+          <div class="model-header-text">
+            <h3>Feedback Loops</h3>
+            <div class="model-source">Systems dynamics · reinforcing vs. balancing</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-feedback-loops-body">
+          <p>A reinforcing loop amplifies whatever's already happening — output from one cycle becomes input that strengthens the next. A balancing loop does the opposite: it detects a gap from a target and triggers a correction, resisting further change. Most recurring problems are being kept alive by an unnamed reinforcing loop, or by a balancing loop that's stopped correcting.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A team ships under deadline pressure, skipping tests to hit the date. Skipped tests mean more bugs. More bugs mean more firefighting. Less time is left to test the next release — a reinforcing loop, with nothing currently balancing it.</p>
+          </div>
+          <div class="model-diagram">
+            <div class="loop-grid">
+              <div class="loop-card">
+                <div class="loop-icon" style="color:var(--terracotta);"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.5 0-8 3-8 6.5 0 3 2.8 5.5 6.5 5.5 3 0 5.5-2 5.5-4.5"/><polyline points="14.5 8.5 16.5 10.5 19 8"/></svg></div>
+                <div class="loop-label" style="color:var(--terracotta);">Reinforcing</div>
+                <p>Compounds instead of settling — like compound interest, or a schedule slip that causes rushed testing that causes the next slip.</p>
+              </div>
+              <div class="loop-card">
+                <div class="loop-icon" style="color:var(--teal);"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+                <div class="loop-label" style="color:var(--deep-teal);">Balancing</div>
+                <p>Pulls a system back toward a target — a thermostat correcting drifted temperature, or a review gate catching quality issues before they compound.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-iceberg">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-iceberg-body" onclick="toggleAccordion('model-iceberg')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-iceberg')}">
+          <div class="model-header-text">
+            <h3>The Iceberg Model</h3>
+            <div class="model-source">Systems thinking practice · four levels of depth</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-iceberg-body">
+          <p>Most problem-solving stops at the event — the visible tip. This model pushes deeper through four levels: the event itself, the pattern it belongs to, the structure producing that pattern, and the mental model — the shared belief or assumption — that keeps the structure in place. Events and patterns show what's happening; structures and mental models explain why.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <div class="step-chain">
+              <div class="step-item"><div class="step-num">1</div><p><span class="step-meta">Event: &nbsp;</span>This release shipped with three bugs the team didn't catch.</p></div>
+              <div class="step-item"><div class="step-num">2</div><p><span class="step-meta">Pattern: &nbsp;</span>Every release for the last two quarters has shipped with bugs found only after launch.</p></div>
+              <div class="step-item"><div class="step-num">3</div><p><span class="step-meta">Structure: &nbsp;</span>No dedicated testing time exists between "code complete" and the release date.</p></div>
+              <div class="step-item"><div class="step-num root">4</div><p style="color:var(--terracotta);font-weight:500;"><span class="step-meta">Mental model: &nbsp;</span>The team assumes hitting the date matters more than the release being clean.</p></div>
+            </div>
+            <div class="step-root-label">THE REAL FIX LIVES AT LEVEL 3 OR 4, NOT LEVEL 1</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-leverage-points">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-leverage-points-body" onclick="toggleAccordion('model-leverage-points')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-leverage-points')}">
+          <div class="model-header-text">
+            <h3>Leverage Points</h3>
+            <div class="model-source">Donella Meadows · "Places to Intervene in a System," 1999</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-leverage-points-body">
+          <p>Not every intervention is equal. Meadows ranked twelve places to intervene in a system, from shallow — adjusting a number or rate — to deep — shifting the rules, the goals, or the paradigm a system runs on. The deeper the intervention, the harder it is to make, and the more it actually changes.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A team that keeps missing release dates first tries a shallow parameter — requiring sign-off from two people instead of one. The slip continues. Moving to a rule change — splitting sign-off authority so it isn't a single-person bottleneck — is what actually shortens the loop. Deeper still, changing the shared goal from "ship on schedule" to "ship clean" changes what gets protected when the schedule tightens next time.</p>
+          </div>
+          <div class="model-diagram">
+            <div class="ladder-list">
+              <div class="ladder-item"><span class="ladder-badge">01</span><p>Parameters — a number or rate. Easiest to change, weakest effect.</p></div>
+              <div class="ladder-item"><span class="ladder-badge">02</span><p>Buffers — capacity held in reserve, like added contractor support during crunch weeks.</p></div>
+              <div class="ladder-item"><span class="ladder-badge">03</span><p>Rules — who has authority to decide, like changing who can sign off on a release.</p></div>
+              <div class="ladder-item deepest"><span class="ladder-badge">04</span><p>Goals and paradigms — what the system is actually optimizing for. Hardest to shift, and where the deepest change happens.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="model-card" id="model-connection-circles">
+        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-connection-circles-body" onclick="toggleAccordion('model-connection-circles')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-connection-circles')}">
+          <div class="model-header-text">
+            <h3>Connection Circles</h3>
+            <div class="model-source">Systems mapping · popularized via Untools</div>
+          </div>
+          <div class="accordion-control" aria-hidden="true">
+            <span class="accordion-label">Expand</span>
+            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+          </div>
+        </div>
+        <div class="model-body" id="model-connection-circles-body">
+          <p>List ten or fewer elements that change within a system and arrange them around a circle. Draw an arrow between any two that directly affect each other, marking whether the effect increases (+) or decreases (–) the other. Once the arrows are in, trace the circle for closed loops — those are the reinforcing or balancing dynamics actually running the system.</p>
+          <div class="model-applied">
+            <div class="model-applied-label">Applied</div>
+            <p>A product team maps unhappy customers, bugs, support tickets, response times, and new features. Tracing the arrows surfaces a loop nobody had named: shipping new features to address complaints introduces more bugs, which increases support tickets and slows response times, which increases unhappy customers — the "fix" was feeding the problem it was meant to solve.</p>
+          </div>
+          <div class="model-diagram">
+            <div class="circle-diagram-wrap">
+              <div class="circle-diagram">
+                <svg viewBox="0 0 300 300" aria-hidden="true">
+                  <circle cx="150" cy="150" r="105" fill="none" stroke="var(--light-sage)" stroke-width="2"/>
+                  <path d="M 150 45 A 105 105 0 0 1 240 195" fill="none" stroke="var(--terracotta)" stroke-width="1.8" marker-end="url(#arrow)"/>
+                  <path d="M 240 195 A 105 105 0 0 1 60 195" fill="none" stroke="var(--terracotta)" stroke-width="1.8" marker-end="url(#arrow)"/>
+                  <path d="M 60 195 A 105 105 0 0 1 150 45" fill="none" stroke="var(--terracotta)" stroke-width="1.8" marker-end="url(#arrow)"/>
+                  <defs>
+                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                      <path d="M0,0 L6,3 L0,6 Z" fill="var(--terracotta)"/>
+                    </marker>
+                  </defs>
+                </svg>
+                <div class="circle-node origin" style="top:15%;left:50%;">Unhappy customers</div>
+                <div class="circle-node" style="top:65%;left:82%;">New features</div>
+                <div class="circle-node" style="top:65%;left:18%;">Bugs &amp; tickets</div>
+              </div>
+            </div>
+            <p class="model-diagram-caption">Three of five elements shown — tracing the arrows around the circle reveals the reinforcing loop.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. COMMON MISTAKES -->
+    <div class="section section-even" id="mistakes">
+      <h2>Common Mistakes</h2>
+
+      <div class="mistake">
+        <h4>Patching the symptom, not the structure</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Patching the visible symptom feels productive and closes the immediate issue fast. Tracing it to the structure behind it takes longer and doesn't feel as urgent when a fire needs putting out right now.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Before closing out a fix, ask whether this is the first time this specific problem has occurred. If it isn't, the patch is buying time, not solving it — name the structure producing it before moving on.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Drawing the boundary too narrow</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>It's simpler to analyze what's directly in front of you — your team, your process — than to trace a dependency into someone else's territory, which can feel like overstepping.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>When a fix inside the current boundary doesn't hold, that's the signal to widen it. Ask what's just outside the current scope that the problem might actually depend on.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Reaching for the shallow leverage point</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>Adjusting a number or adding a step is fast, visible, and doesn't require anyone to change a rule or challenge a shared assumption. It looks like action.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Before committing to a fix, ask where it sits on the leverage-points ladder. If it's a parameter tweak and the problem has recurred before, it's very unlikely to hold — look one or two rungs deeper.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mistake">
+        <h4>Shipping a fix without tracing its ripple</h4>
+        <div class="mistake-row">
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">Why it happens</div>
+            <p>The immediate improvement is visible and satisfying to report. What it might disturb elsewhere in the system is invisible until it surfaces as someone else's new problem, weeks later.</p>
+          </div>
+          <div class="mistake-cell">
+            <div class="mistake-cell-label">What to do instead</div>
+            <p>Before implementing a fix, spend five minutes asking what currently depends on the thing you're about to change. A quick check now is cheaper than an unexplained new problem later.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. BEHAVIORAL INDICATORS -->
+    <div class="section section-odd" id="indicators">
+      <h2>Behavioral Indicators</h2>
+      <p>Observable behaviors across a single spectrum: the target zone in the middle, flanked by the signals that show when the skill is under- or overused.</p>
+
+      <div class="continuum-bar" aria-hidden="true">
+        <div class="continuum-segment underuse">Underuse</div>
+        <div class="continuum-segment target">Target Zone</div>
+        <div class="continuum-segment overuse">Overuse</div>
+      </div>
+
+      <div class="indicators-stack">
+        <div class="indicator-panel target">
+          <div class="indicator-panel-header">
+            <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 17.01"/></svg></div>
+            <div class="indicator-col-label">What Good Looks Like</div>
+          </div>
+          <ul class="indicator-list cols-2">
+            <li>Checks whether a problem has recurred before treating it as a one-off event</li>
+            <li>Names the specific feedback loop keeping a recurring problem alive</li>
+            <li>Maps at least three interdependencies before proposing a fix</li>
+            <li>Distinguishes a shallow parameter tweak from a genuine leverage point</li>
+            <li>Traces the likely second-order effects of a change before implementing it</li>
+            <li>Widens the problem's boundary when a fix inside it doesn't hold</li>
+            <li>Reframes a problem through a second discipline's lens before finalizing an approach</li>
+            <li>Can point to the structure producing a pattern, not just the latest instance of it</li>
+            <li>Asks what currently depends on something before changing it</li>
+            <li>Hands off a systems map another person could follow without the process being explained</li>
+          </ul>
+        </div>
+
+        <div class="indicator-row">
+          <div class="indicator-panel underuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <div class="indicator-col-label">Early Warning Signs</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Treats every recurring problem as a fresh, unrelated event</li>
+              <li>Reaches for the first available parameter tweak regardless of whether the problem has recurred before</li>
+              <li>Analyzes only what's directly inside the team's own boundary, ignoring adjacent dependencies</li>
+              <li>Accepts an AI-generated fix or diagram without checking whether the interdependencies are real</li>
+              <li>Ships a fix without asking what else currently depends on the thing being changed</li>
+              <li>Views a problem through a single discipline's lens and stops there</li>
+              <li>Can't explain why a problem keeps recurring beyond "it just does"</li>
+            </ul>
+          </div>
+          <div class="indicator-panel overuse">
+            <div class="indicator-panel-header">
+              <div class="indicator-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="indicator-col-label">Overindexing Signals</div>
+            </div>
+            <ul class="indicator-list">
+              <li>Widens the boundary indefinitely, never committing to a scope worth acting on</li>
+              <li>Insists every problem needs a deep, paradigm-level intervention, even simple ones that a parameter fix would genuinely resolve</li>
+              <li>Maps every interdependency before making any decision, stalling momentum on urgent issues</li>
+              <li>Treats a straightforward one-off issue as though it must be part of a hidden systemic pattern</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. PRACTICAL EXAMPLES -->
+    <div class="section section-even" id="scenarios">
+      <h2>Practical Examples</h2>
+
+      <div class="scenario">
+        <h4>A support queue that grows every product launch</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Systems Thinking</div>
+            <p>Every launch, the support queue spikes. The team's response each time is the same: add temporary headcount until the backlog clears. The next launch, it spikes again, by roughly the same amount.</p>
+            <p>Every response stayed at the level of the queue itself. Nobody traced why the same spike keeps recurring.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Systems Thinking</div>
+            <p>The team maps the interdependencies: release notes, in-product messaging, and support documentation are all owned by different people, and none of them coordinate before a launch. Confusing release notes generate avoidable tickets — a structural gap, not a staffing gap.</p>
+            <p class="scenario-highlight">The fix is a single shared launch checklist connecting the three owners — not another temp hire. The queue spike shrinks at the next launch, without adding headcount.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="scenario">
+        <h4>A cross-team decision that keeps getting relitigated</h4>
+        <div class="scenario-cols">
+          <div class="scenario-col without">
+            <div class="scenario-col-label">Without Systems Thinking</div>
+            <p>A decision about a shared workflow gets made, then unmade a month later when a different team pushes back, then remade again after that. Each round is treated as a fresh disagreement to resolve.</p>
+          </div>
+          <div class="scenario-col with">
+            <div class="scenario-col-label">With Systems Thinking</div>
+            <p>Someone maps the decision through each team's lens — product, operations, and support each optimize for a different metric that this one workflow affects. The relitigating isn't a communication problem; it's three teams pulling on the same lever toward three different goals.</p>
+            <p class="scenario-highlight">The fix is agreeing on which metric takes priority for this specific workflow, once, in writing — not another meeting to "align." The decision stops reopening because the actual disagreement, not its symptom, got addressed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. SELF-REFLECTION -->
+    <div class="section section-odd" id="reflection">
+      <h2>Self-Reflection Activities</h2>
+      <p>Three prompts to audit your current use of Systems Thinking. Each takes under five minutes to complete honestly.</p>
+
+      <div class="reflection-item">
+        <div class="reflection-num">1</div>
+        <div>
+          <div class="reflection-q">Think of a problem at work that's come up more than once. Write down how it was "fixed" each time. Were the fixes the same kind of action repeated, or did any of them address why it kept happening? If the honest answer is "the same kind of patch every time," what structure might actually be producing it?</div>
+          <div class="reflection-time">Targets: structure drives behavior · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">2</div>
+        <div>
+          <div class="reflection-q">Pick a current recurring frustration. Write down three things it's connected to that you don't normally think about when discussing it — a tool, a team, a process outside your usual scope. Does widening the boundary this way suggest a different cause than the one usually blamed?</div>
+          <div class="reflection-time">Targets: the boundary is a choice · ~5 minutes</div>
+        </div>
+      </div>
+
+      <div class="reflection-item">
+        <div class="reflection-num">3</div>
+        <div>
+          <div class="reflection-q">Think of the last fix you or your team implemented for a real problem. Write down where it sits on the leverage-points ladder — a parameter, a buffer, a rule, or a goal. If it was a parameter or buffer, has the underlying problem actually stopped recurring, or just paused?</div>
+          <div class="reflection-time">Targets: leverage points · ~5 minutes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. KNOWLEDGE CHECK -->
+    <div class="section section-even" id="check">
+      <h2>Knowledge Check</h2>
+      <p>Five questions — two conceptual, two applied, one synthesis. Select your answers, then reveal results.</p>
+
+      <div class="kc-question" id="kc1">
+        <div class="kc-q-label">Conceptual · Question 1 of 5</div>
+        <div class="kc-q-text">What's the difference between a reinforcing loop and a balancing loop?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc1', 0)">There's no real difference — both terms describe the same feedback mechanism</button>
+          <button class="kc-option" onclick="selectOption('kc1', 1)">A reinforcing loop amplifies whatever's already happening, compounding change; a balancing loop resists a deviation and pulls the system back toward a target</button>
+          <button class="kc-option" onclick="selectOption('kc1', 2)">Reinforcing loops only happen in finance, balancing loops only happen in engineering</button>
+          <button class="kc-option" onclick="selectOption('kc1', 3)">A reinforcing loop involves one variable, a balancing loop always involves three or more</button>
+        </div>
+        <div class="kc-answer" id="kc1-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Reinforcing loops compound — output from one cycle strengthens the next, the way compound interest grows an account balance. Balancing loops do the opposite: they detect a gap from a target state and trigger a correction, the way a thermostat corrects drifted temperature. Most recurring workplace problems are being kept alive by an unnamed reinforcing loop.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc2">
+        <div class="kc-q-label">Conceptual · Question 2 of 5</div>
+        <div class="kc-q-text">Why are the "obvious" symptom-level fixes usually the weakest leverage points?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc2', 0)">Because symptom-level fixes always take longer to implement than deep structural changes</button>
+          <button class="kc-option" onclick="selectOption('kc2', 1)">Because shallow interventions like adjusting a number or adding a step are the easiest to reach for and, by Meadows' hierarchy, produce the weakest and least durable effect on the system</button>
+          <button class="kc-option" onclick="selectOption('kc2', 2)">Because symptom-level fixes are illegal in most organizations</button>
+          <button class="kc-option" onclick="selectOption('kc2', 3)">Because deep structural changes never require any organizational buy-in</button>
+        </div>
+        <div class="kc-answer" id="kc2-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Meadows ranked interventions from shallow — parameters and buffers — to deep — rules, goals, and paradigms. Shallow levers are the fastest to pull and feel like progress, but they rarely hold against a structural problem, because the structure producing the symptom is left untouched. The deepest interventions are harder to make but are what actually changes the system's behavior.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc3">
+        <div class="kc-q-label">Application · Question 3 of 5</div>
+        <div class="kc-q-text">A team has added an extra approval step to their release process three times in the past year, and releases still slip past their target date. Using Systems Thinking principles, what's most likely going on?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc3', 0)">The team simply isn't working hard enough and needs stronger deadlines</button>
+          <button class="kc-option" onclick="selectOption('kc3', 1)">Adding approval steps is a parameter-level fix — the recurring slip suggests the real issue is structural (e.g., a single-approver bottleneck or a rushed-testing loop), and needs a rule or goal-level change, not another parameter</button>
+          <button class="kc-option" onclick="selectOption('kc3', 2)">Release dates are inherently unpredictable and shouldn't be tracked at all</button>
+          <button class="kc-option" onclick="selectOption('kc3', 3)">The fix is to remove all approval steps entirely and ship without any review</button>
+        </div>
+        <div class="kc-answer" id="kc3-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>Repeating the same category of fix — another approval step — and getting the same result three times is itself the signal that this is a parameter-level intervention on a structural problem. The recurrence points toward a rule (who has sign-off authority) or a goal (what "done" actually means) that needs to change, not another number to adjust.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc4">
+        <div class="kc-q-label">Application · Question 4 of 5</div>
+        <div class="kc-q-text">An AI tool produces a root-cause diagram for a recurring problem in seconds, showing a clean set of interdependencies. Using Systems Thinking principles, what should you do with it?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc4', 0)">Implement whatever fix the diagram implies immediately, since AI-generated diagrams are always accurate</button>
+          <button class="kc-option" onclick="selectOption('kc4', 1)">Discard it entirely, since AI can't understand systems at all</button>
+          <button class="kc-option" onclick="selectOption('kc4', 2)">Treat it as a fast first draft, then verify which of the interdependencies shown are actually real in your specific context — the diagram's fluency doesn't confirm its accuracy</button>
+          <button class="kc-option" onclick="selectOption('kc4', 3)">Ask the tool to regenerate the diagram until it produces a different answer</button>
+        </div>
+        <div class="kc-answer" id="kc4-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>AI can produce a plausible-looking systems map instantly, but plausibility isn't the same as correctness — it has no way to know which interdependency in your specific context is real versus a common pattern it's pattern-matched from elsewhere. The valuable human step is verifying the diagram against what you actually know about the system, not generating a version of it from scratch.</p>
+        </div>
+      </div>
+
+      <div class="kc-question" id="kc5">
+        <div class="kc-q-label">Synthesis · Question 5 of 5</div>
+        <div class="kc-q-text">A team removes a single-approver bottleneck that was causing release delays, and celebrates the fix as complete once release times improve. What's the risk here, and what should happen next?</div>
+        <div class="kc-options">
+          <button class="kc-option" onclick="selectOption('kc5', 0)">There's no risk — once the immediate metric improves, the fix is complete and nothing further is needed</button>
+          <button class="kc-option" onclick="selectOption('kc5', 1)">The fix should be reversed immediately, since any change to an approval process is inherently too risky</button>
+          <button class="kc-option" onclick="selectOption('kc5', 2)">Improving the first-order metric doesn't confirm the fix is finished — the removed bottleneck may have been quietly providing a quality check nothing else replaced. Tracing the second-order effects, not just the immediate win, is what determines whether the fix actually held</button>
+          <button class="kc-option" onclick="selectOption('kc5', 3)">The team should add ten more approval steps to be safe</button>
+        </div>
+        <div class="kc-answer" id="kc5-answer">
+          <div class="kc-answer-label">Why this answer</div>
+          <p>An improved first-order metric can hide a second-order cost — the single approver may have been catching quality issues nothing else in the system was designed to catch. Celebrating the immediate win without tracing what else depended on the removed bottleneck is exactly the kind of premature closure this skill exists to prevent. The fix isn't confirmed until the ripple has been checked, not just the metric that prompted the change.</p>
+        </div>
+      </div>
+
+      <button class="kc-reveal-btn" id="kcRevealBtn" onclick="revealAnswers()">Reveal answers and explanations</button>
+      <div class="kc-score" id="kcScore">
+        <p id="kcScoreText"></p>
+        <button class="kc-retake-btn" id="kcRetakeBtn" type="button" onclick="resetQuiz()">Retake knowledge check</button>
+      </div>
+    </div>
+
+    <!-- 10. HABIT BUILDER -->
+    <div class="section section-odd" id="habits">
+      <h2>5-Day Habit Builder</h2>
+      <p>Five daily practices, each under 15 minutes. Days build on each other — from Day 2 onward, every step uses output from the previous day. The thread running through all five days: a deployment process where releases keep slipping past their target date, "fixed" every quarter by adding another review step that never actually shortens the slip. Open each day to see the full practice.</p>
+
+      <!-- Day 1 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">1</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Mapping the Interdependencies</div>
+            <div class="habit-day-concept">Concept: The boundary is a choice</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Draw the boundary wide enough to see what the release actually depends on.</strong>
+            Most fixes stay inside the release process itself. Today's job is mapping what it's connected to beyond that narrow scope.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — List everything that touches the release, in or out of your usual scope.</div>
+              <p>Approvers, testing tools, dependent teams, the calendar the release date is set against. Aim for at least five items, deliberately including at least one outside your own team.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Draw one arrow between any two items that directly affect each other.</div>
+              <p>Note whether the effect increases or decreases the other. You don't need every connection today — just enough to see the shape of it.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example</div>
+                Items: Release date, single approver, testing time, bug count, next release date.<br>
+                Arrows: Release date (fixed) → less testing time (–). Less testing time → more bugs (+). More bugs → more firefighting before next release → next release date under more pressure (+).<br>
+                <strong>That chain is today's output — it becomes tomorrow's starting point.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>right after a release retro or post-mortem</strong> — the dependencies are freshest in everyone's mind immediately after a release lands.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You end the day with a wider map of the release than "it's a testing problem."</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If your list only contains items your own team controls, you've drawn the boundary too narrow. Push to include at least one item owned by someone outside your team — that's usually where the real dependency lives.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 2 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">2</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Naming the Feedback Loop</div>
+            <div class="habit-day-concept">Concept: Feedback Loops</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Find the closed loop hiding inside yesterday's map.</strong>
+            Yesterday produced a chain of connections. Today's job is checking whether that chain loops back on itself.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Trace yesterday's arrows until you find a closed loop.</div>
+              <p>Follow the chain from any item back to itself. If it does, you've found a loop — name it as reinforcing (compounding) or balancing (self-correcting).</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Write the loop as one sentence.</div>
+              <p>State it plainly enough that someone unfamiliar with the release process could follow it.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Day 1)</div>
+                Loop found: Rushed release → skipped tests → more bugs → more firefighting → less planning time → next release rushed again.<br>
+                Loop type: Reinforcing — nothing in the current process resists it.<br>
+                <strong>This loop is today's output — Day 3 will dig into why it holds.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>the day after mapping</strong>, with the map still visible — tracing the loop is much easier with yesterday's arrows in front of you.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You can now name, in one sentence, what's actually keeping the problem alive.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If you can't find a closed loop, your map from Day 1 may be too short. Add one more connection — often the missing arrow is the one that loops back to where you started.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 3 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">3</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Running the Iceberg</div>
+            <div class="habit-day-concept">Concept: The Iceberg Model</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Push past the loop to the mental model keeping it in place.</strong>
+            Yesterday named the loop. Today's job is asking what shared belief allows that loop to keep running unquestioned.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Write the four Iceberg levels for this problem.</div>
+              <p>Event (what happened this time), Pattern (how often has this specific thing happened), Structure (what set-up produces the pattern), Mental Model (what belief keeps the structure unquestioned).</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Sit with the mental-model level before moving on.</div>
+              <p>This is usually the least comfortable level to name honestly — it often points at what the team implicitly rewards, not just what the process technically requires.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–2)</div>
+                Event: This release slipped by four days.<br>
+                Pattern: Every release this year has slipped by two to five days.<br>
+                Structure: One approver signs off on every release, regardless of their availability.<br>
+                Mental model: The team assumes one person must personally verify every release to protect quality.
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>somewhere quiet, away from the day's urgent messages</strong> — naming a mental model honestly is harder with interruptions.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You have a named belief to question, not just a loop to describe.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If your "mental model" reads like a process description rather than a belief, push further — ask "why does anyone think that's necessary?" one more time until you reach something that sounds like an assumption, not a rule.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 4 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">4</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Choosing a Leverage Point</div>
+            <div class="habit-day-concept">Concept: Leverage Points</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Pick an intervention deep enough to actually break the loop.</strong>
+            Three days of mapping have produced the full picture. Today is about choosing where on the ladder to intervene.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — List one possible intervention at each rung: parameter, buffer, rule, goal.</div>
+              <p>Force yourself to write all four, even the ones that feel like overreach.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Pick the shallowest one that would still hold.</div>
+              <p>Deeper isn't always better — pick the rung where the loop actually breaks, not the most dramatic option available.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–3)</div>
+                Parameter: Add a second approval step (already tried three times — doesn't hold).<br>
+                Buffer: Add a QA contractor for release weeks (helps, doesn't address the bottleneck).<br>
+                Rule: Split sign-off authority across two people so one person's availability can't block a release.<br>
+                Goal: Redefine "done" as clean, not just shipped.<br>
+                <strong>Selected: the rule change — deep enough to break the bottleneck, without needing a full culture shift yet.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>with at least one other person who touches the release process</strong> — a second perspective helps judge whether the shallow options have genuinely already failed.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You have one specific, defensible intervention — not four vague options.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If you're drawn to the shallowest option out of habit, check whether it's already been tried and failed — from Day 1's map or your own memory. If so, that's your evidence to go one rung deeper.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day 5 -->
+      <div class="habit-day">
+        <button class="habit-day-header" onclick="toggleDay(this)">
+          <div class="habit-day-num">5</div>
+          <div class="habit-day-title-wrap">
+            <div class="habit-day-title">Tracing the Second-Order Effects</div>
+            <div class="habit-day-concept">Concept: Second-order effects</div>
+          </div>
+          <div class="habit-day-chevron">▾</div>
+        </button>
+        <div class="habit-day-body">
+          <div class="habit-focus">
+            <strong>Check what the chosen fix might disturb before you ship it.</strong>
+            Day 4 chose a leverage point. Today's job is making sure fixing this loop doesn't quietly open a new one.
+          </div>
+          <div class="habit-tasks">
+            <div class="habit-tasks-label">Today's Practice</div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 1 — Ask what currently depends on the thing you're about to change.</div>
+              <p>For a rule change, ask specifically what the current rule was quietly protecting, even if that wasn't its stated purpose.</p>
+            </div>
+            <div class="habit-task">
+              <div class="habit-task-title">Step 2 — Design one safeguard for the most likely ripple.</div>
+              <p>You're not trying to prevent every possible consequence — just the one most likely to actually happen.</p>
+              <div class="habit-example">
+                <div class="habit-example-label">Worked Example (continuing from Days 1–4)</div>
+                Change: Split sign-off authority across two approvers.<br>
+                Possible ripple: Quality oversight gets diluted if the two approvers aren't equally rigorous.<br>
+                Safeguard: Both approvers use the same written checklist for sign-off, so quality doesn't depend on which one happens to be available.<br>
+                <strong>Same core fix, with the most likely ripple accounted for before it ships.</strong>
+              </div>
+            </div>
+          </div>
+          <div class="habit-meta">
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Habit Stack</div>
+              <div class="habit-meta-value">Do this <strong>right before proposing the change to whoever needs to approve it</strong> — it's the natural point to convert five days of practice into a proposal that's already anticipated the obvious objection.</div>
+            </div>
+            <div class="habit-meta-row">
+              <div class="habit-meta-label">Fast Win</div>
+              <div class="habit-meta-value">You end the week with a fix that's been pressure-tested against its own side effects, not just its intended one.</div>
+            </div>
+          </div>
+          <div class="habit-not-clicking">
+            <div class="habit-not-clicking-label">If This Isn't Clicking</div>
+            If you can't think of any ripple at all, that's usually a sign you haven't looked hard enough, not that none exists. Ask someone one step removed from the process what they'd worry about — they'll often see the dependency you can't.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. PROGRESSION PATH -->
+    <div class="section section-even" id="progression">
+      <h2>Progression Path</h2>
+      <p>Three stages of developing mastery in Systems Thinking. Each stage has a new capability and an observable signal of progress.</p>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-structural">Foundation</span>
+          <h4>The Deliberate Mapper</h4>
+        </div>
+        <p>You apply the sequence deliberately and consciously: map the interdependencies, name the loop, push through the Iceberg's four levels. The process requires effort and a checklist — a template, a facilitator, a reminder to widen the boundary. Your fixes are starting to hold longer than before, but you still need the structure present to get there.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can take a recurring problem and trace it to a named feedback loop, rather than treating each occurrence as a fresh, unrelated event.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>A fix you propose holds through at least one full cycle where the old, symptom-level fix would have needed repeating.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-analytical">Expansion</span>
+          <h4>The Loop Spotter</h4>
+        </div>
+        <p>Naming loops and checking the leverage-points ladder have become habitual — you reach for them without a template. Your focus shifts to the quality of the intervention: is this genuinely a rule-level fix, or a parameter tweak dressed up as one? You start noticing when others are patching the same symptom for the third time.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can look at someone else's proposed fix and identify whether it's a genuine leverage point or a shallow parameter change likely to need repeating.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>Colleagues start pulling you into recurring problems specifically to find the structure behind them, not just to help with the current symptom.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progression-stage">
+        <div class="progression-stage-header">
+          <span class="tag tag-growth">Integration</span>
+          <h4>The Systems Standard-Setter</h4>
+        </div>
+        <p>Systems Thinking is no longer a technique you apply — it's how you naturally approach a recurring problem. You move fluidly between mapping, loop-spotting, and leverage-point selection depending on what a situation needs, and you instinctively check for second-order effects before committing to a fix. You help others build the same habit by making the structure visible.</p>
+        <div class="progression-cap">
+          <div class="progression-cap-item">
+            <label>New Capability</label>
+            <p>You can facilitate a systems-mapping session for a group — helping a team see the interdependencies and loops behind a shared problem, then hand off the map for others to act on rather than dictating the fix yourself.</p>
+          </div>
+          <div class="progression-cap-item">
+            <label>Signal of Progress</label>
+            <p>Teams you work with start asking "what's the structure behind this" as a default question, without you needing to introduce it each time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. SUMMARY -->
+    <div class="section section-odd" id="summary">
+      <h2>Quick-Recall Summary</h2>
+      <div class="summary-block">
+        <blockquote>
+          <p>Systems Thinking is the discipline of seeing the structure behind a recurring problem — the interdependencies, the feedback loops, the leverage points — instead of treating each symptom as a fresh, unrelated fire.</p>
+          <p>The output is a map of what's actually connected and where a change would hold — not another patch on the latest symptom.</p>
+        </blockquote>
+      </div>
+
+      <div style="margin:40px 0 0;padding:28px 32px;background:var(--light-sage);border-left:4px solid var(--deep-teal);border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
+        <p style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
+        <p style="font-family:'Inter',sans-serif;font-size:15px;color:var(--navy);line-height:1.7;margin-bottom:16px;">Systems Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical decomposes within a boundary, Systems Thinking questions and maps beyond it, Critical Thinking tests whether a conclusion built on that map actually holds. With all three in place, the next stretch is connecting the map to a decision — a Strategic Synthesis &amp; Decision-Making skill that isn't live on Amplified Thinker yet.</p>
+        <p style="font-family:'Inter',sans-serif;font-size:15px;color:var(--navy);line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and a podcast below if you want to go deeper into the concepts behind this one first.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <a href="#resources" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);background:rgba(45,117,111,0.1);border:1.5px solid var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='rgba(45,117,111,0.18)'" onmouseout="this.style.background='rgba(45,117,111,0.1)'">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="../../future-skills.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:var(--navy);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='var(--deep-teal)'" onmouseout="this.style.background='var(--navy)'">Browse the Library <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. DEEP DIVE RESOURCES -->
+    <div class="section section-even" id="resources">
+      <h2>Explore Further</h2>
+      <p>Curated for what each resource adds beyond this learning plan — not a description of what it covers, but a reason it belongs here.</p>
+
+      <div class="table-scroll">
+      <table class="resource-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Title</th>
+            <th>Author / Source</th>
+            <th>Est. Time</th>
+            <th>Why This Specifically</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- BOOK -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Book</span></td>
+            <td class="resource-title">Thinking in Systems: A Primer</td>
+            <td>Donella H. Meadows</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>5–7 hrs</span></td>
+            <td class="resource-why">The canonical primer this plan's models are drawn from — goes deeper than any single model on how stocks, flows, loops, and leverage points fit together as one coherent framework.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.goodreads.com/en/book/show/3828902-thinking-in-systems" target="_blank" rel="noopener">Goodreads</a>
+            </td>
+          </tr>
+
+          <!-- MENTAL MODEL RESOURCES -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">Leverage Points: Places to Intervene in a System</td>
+            <td>Donella Meadows · The Donella Meadows Project</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>30 min</span></td>
+            <td class="resource-why">The original source for this plan's Leverage Points model — the full twelve-point hierarchy, beyond the four rungs used in this plan's simplified ladder.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">The Iceberg Model</td>
+            <td>Untools</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>8 min</span></td>
+            <td class="resource-why">A clean, practitioner-facing walkthrough of the four-level model used in this plan, with a downloadable template for running it on a real problem.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://untools.co/iceberg-model/" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">Reinforcing and Balancing Loops: Building Blocks of Dynamic Systems</td>
+            <td>The Systems Thinker</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>10 min</span></td>
+            <td class="resource-why">A practitioner-grade explanation of how to actually identify loop polarity in a causal diagram — useful once this plan's simplified two-card version feels familiar.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://thesystemsthinker.com/reinforcing-and-balancing-loops-building-blocks-of-dynamic-systems/" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--article"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Article</span></td>
+            <td class="resource-title">Why You Need Systems Thinking Now</td>
+            <td>Tima Bansal &amp; Julian Birkinshaw · Harvard Business Review</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>12 min</span></td>
+            <td class="resource-why">Recent business-press case for why interdependency mapping matters now specifically, with leadership-level examples beyond this plan's team-level scenarios.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://hbr.org/2025/09/why-you-need-systems-thinking-now" target="_blank" rel="noopener">Read</a>
+            </td>
+          </tr>
+
+          <!-- VIDEO -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Video</span></td>
+            <td class="resource-title">Systems Thinking 101</td>
+            <td>Anna Justice · TEDxFurmanU</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>13 min</span></td>
+            <td class="resource-why">Walks through the shift from linear to circular thinking using the Iceberg Model and feedback loops together on real-world examples, reinforcing how this plan's models connect.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://www.ted.com/talks/anna_justice_systems_thinking_101" target="_blank" rel="noopener">Watch</a>
+            </td>
+          </tr>
+
+          <!-- PODCAST -->
+          <tr>
+            <td class="resource-type"><span class="type-pill type-pill--podcast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v4"/></svg>Podcast</span></td>
+            <td class="resource-title">Episode 116 — An Educator's Guide to Systems Thinking</td>
+            <td>Linda Booth Sweeney · Human Current</td>
+            <td><span class="resource-time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>35 min</span></td>
+            <td class="resource-why">Grounded, story-driven examples of spotting patterns and feedback loops in everyday work — useful for hearing the skill applied conversationally, not just diagrammed.</td>
+            <td class="resource-links">
+              <a class="resource-link" href="https://human-current.com/episode-116-an-educators-guide-to-systems-thinking" target="_blank" rel="noopener">Listen</a>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+      </div>
+
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ── STORAGE KEY ──────────────────────────────
+const STORAGE_KEY = 'amplified_plan_systems-thinking';
+
+// ── PROGRESS PERSISTENCE ─────────────────────
+function saveProgress() {
+  try {
+    // Capture habit day open states by index
+    const habitHeaders = Array.from(document.querySelectorAll('.habit-day-header'));
+    const habitOpen = habitHeaders.map(h => h.classList.contains('open'));
+
+    // Capture quiz state
+    const quizRevealed = document.getElementById('kcScore').style.display === 'block';
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      section:      lastActiveId,
+      visited:      Array.from(visited),
+      quizSelected: kcSelected,
+      quizRevealed: quizRevealed,
+      quizOrder:    kcOrder,
+      habitOpen:    habitOpen
+    }));
+  } catch (e) {
+    // localStorage unavailable — fail silently
+  }
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearProgress() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {}
+}
+
+function hideBanner() {
+  document.getElementById('resumeBanner').classList.add('hidden');
+}
+
+function restoreState(data) {
+  // Restore quiz selections
+  if (data.quizSelected) {
+    Object.keys(data.quizSelected).forEach(qId => {
+      const optionIdx = data.quizSelected[qId];
+      kcSelected[qId] = optionIdx;
+      const q = document.getElementById(qId);
+      if (!q) return;
+      q.querySelectorAll('.kc-option').forEach((o, i) => {
+        o.classList.toggle('selected', i === optionIdx);
+      });
+    });
+    checkAllAnswered();
+  }
+
+  // Restore revealed answers
+  if (data.quizRevealed) {
+    revealAnswers();
+  }
+
+  // Restore habit day open states
+  if (data.habitOpen) {
+    const habitHeaders = Array.from(document.querySelectorAll('.habit-day-header'));
+    data.habitOpen.forEach((isOpen, i) => {
+      if (isOpen && habitHeaders[i]) {
+        const body = habitHeaders[i].nextElementSibling;
+        habitHeaders[i].classList.add('open');
+        if (body) body.classList.add('open');
+        habitHeaders[i].setAttribute('aria-expanded', 'true');
+      }
+    });
+  }
+
+  // Restore visited sections in nav
+  if (data.visited) {
+    data.visited.forEach(s => visited.add(s));
+  }
+}
+
+// ── KNOWLEDGE CHECK ──────────────────────────
+const kcAnswers = { kc1: 1, kc2: 1, kc3: 1, kc4: 2, kc5: 2 };
+const kcSelected = {};
+let kcOrder = {};
+
+// Visual-only shuffle: each button keeps its original data-index (used by
+// selectOption/kcAnswers/kcSelected as before) and only its CSS flex `order`
+// changes, so restore logic and scoring never need to know about shuffling.
+function shuffledPositions(n) {
+  const positions = Array.from({ length: n }, (_, i) => i);
+  for (let i = positions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = positions[i]; positions[i] = positions[j]; positions[j] = tmp;
+  }
+  return positions; // positions[originalIndex] = visual position
+}
+
+function newQuizOrder() {
+  const order = {};
+  Object.keys(kcAnswers).forEach(qId => {
+    order[qId] = shuffledPositions(4);
+  });
+  return order;
+}
+
+function applyQuizOrder(order) {
+  Object.keys(order).forEach(qId => {
+    const q = document.getElementById(qId);
+    if (!q) return;
+    q.querySelectorAll('.kc-option').forEach((o, i) => {
+      o.style.order = order[qId][i];
+    });
+  });
+}
+
+function selectOption(qId, optionIdx) {
+  const q = document.getElementById(qId);
+  const options = q.querySelectorAll('.kc-option');
+  options.forEach((o, i) => {
+    o.classList.toggle('selected', i === optionIdx);
+  });
+  kcSelected[qId] = optionIdx;
+  checkAllAnswered();
+  saveProgress();
+}
+
+function checkAllAnswered() {
+  const allIds = Object.keys(kcAnswers);
+  const allDone = allIds.every(id => kcSelected[id] !== undefined);
+  const btn = document.getElementById('kcRevealBtn');
+  btn.style.display = allDone ? 'inline-block' : 'none';
+}
+
+function revealAnswers() {
+  let score = 0;
+  Object.keys(kcAnswers).forEach(qId => {
+    const correct = kcAnswers[qId];
+    const selected = kcSelected[qId];
+    const q = document.getElementById(qId);
+    const options = q.querySelectorAll('.kc-option');
+    options.forEach((o, i) => {
+      o.disabled = true;
+      if (i === correct) o.classList.add('correct');
+      else if (i === selected && i !== correct) o.classList.add('incorrect');
+      o.classList.remove('selected');
+    });
+    const answer = document.getElementById(qId + '-answer');
+    if (answer) answer.style.display = 'block';
+    if (selected === correct) score++;
+  });
+  document.getElementById('kcRevealBtn').style.display = 'none';
+  const scoreEl = document.getElementById('kcScore');
+  const scoreText = document.getElementById('kcScoreText');
+  scoreEl.style.display = 'block';
+  scoreText.textContent = score + ' of 5 correct — ' +
+    (score === 5 ? 'solid foundation. Move to the habit builder.' :
+     score >= 3 ? 'good understanding. Review the sections linked to any missed questions.' :
+     'worth revisiting the first principles and mental models before moving on.');
+  document.getElementById('kcRetakeBtn').style.display = 'inline-block';
+  saveProgress();
+}
+
+function resetQuiz(scrollToQuiz) {
+  if (scrollToQuiz === undefined) scrollToQuiz = true;
+  kcOrder = newQuizOrder();
+  applyQuizOrder(kcOrder);
+  Object.keys(kcAnswers).forEach(qId => {
+    delete kcSelected[qId];
+    const q = document.getElementById(qId);
+    if (!q) return;
+    q.querySelectorAll('.kc-option').forEach(o => {
+      o.disabled = false;
+      o.classList.remove('selected', 'correct', 'incorrect');
+    });
+    const answer = document.getElementById(qId + '-answer');
+    if (answer) answer.style.display = 'none';
+  });
+  document.getElementById('kcScore').style.display = 'none';
+  document.getElementById('kcRetakeBtn').style.display = 'none';
+  checkAllAnswered();
+  saveProgress();
+  if (scrollToQuiz) {
+    document.getElementById('kc1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+function resetAllProgress() {
+  resetQuiz(false);
+
+  // Collapse any habit accordions that restoreState() opened
+  document.querySelectorAll('.habit-day-header.open').forEach(header => {
+    const body = header.nextElementSibling;
+    header.classList.remove('open');
+    if (body) body.classList.remove('open');
+    header.setAttribute('aria-expanded', 'false');
+  });
+
+  // Clear visited-nav highlighting restored from storage
+  visited.clear();
+  navLinks.forEach(link => link.classList.remove('visited'));
+
+  clearProgress();
+
+  // Prevent the scrollTo below from re-triggering a save: updateNav() only
+  // calls saveProgress() when the active section differs from lastActiveId.
+  lastActiveId = sectionIds[0];
+
+  // "Start from top" per the button's label. Instant, not smooth —
+  // a smooth scroll fires updateNav() at every section boundary on
+  // the way up, which re-marks everything as visited and re-saves it.
+  window.scrollTo(0, 0);
+}
+
+// ── HABIT ACCORDION ──────────────────────────
+function toggleDay(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', !isOpen);
+  saveProgress();
+}
+
+// ── PRINCIPLES & MODELS ACCORDION ────────────
+function toggleAccordion(id) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const isOpen = card.classList.contains('open');
+  card.classList.toggle('open', !isOpen);
+  const header = card.querySelector('[aria-expanded]');
+  if (header) header.setAttribute('aria-expanded', !isOpen);
+  const label = card.querySelector('.accordion-label');
+  if (label) label.textContent = isOpen ? 'Expand' : 'Collapse';
+}
+
+// ── SCROLL SPY + PREV/NEXT ───────────────────
+const sections = document.querySelectorAll('.section[id]');
+const navLinks  = document.querySelectorAll('.nav-link[data-section]');
+const visited   = new Set();
+const total     = navLinks.length;
+const announce  = document.getElementById('sectionAnnounce');
+const btnPrev   = document.getElementById('btnPrev');
+const btnNext   = document.getElementById('btnNext');
+const counter   = document.getElementById('slideCounter');
+let   lastActiveId = null;
+let   currentIdx   = 0;
+
+const sectionIds = Array.from(navLinks).map(l => l.dataset.section);
+
+function updateNav() {
+  let activeId = null;
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top <= 120) activeId = sec.id;
+  });
+  navLinks.forEach(link => {
+    const s = link.dataset.section;
+    link.classList.remove('active');
+    link.removeAttribute('aria-current');
+    if (s === activeId) {
+      link.classList.add('active');
+      link.setAttribute('aria-current', 'true');
+      visited.add(s);
+    }
+    if (visited.has(s) && s !== activeId) link.classList.add('visited');
+    else if (s !== activeId) link.classList.remove('visited');
+  });
+  if (activeId && activeId !== lastActiveId) {
+    const activeLink = document.querySelector('.nav-link[data-section="' + activeId + '"]');
+    if (activeLink && announce) {
+      announce.textContent = 'Now reading: ' + activeLink.textContent.trim();
+    }
+    lastActiveId = activeId;
+    const idx = sectionIds.indexOf(activeId);
+    if (idx !== -1) currentIdx = idx;
+    saveProgress();
+  }
+  updateButtons();
+}
+
+function updateButtons() {
+  btnPrev.disabled = currentIdx === 0;
+  btnNext.disabled = currentIdx === sectionIds.length - 1;
+  counter.textContent = (currentIdx + 1) + ' / ' + sectionIds.length;
+}
+
+function getNavOffset() {
+  return parseInt(window.getComputedStyle(document.body).paddingTop, 10) || 96;
+}
+
+function scrollToSection(idx) {
+  if (idx < 0 || idx >= sectionIds.length) return;
+  const target = document.getElementById(sectionIds[idx]);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - getNavOffset();
+    window.scrollTo({ top: top, behavior: 'smooth' });
+    currentIdx = idx;
+    updateButtons();
+  }
+}
+
+// Intercept nav link clicks to use the same offset-aware scroll
+navLinks.forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const idx = sectionIds.indexOf(this.dataset.section);
+    if (idx !== -1) scrollToSection(idx);
+  });
+});
+
+btnPrev.addEventListener('click', function () { scrollToSection(currentIdx - 1); });
+btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1); });
+
+window.addEventListener('scroll', updateNav, { passive: true });
+
+// ── Init: restore saved progress if any ─────
+const savedData = loadProgress();
+kcOrder = (savedData && savedData.quizOrder) ? savedData.quizOrder : newQuizOrder();
+applyQuizOrder(kcOrder);
+if (savedData) {
+  restoreState(savedData);
+}
+updateNav();
+
+// Show resume banner if there's a saved section beyond the first
+if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
+  const resumeBanner      = document.getElementById('resumeBanner');
+  const resumeBtn         = document.getElementById('resumeBtn');
+  const resumeDismissBtn  = document.getElementById('resumeDismissBtn');
+  const resumeSectionLabel = document.getElementById('resumeSectionLabel');
+
+  // Find the display label from the nav link text
+  const savedLink = document.querySelector('.nav-link[data-section="' + savedData.section + '"]');
+  resumeSectionLabel.textContent = savedLink
+    ? savedLink.textContent.trim()
+    : savedData.section;
+
+  const hasQuizProgress = savedData.quizRevealed ||
+    (savedData.quizSelected && Object.keys(savedData.quizSelected).length > 0);
+  document.getElementById('resumeBannerNote').classList.toggle('hidden', !hasQuizProgress);
+
+  resumeBanner.classList.remove('hidden');
+
+  resumeBtn.addEventListener('click', function () {
+    hideBanner();
+    const idx = sectionIds.indexOf(savedData.section);
+    if (idx !== -1) scrollToSection(idx);
+  }, { once: true });
+
+  resumeDismissBtn.addEventListener('click', function () {
+    hideBanner();
+    resetAllProgress();
+  }, { once: true });
+}
+
+// ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
+var railToggle = document.getElementById('railToggle');
+if (railToggle) {
+  var rail = railToggle.closest('.nav-rail');
+
+  function closeRailPanel() {
+    rail.classList.remove('open');
+    railToggle.setAttribute('aria-expanded', 'false');
+    railToggle.setAttribute('aria-label', 'Show section list');
+  }
+  function openRailPanel() {
+    rail.classList.add('open');
+    railToggle.setAttribute('aria-expanded', 'true');
+    railToggle.setAttribute('aria-label', 'Hide section list');
+  }
+
+  railToggle.addEventListener('click', function () {
+    rail.classList.contains('open') ? closeRailPanel() : openRailPanel();
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!rail.classList.contains('open')) return;
+    if (e.target.closest('.nav-link')) { closeRailPanel(); return; }
+    if (!rail.contains(e.target)) closeRailPanel();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && rail.classList.contains('open')) {
+      closeRailPanel();
+      railToggle.focus();
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 768 && rail.classList.contains('open')) closeRailPanel();
+  });
+}
+
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body></html>

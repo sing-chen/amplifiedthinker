@@ -280,6 +280,76 @@
     "url": "skills/creative-thinking/plan.html"
   },
   {
+    "id": "st-primer",
+    "type": "primer",
+    "skill": "Systems Thinking",
+    "title": "Systems Thinking — Skill Primer",
+    "description": "A quick primer on Systems Thinking — see the structure behind a recurring problem before patching the symptom again. Core concepts, mental models, and a real-world scenario showing the skill in practice.",
+    "tags": [
+      "systems thinking",
+      "feedback loops",
+      "reinforcing loop",
+      "balancing loop",
+      "iceberg model",
+      "leverage points",
+      "Donella Meadows",
+      "primer",
+      "cognitive",
+      "root cause"
+    ],
+    "slides": [
+      "Introduction",
+      "The Problem",
+      "When It Matters",
+      "The Outcome",
+      "What It Is",
+      "Model: Feedback Loops",
+      "Model: The Iceberg Model",
+      "Model: Leverage Points",
+      "In Practice",
+      "Summary"
+    ],
+    "url": "skills/systems-thinking/primer.html"
+  },
+  {
+    "id": "st-plan",
+    "type": "plan",
+    "skill": "Systems Thinking",
+    "title": "Systems Thinking — Full Learning Plan",
+    "description": "The full Systems Thinking learning plan — first principles, mental models, behavioural indicators, curated resources, and a 5-day habit builder for real work.",
+    "tags": [
+      "systems thinking",
+      "feedback loops",
+      "reinforcing loop",
+      "balancing loop",
+      "iceberg model",
+      "leverage points",
+      "connection circles",
+      "Donella Meadows",
+      "habit builder",
+      "behavioral indicators",
+      "cognitive",
+      "root cause"
+    ],
+    "sections": [
+      "Skill Snapshot",
+      "Overview",
+      "Learning Objectives",
+      "First Principles",
+      "Key Mental Models and Frameworks",
+      "Common Mistakes",
+      "Behavioral Indicators",
+      "Practical Examples",
+      "Self-Reflection",
+      "Knowledge Check",
+      "5-Day Habit Builder",
+      "Progression Path",
+      "Summary",
+      "Explore Further"
+    ],
+    "url": "skills/systems-thinking/plan.html"
+  },
+  {
     "id": "person-simon-sinek",
     "type": "person",
     "name": "Simon Sinek",
