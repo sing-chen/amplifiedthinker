@@ -183,13 +183,11 @@
   .skill-pill.sp-self-efficacy{background:#EDD5CB;color:#1F4D4A}
   .skill-pill.sp-engagement  {background:#F2DDB8;color:#2D3330}
   .skill-pill.sp-technology  {background:#D8E4DD;color:#1F4D4A}
-  .skill-pill.sp-management  {background:#C8D4DC;color:#2D3330}
   .scard.cs .skill-pill,
   .scard.cs .skill-pill.sp-cognitive,
   .scard.cs .skill-pill.sp-self-efficacy,
   .scard.cs .skill-pill.sp-engagement,
-  .scard.cs .skill-pill.sp-technology,
-  .scard.cs .skill-pill.sp-management{background:rgba(139,138,133,.1);color:var(--warm-gray)}
+  .scard.cs .skill-pill.sp-technology{background:rgba(139,138,133,.1);color:var(--warm-gray)}
   .sname{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;color:var(--text-dark);line-height:1.2}
   .scard.cs .sname{color:var(--text-muted)}
   .ssum{font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;color:var(--text-muted);max-width:400px;flex:2}
@@ -820,51 +818,20 @@
       </div>
     </div>
 
-    <!-- SYSTEMS THINKING — available -->
-    <div class="scard active" id="s-systems" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-systems')" aria-expanded="false" aria-controls="sb-systems" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-systems')">
+    <!-- SYSTEMS THINKING -->
+    <div class="scard cs" id="s-systems" data-categories="cognitive" role="listitem">
+      <div class="sheader">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
         </div>
         <div class="shc">
           <div class="stb">
-            <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span><span class="skill-pill sp-management">Management</span></div>
+            <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
             <div class="sname">Systems Thinking</div>
           </div>
           <div class="ssum"><span class="ssum-desc">See interdependencies, feedback loops, and unintended consequences before they surface. </span><em>"What am I not seeing?"</em></div>
-          <div class="sstatus ss-avail">Available Now</div>
-        </div>
-        <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-      </div>
-      <div class="sbody" id="sb-systems">
-        <div class="sdef">
-          <div class="sdef-inner">
-            <div class="sthumb">
-              <img src="skills/systems-thinking/video-thumbnail.png" alt="Systems Thinking skill thumbnail" width="140" height="79" loading="lazy">
-            </div>
-            <div class="sdtext">"Systems Thinking is the practice of seeing how parts of a whole connect — the interdependencies, the feedback loops, the ripple effects — and finding where a change actually holds, rather than treating each symptom as a fresh, unrelated fire."</div>
-          </div>
-          <div class="swhat">
-            <p>Without it, every recurring problem gets treated as its own isolated event. Each symptom gets patched — a bug here, a missed deadline there — and none of it gets traced back to the structure producing it. The cost is invisible until the same fire returns, dressed as a new one.</p>
-            <p>The skill produces a map of what's actually connected and where a change would hold — not another patch on the latest symptom. It means naming the feedback loop keeping a problem alive, tracing an event down to the structure and mental model behind it, and finding a genuine leverage point instead of a shallow parameter tweak.</p>
-          </div>
-        </div>
-        <div class="slaunch">
-          <div class="lcards">
-            <a href="skills/systems-thinking/primer.html" class="lcard" aria-label="Open Systems Thinking Primer">
-              <div class="lctype">Skill Primer</div>
-              <div class="lcdesc">Short skill introduction. Core concepts, mental models, and a real-world scenario showing the skill in practice.</div>
-              <div class="lctime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~10 minutes</div>
-              <div class="lccta">Open primer<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-            </a>
-            <a href="skills/systems-thinking/plan.html" class="lcard primary" aria-label="Open Systems Thinking Full Learning Plan">
-              <div class="lctype">Full Learning Plan</div>
-              <div class="lcdesc">First principles, mental models, behavioural indicators, and curated resources, plus a 5-day habit builder (~15 min/day).</div>
-              <div class="lctime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~60–75 min</div>
-              <div class="lccta">Open full plan<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
-            </a>
-          </div>
+          <div class="sstatus ss-soon">Coming soon</div>
         </div>
       </div>
     </div>
