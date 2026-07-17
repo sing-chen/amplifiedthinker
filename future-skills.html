@@ -64,6 +64,7 @@
 
   /* Offset anchor scroll targets for combined fixed nav height (56px site nav + 38px page nav + 8px buffer) */
   #overview,#why-this-matters,#the-evidence,#about-the-library,#the-library{scroll-margin-top:110px}
+  .scard{scroll-margin-top:110px}
 
   /* ── WHY THIS EXISTS ── */
   .why{padding:72px 40px;max-width:var(--page-max);margin:0 auto}
@@ -1000,6 +1001,17 @@ function toggleSkill(id) {
   var header = card.querySelector('.sheader[aria-expanded]');
   if (header) header.setAttribute('aria-expanded', !isOpen);
 }
+
+function openSkillFromHash() {
+  var id = location.hash.slice(1);
+  if (!id) return;
+  var card = document.getElementById(id);
+  if (!card || !card.classList.contains('scard') || card.classList.contains('cs')) return;
+  if (!card.classList.contains('open')) toggleSkill(id);
+  card.scrollIntoView({ block: 'start' });
+}
+window.addEventListener('DOMContentLoaded', openSkillFromHash);
+window.addEventListener('hashchange', openSkillFromHash);
 
 // Signal bar carousel dots (mobile only)
 (function () {
