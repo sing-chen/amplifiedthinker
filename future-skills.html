@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-future-skills.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
   /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
@@ -83,9 +83,9 @@
   .wc-title{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text-dark);margin-bottom:3px;line-height:1.3}
   .wc-body{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-muted);line-height:1.55}
   .wc-teal .wc-icon{background:#D4EAE7;} .wc-teal .wc-icon svg{stroke:#2D756F;}
-  .wc-terracotta .wc-icon{background:#F2DDD6;} .wc-terracotta .wc-icon svg{stroke:#C77B5F;}
+  .wc-terracotta .wc-icon{background:#EAD9C8;} .wc-terracotta .wc-icon svg{stroke:#9A5636;}
   .wc-amber .wc-icon{background:#F5E8D0;} .wc-amber .wc-icon svg{stroke:#B07C35;}
-  .wc-slate .wc-icon{background:#D5DFE6;} .wc-slate .wc-icon svg{stroke:#4A6878;}
+  .wc-slate .wc-icon{background:#DCE3CC;} .wc-slate .wc-icon svg{stroke:#55643A;}
 
   /* ── WEF CHART SECTION ── */
   .chart-section{background:var(--white);border-top:1px solid rgba(172,196,182,.2);border-bottom:1px solid rgba(172,196,182,.2);padding:72px 0}
@@ -98,7 +98,7 @@
   .chart-img{display:block;width:100%;height:auto;border-radius:6px;transition:transform .35s ease}
   .chart-source{font-family:'Inter',sans-serif;font-size:11px;color:var(--warm-gray);margin-top:12px;text-align:right}
   .chart-zoom-trigger{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative;border-radius:6px;overflow:hidden;transition:box-shadow .2s ease}
-  .chart-zoom-hint{position:absolute;bottom:10px;right:10px;display:flex;align-items:center;gap:6px;background:rgba(45,51,48,.78);color:var(--off-white);font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;padding:6px 11px;border-radius:999px;opacity:0;transition:opacity .15s;pointer-events:none}
+  .chart-zoom-hint{position:absolute;bottom:10px;right:10px;display:flex;align-items:center;gap:6px;background:rgba(45,51,48,.78);color:var(--off-white);font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;padding:6px 11px;border-radius:var(--radius-pill);opacity:0;transition:opacity .15s;pointer-events:none}
   .chart-zoom-hint svg{width:12px;height:12px;flex-shrink:0}
   .chart-zoom-trigger:hover .chart-zoom-hint,.chart-zoom-trigger:focus-visible .chart-zoom-hint{opacity:1}
   .chart-zoom-trigger:hover,.chart-zoom-trigger:focus-visible{box-shadow:inset 0 0 0 2px var(--teal)}
@@ -137,7 +137,7 @@
   .how-step-icon svg{width:15px;height:15px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .hs-primer .how-step-icon{background:#D4EAE7;} .hs-primer .how-step-icon svg{stroke:#2D756F;}
   .hs-plan .how-step-icon{background:#1B4A44;} .hs-plan .how-step-icon svg{stroke:#ACC4B6;}
-  .hs-journey .how-step-icon{background:#F2DDD6;} .hs-journey .how-step-icon svg{stroke:#C77B5F;}
+  .hs-journey .how-step-icon{background:#EAD9C8;} .hs-journey .how-step-icon svg{stroke:#9A5636;}
   .how-step-label{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text-dark);line-height:1.3;margin-bottom:3px}
   .how-step-sub{font-family:'Inter',sans-serif;font-size:12px;color:var(--text-muted);line-height:1.5}
   .how-connector{display:flex;justify-content:center;align-items:center;height:0;position:relative;z-index:1}
@@ -171,19 +171,19 @@
   .skill-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:auto 0 auto 18px;transition:transform .2s}
   .skill-icon svg{width:20px;height:20px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .si-cognitive{background:#D4EAE7;} .si-cognitive svg{stroke:#2D756F;}
-  .si-self-efficacy{background:#F0D9D1;} .si-self-efficacy svg{stroke:#A0553F;}
+  .si-self-efficacy{background:#EAD9C8;} .si-self-efficacy svg{stroke:#9A5636;}
   .si-engagement{background:#E8F2E8;} .si-engagement svg{stroke:#3A6E3A;}
   .si-management{background:#EDE5C5;} .si-management svg{stroke:#8B6A1A;}
-  .si-technology{background:#D5DFE6;} .si-technology svg{stroke:#3D5F70;}
+  .si-technology{background:#DCE3CC;} .si-technology svg{stroke:#55643A;}
   .scard.cs .skill-icon{background:rgba(139,138,133,.08);} .scard.cs .skill-icon svg{stroke:var(--warm-gray);}
   .shc{flex:1;display:flex;align-items:center;gap:16px;padding:18px 22px;flex-wrap:wrap}
   .stb{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px}
   .skill-pills{display:flex;flex-wrap:wrap;gap:5px}
-  .skill-pill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:var(--light-sage);color:var(--mid-teal)}
+  .skill-pill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill);background:var(--light-sage);color:var(--mid-teal)}
   .skill-pill.sp-cognitive   {background:#C5DDD9;color:#2D756F}
   .skill-pill.sp-self-efficacy{background:#EDD5CB;color:#1F4D4A}
   .skill-pill.sp-engagement  {background:#F2DDB8;color:#2D3330}
-  .skill-pill.sp-technology  {background:#D8E4DD;color:#1F4D4A}
+  .skill-pill.sp-technology  {background:#BFDACB;color:#1F4D4A}
   .scard.cs .skill-pill,
   .scard.cs .skill-pill.sp-cognitive,
   .scard.cs .skill-pill.sp-self-efficacy,
@@ -194,7 +194,7 @@
   .ssum{font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.55;color:var(--text-muted);max-width:400px;flex:2}
   .scard.cs .ssum{color:rgba(139,138,133,.7)}
   .ssum em{font-style:italic}
-  .sstatus{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+  .sstatus{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;padding:4px 11px;border-radius:var(--radius-pill);white-space:nowrap;flex-shrink:0}
   .ss-avail{background:rgba(45,117,111,.12);color:var(--mid-teal)}
   .ss-soon{background:rgba(139,138,133,.1);color:var(--warm-gray)}
   .stoggle{display:flex;align-items:center;padding:0 18px;color:var(--text-muted);transition:transform .2s;flex-shrink:0}
@@ -225,7 +225,7 @@
   .lcard.primary .lccta{color:var(--sage)}
   .lcc-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;transition:transform .15s}
   .lcc-icon svg{width:11px;height:11px;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-  .lccta .lcc-icon{background:#D8E4DD}
+  .lccta .lcc-icon{background:#BFDACB}
   .lccta .lcc-icon svg{stroke:#2D756F}
   .lcard.primary .lccta .lcc-icon{background:#ACC4B6}
   .lcard.primary .lccta .lcc-icon svg{stroke:#2D756F}
@@ -233,7 +233,7 @@
 
   /* ── FILTER TABS ── */
   .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
-  .ftab{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid rgba(172,196,182,.3);color:var(--text-muted);background:transparent;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
+  .ftab{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--radius-pill);border:1px solid rgba(172,196,182,.3);color:var(--text-muted);background:transparent;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
   .ftab:hover{background:var(--light-sage);border-color:rgba(45,117,111,.3);color:var(--mid-teal)}
   .ftab.active{background:var(--mid-teal);border-color:transparent;color:var(--white)}
   .scard.hidden{display:none}
@@ -262,13 +262,13 @@
   footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
   .fi{max-width:var(--page-max);margin:0 auto}
   .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.02em}
+  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
   .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .15s}
-  .footer-nav a:hover{color:rgba(255,255,255,.7)}
+  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
+  .footer-nav a:hover{color:rgba(255,255,255,.85)}
   .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
   .footer-sep{color:rgba(255,255,255,.15);user-select:none}
-  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.25);margin-top:12px}
+  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
 
   @media(max-width:900px){
     .why-grid{grid-template-columns:1fr;gap:36px}
@@ -342,13 +342,13 @@
       <circle cx="130" cy="170" r="4" fill="#D9A05B"/>
       <circle cx="290" cy="195" r="7" fill="#5BA79F"/>
       <circle cx="450" cy="155" r="5" fill="#5BA79F"/>
-      <circle cx="555" cy="255" r="4" fill="#C77B5F"/>
+      <circle cx="555" cy="255" r="4" fill="#9A5636"/>
       <circle cx="85" cy="300" r="5" fill="#5BA79F"/>
       <circle cx="250" cy="335" r="4" fill="#5BA79F"/>
       <circle cx="410" cy="315" r="6" fill="#5BA79F"/>
       <circle cx="535" cy="365" r="3" fill="#D9A05B"/>
       <circle cx="160" cy="95" r="2" fill="#5BA79F" opacity=".5"/>
-      <circle cx="390" cy="185" r="2.5" fill="#C77B5F" opacity=".45"/>
+      <circle cx="390" cy="185" r="2.5" fill="#9A5636" opacity=".45"/>
       <circle cx="230" cy="260" r="2" fill="#5BA79F" opacity=".5"/>
       <circle cx="480" cy="290" r="2" fill="#5BA79F" opacity=".4"/>
       <circle cx="50" cy="210" r="2" fill="#5BA79F" opacity=".45"/>

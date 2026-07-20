@@ -26,9 +26,9 @@
     --sage:        #ACC4B6;
     --teal:        #5BA79F;
     --deep-teal:   #2D756F;
-    --off-white:   #F5F7F6;
-    --light-sage:  #D8E4DD;
-    --terracotta:  #C77B5F;
+    --off-white:   #EEF2EF;
+    --light-sage:  #D0E2D6;
+    --terracotta:  #8A4B2C;
     --amber:       #D9A05B;
     --navy:        #1F4D4A;
     --charcoal:    #2D3330;
@@ -36,6 +36,35 @@
     --white:       #FFFFFF;
     --nav-width:   260px;
     --radius:      8px;
+
+    /* ── Semantic layer ── */
+    --bg-page:var(--off-white);--bg-surface:var(--white);--bg-sunken:var(--light-sage);
+    --bg-inverse:var(--navy);--bg-brand:var(--deep-teal);--bg-brand-soft:var(--sage);
+    --fg-1:var(--charcoal);--fg-2:var(--warm-gray);--fg-heading:var(--navy);
+    --fg-brand:var(--deep-teal);--fg-on-brand:var(--off-white);--fg-on-inverse:var(--off-white);
+    --accent-warm:var(--terracotta);--accent-cool:var(--teal);--accent-support:#55643A;
+    --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
+
+    /* ── Status colors ── */
+    --status-ok:#2D756F;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
+
+    /* ── Spacing scale ── */
+    --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
+    --space-6:32px;--space-7:48px;--space-8:64px;--space-9:96px;--space-10:128px;
+
+    /* ── Radius scale (fills gaps around this file's existing --radius) ── */
+    --radius-xs:2px;--radius-sm:4px;--radius-md:6px;--radius-lg:10px;--radius-xl:14px;--radius-pill:999px;
+
+    /* ── Shadow scale ── */
+    --shadow-xs:0 1px 2px rgba(31,77,74,.06);
+    --shadow-sm:0 1px 2px rgba(31,77,74,.06),0 2px 6px rgba(31,77,74,.05);
+    --shadow-md:0 2px 4px rgba(31,77,74,.06),0 8px 20px rgba(31,77,74,.08);
+    --shadow-lg:0 4px 8px rgba(31,77,74,.06),0 20px 48px rgba(31,77,74,.12);
+
+    /* ── Motion tokens ── */
+    --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
+    --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
+    --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
   }
 
   /* ── RESET ──────────────────────────────────── */
@@ -151,7 +180,7 @@
   .slide-white  { background: var(--off-white); }
   .slide-navy   { background: var(--navy); }
   .slide-teal   { background: #1B4A44; }
-  .slide-cream  { background: #EDE5C5; }
+  .slide-cream  { background: #F2E0D4; }
 
   /* decorative circle */
   .bg-circle {
@@ -175,21 +204,21 @@
   .eyebrow-lt { color: var(--sage); }
 
   .h-display {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: var(--font-editorial);
     font-size: clamp(52px, 5.5vw, 80px);
     font-weight: 400; line-height: 1.04;
     letter-spacing: -0.02em;
     color: var(--navy); margin-bottom: 28px;
   }
   .h-title {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: var(--font-editorial);
     font-size: clamp(36px, 3.8vw, 54px);
     font-weight: 400; line-height: 1.1;
     letter-spacing: -0.015em;
     color: var(--deep-teal); margin-bottom: 28px;
   }
   .h-heading {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: var(--font-editorial);
     font-size: clamp(28px, 2.8vw, 40px);
     font-weight: 400; line-height: 1.15;
     letter-spacing: -0.01em;
@@ -223,7 +252,7 @@
   .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
   .tag {
     display: inline-block;
-    padding: 7px 18px; border-radius: 999px;
+    padding: 7px 18px; border-radius: var(--radius-pill);
     font-family: 'Inter', sans-serif;
     font-size: 13px; font-weight: 500;
   }
@@ -281,7 +310,7 @@
 
   /* comparison cards */
   .comp-card { border-radius: var(--radius); padding: 24px 28px; }
-  .comp-without { background: #FDF0EC; border-top: 3px solid var(--terracotta); }
+  .comp-without { background: #F2E0D4; border-top: 3px solid var(--terracotta); }
   .comp-with    { background: rgba(197,221,217,0.35); border-top: 3px solid var(--teal); }
   .comp-label {
     font-family: 'Poppins', sans-serif;
@@ -344,7 +373,7 @@
     padding-left: 36px;
   }
   .pull-quote p {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: var(--font-editorial);
     font-size: clamp(18px, 1.8vw, 24px);
     line-height: 1.6; font-style: italic;
     color: var(--navy);
@@ -370,7 +399,7 @@
   .quiz-opt:hover     { border-color: var(--teal); }
   .quiz-opt.selected  { border-color: var(--deep-teal); background: rgba(91,167,159,0.15); }
   .quiz-opt.correct   { background: #C5DDD9; border-color: var(--teal); }
-  .quiz-opt.incorrect { background: #FDE8E0; border-color: var(--terracotta); }
+  .quiz-opt.incorrect { background: #F2E0D4; border-color: var(--terracotta); }
   .quiz-feedback {
     font-size: 13px; font-weight: 500; min-height: 20px;
     transition: opacity 0.2s;

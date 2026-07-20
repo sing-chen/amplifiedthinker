@@ -7,10 +7,47 @@
 ──────────────────────────────────────────────────────────────────────────── */
 :root {
   --deep-teal:#2D756F;--mid-teal:#2D756F;--teal:#5BA79F;--sage:#ACC4B6;
-  --light-sage:#D8E4DD;--off-white:#F5F7F6;--warm-cream:#EDE5C5;--charcoal:#2D3330;
-  --navy:#1F4D4A;--warm-gray:#8B8A85;--terracotta:#C77B5F;
+  --light-sage:#D8E4DD;--off-white:#EEF2EF;--warm-cream:#EAD9C8;--charcoal:#2D3330;
+  --navy:#1F4D4A;--warm-gray:#8B8A85;--terracotta:#8A4B2C;--terracotta-icon:#9A5636;
+  --moss:#55643A;--moss-tint:#DCE3CC;
   --text-dark:#1F4D4A;--text-mid:#1F4D4A;--text-muted:#4A5C55;--white:#FFFFFF;
   --page-max:1100px;--col:680px;--radius:6px;--radius-lg:10px;--radius-xl:14px;
+
+  /* ── Semantic layer — wraps the raw palette above; components should
+     prefer these over raw colors going forward (existing raw-var usage
+     is untouched and still valid) ───────────────────────────────────── */
+  --bg-page:var(--off-white);--bg-surface:var(--white);--bg-sunken:var(--light-sage);
+  --bg-inverse:var(--navy);--bg-brand:var(--deep-teal);--bg-brand-soft:var(--sage);
+  --fg-1:var(--charcoal);--fg-2:var(--warm-gray);--fg-heading:var(--navy);
+  --fg-brand:var(--deep-teal);--fg-on-brand:var(--off-white);--fg-on-inverse:var(--off-white);
+  --accent-warm:var(--terracotta);--accent-cool:var(--teal);--accent-support:var(--moss);
+  --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
+
+  /* ── Status colors — all re-checked at 4.5:1+ against --bg-page/white ── */
+  --status-ok:#2D756F;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
+
+  /* ── Spacing scale ── */
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
+  --space-6:32px;--space-7:48px;--space-8:64px;--space-9:96px;--space-10:128px;
+
+  /* ── Radius scale — --radius/-lg/-xl above are kept as-is (already in use);
+     these fill the gaps in the 6-step scale ─────────────────────────────── */
+  --radius-xs:2px;--radius-sm:4px;--radius-md:6px;--radius-pill:999px;
+
+  /* ── Shadow scale — navy-tinted, replaces the site's ad hoc shadow values ── */
+  --shadow-xs:0 1px 2px rgba(31,77,74,.06);
+  --shadow-sm:0 1px 2px rgba(31,77,74,.06),0 2px 6px rgba(31,77,74,.05);
+  --shadow-md:0 2px 4px rgba(31,77,74,.06),0 8px 20px rgba(31,77,74,.08);
+  --shadow-lg:0 4px 8px rgba(31,77,74,.06),0 20px 48px rgba(31,77,74,.12);
+
+  /* ── Motion tokens ── */
+  --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
+  --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
+
+  /* ── Typography — serif reserved for editorial headlines only
+     (section cards, News articles, skill primer/plan headlines);
+     Poppins/Inter remain the default everywhere else ─────────────── */
+  --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
@@ -18,3 +55,5 @@ body{font-family:'Inter',system-ui,sans-serif;color:var(--text-dark);background:
 .skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
 .skip-link:focus{top:0}
 :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
+/* Keep skip-link jump targets from landing under the fixed nav.js site bar (WCAG 2.4.11) */
+#main-content,#results-region{scroll-margin-top:var(--site-total-offset,56px)}

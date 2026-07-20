@@ -19,7 +19,7 @@
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-my-people.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
   /* ── HERO ── */
@@ -69,12 +69,12 @@
 
   /* category pill */
   .ppills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-  .ppill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:20px}
+  .ppill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill)}
   .pp-leadership  {background:#C5DDD9;color:#1B4A44}
   .pp-communication{background:#F2DDB8;color:#5A3A00}
   .pp-influence   {background:#EDD5CB;color:#7A3A25}
   .pp-psychology  {background:#D4DCE6;color:#2D3F52}
-  .pp-productivity{background:#D8E4DD;color:#1F4D4A}
+  .pp-productivity{background:#BFDACB;color:#1F4D4A}
   .pp-ai         {background:#EDE5C5;color:#5A3A00}
 
   /* ── PERSONAL ANNOTATION ── */
@@ -123,7 +123,7 @@
   .pworks-pills{display:flex;flex-wrap:wrap;gap:6px}
   .pwork-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
   .pwork-pill{display:inline-flex;align-items:center;gap:4px}
-  .pwork-pill{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:20px;padding:2px 9px;line-height:1.6;text-decoration:none}
+  .pwork-pill{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-pill);padding:2px 9px;line-height:1.6;text-decoration:none}
   .pwork-pill:hover{background:rgba(172,196,182,.28)}
   .pwork-pill:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
 
@@ -132,13 +132,13 @@
   footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
   .fi{max-width:var(--page-max);margin:0 auto}
   .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.02em}
+  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
   .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;transition:color .15s}
-  .footer-nav a:hover{color:rgba(255,255,255,.7)}
+  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
+  .footer-nav a:hover{color:rgba(255,255,255,.85)}
   .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
   .footer-sep{color:rgba(255,255,255,.15);user-select:none}
-  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.25);margin-top:12px}
+  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
 
   @media(max-width:800px){
     .people-layout{grid-template-columns:1fr}
@@ -188,13 +188,13 @@
       <circle cx="130" cy="170" r="4" fill="#D9A05B"/>
       <circle cx="290" cy="195" r="7" fill="#5BA79F"/>
       <circle cx="450" cy="155" r="5" fill="#5BA79F"/>
-      <circle cx="555" cy="255" r="4" fill="#C77B5F"/>
+      <circle cx="555" cy="255" r="4" fill="#9A5636"/>
       <circle cx="85" cy="300" r="5" fill="#5BA79F"/>
       <circle cx="250" cy="335" r="4" fill="#5BA79F"/>
       <circle cx="410" cy="315" r="6" fill="#5BA79F"/>
       <circle cx="535" cy="365" r="3" fill="#D9A05B"/>
       <circle cx="160" cy="95" r="2" fill="#5BA79F" opacity=".5"/>
-      <circle cx="390" cy="185" r="2.5" fill="#C77B5F" opacity=".45"/>
+      <circle cx="390" cy="185" r="2.5" fill="#9A5636" opacity=".45"/>
       <circle cx="230" cy="260" r="2" fill="#5BA79F" opacity=".5"/>
       <circle cx="480" cy="290" r="2" fill="#5BA79F" opacity=".4"/>
       <circle cx="50" cy="210" r="2" fill="#5BA79F" opacity=".45"/>

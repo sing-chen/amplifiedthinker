@@ -20,7 +20,7 @@
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-search.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
 /* ── SEARCH PAGE ──────────────────────────────────────────────────────────── */
@@ -170,7 +170,7 @@
   color: rgba(255,255,255,.75);
   background: rgba(255,255,255,.08);
   border: 1px solid rgba(255,255,255,.14);
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   padding: 5px 12px;
   cursor: pointer;
   transition: background .15s, border-color .15s, color .15s;
@@ -184,7 +184,7 @@
 .search-chip:focus-visible {
   outline: 2px solid var(--sage);
   outline-offset: 2px;
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
 }
 .search-chip svg {
   width: 11px;
@@ -257,10 +257,10 @@
   stroke-linejoin: round;
 }
 .search-state-icon.ssi-error {
-  background: #F0D9D1;
+  background: #EAD9C8;
 }
 .search-state-icon.ssi-error svg {
-  stroke: #A0553F;
+  stroke: #9A5636;
 }
 .search-state-hl {
   font-family: 'Poppins', sans-serif;
@@ -335,12 +335,12 @@
 /* Icon colour variants by type */
 .rc-icon-primer   { background: #D4EAE7; }
 .rc-icon-primer   svg { stroke: #2D756F; }
-.rc-icon-plan     { background: #D8E4DD; }
+.rc-icon-plan     { background: #BFDACB; }
 .rc-icon-plan     svg { stroke: #1F4D4A; }
 .rc-icon-person   { background: #F5E8D0; }
 .rc-icon-person   svg { stroke: #B07C35; }
 .rc-icon-page     { background: #EEF4F0; }
-.rc-icon-page     svg { stroke: #4A6878; }
+.rc-icon-page     svg { stroke: #55643A; }
 .rc-icon-news     { background: #E4E9F2; }
 .rc-icon-news     svg { stroke: #3D5A99; }
 
@@ -363,7 +363,7 @@
 .rc-type-primer   { color: #2D756F; }
 .rc-type-plan     { color: #1F4D4A; }
 .rc-type-person   { color: #B07C35; }
-.rc-type-page     { color: #4A6878; }
+.rc-type-page     { color: #55643A; }
 .rc-type-news     { color: #3D5A99; }
 
 .rc-title {
@@ -482,7 +482,7 @@
   padding: 0 40px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: rgba(255,255,255,.35);
+  color: rgba(255,255,255,.62);
   text-align: center;
 }
 
