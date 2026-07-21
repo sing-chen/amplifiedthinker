@@ -38,22 +38,22 @@
   .people-layout{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
 
   /* ── PERSON LIST PANEL (left) ── */
-  .person-list-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow-y:auto;padding:8px}
+  .person-list-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow-y:auto;padding:8px}
 
   .person-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;border-radius:0 var(--radius) var(--radius) 0;padding:8px 12px 8px 9px;cursor:pointer;transition:background .15s,border-color .15s}
-  .person-row:hover{background:var(--off-white)}
+  .person-row:hover{background:var(--bg-page)}
   .person-row:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
-  .person-row.active{background:var(--off-white);border-left-color:var(--terracotta)}
+  .person-row.active{background:var(--bg-page);border-left-color:var(--terracotta)}
 
   .person-row-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;object-position:center top;flex-shrink:0}
   .person-row-text{min-width:0;flex:1}
-  .person-row-name{display:block;font-family:'Poppins',sans-serif;font-size:13.5px;font-weight:600;color:var(--text-dark);line-height:1.3;margin-bottom:4px}
-  .person-row.active .person-row-name{color:var(--navy)}
+  .person-row-name{display:block;font-family:'Poppins',sans-serif;font-size:13.5px;font-weight:600;color:var(--fg-heading);line-height:1.3;margin-bottom:4px}
+  .person-row.active .person-row-name{color:var(--fg-heading)}
   .person-row-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 
   /* ── PERSON DETAIL PANEL (right) ── */
-  .person-detail-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);padding:32px 36px}
-  .person-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--mid-teal);cursor:pointer}
+  .person-detail-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);padding:32px 36px}
+  .person-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--fg-brand);cursor:pointer}
   .person-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
 
   .person-detail-photo{aspect-ratio:4/3;max-height:380px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;margin-bottom:20px}
@@ -61,7 +61,7 @@
 
   /* name + external link (reused inside detail pane) */
   .pcard-top{display:flex;flex-direction:column;gap:0;margin-bottom:12px}
-  .pname{font-family:'Poppins',sans-serif;font-size:18px;font-weight:600;color:var(--text-dark);line-height:1.25;margin-bottom:6px}
+  .pname{font-family:'Poppins',sans-serif;font-size:18px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-bottom:6px}
   .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#5BA79F;text-decoration:none;border-radius:4px;padding:2px 0;margin-top:6px;margin-bottom:0;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
   .pext-link:hover{color:#2D756F;text-decoration:underline}
   .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
@@ -119,7 +119,7 @@
   .pcard-divider{height:1px;background:rgba(172,196,182,.2);margin-bottom:14px}
 
   /* key works */
-  .pworks-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:8px}
+  .pworks-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:8px}
   .pworks-pills{display:flex;flex-wrap:wrap;gap:6px}
   .pwork-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
   .pwork-pill{display:inline-flex;align-items:center;gap:4px}
@@ -153,6 +153,36 @@
     .hero,.people-section{padding-left:20px;padding-right:20px}
     footer{padding-left:20px;padding-right:20px}
   }
+
+  /* ── DARK MODE ──
+     Hero and footer are fixed dark brand bands already, unchanged in both
+     themes. person-list/detail-panel backgrounds, person-row hover/active,
+     person-row-name, person-back, pname, and pworks-label already sit on
+     tokens whose light value exactly matches the original raw color, so
+     they adapt for free. Everything below needed its own override because
+     the raw color it started from (a hardcoded hex, navy, text-muted, or a
+     sage-tinted rgba) isn't an exact match for any single fg/line token.
+     The category-tint .pp-* pills reuse the same family palette as
+     index.html/future-skills.html's tinted cards for visual consistency. */
+  [data-theme="dark"] .person-list-panel{border-color:var(--line)}
+  [data-theme="dark"] .person-detail-panel{border-color:var(--line)}
+  [data-theme="dark"] .pext-link:hover{color:var(--sage)}
+
+  [data-theme="dark"] .pp-leadership{background:#1F3A34;color:#8FCFC3}
+  [data-theme="dark"] .pp-communication{background:#3A3018;color:#E0CB8E}
+  [data-theme="dark"] .pp-influence{background:#3A2A20;color:#E8C9AE}
+  [data-theme="dark"] .pp-psychology{background:#1E2A38;color:#A8C0D9}
+  [data-theme="dark"] .pp-productivity{background:#25321E;color:#C9D9AE}
+  [data-theme="dark"] .pp-ai{background:#332712;color:#D9BB6E}
+
+  [data-theme="dark"] .pannotation{color:var(--teal);border-bottom-color:var(--line)}
+  [data-theme="dark"] .pquote-text{color:var(--fg-heading)}
+  [data-theme="dark"] .pquote-source{color:var(--fg-2)}
+  [data-theme="dark"] .pdesc{color:var(--fg-1)}
+  [data-theme="dark"] .pcard-divider{background:var(--line)}
+  [data-theme="dark"] .pwork-pill{color:var(--fg-2);background:rgba(255,255,255,.08);border-color:var(--line)}
+  [data-theme="dark"] .pwork-pill:hover{background:rgba(255,255,255,.16)}
+  [data-theme="dark"] .empty-state{color:var(--fg-2)}
 </style>
 </head>
 <body>

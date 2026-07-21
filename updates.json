@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-07-21",
-    "html": "Dark Mode added — the site now adapts to your system's light/dark preference."
+    "html": "Dark Mode added — toggle light/dark appearance from the nav; your choice is remembered on return visits."
   },
   {
     "date": "2026-07-17",

@@ -33,44 +33,56 @@
   /* ── MAIN / FILTER BAR ── */
   main{max-width:var(--page-max);margin:0 auto;padding:32px 40px 88px}
   .filter-bar-wrap{position:relative}
-  .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;position:sticky;top:var(--site-total-offset,56px);background:var(--off-white);padding:14px 0;z-index:10}
-  .filter-scroll-btn{display:none;position:absolute;top:28px;transform:translateY(-50%);align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--white);border:1px solid rgba(31,77,74,.2);box-shadow:0 2px 8px rgba(27,74,68,.15);color:var(--mid-teal);cursor:pointer;z-index:11;padding:0}
+  .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;position:sticky;top:var(--site-total-offset,56px);background:var(--bg-page);padding:14px 0;z-index:10}
+  .filter-scroll-btn{display:none;position:absolute;top:28px;transform:translateY(-50%);align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--bg-surface);border:1px solid rgba(31,77,74,.2);box-shadow:0 2px 8px rgba(27,74,68,.15);color:var(--fg-brand);cursor:pointer;z-index:11;padding:0}
   .filter-scroll-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
   .filter-scroll-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
   .filter-scroll-prev{left:-4px}
   .filter-scroll-next{right:-4px}
-  .filter-chip{display:inline-flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;padding:7px 14px;border-radius:var(--radius-pill);border:1px solid rgba(31,77,74,.2);background:var(--white);color:var(--text-mid);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+  .filter-chip{display:inline-flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;padding:7px 14px;border-radius:var(--radius-pill);border:1px solid rgba(31,77,74,.2);background:var(--bg-surface);color:var(--fg-heading);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
   .filter-chip:hover{border-color:rgba(31,77,74,.4)}
   .filter-chip.active{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
-  .filter-chip[style].active{border-color:transparent;box-shadow:inset 0 0 0 2px currentColor}
+  .filter-chip.themed{background:var(--tag-bg);color:var(--tag-text)}
+  .filter-chip.themed.active{border-color:transparent;box-shadow:inset 0 0 0 2px currentColor}
   .filter-chip:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
   .filter-chip svg{width:13px;height:13px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* ── THEME TINTS — shared by filter chips, story tags, and the story
+     source-link accent. Each .theme-* class sets --tag-bg/--tag-text;
+     consuming rules read them via var(). Family palette matches the
+     tinted cards used elsewhere on the site (teal/moss/amber/terracotta),
+     plus one new neutral family for "macro signals". ── */
+  .theme-skills-development{--tag-bg:#BFDACB;--tag-text:#1B4A44}
+  .theme-workforce-transformation{--tag-bg:#DCE3CC;--tag-text:#2E3524}
+  .theme-leadership-and-culture{--tag-bg:#EDE5C5;--tag-text:#6B5416}
+  .theme-macro-signals{--tag-bg:#DADDD2;--tag-text:#4A4A3C}
+  .theme-research-and-insights{--tag-bg:#EAD9C8;--tag-text:#4A2E1E}
 
   /* ── MASTER-DETAIL LAYOUT ── */
   .news-layout{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
 
   /* ── HEADLINE PANEL (left) ── */
-  .headline-col{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);display:flex;flex-direction:column;max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow:hidden}
+  .headline-col{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);display:flex;flex-direction:column;max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow:hidden}
   .headline-search-wrap{position:relative;flex-shrink:0;border-bottom:1px solid var(--light-sage);padding:10px}
   .headline-search-icon{position:absolute;left:20px;top:50%;transform:translateY(-50%);width:14px;height:14px;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-  .headline-search-input{width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--text-dark);background:var(--off-white)}
+  .headline-search-input{width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;color:var(--fg-heading);background:var(--bg-page)}
   .headline-search-input:focus-visible,.headline-search-input:focus{outline:2px solid var(--mid-teal);outline-offset:1px}
   .headline-panel{border:none;border-radius:0;background:none;flex:1;max-height:none;overflow-y:auto;scrollbar-gutter:stable;padding:8px}
-  .headline-group-header{position:sticky;top:0;z-index:1;background:var(--white);padding:10px 12px 4px;font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid-teal)}
-  .headline-date-prefix{color:var(--mid-teal);font-weight:600}
+  .headline-group-header{position:sticky;top:0;z-index:1;background:var(--bg-surface);padding:10px 12px 4px;font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-brand)}
+  .headline-date-prefix{color:var(--fg-brand);font-weight:600}
   .headline-pin-icon{display:inline-flex;vertical-align:-1px;color:var(--terracotta);margin-right:3px}
   .headline-pin-icon svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .headline-divider{height:1px;background:var(--light-sage);margin:6px 10px}
   .headline-item{display:block;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px 9px 10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.4;color:var(--text-muted);transition:background .15s,color .15s,border-color .15s}
-  .headline-item:hover{background:var(--off-white);color:var(--text-dark)}
+  .headline-item:hover{background:var(--bg-page);color:var(--fg-heading)}
   .headline-item:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
-  .headline-item.active{background:var(--off-white);border-left-color:var(--terracotta);color:var(--navy);font-weight:600}
+  .headline-item.active{background:var(--bg-page);border-left-color:var(--terracotta);color:var(--fg-heading);font-weight:600}
   .headline-item.pinned{background:rgba(138,75,44,.08)}
   .headline-item.pinned:hover{background:rgba(138,75,44,.14)}
   .headline-item.pinned.active{background:rgba(138,75,44,.16)}
   .headline-archive{margin-top:6px;border-top:1px solid var(--light-sage);padding-top:4px}
-  .headline-archive-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:10px 12px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid-teal);cursor:pointer;border-radius:var(--radius)}
-  .headline-archive-toggle:hover{background:var(--off-white)}
+  .headline-archive-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:10px 12px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--fg-brand);cursor:pointer;border-radius:var(--radius)}
+  .headline-archive-toggle:hover{background:var(--bg-page)}
   .headline-archive-toggle:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
   .headline-archive-toggle svg{width:12px;height:12px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
   .headline-archive-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
@@ -78,8 +90,8 @@
   .headline-archive.expanded .headline-archive-body{display:block}
 
   /* ── STORY PANEL (right) ── */
-  .story-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--white);padding:32px 36px}
-  .story-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--mid-teal);cursor:pointer}
+  .story-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);padding:32px 36px}
+  .story-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--fg-brand);cursor:pointer}
   .story-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
   .story-toprow{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:20px}
   .story-meta{display:flex;flex-direction:column;gap:6px}
@@ -87,25 +99,25 @@
   .story-pinned-badge{display:inline-flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);white-space:nowrap}
   .story-pinned-badge svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .story-nav{display:flex;align-items:center;gap:8px;flex-shrink:0}
-  .story-nav-btn{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;background:none;border:1px solid rgba(31,77,74,.2);border-radius:var(--radius-pill);padding:5px 12px;color:var(--mid-teal);cursor:pointer;transition:background .15s,border-color .15s}
-  .story-nav-btn:hover:not(:disabled){background:var(--off-white);border-color:rgba(31,77,74,.4)}
+  .story-nav-btn{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;background:none;border:1px solid rgba(31,77,74,.2);border-radius:var(--radius-pill);padding:5px 12px;color:var(--fg-brand);cursor:pointer;transition:background .15s,border-color .15s}
+  .story-nav-btn:hover:not(:disabled){background:var(--bg-page);border-color:rgba(31,77,74,.4)}
   .story-nav-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
   .story-nav-btn:disabled{opacity:.35;cursor:default}
   .story-title{font-family:var(--font-editorial);font-size:26px;font-weight:400;line-height:1.25;letter-spacing:-.015em;color:var(--navy);margin:0 0 14px}
   .story-summary{font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.75;color:var(--text-muted);margin-bottom:22px}
   .story-implications{border-left:3px solid var(--light-sage);padding-left:14px;margin-bottom:22px}
-  .story-implications-label{display:block;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--mid-teal);margin-bottom:6px}
+  .story-implications-label{display:block;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:6px}
   .story-implications p{font-family:'Inter',sans-serif;font-size:14px;line-height:1.7;color:var(--text-muted);font-style:italic;margin:0}
-  .story-source-link{display:inline-flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--story-accent, var(--mid-teal));text-decoration:none;margin-bottom:22px}
+  .story-source-link{display:inline-flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--tag-text, var(--mid-teal));text-decoration:none;margin-bottom:22px}
   .story-source-link:hover{color:var(--terracotta)}
   .story-source-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
   .story-tags{display:flex;flex-wrap:wrap;gap:6px}
-  .story-tag{font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:var(--radius-pill);background:var(--light-sage);color:var(--navy)}
+  .story-tag{font-family:'Poppins',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:var(--radius-pill);background:var(--tag-bg, var(--light-sage));color:var(--tag-text, var(--navy))}
 
   .story-share{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:22px 0 0;padding-top:20px;border-top:1px solid var(--light-sage)}
   .share-label{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);margin-right:2px}
-  .share-btn{display:inline-flex;align-items:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;padding:6px 13px;border-radius:var(--radius-pill);border:1px solid rgba(31,77,74,.2);background:var(--white);color:var(--text-mid);cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s}
-  .share-btn:hover{border-color:rgba(31,77,74,.4);background:var(--off-white)}
+  .share-btn{display:inline-flex;align-items:center;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;padding:6px 13px;border-radius:var(--radius-pill);border:1px solid rgba(31,77,74,.2);background:var(--bg-surface);color:var(--fg-heading);cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s}
+  .share-btn:hover{border-color:rgba(31,77,74,.4);background:var(--bg-page)}
   .share-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
 
   .empty-state{font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
@@ -140,6 +152,52 @@
     .hero,main{padding-left:20px;padding-right:20px}
     footer{padding-left:20px;padding-right:20px}
   }
+
+  /* ── DARK MODE ──
+     Hero and footer are fixed dark brand bands already, unchanged in both
+     themes. filter-bar/scroll-btn/chip, headline-col/panel/search/item,
+     story-panel/nav-btn, and share-btn backgrounds+text already sit on
+     tokens whose light value exactly matches the original raw color, so
+     they adapt for free. Everything below needed its own override because
+     the raw color it started from (a sage-tinted border, terracotta, or
+     text-muted) isn't an exact match for any single fg/line token — same
+     pattern as the other pages. The theme-* classes get dark variants
+     reusing the established family palette (teal/moss/amber/terracotta),
+     plus one new neutral-gray family for "macro signals". */
+  [data-theme="dark"] .filter-scroll-btn{border-color:var(--line)}
+  [data-theme="dark"] .filter-chip{border-color:var(--line)}
+  [data-theme="dark"] .filter-chip:hover{border-color:rgba(91,167,159,.4)}
+  [data-theme="dark"] .headline-col{border-color:var(--line)}
+  [data-theme="dark"] .headline-search-wrap{border-bottom-color:var(--line)}
+  [data-theme="dark"] .headline-search-icon{color:var(--fg-2)}
+  [data-theme="dark"] .headline-search-input{border-color:var(--line)}
+  [data-theme="dark"] .headline-pin-icon{color:var(--accent-warm)}
+  [data-theme="dark"] .headline-divider{background:var(--line)}
+  [data-theme="dark"] .headline-item{color:var(--fg-2)}
+  [data-theme="dark"] .headline-item.pinned{background:rgba(201,122,74,.12)}
+  [data-theme="dark"] .headline-item.pinned:hover{background:rgba(201,122,74,.2)}
+  [data-theme="dark"] .headline-item.pinned.active{background:rgba(201,122,74,.24)}
+  [data-theme="dark"] .headline-archive{border-top-color:var(--line)}
+  [data-theme="dark"] .story-source{color:var(--accent-warm)}
+  [data-theme="dark"] .story-pinned-badge{color:var(--accent-warm)}
+  [data-theme="dark"] .story-nav-btn{border-color:var(--line)}
+  [data-theme="dark"] .story-nav-btn:hover:not(:disabled){border-color:rgba(91,167,159,.4)}
+  [data-theme="dark"] .story-title{color:var(--fg-heading)}
+  [data-theme="dark"] .story-summary{color:var(--fg-2)}
+  [data-theme="dark"] .story-implications{border-left-color:var(--line)}
+  [data-theme="dark"] .story-implications p{color:var(--fg-2)}
+  [data-theme="dark"] .story-source-link:hover{color:var(--accent-warm)}
+  [data-theme="dark"] .story-share{border-top-color:var(--line)}
+  [data-theme="dark"] .share-label{color:var(--fg-2)}
+  [data-theme="dark"] .share-btn{border-color:var(--line)}
+  [data-theme="dark"] .share-btn:hover{border-color:rgba(91,167,159,.4)}
+  [data-theme="dark"] .empty-state{color:var(--fg-2)}
+
+  [data-theme="dark"] .theme-skills-development{--tag-bg:#1F3A34;--tag-text:#8FCFC3}
+  [data-theme="dark"] .theme-workforce-transformation{--tag-bg:#25321E;--tag-text:#C9D9AE}
+  [data-theme="dark"] .theme-leadership-and-culture{--tag-bg:#332712;--tag-text:#D9BB6E}
+  [data-theme="dark"] .theme-macro-signals{--tag-bg:#2A2D28;--tag-text:#B8BBB0}
+  [data-theme="dark"] .theme-research-and-insights{--tag-bg:#33231A;--tag-text:#E8C9AE}
 </style>
 </head>
 <body>
@@ -243,6 +301,14 @@
       if (i > 0 && TITLE_CASE_LOWER[w.toLowerCase()]) return w.toLowerCase();
       return w.charAt(0).toUpperCase() + w.slice(1);
     }).join(' ');
+  }
+
+  /* Maps a theme tag ("skills development") to its CSS class
+     ("theme-skills-development") — the class sets --tag-bg/--tag-text,
+     consumed by .filter-chip.themed, .story-tag, and .story-source-link.
+     Kept in CSS (not inline styles) so dark mode can override them. */
+  function themeClass(tag) {
+    return 'theme-' + String(tag).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
   var layoutEl = document.getElementById('news-layout');
@@ -421,8 +487,7 @@
       return;
     }
     var primaryTag = (story.tags || [])[0];
-    var accentColor = (THEME_COLORS[primaryTag] || {}).text;
-    var accentStyle = accentColor ? ' style="--story-accent:' + accentColor + '"' : '';
+    var accentCls = (primaryTag && THEME_COLORS[primaryTag]) ? (' ' + themeClass(primaryTag)) : '';
 
     var navIds = getNavigableIds();
     var navIndex = navIds.indexOf(story.id);
@@ -449,12 +514,12 @@
       html += '<div class="story-implications"><span class="story-implications-label">Why it matters</span><p>' + escapeHTML(story.implications) + '</p></div>';
     }
     if (story.url) {
-      html += '<a class="story-source-link" href="' + escapeHTML(story.url) + '" target="_blank" rel="noopener noreferrer"' + accentStyle + '>Read at ' + escapeHTML(story.source || 'source') + ' <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>';
+      html += '<a class="story-source-link' + accentCls + '" href="' + escapeHTML(story.url) + '" target="_blank" rel="noopener noreferrer">Read at ' + escapeHTML(story.source || 'source') + ' <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>';
     }
     html += '<div class="story-tags">';
     (story.tags || []).forEach(function (t) {
-      var c = THEME_COLORS[t] || { bg: '#BFDACB', text: '#1F4D4A' };
-      html += '<span class="story-tag" style="background:' + c.bg + ';color:' + c.text + '">' + escapeHTML(THEME_LABELS[t] || titleCase(t)) + '</span>';
+      var cls = 'story-tag' + (THEME_COLORS[t] ? (' ' + themeClass(t)) : '');
+      html += '<span class="' + cls + '">' + escapeHTML(THEME_LABELS[t] || titleCase(t)) + '</span>';
     });
     html += '</div>';
 
@@ -555,9 +620,8 @@
 
     filterBar.innerHTML = chips.map(function (c) {
       var cls = 'filter-chip' + (c.key === activeTag ? ' active' : '');
-      var colors = THEME_COLORS[c.key];
-      var style = colors ? ' style="background:' + colors.bg + ';color:' + colors.text + '"' : '';
-      return '<button type="button" class="' + cls + '" data-tag="' + escapeHTML(c.key) + '"' + style + '>' +
+      if (THEME_COLORS[c.key]) cls += ' themed ' + themeClass(c.key);
+      return '<button type="button" class="' + cls + '" data-tag="' + escapeHTML(c.key) + '">' +
         themeIconSVG(c.icon) + escapeHTML(c.label) + '</button>';
     }).join('');
 
