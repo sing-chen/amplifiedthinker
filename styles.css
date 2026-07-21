@@ -48,6 +48,29 @@
      (section cards, News articles, skill primer/plan headlines);
      Poppins/Inter remain the default everywhere else ─────────────── */
   --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
+
+  /* ── Fluid type scale — clamp(min, preferred, max); ceiling hit at the
+     viewport width noted, floor holds below ~320px. Apply via these tokens
+     rather than one-off clamp() calls so the scale stays centrally tunable. ── */
+  --fs-h1:clamp(24px,2.8vw,40px);              /* hero headline; ceiling ~1430px */
+  --fs-h2:clamp(19px,1vw + 15px,22px);         /* card/section headline; ceiling 700px */
+  --fs-body:clamp(14px,.3vw + 13px,16px);      /* lead paragraphs; ceiling 1000px */
+  --fs-label:clamp(12px,.15vw + 11.5px,13px);  /* small labels/eyebrows; ceiling 1000px */
+
+  /* ── Dark-mode overrides — remaps the semantic layer only; raw palette
+     vars above stay literal. Components must consume var(--bg-*)/var(--fg-*)
+     etc. (not raw colors) for this to take visual effect. ─────────────── */
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page:#142320;--bg-surface:#1B2E29;--bg-sunken:#0E1917;
+    --bg-inverse:var(--off-white);--bg-brand:var(--teal);--bg-brand-soft:#2D756F;
+    --fg-1:#E7EDE9;--fg-2:#9BAAA3;--fg-heading:#DCEAE3;
+    --fg-brand:var(--sage);--fg-on-brand:#0E1917;--fg-on-inverse:var(--navy);
+    --accent-warm:#C97A4A;--accent-cool:var(--teal);--accent-support:#8AA35E;
+    --line-soft:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--line-strong:rgba(255,255,255,.22);
+    --status-ok:#4FA89E;--status-warn:#D1A73B;--status-error:#C97A4A;--status-info:#7C9CD1;
+  }
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
