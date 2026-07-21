@@ -67,6 +67,18 @@
     --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
   }
 
+  /* ── DARK-MODE TOKENS ───────────────────────── */
+  :root[data-theme="dark"] {
+    --d-bg-page:#142320; --d-bg-surface:#1B2E29; --d-bg-sunken:#0E1917;
+    --d-fg-1:#E7EDE9; --d-fg-2:#9BAAA3; --d-fg-heading:#DCEAE3; --d-fg-brand:#ACC4B6;
+    --d-line:rgba(255,255,255,.12);
+    --d-teal-bg:#1C332E; --d-teal-stroke:#8FCFC3;
+    --d-moss-bg:#232B1B; --d-moss-stroke:#C9D9AE;
+    --d-terra-bg:#33231A; --d-terra-stroke:#E8C9AE;
+    --d-amber-bg:#332612; --d-amber-stroke:#D9BB6E;
+    --d-slate-bg:#1E2A38; --d-slate-stroke:#A8C0D9;
+  }
+
   /* ── RESET ──────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -320,6 +332,11 @@
   }
   .comp-label-terra { color: var(--terracotta); }
   .comp-label-teal  { color: var(--deep-teal); }
+
+  /* next-step card (summary slide) */
+  .next-step-card  { background: rgba(27,74,68,0.08); border-left: 3px solid var(--deep-teal); }
+  .next-step-label { color: var(--deep-teal); }
+  .next-step-body  { color: var(--navy); }
 
   /* SCAMPER checklist grid */
   .scamper-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -625,6 +642,53 @@
       max-width: none;
     }
   }
+
+  /* ── DARK MODE ──────────────────────────────── */
+  [data-theme="dark"] body { background: var(--d-bg-page); color: var(--d-fg-1); }
+  [data-theme="dark"] .slide-sage  { background: var(--d-bg-sunken); }
+  [data-theme="dark"] .slide-white { background: var(--d-bg-page); }
+  [data-theme="dark"] .slide-cream { background: var(--d-terra-bg); }
+
+  [data-theme="dark"] .eyebrow { color: var(--d-fg-brand); }
+  [data-theme="dark"] .h-display,
+  [data-theme="dark"] .h-title,
+  [data-theme="dark"] .h-heading { color: var(--d-fg-heading); }
+  [data-theme="dark"] .t-body,
+  [data-theme="dark"] .t-lead { color: var(--d-fg-1); }
+  [data-theme="dark"] .t-terra { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .t-teal  { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .t-meta  { color: var(--d-fg-2); }
+
+  [data-theme="dark"] .callout-sage  { background: var(--d-bg-sunken); border-left-color: var(--d-terra-stroke); }
+  [data-theme="dark"] .callout-label { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .card       { background: var(--d-bg-surface); border-color: var(--d-line); }
+  [data-theme="dark"] .card-label { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .num-badge { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .comp-without     { background: var(--d-terra-bg); }
+  [data-theme="dark"] .comp-with        { background: var(--d-teal-bg); }
+  [data-theme="dark"] .comp-label-terra { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .comp-label-teal  { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .next-step-card  { background: var(--d-teal-bg); border-left-color: var(--d-teal-stroke); }
+  [data-theme="dark"] .next-step-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .next-step-body  { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .scamper-cell   { background: var(--d-teal-bg); }
+  [data-theme="dark"] .scamper-letter { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .scamper-word   { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .funnel-phase-label { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .step-num:not(.root) { background: var(--d-teal-bg); color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .pull-quote p { color: var(--d-fg-heading); }
+
+  [data-theme="dark"] .video-transcript { background: var(--d-bg-surface); color: var(--d-fg-1); }
+  [data-theme="dark"] .video-transcript-toggle { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .video-transcript-toggle:hover { color: var(--d-terra-stroke); }
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */
@@ -935,9 +999,9 @@
       <p>Creative Thinking is the discipline of expanding a problem's solution space before narrowing it. It means generating before judging, borrowing structure from unrelated domains, and treating the first idea as a starting point, not an answer.</p>
     </div>
     <p class="t-body" style="max-width:620px;opacity:0.75;">The output is a genuine range of alternatives — not the final choice, but the raw material any good decision needs to draw from.</p>
-    <div style="margin-top:40px;padding:24px 28px;background:rgba(27,74,68,0.08);border-left:3px solid var(--deep-teal);border-radius:0 8px 8px 0;max-width:560px;">
-      <p style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
-      <p style="font-family:'Inter',sans-serif;font-size:14px;color:var(--navy);line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
+    <div class="next-step-card" style="margin-top:40px;padding:24px 28px;border-radius:0 8px 8px 0;max-width:560px;">
+      <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
+      <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
       <a href="plan.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--white);background:var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#5BA79F'" onmouseout="this.style.background='var(--deep-teal)'">Open Full Learning Plan <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     </div>
   </div>

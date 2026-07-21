@@ -67,6 +67,18 @@
     --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
   }
 
+  /* ── DARK-MODE TOKENS ───────────────────────── */
+  :root[data-theme="dark"] {
+    --d-bg-page:#142320; --d-bg-surface:#1B2E29; --d-bg-sunken:#0E1917;
+    --d-fg-1:#E7EDE9; --d-fg-2:#9BAAA3; --d-fg-heading:#DCEAE3; --d-fg-brand:#ACC4B6;
+    --d-line:rgba(255,255,255,.12);
+    --d-teal-bg:#1C332E; --d-teal-stroke:#8FCFC3;
+    --d-moss-bg:#232B1B; --d-moss-stroke:#C9D9AE;
+    --d-terra-bg:#33231A; --d-terra-stroke:#E8C9AE;
+    --d-amber-bg:#332612; --d-amber-stroke:#D9BB6E;
+    --d-slate-bg:#1E2A38; --d-slate-stroke:#A8C0D9;
+  }
+
   /* ── RESET ──────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -329,6 +341,17 @@
     font-family: 'Inter', sans-serif;
     font-weight: 600; font-size: 15px; text-align: center;
   }
+  .mece-cell-teal  { background: #C5DDD9; color: var(--deep-teal); }
+  .mece-cell-sage  { background: var(--light-sage); color: var(--navy); }
+  .mece-cell-terra { background: #EDD5CB; color: var(--navy); }
+  .mece-cell-amber { background: #F2DDB8; color: var(--charcoal); }
+  .mece-caption { color: var(--warm-gray); }
+  .root-cause-label { color: var(--terracotta); }
+
+  /* next-step card (summary slide) */
+  .next-step-card  { background: rgba(27,74,68,0.08); border-left: 3px solid var(--deep-teal); }
+  .next-step-label { color: var(--deep-teal); }
+  .next-step-body  { color: var(--navy); }
 
   /* issue tree */
   .tree-root {
@@ -642,6 +665,68 @@
       max-width: none;
     }
   }
+
+  /* ── DARK MODE ──────────────────────────────── */
+  [data-theme="dark"] body { background: var(--d-bg-page); color: var(--d-fg-1); }
+  [data-theme="dark"] .slide-sage  { background: var(--d-bg-sunken); }
+  [data-theme="dark"] .slide-white { background: var(--d-bg-page); }
+  [data-theme="dark"] .slide-cream { background: var(--d-terra-bg); }
+
+  [data-theme="dark"] .eyebrow { color: var(--d-fg-brand); }
+  [data-theme="dark"] .h-display,
+  [data-theme="dark"] .h-title,
+  [data-theme="dark"] .h-heading { color: var(--d-fg-heading); }
+  [data-theme="dark"] .t-body,
+  [data-theme="dark"] .t-lead { color: var(--d-fg-1); }
+  [data-theme="dark"] .t-terra { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .t-teal  { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .t-meta  { color: var(--d-fg-2); }
+
+  [data-theme="dark"] .tag-a { background: var(--d-teal-bg);  color: var(--d-teal-stroke); }
+  [data-theme="dark"] .tag-s { background: var(--d-moss-bg);  color: var(--d-moss-stroke); }
+  [data-theme="dark"] .tag-g { background: var(--d-amber-bg); color: var(--d-amber-stroke); }
+
+  [data-theme="dark"] .callout-sage  { background: var(--d-bg-sunken); border-left-color: var(--d-terra-stroke); }
+  [data-theme="dark"] .callout-label { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .card       { background: var(--d-bg-surface); border-color: var(--d-line); }
+  [data-theme="dark"] .card-label { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .num-badge { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .comp-without     { background: var(--d-terra-bg); }
+  [data-theme="dark"] .comp-with        { background: var(--d-teal-bg); }
+  [data-theme="dark"] .comp-label-terra { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .comp-label-teal  { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .tree-branch-box { background: var(--d-teal-bg); color: var(--d-teal-stroke); }
+  [data-theme="dark"] .step-num:not(.root) { background: var(--d-teal-bg); color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .pull-quote p { color: var(--d-fg-heading); }
+
+  [data-theme="dark"] .quiz-q             { color: var(--d-fg-heading); }
+  [data-theme="dark"] .quiz-opt           { background: var(--d-bg-sunken); color: var(--d-fg-1); }
+  [data-theme="dark"] .quiz-opt.selected  { background: var(--d-teal-bg); border-color: var(--teal); }
+  [data-theme="dark"] .quiz-opt.correct   { background: var(--d-teal-bg); border-color: var(--teal); }
+  [data-theme="dark"] .quiz-opt.incorrect { background: var(--d-terra-bg); border-color: var(--terracotta); }
+  [data-theme="dark"] .quiz-feedback.correct   { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .quiz-feedback.incorrect { color: var(--d-terra-stroke); }
+
+  [data-theme="dark"] .video-transcript { background: var(--d-bg-surface); color: var(--d-fg-1); }
+  [data-theme="dark"] .video-transcript-toggle { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .video-transcript-toggle:hover { color: var(--d-terra-stroke); }
+
+  [data-theme="dark"] .mece-caption     { color: var(--d-fg-2); }
+  [data-theme="dark"] .root-cause-label { color: var(--d-terra-stroke); }
+
+  [data-theme="dark"] .mece-cell-teal  { background: var(--d-teal-bg);  color: var(--d-teal-stroke); }
+  [data-theme="dark"] .mece-cell-sage  { background: var(--d-moss-bg);  color: var(--d-moss-stroke); }
+  [data-theme="dark"] .mece-cell-terra { background: var(--d-terra-bg); color: var(--d-terra-stroke); }
+  [data-theme="dark"] .mece-cell-amber { background: var(--d-amber-bg); color: var(--d-amber-stroke); }
+
+  [data-theme="dark"] .next-step-card  { background: var(--d-teal-bg); border-left-color: var(--d-teal-stroke); }
+  [data-theme="dark"] .next-step-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .next-step-body  { color: var(--d-fg-1); }
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */
@@ -873,12 +958,12 @@
         <p class="t-body">Diagnosing an over-budget project: decompose cost drivers into People, Technology, Process, Scope. Each driver examined once — no double-counting, no blind spots.</p>
       </div>
       <div class="mece-grid" style="margin-top:24px;">
-        <div class="mece-cell" style="background:#C5DDD9;color:var(--deep-teal);">People</div>
-        <div class="mece-cell" style="background:var(--light-sage);color:var(--navy);">Technology</div>
-        <div class="mece-cell" style="background:#EDD5CB;color:var(--navy);">Process</div>
-        <div class="mece-cell" style="background:#F2DDB8;color:var(--charcoal);">Scope</div>
+        <div class="mece-cell mece-cell-teal">People</div>
+        <div class="mece-cell mece-cell-sage">Technology</div>
+        <div class="mece-cell mece-cell-terra">Process</div>
+        <div class="mece-cell mece-cell-amber">Scope</div>
       </div>
-      <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--warm-gray);">No overlap. Full coverage.</p>
+      <p class="mece-caption" style="text-align:center;margin-top:12px;font-size:12px;">No overlap. Full coverage.</p>
     </div>
   </div>
 
@@ -895,7 +980,7 @@
       <div class="step-item"><div class="step-num">3</div><p class="t-body" style="padding-top:4px;"><span class="t-meta">Why? &nbsp;</span>A UI update changed the flow without updating help docs</p></div>
       <div class="step-item"><div class="step-num root">4</div><p class="t-body t-terra" style="padding-top:4px;font-weight:500;"><span class="t-meta">Why? &nbsp;</span>No documentation review step in the release process — ownership sits outside the release workflow</p></div>
     </div>
-    <p style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:var(--terracotta);letter-spacing:0.04em;">ROOT CAUSE IDENTIFIED</p>
+    <p class="root-cause-label" style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.04em;">ROOT CAUSE IDENTIFIED</p>
   </div>
 
   <!-- 08 · MENTAL MODEL: ISSUE TREE -->
@@ -944,9 +1029,9 @@
       <p>Analytical Thinking is the discipline of breaking complexity into its parts before drawing conclusions from it. Build a structure before you analyse. Trace symptoms to their source rather than stopping at the first plausible cause. Know the difference between what the evidence shows and what you are assuming.</p>
     </div>
     <p class="t-body" style="max-width:620px;opacity:0.75;">The output is a clear, structured picture of what is happening and why — the foundation that any reliable solution has to rest on.</p>
-    <div style="margin-top:40px;padding:24px 28px;background:rgba(27,74,68,0.08);border-left:3px solid var(--deep-teal);border-radius:0 8px 8px 0;max-width:560px;">
-      <p style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
-      <p style="font-family:'Inter',sans-serif;font-size:14px;color:var(--navy);line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
+    <div class="next-step-card" style="margin-top:40px;padding:24px 28px;border-radius:0 8px 8px 0;max-width:560px;">
+      <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
+      <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
       <a href="plan.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--white);background:var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#5BA79F'" onmouseout="this.style.background='var(--deep-teal)'">Open Full Learning Plan <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     </div>
   </div>

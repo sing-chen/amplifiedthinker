@@ -79,6 +79,18 @@
     --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
   }
 
+  /* ── DARK-MODE TOKENS ───────────────────────── */
+  :root[data-theme="dark"] {
+    --d-bg-page:#142320; --d-bg-surface:#1B2E29; --d-bg-sunken:#0E1917;
+    --d-fg-1:#E7EDE9; --d-fg-2:#9BAAA3; --d-fg-heading:#DCEAE3; --d-fg-brand:#ACC4B6;
+    --d-line:rgba(255,255,255,.12);
+    --d-teal-bg:#1C332E; --d-teal-stroke:#8FCFC3;
+    --d-moss-bg:#232B1B; --d-moss-stroke:#C9D9AE;
+    --d-terra-bg:#33231A; --d-terra-stroke:#E8C9AE;
+    --d-amber-bg:#332612; --d-amber-stroke:#D9BB6E;
+    --d-slate-bg:#1E2A38; --d-slate-stroke:#A8C0D9;
+  }
+
   /* ── RESET ──────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -1515,6 +1527,17 @@
     user-select: none;
   }
 
+  /* ── NEXT STEP CARD (end of plan) ────────────── */
+  .next-step-card  { background: var(--light-sage); border-left: 4px solid var(--deep-teal); }
+  .next-step-label { color: var(--deep-teal); }
+  .next-step-body  { color: var(--navy); }
+  .next-step-btn-outline {
+    color: var(--deep-teal);
+    background: rgba(45,117,111,0.1);
+    border: 1.5px solid var(--deep-teal);
+  }
+  .next-step-btn-outline:hover { background: rgba(45,117,111,0.18); }
+
   /* ── SKIP NAVIGATION ─────────────────────────── */
   .skip-link { position: absolute; top: -44px; left: 0; background: var(--deep-teal); color: var(--off-white); font-size: 14px; font-weight: 600; padding: 10px 18px; z-index: 9999; text-decoration: none; border-radius: 0 0 var(--radius) 0; transition: top .15s; }
   .skip-link:focus { top: 0; }
@@ -1613,6 +1636,196 @@
       max-width: none;
     }
   }
+
+  /* ── DARK MODE ──────────────────────────────── */
+  [data-theme="dark"] body { background: var(--d-bg-page); color: var(--d-fg-1); }
+  [data-theme="dark"] .hero { background: var(--d-terra-bg); border-bottom-color: var(--d-line); }
+  [data-theme="dark"] .hero h1 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .hero-series { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .hero-sub { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .tag-analytical { background: var(--d-teal-bg);  color: var(--d-teal-stroke); }
+  [data-theme="dark"] .tag-structural { background: var(--d-moss-bg);  color: var(--d-moss-stroke); }
+  [data-theme="dark"] .tag-human      { background: var(--d-terra-bg); color: var(--d-terra-stroke); }
+  [data-theme="dark"] .tag-growth     { background: var(--d-amber-bg); color: var(--d-amber-stroke); }
+  [data-theme="dark"] .tag-insight    { background: var(--d-slate-bg); color: var(--d-slate-stroke); }
+
+  [data-theme="dark"] .section-odd::before  { background: var(--d-bg-page); }
+  [data-theme="dark"] .section-even::before { background: var(--d-terra-bg); }
+  [data-theme="dark"] .section-even .model-card,
+  [data-theme="dark"] .section-even .mistake,
+  [data-theme="dark"] .section-even .objectives-list li,
+  [data-theme="dark"] .section-even .reflection-item,
+  [data-theme="dark"] .section-even .kc-question,
+  [data-theme="dark"] .section-even .progression-stage,
+  [data-theme="dark"] .section-even .cross-skill-item,
+  [data-theme="dark"] .section-even .scope-list li { background: var(--d-bg-surface); }
+
+  [data-theme="dark"] .section h2,
+  [data-theme="dark"] .section h3,
+  [data-theme="dark"] .principle h3 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .section p { color: var(--d-fg-1); }
+  [data-theme="dark"] .principles-intro { border-bottom-color: var(--d-line); }
+  [data-theme="dark"] .section::after { color: var(--d-teal-stroke); opacity: 0.14; }
+
+  [data-theme="dark"] .snapshot-card { background: var(--d-bg-surface); }
+  [data-theme="dark"] .snapshot-card-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .snapshot-card p,
+  [data-theme="dark"] .snapshot-list li { color: var(--d-fg-1); }
+  [data-theme="dark"] .snapshot-list li.ai-item { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .objectives-list li { background: var(--d-bg-surface); border-left-color: var(--teal); }
+  [data-theme="dark"] .obj-num  { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .obj-text { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .principle,
+  [data-theme="dark"] .principle:first-child { border-color: var(--d-line); }
+  [data-theme="dark"] .principle-number,
+  [data-theme="dark"] .accordion-label,
+  [data-theme="dark"] .accordion-toggle { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .principle-header:hover .accordion-label,
+  [data-theme="dark"] .model-header:hover .accordion-label,
+  [data-theme="dark"] .principle-header:hover .accordion-toggle,
+  [data-theme="dark"] .model-header:hover .accordion-toggle { color: var(--d-fg-heading); }
+  [data-theme="dark"] .principle-header:focus-visible,
+  [data-theme="dark"] .model-header:focus-visible { outline-color: var(--teal); }
+
+  [data-theme="dark"] .ai-note { background: var(--d-amber-bg); }
+  [data-theme="dark"] .ai-note-label { color: var(--d-amber-stroke); }
+  [data-theme="dark"] .ai-note p { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .model-card { background: var(--d-bg-surface); }
+  [data-theme="dark"] .model-source { color: var(--d-fg-2); }
+  [data-theme="dark"] .model-applied { background: var(--d-bg-sunken); border-left-color: var(--d-terra-stroke); }
+  [data-theme="dark"] .model-applied-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .model-diagram-caption { color: var(--d-fg-2); }
+
+  [data-theme="dark"] .scamper-cell   { background: var(--d-teal-bg); }
+  [data-theme="dark"] .scamper-letter { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .scamper-word   { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .funnel-phase-label { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .mindmap-branch { background: var(--d-teal-bg); color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .reframe-cell { background: var(--d-bg-sunken); }
+  [data-theme="dark"] .reframe-cell-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .reframe-cell p { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .step-num:not(.root) { background: var(--d-teal-bg); color: var(--d-teal-stroke); }
+  [data-theme="dark"] .step-meta { color: var(--d-fg-2); }
+  [data-theme="dark"] .step-root-label { color: var(--d-terra-stroke); }
+
+  /* higher-specificity nested override for the lighter .step-num variant inside .model-applied */
+  [data-theme="dark"] .model-applied .step-meta { color: var(--d-fg-1); }
+  [data-theme="dark"] .model-applied .step-num:not(.root) { background: var(--d-bg-surface); }
+
+  [data-theme="dark"] .mistake { background: var(--d-bg-surface); border-left-color: var(--terracotta); }
+  [data-theme="dark"] .mistake h4 { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .mistake-cell-label { color: var(--d-fg-2); }
+  [data-theme="dark"] .mistake-cell p { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .continuum-segment.underuse { background: var(--d-terra-bg); color: var(--d-terra-stroke); }
+  [data-theme="dark"] .continuum-segment.target   { background: var(--d-teal-bg);  color: var(--d-teal-stroke); }
+  [data-theme="dark"] .continuum-segment.overuse  { background: var(--d-amber-bg); color: var(--d-amber-stroke); }
+
+  [data-theme="dark"] .indicator-panel { background: var(--d-bg-surface); }
+  [data-theme="dark"] .indicator-col-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .indicator-list li { color: var(--d-fg-1); }
+  [data-theme="dark"] .indicator-panel.target   .indicator-list li:hover { background: var(--d-teal-bg); }
+  [data-theme="dark"] .indicator-panel.underuse .indicator-list li:hover { background: var(--d-terra-bg); }
+  [data-theme="dark"] .indicator-panel.overuse  .indicator-list li:hover { background: var(--d-amber-bg); }
+
+  [data-theme="dark"] .scenario h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .scenario-col.without { background: var(--d-terra-bg); }
+  [data-theme="dark"] .scenario-col.with    { background: var(--d-teal-bg); }
+  [data-theme="dark"] .without .scenario-col-label { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .with    .scenario-col-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .scenario-col p { color: var(--d-fg-1); }
+  [data-theme="dark"] .scenario-highlight { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .reflection-item { background: var(--d-bg-surface); border-left-color: var(--slate-blue); }
+  [data-theme="dark"] .reflection-num { color: var(--d-slate-stroke); }
+  [data-theme="dark"] .reflection-q { color: var(--d-fg-1); }
+  [data-theme="dark"] .reflection-time { color: var(--d-fg-2); }
+
+  [data-theme="dark"] .kc-question { background: var(--d-bg-surface); }
+  [data-theme="dark"] .kc-q-label { color: var(--d-fg-2); }
+  [data-theme="dark"] .kc-q-text { color: var(--d-fg-heading); }
+  [data-theme="dark"] .kc-option { background: var(--d-bg-sunken); color: var(--d-fg-1); }
+  [data-theme="dark"] .kc-option:hover:not(:disabled) { background: var(--d-teal-bg); border-color: var(--teal); }
+  [data-theme="dark"] .kc-option.selected  { background: var(--d-teal-bg); border-color: var(--teal); }
+  [data-theme="dark"] .kc-option.correct   { background: var(--d-teal-bg); border-color: var(--teal); }
+  [data-theme="dark"] .kc-option.incorrect { background: var(--d-terra-bg); border-color: var(--terracotta); }
+  [data-theme="dark"] .kc-score { background: var(--d-teal-bg); }
+  [data-theme="dark"] .kc-score p { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .kc-retake-btn { color: var(--d-teal-stroke); border-color: var(--d-teal-stroke); }
+  [data-theme="dark"] .kc-retake-btn:hover { background: var(--d-teal-stroke); color: var(--d-bg-page); }
+  [data-theme="dark"] .kc-answer-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .kc-answer p { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .habit-day { border-color: var(--d-line); }
+  [data-theme="dark"] .habit-day-header:not(.open) { background: var(--d-bg-surface); color: var(--d-fg-1); }
+  [data-theme="dark"] .habit-day-header:not(.open):hover { background: var(--d-bg-sunken); }
+  [data-theme="dark"] .habit-day-num { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .habit-day-title { color: var(--d-fg-heading); }
+  [data-theme="dark"] .habit-day-concept { color: var(--d-fg-2); }
+  [data-theme="dark"] .habit-day-chevron { color: var(--d-fg-2); }
+  [data-theme="dark"] .habit-day-body { background: var(--d-bg-surface); border-top-color: var(--d-line); }
+  [data-theme="dark"] .habit-focus strong { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .habit-tasks-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .habit-task-title { color: var(--d-fg-heading); }
+  [data-theme="dark"] .habit-example { background: var(--d-amber-bg); color: var(--d-fg-1); }
+  [data-theme="dark"] .habit-example-label { color: var(--d-amber-stroke); }
+  [data-theme="dark"] .habit-meta-label { color: var(--d-fg-2); }
+  [data-theme="dark"] .habit-meta-value { color: var(--d-fg-1); }
+  [data-theme="dark"] .habit-meta-value strong { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .habit-not-clicking { background: var(--d-slate-bg); color: var(--d-fg-1); border-left-color: var(--d-slate-stroke); }
+  [data-theme="dark"] .habit-not-clicking-label { color: var(--d-slate-stroke); }
+
+  [data-theme="dark"] .progression-stage { background: var(--d-bg-surface); border-left-color: var(--teal); }
+  [data-theme="dark"] .progression-stage h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .progression-cap { border-top-color: var(--d-line); }
+  [data-theme="dark"] .progression-cap-item label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .progression-cap-item p { color: var(--d-fg-1); }
+
+  [data-theme="dark"] .resource-table { background: var(--d-bg-surface); border-color: var(--d-line); box-shadow: none; }
+  [data-theme="dark"] .resource-table th { color: var(--d-teal-stroke); background: var(--d-bg-sunken); border-bottom-color: var(--d-line); }
+  [data-theme="dark"] .resource-table td { color: var(--d-fg-1); background: var(--d-bg-surface); border-bottom-color: var(--d-line); }
+  [data-theme="dark"] .resource-table tr:hover td { background: var(--d-bg-sunken); }
+  [data-theme="dark"] .resource-time { color: var(--d-fg-2); }
+  [data-theme="dark"] .resource-title { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .resource-why { color: var(--d-fg-1); }
+  [data-theme="dark"] .resource-link { background: var(--d-teal-bg); color: var(--d-teal-stroke); }
+  [data-theme="dark"] .resource-link:hover { background: var(--teal); color: var(--d-bg-page); }
+
+  [data-theme="dark"] .type-pill--book      { background: var(--d-teal-bg);  color: var(--d-teal-stroke); }
+  [data-theme="dark"] .type-pill--article   { background: var(--d-slate-bg); color: var(--d-slate-stroke); }
+  [data-theme="dark"] .type-pill--video     { background: var(--d-terra-bg); color: var(--d-terra-stroke); }
+  [data-theme="dark"] .type-pill--podcast   { background: var(--d-amber-bg); color: var(--d-amber-stroke); }
+  [data-theme="dark"] .type-pill--paper     { background: var(--d-slate-bg); color: var(--d-fg-1); }
+  [data-theme="dark"] .type-pill--factsheet { background: var(--d-moss-bg);  color: var(--d-moss-stroke); }
+
+  [data-theme="dark"] .cross-skill-item { background: var(--d-bg-surface); }
+  [data-theme="dark"] .cross-skill-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .cross-skill-desc { color: var(--d-fg-1); }
+  [data-theme="dark"] .cross-skill-practice { color: var(--d-teal-stroke); }
+
+  [data-theme="dark"] .scope-list li { background: var(--d-bg-surface); color: var(--d-fg-1); }
+  [data-theme="dark"] .scope-list li::before { color: var(--d-terra-stroke); }
+
+  [data-theme="dark"] .next-step-card  { background: var(--d-teal-bg); border-left-color: var(--d-teal-stroke); }
+  [data-theme="dark"] .next-step-label { color: var(--d-teal-stroke); }
+  [data-theme="dark"] .next-step-body  { color: var(--d-fg-1); }
+  [data-theme="dark"] .next-step-btn-outline {
+    color: var(--d-teal-stroke);
+    background: rgba(143,207,195,0.1);
+    border-color: var(--d-teal-stroke);
+  }
+  [data-theme="dark"] .next-step-btn-outline:hover { background: rgba(143,207,195,0.18); }
+
+  [data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
 
 </style>
   <style id="site-nav-overrides">
@@ -2709,12 +2922,12 @@
         </blockquote>
       </div>
 
-      <div style="margin:40px 0 0;padding:28px 32px;background:var(--light-sage);border-left:4px solid var(--deep-teal);border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
-        <p style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
-        <p style="font-family:'Inter',sans-serif;font-size:15px;color:var(--navy);line-height:1.7;margin-bottom:16px;">Creative Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical produces the picture, Critical tests it, Creative generates what to do next. With all three in place, the next stretch is choosing between what's been generated — a Decision-Making skill that isn't live on Amplified Thinker yet.</p>
-        <p style="font-family:'Inter',sans-serif;font-size:15px;color:var(--navy);line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and podcasts below if you want to go deeper into the concepts behind this one first.</p>
+      <div class="next-step-card" style="margin:40px 0 0;padding:28px 32px;border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
+        <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
+        <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:16px;">Creative Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical produces the picture, Critical tests it, Creative generates what to do next. With all three in place, the next stretch is choosing between what's been generated — a Decision-Making skill that isn't live on Amplified Thinker yet.</p>
+        <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and podcasts below if you want to go deeper into the concepts behind this one first.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-          <a href="#resources" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--deep-teal);background:rgba(45,117,111,0.1);border:1.5px solid var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='rgba(45,117,111,0.18)'" onmouseout="this.style.background='rgba(45,117,111,0.1)'">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="#resources" class="next-step-btn-outline" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;border-radius:6px;text-decoration:none;padding:10px 20px;transition:background .15s;">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
           <a href="../../future-skills.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:var(--navy);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='var(--deep-teal)'" onmouseout="this.style.background='var(--navy)'">Browse the Library <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
         </div>
       </div>
