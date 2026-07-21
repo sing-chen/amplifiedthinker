@@ -513,6 +513,48 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-07-17-0",
+    "type": "news",
+    "title": "AI anxiety is driving interest toward trades — welding, plumbing, carpentry",
+    "description": "Social media influencers and career advisors are steering followers toward manual trades as AI-driven anxiety about white-collar job security grows, coinciding with a genuine shortage of skilled tradespeople in manufacturing and construction. The piece frames this as a capability-migration response rather than a technology story.",
+    "url": "news.html?story=2026-07-17-0"
+  },
+  {
+    "id": "news-2026-07-17-1",
+    "type": "news",
+    "title": "Thomson Reuters to cut up to 500 engineering jobs as AI adoption deepens",
+    "description": "Thomson Reuters is cutting roughly 5.2% of its technology division while planning to add 250+ new engineering roles over two years, weighted toward senior and AI-native positions. The move reflects a broader talent recomposition rather than a straightforward headcount reduction.",
+    "url": "news.html?story=2026-07-17-1"
+  },
+  {
+    "id": "news-2026-07-17-2",
+    "type": "news",
+    "title": "KPMG Australia prepares to cut hundreds of jobs and reduce partner pay",
+    "description": "KPMG's Australian consultancy arm is preparing cuts that could exceed 1,000 roles and a partner pay reduction of up to a fifth, following a client-data misuse scandal and regulatory investigation. Announcement timing is tied to appointment of a permanent CEO.",
+    "url": "news.html?story=2026-07-17-2"
+  },
+  {
+    "id": "news-2026-07-17-3",
+    "type": "news",
+    "title": "The State of AI Fluency 2026",
+    "description": "The first AI fluency benchmark built from behavioral assessment rather than self-report. Across 412 completed conversational assessments, the average score is 52/100, with only 12% reaching Advanced or Expert tier — and the self-selected sample likely overstates the true workforce average.",
+    "url": "news.html?story=2026-07-17-3"
+  },
+  {
+    "id": "news-2026-07-17-4",
+    "type": "news",
+    "title": "Why Britain's Workforce Is Burning Out: New Data Reveals the True Cost of the Workforce Transformation Gap",
+    "description": "58% of UK workers report increased role pressure over the past two years; 42% are actively considering leaving due to workplace pressure, and 11% are already job-hunting.",
+    "url": "news.html?story=2026-07-17-4"
+  },
+  {
+    "id": "news-2026-07-17-5",
+    "type": "news",
+    "title": "McKinsey & Company: The Critical Loss of On-the-Job Mentoring Pipelines",
+    "description": "McKinsey's new organizational analysis warns that as enterprises automate entry-level data processing and routine drafting, they are inadvertently dismantling their internal talent pipelines. Because junior professionals no longer execute the basic foundational work that historically built context and professional intuition, they are hitting an abrupt expertise cliff when moving into mid-level strategy positions. To resolve this, leaders must restructure work profiles to blend knowledge management, direct coaching loops, and simulation-based exercises directly into everyday workflows.",
+    "url": "news.html?story=2026-07-17-5"
+  },
+  {
     "id": "news-2026-07-15-0",
     "type": "news",
     "title": "Future of Remote Work: Trends Every Professional Should Know",

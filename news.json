@@ -1,5 +1,59 @@
 [
   {
+    "date": "2026-07-17",
+    "stories": [
+      {
+        "title": "AI anxiety is driving interest toward trades — welding, plumbing, carpentry",
+        "source": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/features/2026-07-17/ai-woes-drive-influencers-to-back-welding-plumbing-and-carpentry",
+        "summary": "Social media influencers and career advisors are steering followers toward manual trades as AI-driven anxiety about white-collar job security grows, coinciding with a genuine shortage of skilled tradespeople in manufacturing and construction. The piece frames this as a capability-migration response rather than a technology story.",
+        "implications": "An early-career recalibration signal — durable, non-automatable capability is being actively sought out, not just theorized about.",
+        "tags": ["skills development"]
+      },
+      {
+        "title": "Thomson Reuters to cut up to 500 engineering jobs as AI adoption deepens",
+        "source": "US News/AP",
+        "url": "https://money.usnews.com/investing/news/articles/2026-07-13/thomson-reuters-to-cut-small-number-of-engineering-jobs",
+        "summary": "Thomson Reuters is cutting roughly 5.2% of its technology division while planning to add 250+ new engineering roles over two years, weighted toward senior and AI-native positions. The move reflects a broader talent recomposition rather than a straightforward headcount reduction.",
+        "implications": "A concrete case of skills-based reallocation — the same headcount pressure that shows up in aggregate WEF displacement figures, happening inside one named employer.",
+        "tags": ["workforce transformation", "skills development", "research and insights"]
+      },
+      {
+        "title": "KPMG Australia prepares to cut hundreds of jobs and reduce partner pay",
+        "source": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-07-14/kpmg-prepares-to-cut-staff-as-scandal-fallout-hits-afr-says",
+        "summary": "KPMG's Australian consultancy arm is preparing cuts that could exceed 1,000 roles and a partner pay reduction of up to a fifth, following a client-data misuse scandal and regulatory investigation. Announcement timing is tied to appointment of a permanent CEO.",
+        "implications": "Illustrates how governance failures, not technology, can trigger workforce contraction — a reminder that organizational readiness cuts both ways.",
+        "tags": ["macro signals"]
+      },
+      {
+        "title": "The State of AI Fluency 2026",
+        "source": "AISA",
+        "url": "https://aisa.to/state-of-ai-fluency",
+        "summary": "The first AI fluency benchmark built from behavioral assessment rather than self-report. Across 412 completed conversational assessments, the average score is 52/100, with only 12% reaching Advanced or Expert tier — and the self-selected sample likely overstates the true workforce average.",
+        "implications": "This is a concrete, measured version of the AI fluency vs. AI literacy distinction — most workers can talk about AI use but few demonstrate judgment-level fluency under assessment.",
+        "tags": ["skills development", "research and insights"]
+      },
+      {
+        "title": "Why Britain's Workforce Is Burning Out: New Data Reveals the True Cost of the Workforce Transformation Gap",
+        "source": "GlobeNewswire / HiBob",
+        "url": "https://www.globenewswire.com/news-release/2026/07/09/3324563/0/en/Why-Britain-s-workforce-is-burning-out-New-data-reveals-the-true-cost-of-the-workforce-transformation-gap.html",
+        "summary": "58% of UK workers report increased role pressure over the past two years; 42% are actively considering leaving due to workplace pressure, and 11% are already job-hunting.",
+        "implications": "This is the gap made measurable — capability demands rising faster than the organizational and human systems built to absorb them, showing up directly as attrition risk.",
+        "tags": ["workforce transformation"]
+      },
+      {
+        "title": "McKinsey & Company: The Critical Loss of On-the-Job Mentoring Pipelines",
+        "source": "McKinsey & Company",
+        "url": "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/building-expertise-in-the-age-of-ai-who-trains-the-next-generation",
+        "summary": "McKinsey's new organizational analysis warns that as enterprises automate entry-level data processing and routine drafting, they are inadvertently dismantling their internal talent pipelines. Because junior professionals no longer execute the basic foundational work that historically built context and professional intuition, they are hitting an abrupt expertise cliff when moving into mid-level strategy positions. To resolve this, leaders must restructure work profiles to blend knowledge management, direct coaching loops, and simulation-based exercises directly into everyday workflows.",
+        "implications": "Capability builders must intentionally design structured practice environments and formal human-led feedback sessions to artificially recreate the implicit learning loops lost to software systems.",
+        "tags": ["skills development", "workforce transformation", "leadership and culture", "research and insights"],
+        "pinned": true
+      }
+    ]
+  },
+  {
     "date": "2026-07-15",
     "stories": [
       {
@@ -90,8 +144,7 @@
         "url": "https://reports.weforum.org/docs/WEF_Artificial_Intelligence_and_the_Future_of_Entry_Level_Work_2026.pdf",
         "summary": "WEF and PwC find more than one in three young workers globally (37%) are in occupations with medium-to-high exposure to AI-driven task change, rising to three in four in some regions — with entry-level hiring already slowing in higher-exposure roles, though broader economic factors are contributing too. The report proposes a four-part framework — job access, job design, talent pipelines, and education-system alignment — for redesigning entry-level roles rather than eliminating them, noting a parallel shift where 42% of Gen Z workers (including 37% of bachelor's degree holders) are now in or pursuing blue-collar and skilled trades.",
         "implications": "The prescription is redesign, not preservation as-is: leaders should treat entry-level roles as a pipeline to actively re-engineer for AI-era work rather than either freezing hiring or restructuring around it passively.",
-        "tags": ["workforce transformation", "skills development", "research and insights"],
-        "pinned": true
+        "tags": ["workforce transformation", "skills development", "research and insights"]
       }
     ]
   },
