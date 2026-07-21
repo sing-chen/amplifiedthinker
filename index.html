@@ -133,6 +133,53 @@
   @media(prefers-reduced-motion:reduce){
     .scard,.scard::after,.scard-cta svg,.scard-ticker-track{transition:none}
   }
+
+  /* ── DARK MODE ──
+     Hero and footer are fixed dark brand bands already — they read fine
+     unchanged in both themes. The announcement banner, the three tinted
+     section cards, and the ticker sit as light pastel surfaces directly
+     on the page background, so they need dark variants or they'd stay
+     bright against a suddenly-dark page. */
+  @media(prefers-color-scheme:dark){
+    .explore-label{color:var(--teal)}
+
+    .announce-banner{background:#2E2115;border-color:rgba(154,86,54,.4)}
+    .announce-date{color:#D9895D}
+    .announce-text{color:#D9BBA0}
+    .announce-text b{color:#EEDBC6}
+    .announce-link{color:#D9895D}
+    .announce-link:hover{color:#EEDBC6}
+
+    .scard-skills{background:#1C332E;border-color:rgba(91,167,159,.25)}
+    .scard-skills:hover{border-color:rgba(91,167,159,.45)}
+    .scard-skills .scard-icon{background:#0F211D}
+    .scard-skills .scard-icon svg{stroke:#8FCFC3}
+    .scard-skills .scard-title{color:#BFE0D4}
+    .scard-skills .scard-desc{color:#A9C4BB}
+    .scard-skills .scard-cta{color:#7FC4B8}
+
+    .scard-people{background:#232B1B;border-color:rgba(138,163,107,.25)}
+    .scard-people:hover{border-color:rgba(138,163,107,.45)}
+    .scard-people .scard-icon{background:#151C0F}
+    .scard-people .scard-icon svg{stroke:#C9D9AE}
+    .scard-people .scard-title{color:#D3DEC4}
+    .scard-people .scard-desc{color:#B7C2A4}
+    .scard-people .scard-cta{color:#9BB577}
+
+    .scard-news{background:#33231A;border-color:rgba(201,122,74,.3)}
+    .scard-news:hover{border-color:rgba(201,122,74,.5)}
+    .scard-news .scard-icon{background:#20140D}
+    .scard-news .scard-icon svg{stroke:#E8C9AE}
+    .scard-news .scard-title{color:#E8C9AE}
+    .scard-news .scard-desc{color:#C7A98F}
+    .scard-news .scard-cta{color:#C97A4A}
+
+    .scard-ticker-label{color:#D9BBA0}
+    .scard-ticker{background:#241a13}
+    .scard-ticker-progress{background:#C97A4A}
+    .scard-ticker-headline{color:#E8C9AE}
+    a.scard-ticker-item:hover .scard-ticker-headline{color:#F0DAC4}
+  }
 </style>
 </head>
 <body>
