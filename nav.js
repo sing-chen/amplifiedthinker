@@ -1,6 +1,29 @@
 (function () {
   'use strict';
 
+  /* ── Theme (light/dark) ──────────────────────────────────────────────
+     Applied as early as possible (top of this IIFE, before nav injection)
+     to minimize flash-of-wrong-theme. Explicit user choice (localStorage)
+     wins; otherwise falls back to the OS/browser's prefers-color-scheme. */
+  var THEME_KEY = 'theme';
+
+  function getStoredTheme() {
+    try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+  }
+
+  function getPreferredTheme() {
+    var stored = getStoredTheme();
+    if (stored === 'light' || stored === 'dark') return stored;
+    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* ignore */ }
+  }
+
+  document.documentElement.setAttribute('data-theme', getPreferredTheme());
+
   var NAV_H = 56;   // px — site nav bar height
   var SKILL_H = 40; // px — skill context bar height
 
@@ -121,6 +144,26 @@
     '  stroke: currentColor; fill: none;',
     '  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;',
     '}',
+
+    /* Theme (light/dark) toggle */
+    '.snav-theme-toggle {',
+    '  display: flex;',
+    '  align-items: center; justify-content: center;',
+    '  width: 34px; height: 34px;',
+    '  background: none; border: none; border-radius: 5px;',
+    '  color: rgba(255,255,255,0.75); cursor: pointer; padding: 0;',
+    '  margin-left: 4px; flex-shrink: 0;',
+    '  transition: background 0.15s, color 0.15s;',
+    '}',
+    '.snav-theme-toggle:hover { background: rgba(255,255,255,0.08); color: #fff; }',
+    '.snav-theme-toggle svg {',
+    '  width: 18px; height: 18px;',
+    '  stroke: currentColor; fill: none;',
+    '  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;',
+    '}',
+    '.snav-theme-icon-sun { display: none; }',
+    '[data-theme="dark"] .snav-theme-icon-moon { display: none; }',
+    '[data-theme="dark"] .snav-theme-icon-sun { display: block; }',
 
     /* Mobile menu toggle (hidden on desktop) */
     '.snav-toggle {',
@@ -259,6 +302,10 @@
     '  <a href="' + root('search.html') + '" class="snav-search' + searchActiveCls + '" aria-label="Search">',
     '    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>',
     '  </a>',
+    '  <button type="button" id="snav-theme-toggle" class="snav-theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">',
+    '    <svg class="snav-theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+    '    <svg class="snav-theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>',
+    '  </button>',
     '  <button type="button" id="snav-toggle" class="snav-toggle" aria-expanded="false" aria-controls="snav-links" aria-label="Open menu">',
     '    <svg class="snav-icon-menu" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>',
     '    <svg class="snav-icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="6" y1="18" x2="18" y2="6"></line></svg>',
@@ -344,6 +391,7 @@
       });
     }
     applyLayoutFixes();
+    syncThemeToggleUI();
   }
 
   /* ── Guard against the Primer bundle wiping the nav ─────────────────────
@@ -426,10 +474,38 @@
     });
   }
 
+  /* ── Theme toggle button ──────────────────────────────────────────────
+     Delegated on document so it keeps working if the Primer bundle wipes
+     and re-inserts #site-nav (same pattern as the mobile menu below). */
+  function syncThemeToggleUI() {
+    var btn = document.getElementById('snav-theme-toggle');
+    if (!btn) return;
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+
+  function setupThemeToggle() {
+    syncThemeToggleUI();
+    if (window.__snavThemeInit) return;
+    window.__snavThemeInit = true;
+
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('#snav-theme-toggle');
+      if (!btn) return;
+      var current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+      syncThemeToggleUI();
+    });
+  }
+
   /* ── Entry point ─────────────────────────────────────────────────────── */
   function init() {
     injectNav();
     setupMobileMenu();
+    setupThemeToggle();
     // Only watch for wipe on the Primer page (has deck-stage)
     if (activePage === 'skill' && isPrimer) {
       watchForWipe();

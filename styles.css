@@ -59,22 +59,26 @@
 
   /* ── Dark-mode overrides — remaps the semantic layer only; raw palette
      vars above stay literal. Components must consume var(--bg-*)/var(--fg-*)
-     etc. (not raw colors) for this to take visual effect. ─────────────── */
+     etc. (not raw colors) for this to take visual effect. Triggered by
+     [data-theme="dark"] on <html> — set by nav.js from the visitor's
+     saved choice, falling back to prefers-color-scheme. ─────────────── */
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-page:#142320;--bg-surface:#1B2E29;--bg-sunken:#0E1917;
-    --bg-inverse:var(--off-white);--bg-brand:var(--teal);--bg-brand-soft:#2D756F;
-    --fg-1:#E7EDE9;--fg-2:#9BAAA3;--fg-heading:#DCEAE3;
-    --fg-brand:var(--sage);--fg-on-brand:#0E1917;--fg-on-inverse:var(--navy);
-    --accent-warm:#C97A4A;--accent-cool:var(--teal);--accent-support:#8AA35E;
-    --line-soft:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--line-strong:rgba(255,255,255,.22);
-    --status-ok:#4FA89E;--status-warn:#D1A73B;--status-error:#C97A4A;--status-info:#7C9CD1;
-  }
+:root[data-theme="dark"] {
+  --bg-page:#142320;--bg-surface:#1B2E29;--bg-sunken:#0E1917;
+  --bg-inverse:var(--off-white);--bg-brand:var(--teal);--bg-brand-soft:#2D756F;
+  --fg-1:#E7EDE9;--fg-2:#9BAAA3;--fg-heading:#DCEAE3;
+  --fg-brand:var(--sage);--fg-on-brand:#0E1917;--fg-on-inverse:var(--navy);
+  --accent-warm:#C97A4A;--accent-cool:var(--teal);--accent-support:#8AA35E;
+  --line-soft:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--line-strong:rgba(255,255,255,.22);
+  --status-ok:#4FA89E;--status-warn:#D1A73B;--status-error:#C97A4A;--status-info:#7C9CD1;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:'Inter',system-ui,sans-serif;color:var(--fg-1);background:var(--bg-page);font-size:16px;line-height:1.65}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--text-dark);background:var(--bg-page);font-size:16px;line-height:1.65}
+/* var(--text-dark) is a raw palette color (=navy), never remapped by the
+   :root override above — needs its own dark-mode substitute here.
+   fg-heading is the exact token equivalent of navy, not fg-1/charcoal. */
+[data-theme="dark"] body{color:var(--fg-heading)}
 .skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
 .skip-link:focus{top:0}
 :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}

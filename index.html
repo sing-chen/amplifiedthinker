@@ -140,46 +140,45 @@
      section cards, and the ticker sit as light pastel surfaces directly
      on the page background, so they need dark variants or they'd stay
      bright against a suddenly-dark page. */
-  @media(prefers-color-scheme:dark){
-    .explore-label{color:var(--teal)}
+  /* Triggered by [data-theme="dark"] on <html> — see styles.css / nav.js. */
+  [data-theme="dark"] .explore-label{color:var(--teal)}
 
-    .announce-banner{background:#2E2115;border-color:rgba(154,86,54,.4)}
-    .announce-date{color:#D9895D}
-    .announce-text{color:#D9BBA0}
-    .announce-text b{color:#EEDBC6}
-    .announce-link{color:#D9895D}
-    .announce-link:hover{color:#EEDBC6}
+  [data-theme="dark"] .announce-banner{background:#2E2115;border-color:rgba(154,86,54,.4)}
+  [data-theme="dark"] .announce-date{color:#D9895D}
+  [data-theme="dark"] .announce-text{color:#D9BBA0}
+  [data-theme="dark"] .announce-text b{color:#EEDBC6}
+  [data-theme="dark"] .announce-link{color:#D9895D}
+  [data-theme="dark"] .announce-link:hover{color:#EEDBC6}
 
-    .scard-skills{background:#1C332E;border-color:rgba(91,167,159,.25)}
-    .scard-skills:hover{border-color:rgba(91,167,159,.45)}
-    .scard-skills .scard-icon{background:#0F211D}
-    .scard-skills .scard-icon svg{stroke:#8FCFC3}
-    .scard-skills .scard-title{color:#BFE0D4}
-    .scard-skills .scard-desc{color:#A9C4BB}
-    .scard-skills .scard-cta{color:#7FC4B8}
+  [data-theme="dark"] .scard-skills{background:#1C332E;border-color:rgba(91,167,159,.25)}
+  [data-theme="dark"] .scard-skills:hover{border-color:rgba(91,167,159,.45)}
+  [data-theme="dark"] .scard-skills .scard-icon{background:#0F211D}
+  [data-theme="dark"] .scard-skills .scard-icon svg{stroke:#8FCFC3}
+  [data-theme="dark"] .scard-skills .scard-title{color:#BFE0D4}
+  [data-theme="dark"] .scard-skills .scard-desc{color:#A9C4BB}
+  [data-theme="dark"] .scard-skills .scard-cta{color:#7FC4B8}
 
-    .scard-people{background:#232B1B;border-color:rgba(138,163,107,.25)}
-    .scard-people:hover{border-color:rgba(138,163,107,.45)}
-    .scard-people .scard-icon{background:#151C0F}
-    .scard-people .scard-icon svg{stroke:#C9D9AE}
-    .scard-people .scard-title{color:#D3DEC4}
-    .scard-people .scard-desc{color:#B7C2A4}
-    .scard-people .scard-cta{color:#9BB577}
+  [data-theme="dark"] .scard-people{background:#232B1B;border-color:rgba(138,163,107,.25)}
+  [data-theme="dark"] .scard-people:hover{border-color:rgba(138,163,107,.45)}
+  [data-theme="dark"] .scard-people .scard-icon{background:#151C0F}
+  [data-theme="dark"] .scard-people .scard-icon svg{stroke:#C9D9AE}
+  [data-theme="dark"] .scard-people .scard-title{color:#D3DEC4}
+  [data-theme="dark"] .scard-people .scard-desc{color:#B7C2A4}
+  [data-theme="dark"] .scard-people .scard-cta{color:#9BB577}
 
-    .scard-news{background:#33231A;border-color:rgba(201,122,74,.3)}
-    .scard-news:hover{border-color:rgba(201,122,74,.5)}
-    .scard-news .scard-icon{background:#20140D}
-    .scard-news .scard-icon svg{stroke:#E8C9AE}
-    .scard-news .scard-title{color:#E8C9AE}
-    .scard-news .scard-desc{color:#C7A98F}
-    .scard-news .scard-cta{color:#C97A4A}
+  [data-theme="dark"] .scard-news{background:#33231A;border-color:rgba(201,122,74,.3)}
+  [data-theme="dark"] .scard-news:hover{border-color:rgba(201,122,74,.5)}
+  [data-theme="dark"] .scard-news .scard-icon{background:#20140D}
+  [data-theme="dark"] .scard-news .scard-icon svg{stroke:#E8C9AE}
+  [data-theme="dark"] .scard-news .scard-title{color:#E8C9AE}
+  [data-theme="dark"] .scard-news .scard-desc{color:#C7A98F}
+  [data-theme="dark"] .scard-news .scard-cta{color:#C97A4A}
 
-    .scard-ticker-label{color:#D9BBA0}
-    .scard-ticker{background:#241a13}
-    .scard-ticker-progress{background:#C97A4A}
-    .scard-ticker-headline{color:#E8C9AE}
-    a.scard-ticker-item:hover .scard-ticker-headline{color:#F0DAC4}
-  }
+  [data-theme="dark"] .scard-ticker-label{color:#D9BBA0}
+  [data-theme="dark"] .scard-ticker{background:#241a13}
+  [data-theme="dark"] .scard-ticker-progress{background:#C97A4A}
+  [data-theme="dark"] .scard-ticker-headline{color:#E8C9AE}
+  [data-theme="dark"] a.scard-ticker-item:hover .scard-ticker-headline{color:#F0DAC4}
 </style>
 </head>
 <body>
