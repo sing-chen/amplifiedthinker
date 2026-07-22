@@ -622,10 +622,12 @@
     transition: background 0.15s;
   }
   .resume-banner-btn.primary {
-    background: var(--teal);
+    /* --teal (2.49:1 against --off-white text) fails WCAG AA; --deep-teal
+       gives the same brand hue at 4.78:1. */
+    background: var(--deep-teal);
     color: var(--off-white);
   }
-  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.primary:hover { background: var(--navy); }
   .resume-banner-btn.dismiss {
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.5);
@@ -968,7 +970,7 @@
       <div class="step-item"><div class="step-num">2</div><p class="t-body" style="padding-top:4px;"><span class="t-meta">Hidden assumption: &nbsp;</span>Learning requires everyone in the same place at the same time</p></div>
       <div class="step-item"><div class="step-num root">3</div><p class="t-body t-terra" style="padding-top:4px;font-weight:500;"><span class="t-meta">Reversed: &nbsp;</span>What if no one is ever in the same place at the same time?</p></div>
     </div>
-    <p style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:var(--terracotta);letter-spacing:0.04em;">NEW STARTING POINT: ASYNCHRONOUS, SELF-PACED MODULES</p>
+    <p class="t-terra" style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.04em;">NEW STARTING POINT: ASYNCHRONOUS, SELF-PACED MODULES</p>
   </div>
 
   <!-- 09 · IN PRACTICE -->

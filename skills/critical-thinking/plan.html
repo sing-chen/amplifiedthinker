@@ -1377,7 +1377,9 @@
     margin: 0 0 16px;
     max-width: 620px;
   }
-  .summary-block p:last-child { margin: 0; font-size: 16px; color: var(--sage); }
+  /* #E6F0EA rather than --sage: --sage (2.91:1 on --deep-teal) fails WCAG AA
+     for normal text; this keeps the same minty tint but at 4.64:1. */
+  .summary-block p:last-child { margin: 0; font-size: 16px; color: #E6F0EA; }
 
   /* ── RESOURCE TABLE ─────────────────────────── */
   .table-scroll {
@@ -1661,10 +1663,12 @@
     transition: background 0.15s;
   }
   .resume-banner-btn.primary {
-    background: var(--teal);
+    /* --teal (2.49:1 against --off-white text) fails WCAG AA; --deep-teal
+       gives the same brand hue at 4.78:1. */
+    background: var(--deep-teal);
     color: var(--off-white);
   }
-  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.primary:hover { background: var(--navy); }
   .resume-banner-btn.dismiss {
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.5);
@@ -1860,7 +1864,6 @@
   [data-theme="dark"] .scope-list li::before { color: var(--d-terra-stroke); }
 
   [data-theme="dark"] .summary-block p { color: var(--off-white); }
-  [data-theme="dark"] .summary-block p:last-child { color: var(--sage); }
 
   [data-theme="dark"] .next-step-card  { background: var(--d-teal-bg); border-left-color: var(--d-teal-stroke); }
   [data-theme="dark"] .next-step-label { color: var(--d-teal-stroke); }

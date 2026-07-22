@@ -30,46 +30,39 @@
   .eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
   .hero-hl{font-family:'Poppins',sans-serif;font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.01em;margin-bottom:20px;max-width:860px}
   .hero-body{font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:640px}
+  .hero-hint{display:inline-flex;align-items:center;gap:7px;margin-top:22px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--sage);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:var(--radius-pill)}
+  .hero-hint svg{width:15px;height:15px;flex-shrink:0}
 
   /* ── PEOPLE SECTION ── */
-  .people-section{padding:52px 40px 80px;max-width:var(--page-max);margin:0 auto}
+  .people-section{padding:52px 40px 90px;max-width:var(--page-max);margin:0 auto}
 
-  /* ── MASTER-DETAIL LAYOUT ── */
-  .people-layout{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
+  /* ── BENTO GRID ──
+     Two stacked grids (a 2-up featured row, then a 3-up standard grid) rather
+     than one mixed grid — with 2 featured + 6 standard tiles, 6 divides evenly
+     by 3 (and by 2, by 1), so every breakpoint fills a clean rectangle with
+     no leftover gap, instead of relying on auto-flow packing. */
+  .bento-wrap{display:flex;flex-direction:column;gap:16px}
+  .bento-featured{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .bento-standard{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .bento-tile{position:relative;border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;border:1px solid var(--light-sage);background:var(--bg-sunken);isolation:isolate;box-shadow:var(--shadow-xs);transition:box-shadow .2s;display:block;width:100%}
+  .bento-tile:hover{box-shadow:var(--shadow-md)}
+  .bento-featured .bento-tile{height:360px}
+  .bento-standard .bento-tile{height:200px}
+  .bento-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .4s cubic-bezier(.2,.7,.3,1)}
+  .bento-tile:hover img{transform:scale(1.06)}
+  .bento-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,18,16,.82) 100%);z-index:1}
+  .bento-tile-body{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;z-index:2;color:#fff;text-align:left}
+  .bento-tile.large .bento-tile-body{padding:22px 24px}
+  .bento-name{display:block;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;margin-bottom:6px;line-height:1.25}
+  .bento-tile.large .bento-name{font-size:20px;margin-bottom:8px}
+  .bento-quote{font-family:'Inter',sans-serif;font-size:11px;font-style:italic;color:rgba(255,255,255,.85);margin-top:7px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .bento-tile.large .bento-quote{margin-top:10px;font-size:13.5px;-webkit-line-clamp:3}
+  .bento-tile:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+  @media(max-width:820px){.bento-standard{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.bento-featured{grid-template-columns:1fr}.bento-standard{grid-template-columns:1fr}}
 
-  /* ── PERSON LIST PANEL (left) ── */
-  .person-list-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow-y:auto;padding:8px}
-
-  .person-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;border-radius:0 var(--radius) var(--radius) 0;padding:8px 12px 8px 9px;cursor:pointer;transition:background .15s,border-color .15s}
-  .person-row:hover{background:var(--bg-page)}
-  .person-row:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
-  .person-row.active{background:var(--bg-page);border-left-color:var(--terracotta)}
-
-  .person-row-thumb{width:48px;height:48px;border-radius:8px;object-fit:cover;object-position:center top;flex-shrink:0}
-  .person-row-text{min-width:0;flex:1}
-  .person-row-name{display:block;font-family:'Poppins',sans-serif;font-size:13.5px;font-weight:600;color:var(--fg-heading);line-height:1.3;margin-bottom:4px}
-  .person-row.active .person-row-name{color:var(--fg-heading)}
-  .person-row-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-
-  /* ── PERSON DETAIL PANEL (right) ── */
-  .person-detail-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);padding:32px 36px}
-  .person-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--fg-brand);cursor:pointer}
-  .person-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
-
-  .person-detail-photo{aspect-ratio:4/3;max-height:380px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;margin-bottom:20px}
-  .person-detail-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;inset:0}
-
-  /* name + external link (reused inside detail pane) */
-  .pcard-top{display:flex;flex-direction:column;gap:0;margin-bottom:12px}
-  .pname{font-family:'Poppins',sans-serif;font-size:18px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-bottom:6px}
-  .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#5BA79F;text-decoration:none;border-radius:4px;padding:2px 0;margin-top:6px;margin-bottom:0;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
-  .pext-link:hover{color:#2D756F;text-decoration:underline}
-  .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
-  .pext-link svg{width:13px;height:13px;flex-shrink:0;opacity:.7}
-
-  /* category pill */
-  .ppills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-  .ppill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill)}
+  /* category pill (shared bento tile + modal) */
+  .ppill{display:inline-block;font-family:'Poppins',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill)}
   .pp-leadership  {background:#C5DDD9;color:#1B4A44}
   .pp-communication{background:#F2DDB8;color:#5A3A00}
   .pp-influence   {background:#EDD5CB;color:#7A3A25}
@@ -77,57 +70,49 @@
   .pp-productivity{background:#BFDACB;color:#1F4D4A}
   .pp-ai         {background:#EDE5C5;color:#5A3A00}
 
-  /* ── PERSONAL ANNOTATION ── */
-  .pannotation{
-    font-family:'Inter',sans-serif;
-    font-size:13px;
-    font-weight:500;
-    line-height:1.55;
-    color:#2D756F;
-    margin-bottom:12px;
-    padding-bottom:12px;
-    border-bottom:1px solid rgba(172,196,182,.2);
-  }
+  /* ── DETAIL MODAL ── */
+  .modal-scrim{position:fixed;inset:0;background:rgba(20,30,27,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:24px}
+  .modal-scrim.open{display:flex}
+  .modal{background:var(--bg-surface);border-radius:var(--radius-xl);max-width:640px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:var(--shadow-lg)}
+  .modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(10,20,18,.4);color:#fff;font-size:18px;line-height:1;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center}
+  .modal-close:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
+  .modal-photo{aspect-ratio:16/7;overflow:hidden;position:relative}
+  .modal-photo img{width:100%;height:100%;object-fit:cover;object-position:center top}
+  .modal-body{padding:26px 30px 32px}
 
-  /* ── QUOTE — decorative oversized mark ── */
-  .pquote{margin:0 0 14px;padding:0;position:relative}
-  .pquote-mark{
-    font-family:'Poppins',sans-serif;
-    font-size:52px;
-    font-weight:700;
-    line-height:1;
-    color:#ACC4B6;
-    display:block;
-    margin-bottom:-10px;
-    margin-left:-2px;
-    user-select:none;
-  }
-  .pquote-text{
-    font-family:'Inter',sans-serif;
-    font-size:13px;
-    font-style:italic;
-    line-height:1.6;
-    color:#1F4D4A;
-    padding-left:2px;
-  }
-  .pquote-source{font-family:'Poppins',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-top:5px;opacity:.7}
+  /* name + external link */
+  .pname{font-family:'Poppins',sans-serif;font-size:19px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-bottom:8px}
+  .ppills{margin-bottom:8px}
+  .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#5BA79F;text-decoration:none;margin-top:10px}
+  .pext-link:hover{color:#2D756F;text-decoration:underline}
+  .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+  .pext-link svg{width:13px;height:13px;flex-shrink:0;opacity:.7}
+
+  /* ── PERSONAL ANNOTATION ── */
+  .pannotation{font-family:'Inter',sans-serif;font-size:13.5px;font-weight:500;line-height:1.6;color:#2D756F;margin:16px 0 14px;padding-bottom:14px;border-bottom:1px solid rgba(172,196,182,.3)}
+
+  /* ── QUOTE ── */
+  .pquote{margin:0 0 16px;padding:0}
+  .pquote-mark{font-family:'Poppins',sans-serif;font-size:44px;font-weight:700;line-height:1;color:#ACC4B6;display:block;margin-bottom:-10px;user-select:none}
+  .pquote-text{font-family:'Inter',sans-serif;font-size:13.5px;font-style:italic;line-height:1.6;color:#1F4D4A}
+  .pquote-source{font-family:'Poppins',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-top:6px;opacity:.75}
 
   /* description */
-  .pdesc{font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.65;color:var(--navy);margin-bottom:16px}
+  .pdesc{font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.65;color:var(--navy);margin-bottom:18px}
 
-  /* divider */
-  .pcard-divider{height:1px;background:rgba(172,196,182,.2);margin-bottom:14px}
-
-  /* key works */
-  .pworks-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:8px}
-  .pworks-pills{display:flex;flex-wrap:wrap;gap:6px}
+  /* ── KEY WORKS — cover art ── */
+  .pworks-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:10px}
+  .works-covers{display:flex;flex-wrap:wrap;gap:14px}
+  .work-cover-card{width:80px;text-decoration:none;display:block}
+  .work-cover-img{width:80px;height:120px;border-radius:4px;overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:7px;background:var(--bg-sunken);transition:transform .18s,box-shadow .18s}
+  .work-cover-card:hover .work-cover-img{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+  .work-cover-img img{width:100%;height:100%;object-fit:cover;display:block}
+  .work-cover-title{font-family:'Inter',sans-serif;font-size:10px;color:var(--text-muted);line-height:1.3;display:block}
+  .pworks-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
   .pwork-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
-  .pwork-pill{display:inline-flex;align-items:center;gap:4px}
-  .pwork-pill{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-pill);padding:2px 9px;line-height:1.6;text-decoration:none}
-  .pwork-pill:hover{background:rgba(172,196,182,.28)}
-  .pwork-pill:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
-
-  .empty-state{font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
+  .pwork-link{display:inline-flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-pill);padding:3px 10px;line-height:1.6;text-decoration:none}
+  .pwork-link:hover{background:rgba(172,196,182,.28)}
+  .pwork-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
 
   footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
   .fi{max-width:var(--page-max);margin:0 auto}
@@ -140,33 +125,23 @@
   .footer-sep{color:rgba(255,255,255,.15);user-select:none}
   .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
 
-  @media(max-width:800px){
-    .people-layout{grid-template-columns:1fr}
-    .person-list-panel{max-height:none}
-    .person-detail-panel{display:none}
-    .person-back{display:inline-flex}
-    .people-layout.show-detail .person-list-panel{display:none}
-    .people-layout.show-detail .person-detail-panel{display:block}
-    .person-detail-panel{padding:24px 20px}
-  }
   @media(max-width:600px){
     .hero,.people-section{padding-left:20px;padding-right:20px}
     footer{padding-left:20px;padding-right:20px}
+    .modal-body{padding:22px 20px 26px}
   }
 
   /* ── DARK MODE ──
      Hero and footer are fixed dark brand bands already, unchanged in both
-     themes. person-list/detail-panel backgrounds, person-row hover/active,
-     person-row-name, person-back, pname, and pworks-label already sit on
-     tokens whose light value exactly matches the original raw color, so
+     themes. bento-tile/modal surfaces, pname, and pworks-label already sit
+     on tokens whose light value exactly matches the original raw color, so
      they adapt for free. Everything below needed its own override because
      the raw color it started from (a hardcoded hex, navy, text-muted, or a
      sage-tinted rgba) isn't an exact match for any single fg/line token.
      The category-tint .pp-* pills reuse the same family palette as
      index.html/future-skills.html's tinted cards for visual consistency. */
-  [data-theme="dark"] .person-list-panel{border-color:var(--line)}
-  [data-theme="dark"] .person-detail-panel{border-color:var(--line)}
-  [data-theme="dark"] .pext-link:hover{color:var(--sage)}
+  [data-theme="dark"] .bento-tile{border-color:var(--line)}
+  [data-theme="dark"] .modal{border:1px solid var(--line)}
 
   [data-theme="dark"] .pp-leadership{background:#1F3A34;color:#8FCFC3}
   [data-theme="dark"] .pp-communication{background:#3A3018;color:#E0CB8E}
@@ -175,14 +150,14 @@
   [data-theme="dark"] .pp-productivity{background:#25321E;color:#C9D9AE}
   [data-theme="dark"] .pp-ai{background:#332712;color:#D9BB6E}
 
+  [data-theme="dark"] .pext-link:hover{color:var(--sage)}
   [data-theme="dark"] .pannotation{color:var(--teal);border-bottom-color:var(--line)}
   [data-theme="dark"] .pquote-text{color:var(--fg-heading)}
   [data-theme="dark"] .pquote-source{color:var(--fg-2)}
   [data-theme="dark"] .pdesc{color:var(--fg-1)}
-  [data-theme="dark"] .pcard-divider{background:var(--line)}
-  [data-theme="dark"] .pwork-pill{color:var(--fg-2);background:rgba(255,255,255,.08);border-color:var(--line)}
-  [data-theme="dark"] .pwork-pill:hover{background:rgba(255,255,255,.16)}
-  [data-theme="dark"] .empty-state{color:var(--fg-2)}
+  [data-theme="dark"] .work-cover-title{color:var(--fg-2)}
+  [data-theme="dark"] .pwork-link{color:var(--fg-2);background:rgba(255,255,255,.08);border-color:var(--line)}
+  [data-theme="dark"] .pwork-link:hover{background:rgba(255,255,255,.16)}
 </style>
 </head>
 <body>
@@ -234,21 +209,24 @@
     <p class="eyebrow">Virtual Roundtable</p>
     <h1 class="hero-hl">My People</h1>
     <p class="hero-body">The thinkers, coaches, and practitioners I return to — my virtual board of advisors. Each of them sharpens a different dimension of how I think and operate.</p>
+    <p class="hero-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9V4.5a1.5 1.5 0 0 1 3 0V9"/><path d="M12 9V3.5a1.5 1.5 0 0 1 3 0V9"/><path d="M15 9.5V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M6 12v-2a1.5 1.5 0 0 1 3 0v1"/><path d="M18 12v3c0 3.5-2 6-6 6s-6.5-1.5-8-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L6 15"/></svg>Click on anyone's photo to read the full story</p>
   </div>
 </section>
 
 <main id="main-content">
 
 <section class="people-section" aria-label="My People">
-
-  <div class="people-layout" id="people-layout">
-    <nav class="person-list-panel" id="person-list-panel" aria-label="People list"></nav>
-    <article class="person-detail-panel" id="person-detail-panel"></article>
+  <div class="bento-wrap" id="bento-wrap">
+    <div class="bento-featured" id="bento-featured"></div>
+    <div class="bento-standard" id="bento-standard"></div>
   </div>
-
 </section>
 
 </main>
+
+<div class="modal-scrim" id="modal-scrim">
+  <div class="modal" id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-name"></div>
+</div>
 
 <footer>
   <div class="fi">
@@ -274,7 +252,12 @@
 
 <!-- To add a new person, add an entry to the PEOPLE array below.
      Category values (and matching pill class, set in CATEGORY_META):
-       leadership · communication · influence · psychology · productivity · ai -->
+       leadership · communication · influence · psychology · productivity · ai
+     "books" render as cover-art thumbnails (put the cover image in images/books/
+     and reference it by filename); "links" render as small text pills for
+     non-book resources (a newsletter, a website) and take a lucide-style icon
+     key from ICON_PATHS. "large":true gives a person a bigger bento tile —
+     reserve that for the one or two people referenced most in the annotation copy. -->
 <script>
 (function () {
   'use strict';
@@ -288,12 +271,12 @@
   };
 
   var CATEGORY_META = {
-    leadership:    { pillClass: 'pp-leadership',    label: 'Leadership',    tint: '#3D2218' },
-    communication: { pillClass: 'pp-communication', label: 'Communication', tint: '#3A2C0A' },
-    influence:     { pillClass: 'pp-influence',     label: 'Influence',     tint: '#3A2218' },
-    psychology:    { pillClass: 'pp-psychology',    label: 'Psychology',    tint: '#1E2D38' },
-    productivity:  { pillClass: 'pp-productivity',  label: 'Productivity',  tint: '#1B3D38' },
-    ai:            { pillClass: 'pp-ai',            label: 'AI',            tint: '#1B4A44' }
+    leadership:    { pillClass: 'pp-leadership',    label: 'Leadership' },
+    communication: { pillClass: 'pp-communication', label: 'Communication' },
+    influence:     { pillClass: 'pp-influence',     label: 'Influence' },
+    psychology:    { pillClass: 'pp-psychology',    label: 'Psychology' },
+    productivity:  { pillClass: 'pp-productivity',  label: 'Productivity' },
+    ai:            { pillClass: 'pp-ai',            label: 'AI' }
   };
 
   var PEOPLE = [
@@ -305,14 +288,15 @@
       imageAlt: 'Simon Sinek',
       url: 'https://simonsinek.com',
       urlDisplay: 'simonsinek.com',
+      large: true,
       annotation: "Sinek's work reframed how I view leadership. Does someone feel safe enough to say what they actually think before a decision locks in, not just whether they nod along afterward? Do they have the right environment to operate at their natural best? That shows up in how you run meetings, how you handle disagreement, and how far out you think about consequences before committing to something. Empathy and long-term thinking used to feel like traits some leaders happened to have, they have changed the way I think about work.",
       quoteText: "People don't buy what you do; they buy why you do it.",
       quoteSource: 'Start With Why',
       description: 'Simon Sinek is a prominent figure in the fields of leadership, motivation, and organisational culture. He is renowned for his groundbreaking Golden Circle concept — his theory that individuals and organisations who inspire genuine action do so by starting with "why": their purpose, cause, or belief.',
-      works: [
-        { title: 'Start With Why', href: 'https://www.goodreads.com/book/show/7108725-start-with-why', icon: 'book' },
-        { title: 'The Infinite Game', href: 'https://www.goodreads.com/book/show/38390751-the-infinite-game', icon: 'book' },
-        { title: 'Leaders Eat Last', href: 'https://www.goodreads.com/book/show/16144853-leaders-eat-last', icon: 'book' }
+      books: [
+        { title: 'Start With Why', href: 'https://www.goodreads.com/book/show/7108725-start-with-why', cover: 'images/books/start-with-why.jpg' },
+        { title: 'The Infinite Game', href: 'https://www.goodreads.com/book/show/38390751-the-infinite-game', cover: 'images/books/infinite-game.jpg' },
+        { title: 'Leaders Eat Last', href: 'https://www.goodreads.com/book/show/16144853-leaders-eat-last', cover: 'images/books/leaders-eat-last.jpg' }
       ]
     },
     {
@@ -323,13 +307,14 @@
       imageAlt: 'Vanessa Van Edwards',
       url: 'https://www.scienceofpeople.com',
       urlDisplay: 'scienceofpeople.com',
+      large: true,
       annotation: 'Van Edwards changed what I notice in the first few minutes of meeting someone. Tone shifts, hesitation, how someone answers a real question versus a scripted one, all of it used to pass by unregistered. This changed how I approach my conversations.',
       quoteText: 'Vulnerability is what truly elevates relationships.',
       quoteSource: 'Captivate',
       description: 'Vanessa Van Edwards is a behavioural investigator and author known for decoding human behaviour, communication, and charisma. Her expertise provides practical insights into effective communication, relationship-building, leadership, and negotiation skills.',
-      works: [
-        { title: 'Captivate', href: 'https://www.goodreads.com/book/show/29483376-captivate', icon: 'book' },
-        { title: 'Cues', href: 'https://www.goodreads.com/book/show/55838980-cues', icon: 'book' }
+      books: [
+        { title: 'Captivate', href: 'https://www.goodreads.com/book/show/29483376-captivate', cover: 'images/books/captivate.jpg' },
+        { title: 'Cues', href: 'https://www.goodreads.com/book/show/55838980-cues', cover: 'images/books/cues.jpg' }
       ]
     },
     {
@@ -344,8 +329,10 @@
       quoteText: 'Listening is not a passive activity. It is the most active thing you can do.',
       quoteSource: 'Never Split the Difference',
       description: 'Chris Voss is an author, instructor, keynote speaker, and former FBI hostage negotiator who successfully resolved numerous high-stakes situations. He is a renowned expert in human behaviour, psychology, and communication and persuasion techniques.',
-      works: [
-        { title: 'Never Split the Difference', href: 'https://www.goodreads.com/book/show/26156469-never-split-the-difference', icon: 'book' },
+      books: [
+        { title: 'Never Split the Difference', href: 'https://www.goodreads.com/book/show/26156469-never-split-the-difference', cover: 'images/books/never-split.jpg' }
+      ],
+      links: [
         { title: 'Black Swan Group', href: 'https://www.blackswanltd.com', icon: 'globe' }
       ]
     },
@@ -361,10 +348,10 @@
       quoteText: "If knowledge is power, knowing what we don't know is wisdom.",
       quoteSource: 'Think Again',
       description: 'Adam Grant is an organisational psychologist, bestselling author, and professor at the Wharton School. His research challenges conventional thinking on motivation, generosity, and how we form and revise our beliefs — exploring what drives people to perform, contribute, and change their minds.',
-      works: [
-        { title: 'Think Again', href: 'https://www.goodreads.com/book/show/55539565-think-again', icon: 'book' },
-        { title: 'Give and Take', href: 'https://www.goodreads.com/book/show/16158498-give-and-take', icon: 'book' },
-        { title: 'Originals', href: 'https://www.goodreads.com/book/show/25614523-originals', icon: 'book' }
+      books: [
+        { title: 'Think Again', href: 'https://www.goodreads.com/book/show/55539565-think-again', cover: 'images/books/think-again.jpg' },
+        { title: 'Give and Take', href: 'https://www.goodreads.com/book/show/16158498-give-and-take', cover: 'images/books/give-and-take.jpg' },
+        { title: 'Originals', href: 'https://www.goodreads.com/book/show/25614523-originals', cover: 'images/books/originals.jpg' }
       ]
     },
     {
@@ -379,8 +366,10 @@
       quoteText: 'We have invented a kind of alien mind.',
       quoteSource: 'Co-Intelligence',
       description: 'Ethan Mollick is a professor at the Wharton School and one of the most rigorous researchers studying how AI is changing the way people work and learn. His work cuts through the noise with empirical evidence on human-AI collaboration, adoption patterns, and what it actually takes to integrate AI into how organisations operate.',
-      works: [
-        { title: 'Co-Intelligence', href: 'https://www.goodreads.com/book/show/198678736-co-intelligence', icon: 'book' },
+      books: [
+        { title: 'Co-Intelligence', href: 'https://www.goodreads.com/book/show/198678736-co-intelligence', cover: 'images/books/co-intelligence.jpg' }
+      ],
+      links: [
         { title: 'One Useful Thing', href: 'https://www.oneusefulthing.org', icon: 'mail' }
       ]
     },
@@ -396,8 +385,8 @@
       quoteText: "Stepping outside your comfort zone doesn't mean you become immunized to pain.",
       quoteSource: 'Big Trust',
       description: "A renowned leadership consultant, author, and speaker, Shade's expertise lies in developing authentic leadership practices, empowering employees, fostering a positive work culture, navigating complex business challenges, and promoting personal and professional well-being.",
-      works: [
-        { title: 'Big Trust', href: 'https://www.goodreads.com/book/show/233902510-big-trust', icon: 'book' }
+      books: [
+        { title: 'Big Trust', href: 'https://www.goodreads.com/book/show/233902510-big-trust', cover: 'images/books/big-trust.jpg' }
       ]
     },
     {
@@ -412,10 +401,10 @@
       quoteText: 'I define a leader as anyone who takes responsibility for finding the potential in people and processes.',
       quoteSource: 'Dare to Lead',
       description: 'Brené Brown is a research professor, author, and speaker whose work centres on vulnerability, courage, and the human conditions that underpin authentic leadership. Her decades of research make the empirical case that the qualities often dismissed as soft — empathy, shame resilience, and emotional honesty — are the foundations of high-performing cultures.',
-      works: [
-        { title: 'Dare to Lead', href: 'https://www.goodreads.com/book/show/40109367-dare-to-lead', icon: 'book' },
-        { title: 'Daring Greatly', href: 'https://www.goodreads.com/book/show/13588356-daring-greatly', icon: 'book' },
-        { title: 'Atlas of the Heart', href: 'https://www.goodreads.com/book/show/58330567-atlas-of-the-heart', icon: 'book' }
+      books: [
+        { title: 'Dare to Lead', href: 'https://www.goodreads.com/book/show/40109367-dare-to-lead', cover: 'images/books/dare-to-lead.jpg' },
+        { title: 'Daring Greatly', href: 'https://www.goodreads.com/book/show/13588356-daring-greatly', cover: 'images/books/daring-greatly.jpg' },
+        { title: 'Atlas of the Heart', href: 'https://www.goodreads.com/book/show/58330567-atlas-of-the-heart', cover: 'images/books/atlas-of-the-heart.jpg' }
       ]
     },
     {
@@ -430,18 +419,19 @@
       quoteText: 'Who you are, what you think, feel, and do, what you love — is the sum of what you focus on.',
       quoteSource: 'Deep Work',
       description: 'Cal Newport is a computer science professor, author, and one of the most compelling voices on how to do meaningful work in a world designed for distraction. His writing makes the case for depth over constant connectivity, and for building a professional life around focused effort rather than busyness.',
-      works: [
-        { title: 'Deep Work', href: 'https://www.goodreads.com/book/show/25744928-deep-work', icon: 'book' },
-        { title: 'Digital Minimalism', href: 'https://www.goodreads.com/book/show/40672036-digital-minimalism', icon: 'book' },
-        { title: 'Slow Productivity', href: 'https://www.goodreads.com/book/show/197773418-slow-productivity', icon: 'book' }
+      books: [
+        { title: 'Deep Work', href: 'https://www.goodreads.com/book/show/25744928-deep-work', cover: 'images/books/deep-work.jpg' },
+        { title: 'Digital Minimalism', href: 'https://www.goodreads.com/book/show/40672036-digital-minimalism', cover: 'images/books/digital-minimalism.jpg' },
+        { title: 'Slow Productivity', href: 'https://www.goodreads.com/book/show/197773418-slow-productivity', cover: 'images/books/slow-productivity.jpg' }
       ]
     }
   ];
 
-  var layoutEl = document.getElementById('people-layout');
-  var listPanel = document.getElementById('person-list-panel');
-  var detailPanel = document.getElementById('person-detail-panel');
-  var activeId = null;
+  var bentoFeatured = document.getElementById('bento-featured');
+  var bentoStandard = document.getElementById('bento-standard');
+  var modalScrim = document.getElementById('modal-scrim');
+  var modalContent = document.getElementById('modal-content');
+  var lastFocusedTile = null;
 
   function escapeHTML(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -449,65 +439,71 @@
     });
   }
 
-  function personRowHTML(p) {
+  function bentoTileHTML(p) {
     var meta = CATEGORY_META[p.category];
-    var cls = 'person-row' + (p.id === activeId ? ' active' : '');
-    return '<button type="button" class="' + cls + '" data-id="' + escapeHTML(p.id) + '"' +
-      (p.id === activeId ? ' aria-current="true"' : '') + '>' +
-      '<img class="person-row-thumb" src="' + escapeHTML(p.image) + '" alt="" loading="lazy">' +
-      '<span class="person-row-text">' +
-        '<span class="person-row-name">' + escapeHTML(p.name) + '</span>' +
-        '<span class="person-row-meta">' +
-          '<span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span>' +
-        '</span>' +
+    return '<button type="button" class="bento-tile' + (p.large ? ' large' : '') + '" data-id="' + escapeHTML(p.id) + '" aria-haspopup="dialog" aria-label="' + escapeHTML(p.name) + ' — view full profile">' +
+      '<img src="' + escapeHTML(p.image) + '" alt="" loading="lazy">' +
+      '<span class="bento-tile-body">' +
+        '<span class="bento-name">' + escapeHTML(p.name) + '</span>' +
+        '<span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span>' +
+        '<span class="bento-quote">&ldquo;' + escapeHTML(p.quoteText) + '&rdquo;</span>' +
       '</span>' +
       '</button>';
   }
 
-  function renderList() {
-    listPanel.innerHTML = PEOPLE.map(personRowHTML).join('');
+  function renderBento() {
+    var featured = PEOPLE.filter(function (p) { return p.large; });
+    var standard = PEOPLE.filter(function (p) { return !p.large; });
+    bentoFeatured.innerHTML = featured.map(bentoTileHTML).join('');
+    bentoStandard.innerHTML = standard.map(bentoTileHTML).join('');
   }
 
-  function renderDetail(person) {
-    if (!person) {
-      detailPanel.innerHTML = '<p class="empty-state">Select someone from the list to see their details.</p>';
-      return;
+  function worksHTML(person) {
+    var html = '';
+    if (person.books && person.books.length) {
+      html += '<div class="pworks-label">Key Works</div>';
+      html += '<div class="works-covers">';
+      person.books.forEach(function (b) {
+        html += '<a class="work-cover-card" href="' + escapeHTML(b.href) + '" target="_blank" rel="noopener">' +
+          '<span class="work-cover-img"><img src="' + escapeHTML(b.cover) + '" alt="' + escapeHTML(b.title) + ' cover" loading="lazy"></span>' +
+          '<span class="work-cover-title">' + escapeHTML(b.title) + '</span>' +
+          '</a>';
+      });
+      html += '</div>';
     }
+    if (person.links && person.links.length) {
+      html += '<div class="pworks-links">';
+      person.links.forEach(function (l) {
+        var icon = ICON_PATHS[l.icon || 'book'];
+        html += '<a href="' + escapeHTML(l.href) + '" target="_blank" rel="noopener" class="pwork-link"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' + icon + '</svg>' + escapeHTML(l.title) + '</a>';
+      });
+      html += '</div>';
+    }
+    return html;
+  }
+
+  function renderModal(person) {
     var meta = CATEGORY_META[person.category];
     var html = '';
-    html += '<button type="button" class="person-back" id="person-back">‹ All people</button>';
-    html += '<div class="person-detail-photo" style="background:' + meta.tint + '"><img src="' + escapeHTML(person.image) + '" alt="' + escapeHTML(person.imageAlt) + '"></div>';
-    html += '<div class="pcard-top">';
-    html += '<div class="pname">' + escapeHTML(person.name) + '</div>';
+    html += '<button type="button" class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>';
+    html += '<div class="modal-photo"><img src="' + escapeHTML(person.image) + '" alt="' + escapeHTML(person.imageAlt) + '"></div>';
+    html += '<div class="modal-body">';
+    html += '<div class="pname" id="modal-name">' + escapeHTML(person.name) + '</div>';
     html += '<div class="ppills"><span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span></div>';
     html += '<a href="' + escapeHTML(person.url) + '" target="_blank" rel="noopener" aria-label="' + escapeHTML(person.name) + ' website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + EXT_ICON + '</svg>' + escapeHTML(person.urlDisplay) + '</a>';
-    html += '</div>';
     html += '<p class="pannotation">' + escapeHTML(person.annotation) + '</p>';
     html += '<div class="pquote"><span class="pquote-mark" aria-hidden="true">&ldquo;</span><div class="pquote-text">' + escapeHTML(person.quoteText) + '</div><div class="pquote-source">— ' + escapeHTML(person.quoteSource) + '</div></div>';
     html += '<div class="pdesc">' + escapeHTML(person.description) + '</div>';
-    html += '<div class="pcard-divider"></div>';
-    html += '<div class="pworks-label">Key Works</div>';
-    html += '<div class="pworks-pills">';
-    (person.works || []).forEach(function (w) {
-      var icon = ICON_PATHS[w.icon || 'book'];
-      html += '<a href="' + escapeHTML(w.href) + '" target="_blank" rel="noopener" class="pwork-pill"><svg class="pwork-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' + icon + '</svg>' + escapeHTML(w.title) + '</a>';
-    });
+    html += worksHTML(person);
     html += '</div>';
-
-    detailPanel.innerHTML = html;
-
-    var backBtn = document.getElementById('person-back');
-    if (backBtn) backBtn.addEventListener('click', function () {
-      layoutEl.classList.remove('show-detail');
-      listPanel.focus();
-    });
+    modalContent.innerHTML = html;
+    document.getElementById('modal-close-btn').addEventListener('click', closeModal);
   }
 
-  function selectPerson(id, opts) {
+  function openModal(id, opts) {
     opts = opts || {};
     var person = PEOPLE.filter(function (p) { return p.id === id; })[0];
     if (!person) return;
-    activeId = id;
 
     var url = new URL(window.location.href);
     url.searchParams.set('person', id);
@@ -517,47 +513,56 @@
       window.history.pushState({}, '', url);
     }
 
-    renderList();
-    renderDetail(person);
-    layoutEl.classList.add('show-detail');
+    renderModal(person);
+    modalScrim.classList.add('open');
+    document.getElementById('modal-close-btn').focus();
+  }
 
-    if (opts.scrollIntoList) {
-      var activeEl = listPanel.querySelector('.person-row.active');
-      if (activeEl) activeEl.scrollIntoView({ block: 'nearest' });
+  function closeModal(opts) {
+    opts = opts || {};
+    modalScrim.classList.remove('open');
+    if (!opts.skipHistory) {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('person');
+      window.history.pushState({}, '', url);
     }
+    if (lastFocusedTile) lastFocusedTile.focus();
   }
 
-  function pickDefaultPerson() {
-    return PEOPLE[0] ? PEOPLE[0].id : null;
+  function handleBentoClick(e) {
+    var tile = e.target.closest('.bento-tile');
+    if (!tile) return;
+    lastFocusedTile = tile;
+    openModal(tile.getAttribute('data-id'));
   }
+  bentoFeatured.addEventListener('click', handleBentoClick);
+  bentoStandard.addEventListener('click', handleBentoClick);
 
-  listPanel.addEventListener('click', function (e) {
-    var btn = e.target.closest('.person-row');
-    if (!btn) return;
-    selectPerson(btn.getAttribute('data-id'), { scrollIntoList: true });
+  modalScrim.addEventListener('click', function (e) {
+    if (e.target === modalScrim) closeModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modalScrim.classList.contains('open')) closeModal();
   });
 
   window.addEventListener('popstate', function () {
     var params = new URLSearchParams(window.location.search);
     var id = params.get('person');
     if (id && PEOPLE.some(function (p) { return p.id === id; })) {
-      activeId = id;
-      renderList();
-      renderDetail(PEOPLE.filter(function (p) { return p.id === id; })[0]);
+      renderModal(PEOPLE.filter(function (p) { return p.id === id; })[0]);
+      modalScrim.classList.add('open');
+    } else {
+      modalScrim.classList.remove('open');
     }
   });
 
+  renderBento();
+
   var params = new URLSearchParams(window.location.search);
   var requestedId = params.get('person');
-  var initialId = (requestedId && PEOPLE.some(function (p) { return p.id === requestedId; }))
-    ? requestedId
-    : pickDefaultPerson();
-
-  if (initialId) {
-    selectPerson(initialId, { replace: true, scrollIntoList: true });
-  } else {
-    renderList();
-    renderDetail(null);
+  if (requestedId && PEOPLE.some(function (p) { return p.id === requestedId; })) {
+    openModal(requestedId, { replace: true });
   }
 })();
 </script>

@@ -630,6 +630,11 @@
     font-size: 12px; color: var(--warm-gray);
   }
 
+  /* Terracotta accent text — swaps to the dark-safe tint in dark mode
+     (raw --terracotta reads too dark once its container's background
+     switches to a dark surface, so this utility takes the theme-aware token). */
+  .t-terra { color: var(--terracotta); }
+
   /* Feedback Loops icon-card pair */
   .loop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .loop-card { border-radius: var(--radius); padding: 20px 22px; background: var(--light-sage); }
@@ -1548,10 +1553,12 @@
     transition: background 0.15s;
   }
   .resume-banner-btn.primary {
-    background: var(--teal);
+    /* --teal (2.49:1 against --off-white text) fails WCAG AA; --deep-teal
+       gives the same brand hue at 4.78:1. */
+    background: var(--deep-teal);
     color: var(--off-white);
   }
-  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.primary:hover { background: var(--navy); }
   .resume-banner-btn.dismiss {
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.5);
@@ -1637,6 +1644,7 @@
 
   [data-theme="dark"] .loop-card { background: var(--d-bg-sunken); }
   [data-theme="dark"] .loop-card p { color: var(--d-fg-1); }
+  [data-theme="dark"] .t-terra { color: var(--d-terra-stroke); }
 
   [data-theme="dark"] .step-num { background: var(--d-teal-bg); color: var(--d-teal-stroke); }
   [data-theme="dark"] .step-num.root { background: var(--terracotta); color: var(--off-white); }
@@ -2113,8 +2121,8 @@
           <div class="model-diagram">
             <div class="loop-grid">
               <div class="loop-card">
-                <div class="loop-icon" style="color:var(--terracotta);"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.5 0-8 3-8 6.5 0 3 2.8 5.5 6.5 5.5 3 0 5.5-2 5.5-4.5"/><polyline points="14.5 8.5 16.5 10.5 19 8"/></svg></div>
-                <div class="loop-label" style="color:var(--terracotta);">Reinforcing</div>
+                <div class="loop-icon t-terra"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.5 0-8 3-8 6.5 0 3 2.8 5.5 6.5 5.5 3 0 5.5-2 5.5-4.5"/><polyline points="14.5 8.5 16.5 10.5 19 8"/></svg></div>
+                <div class="loop-label t-terra">Reinforcing</div>
                 <p>Compounds instead of settling — like compound interest, or an approval queue that slows down, causing rushed submissions that slow it down further.</p>
               </div>
               <div class="loop-card">
@@ -2146,7 +2154,7 @@
               <div class="step-item"><div class="step-num">1</div><p><span class="step-meta">Event: &nbsp;</span>This quarter's hiring requisition took six weeks to get approved.</p></div>
               <div class="step-item"><div class="step-num">2</div><p><span class="step-meta">Pattern: &nbsp;</span>Every requisition for the last two quarters has taken five to eight weeks, regardless of role or urgency.</p></div>
               <div class="step-item"><div class="step-num">3</div><p><span class="step-meta">Structure: &nbsp;</span>One VP must personally sign off on every requisition, no matter how small or routine.</p></div>
-              <div class="step-item"><div class="step-num root">4</div><p style="color:var(--terracotta);font-weight:500;"><span class="step-meta">Mental model: &nbsp;</span>The team assumes every hire carries the same risk, so every hire needs the same senior sign-off.</p></div>
+              <div class="step-item"><div class="step-num root">4</div><p class="t-terra" style="font-weight:500;"><span class="step-meta">Mental model: &nbsp;</span>The team assumes every hire carries the same risk, so every hire needs the same senior sign-off.</p></div>
             </div>
             <div class="step-root-label">THE REAL FIX LIVES AT LEVEL 3 OR 4, NOT LEVEL 1</div>
           </div>

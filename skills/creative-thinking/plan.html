@@ -699,6 +699,11 @@
   }
   .reframe-cell p { font-family: 'Inter', sans-serif; font-size: 13px; margin: 0; line-height: 1.5; color: var(--navy); }
 
+  /* Terracotta accent text — swaps to the dark-safe tint in dark mode
+     (raw --terracotta reads too dark once its container's background
+     switches to a dark surface, so this utility takes the theme-aware token). */
+  .t-terra { color: var(--terracotta); }
+
   /* 5 Whys step chain */
   .step-chain { display: flex; flex-direction: column; gap: 12px; }
   .step-item  { display: flex; align-items: flex-start; gap: 16px; }
@@ -1616,10 +1621,12 @@
     transition: background 0.15s;
   }
   .resume-banner-btn.primary {
-    background: var(--teal);
+    /* --teal (2.49:1 against --off-white text) fails WCAG AA; --deep-teal
+       gives the same brand hue at 4.78:1. */
+    background: var(--deep-teal);
     color: var(--off-white);
   }
-  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.primary:hover { background: var(--navy); }
   .resume-banner-btn.dismiss {
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.5);
@@ -1697,6 +1704,7 @@
   [data-theme="dark"] .model-card { background: var(--d-bg-surface); }
   [data-theme="dark"] .model-source { color: var(--d-fg-2); }
   [data-theme="dark"] .model-applied { background: var(--d-bg-sunken); border-left-color: var(--d-terra-stroke); }
+  [data-theme="dark"] .t-terra { color: var(--d-terra-stroke); }
   [data-theme="dark"] .model-applied-label { color: var(--d-teal-stroke); }
   [data-theme="dark"] .model-diagram-caption { color: var(--d-fg-2); }
 
@@ -2255,7 +2263,7 @@
             <div class="step-chain">
               <div class="step-item"><div class="step-num">1</div><p><span class="step-meta">Default framing: &nbsp;</span>"Training has to happen in a scheduled session"</p></div>
               <div class="step-item"><div class="step-num">2</div><p><span class="step-meta">Hidden assumption: &nbsp;</span>Learning requires everyone in the same place at the same time</p></div>
-              <div class="step-item"><div class="step-num root">3</div><p style="color:var(--terracotta);font-weight:500;"><span class="step-meta">Reversed: &nbsp;</span>What if no one is ever in the same place at the same time?</p></div>
+              <div class="step-item"><div class="step-num root">3</div><p class="t-terra" style="font-weight:500;"><span class="step-meta">Reversed: &nbsp;</span>What if no one is ever in the same place at the same time?</p></div>
             </div>
             <div class="step-root-label">NEW STARTING POINT: ASYNCHRONOUS, SELF-PACED MODULES</div>
           </div>

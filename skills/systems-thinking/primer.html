@@ -601,10 +601,12 @@
     transition: background 0.15s;
   }
   .resume-banner-btn.primary {
-    background: var(--teal);
+    /* --teal (2.49:1 against --off-white text) fails WCAG AA; --deep-teal
+       gives the same brand hue at 4.78:1. */
+    background: var(--deep-teal);
     color: var(--off-white);
   }
-  .resume-banner-btn.primary:hover { background: var(--deep-teal); }
+  .resume-banner-btn.primary:hover { background: var(--navy); }
   .resume-banner-btn.dismiss {
     background: rgba(255,255,255,0.08);
     color: rgba(255,255,255,0.5);
@@ -888,7 +890,7 @@
       <p class="t-body" style="margin-bottom:20px;">A reinforcing loop amplifies whatever's already happening. A balancing loop resists a deviation and pulls things back toward a target. Every recurring problem is being kept alive by one of these — usually a reinforcing loop nobody's named yet.</p>
       <div class="two-col" style="margin-bottom:20px;">
         <div class="card card-top-teal">
-          <div class="icon-card-icon" style="color:var(--terracotta);"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.5 0-8 3-8 6.5 0 3 2.8 5.5 6.5 5.5 3 0 5.5-2 5.5-4.5"/><polyline points="14.5 8.5 16.5 10.5 19 8"/></svg></div>
+          <div class="icon-card-icon t-terra"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.5 0-8 3-8 6.5 0 3 2.8 5.5 6.5 5.5 3 0 5.5-2 5.5-4.5"/><polyline points="14.5 8.5 16.5 10.5 19 8"/></svg></div>
           <div class="card-label">Reinforcing</div>
           <p class="t-body">Compounds instead of settling. More of one thing produces more of another, which produces more of the first — like compound interest, or an approval queue that slows down, causing rushed submissions that slow it down further.</p>
         </div>
@@ -918,7 +920,7 @@
       <div class="step-item"><div class="step-num">3</div><p class="t-body" style="padding-top:4px;"><span class="t-meta">Structure: &nbsp;</span>One VP must personally sign off on every requisition, no matter how small or routine.</p></div>
       <div class="step-item"><div class="step-num root">4</div><p class="t-body t-terra" style="padding-top:4px;font-weight:500;"><span class="t-meta">Mental model: &nbsp;</span>The team assumes every hire carries the same risk, so every hire needs the same senior sign-off — so the queue backs up the moment volume increases.</p></div>
     </div>
-    <p style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:var(--terracotta);letter-spacing:0.04em;">THE REAL FIX LIVES AT LEVEL 3 OR 4, NOT LEVEL 1</p>
+    <p class="t-terra" style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.04em;">THE REAL FIX LIVES AT LEVEL 3 OR 4, NOT LEVEL 1</p>
   </div>
 
   <!-- 08 · MENTAL MODEL: LEVERAGE POINTS -->

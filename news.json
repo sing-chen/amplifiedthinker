@@ -1,5 +1,58 @@
 [
   {
+    "date": "2026-07-22",
+    "stories": [
+      {
+        "title": "SHRM releases \"Skills (R)evolution: Preparing Employees for Tomorrow's Jobs\"",
+        "source": "SHRM",
+        "url": "https://www.shrm.org/about/press-room/shrm-research-finds-strategic-learning-and-development-drives-st",
+        "summary": "New SHRM research introduces a \"Skills Strategist\" model identifying practices that distinguish organizations best positioned for future-of-work readiness. A key gap: 72% of HR professionals say their L&D strategy is driven by skills needed in the next 1–2 years, while only 4% focus primarily on long-term skills needs.",
+        "implications": "Capability builders should treat the short-term/long-term L&D imbalance as a planning risk — organizations optimizing only for near-term skills gaps may be under-investing in durable adaptability.",
+        "tags": ["skills development", "leadership and culture", "research and insights"]
+      },
+      {
+        "title": "Upskilling's \"Messy Middle\" and Fixing the Skills Mismatch",
+        "source": "World Economic Forum",
+        "url": "https://www.weforum.org/stories/jobs-and-the-future-of-work/",
+        "summary": "WEF argues many labor markets face a skills mismatch, not a talent shortage — coordination failures between educators, employers, and workers are the bottleneck. 85% of employers plan retraining and 77% offer AI training, but 63% still cite skills gaps as their top barrier.",
+        "implications": "For organizational leaders, the fix isn't more training volume but better coordination with education/credentialing ecosystems — a systems-thinking problem, not a budget problem.",
+        "tags": ["skills development", "macro signals"]
+      },
+      {
+        "title": "Volkswagen weighs ~100,000 job cuts and four German plant closures",
+        "source": "Euronews; CNBC",
+        "url": "https://www.euronews.com/business/2026/07/09/volkswagen-faces-crunch-talks-over-100000-job-cuts-and-factory-closures",
+        "summary": "VW is negotiating cuts that would roughly double a 2024 union deal (50,000 → up to 100,000 positions), with production potentially ending at Hanover, Zwickau, Emden, and Audi Neckarsulm — about 15% of its workforce, driven by Chinese EV competition and margin pressure.",
+        "implications": "A concrete signal of how the green/EV transition is reshaping legacy manufacturing employment in the EU, with ripple effects for supplier regions and skills-transition programs.",
+        "tags": ["macro signals", "workforce transformation"]
+      },
+      {
+        "title": "KPMG Australia prepares to cut up to 1,000+ jobs and reduce partner pay up to 20%",
+        "source": "Bloomberg; Reuters via AFR",
+        "url": "https://www.bloomberg.com/news/articles/2026-07-14/kpmg-prepares-to-cut-staff-as-scandal-fallout-hits-afr-says",
+        "summary": "KPMG's Australian consultancy arm is preparing cuts that could exceed 1,000 roles and reduce partner pay by up to a fifth, following a client-data misuse scandal that already forced out its chairman, CEO, and audit boss. The cuts await appointment of a permanent CEO, with CFO John Sams reported as the frontrunner.",
+        "implications": "Illustrates how governance failures, not technology, can trigger workforce contraction — a reminder that organizational readiness gaps (ethics and data governance) can trigger workforce shocks independent of AI or market cycles.",
+        "tags": ["macro signals", "leadership and culture"]
+      },
+      {
+        "title": "2026 People Readiness Report: The AI Adoption-Readiness Gap Widens",
+        "source": "Kyndryl",
+        "url": "https://www.kyndryl.com/us/en/insights/people-readiness-report-2026",
+        "summary": "Kyndryl's global survey of 1,100 senior business leaders across 8 countries finds only 23% believe their workforce is ready to use AI effectively, a 6-point drop from 2025, even as 77% report generative AI has scaled across multiple functions. A small \"Pacesetters\" cohort (9%) that paired role redesign, AI-specific change management, and workforce readiness was 1.5x more likely to report AI-driven revenue growth and twice as likely to report innovation gains.",
+        "implications": "Readiness is falling as adoption rises — a widening, not narrowing, gap that argues against \"wait and see\" capability-building approaches; the gap between deployment and readiness, not model capability, is now the central variable in AI ROI.",
+        "tags": ["workforce transformation", "research and insights", "leadership and culture"]
+      },
+      {
+        "title": "AI Job Postings Shift From Disruption Signal to Creation Signal",
+        "source": "Indeed Hiring Lab",
+        "url": "https://www.hiringlab.org/2026/07/08/ai-and-job-postings-from-destruction-to-creation/",
+        "summary": "Analyzing postings since Claude Code's February 2025 launch, Indeed found US software developer job postings up nearly 15% — read as early evidence that AI coding tools are expanding demand for certain technical roles rather than only displacing them. Just over 60% of postings with \"AI\" in the title now sit outside traditional tech companies.",
+        "implications": "The displacement-versus-augmentation debate has a live data point now: role creation in AI-adjacent technical work is outpacing the destruction narrative in this specific dataset, though the sample is narrow.",
+        "tags": ["skills development", "macro signals"]
+      }
+    ]
+  },
+  {
     "date": "2026-07-17",
     "stories": [
       {
@@ -17,14 +70,6 @@
         "summary": "Thomson Reuters is cutting roughly 5.2% of its technology division while planning to add 250+ new engineering roles over two years, weighted toward senior and AI-native positions. The move reflects a broader talent recomposition rather than a straightforward headcount reduction.",
         "implications": "A concrete case of skills-based reallocation — the same headcount pressure that shows up in aggregate WEF displacement figures, happening inside one named employer.",
         "tags": ["workforce transformation", "skills development", "research and insights"]
-      },
-      {
-        "title": "KPMG Australia prepares to cut hundreds of jobs and reduce partner pay",
-        "source": "Bloomberg",
-        "url": "https://www.bloomberg.com/news/articles/2026-07-14/kpmg-prepares-to-cut-staff-as-scandal-fallout-hits-afr-says",
-        "summary": "KPMG's Australian consultancy arm is preparing cuts that could exceed 1,000 roles and a partner pay reduction of up to a fifth, following a client-data misuse scandal and regulatory investigation. Announcement timing is tied to appointment of a permanent CEO.",
-        "implications": "Illustrates how governance failures, not technology, can trigger workforce contraction — a reminder that organizational readiness cuts both ways.",
-        "tags": ["macro signals"]
       },
       {
         "title": "The State of AI Fluency 2026",
@@ -279,14 +324,6 @@
         "summary": "Using ADP payroll data across tens of thousands of firms, researchers find a 16% relative decline in employment for 22–25 year-olds in AI-exposed occupations (software developers down nearly 20%), while more experienced workers in the same roles are largely unaffected. The effect is concentrated specifically in roles where AI automates rather than augments tasks — adjustment is happening through hiring, not compensation.",
         "implications": "Early-career hiring pipelines in automation-exposed roles are the leading indicator to watch, not aggregate headcount.",
         "tags": ["macro signals", "workforce transformation", "research and insights"]
-      },
-      {
-        "title": "2026 People Readiness Report",
-        "source": "Kyndryl",
-        "url": "https://www.kyndryl.com/us/en/insights/people-readiness-report-2026",
-        "summary": "Survey of 1,100 senior leaders across 8 countries finds only 23% believe their workforce is ready for AI, a 6-point drop from 2025, even as AI adoption accelerated. A small \"Pacesetters\" cohort (9%) that paired workforce investment with job/workflow redesign was 1.5x more likely to report AI-driven revenue growth.",
-        "implications": "Readiness is falling as adoption rises — a widening, not narrowing, gap that argues against \"wait and see\" capability-building approaches.",
-        "tags": ["workforce transformation", "research and insights", "leadership and culture"]
       },
       {
         "title": "88% of Leaders Are Confident Their Reorganization Will Deliver, Only 36% of Employees Agree",

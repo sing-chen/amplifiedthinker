@@ -513,6 +513,48 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-07-22-0",
+    "type": "news",
+    "title": "SHRM releases \"Skills (R)evolution: Preparing Employees for Tomorrow's Jobs\"",
+    "description": "New SHRM research introduces a \"Skills Strategist\" model identifying practices that distinguish organizations best positioned for future-of-work readiness. A key gap: 72% of HR professionals say their L&D strategy is driven by skills needed in the next 1–2 years, while only 4% focus primarily on long-term skills needs.",
+    "url": "news.html?story=2026-07-22-0"
+  },
+  {
+    "id": "news-2026-07-22-1",
+    "type": "news",
+    "title": "Upskilling's \"Messy Middle\" and Fixing the Skills Mismatch",
+    "description": "WEF argues many labor markets face a skills mismatch, not a talent shortage — coordination failures between educators, employers, and workers are the bottleneck. 85% of employers plan retraining and 77% offer AI training, but 63% still cite skills gaps as their top barrier.",
+    "url": "news.html?story=2026-07-22-1"
+  },
+  {
+    "id": "news-2026-07-22-2",
+    "type": "news",
+    "title": "Volkswagen weighs ~100,000 job cuts and four German plant closures",
+    "description": "VW is negotiating cuts that would roughly double a 2024 union deal (50,000 → up to 100,000 positions), with production potentially ending at Hanover, Zwickau, Emden, and Audi Neckarsulm — about 15% of its workforce, driven by Chinese EV competition and margin pressure.",
+    "url": "news.html?story=2026-07-22-2"
+  },
+  {
+    "id": "news-2026-07-22-3",
+    "type": "news",
+    "title": "KPMG Australia prepares to cut up to 1,000+ jobs and reduce partner pay up to 20%",
+    "description": "KPMG's Australian consultancy arm is preparing cuts that could exceed 1,000 roles and reduce partner pay by up to a fifth, following a client-data misuse scandal that already forced out its chairman, CEO, and audit boss. The cuts await appointment of a permanent CEO, with CFO John Sams reported as the frontrunner.",
+    "url": "news.html?story=2026-07-22-3"
+  },
+  {
+    "id": "news-2026-07-22-4",
+    "type": "news",
+    "title": "2026 People Readiness Report: The AI Adoption-Readiness Gap Widens",
+    "description": "Kyndryl's global survey of 1,100 senior business leaders across 8 countries finds only 23% believe their workforce is ready to use AI effectively, a 6-point drop from 2025, even as 77% report generative AI has scaled across multiple functions. A small \"Pacesetters\" cohort (9%) that paired role redesign, AI-specific change management, and workforce readiness was 1.5x more likely to report AI-driven revenue growth and twice as likely to report innovation gains.",
+    "url": "news.html?story=2026-07-22-4"
+  },
+  {
+    "id": "news-2026-07-22-5",
+    "type": "news",
+    "title": "AI Job Postings Shift From Disruption Signal to Creation Signal",
+    "description": "Analyzing postings since Claude Code's February 2025 launch, Indeed found US software developer job postings up nearly 15% — read as early evidence that AI coding tools are expanding demand for certain technical roles rather than only displacing them. Just over 60% of postings with \"AI\" in the title now sit outside traditional tech companies.",
+    "url": "news.html?story=2026-07-22-5"
+  },
+  {
     "id": "news-2026-07-17-0",
     "type": "news",
     "title": "AI anxiety is driving interest toward trades — welding, plumbing, carpentry",
@@ -529,30 +571,23 @@
   {
     "id": "news-2026-07-17-2",
     "type": "news",
-    "title": "KPMG Australia prepares to cut hundreds of jobs and reduce partner pay",
-    "description": "KPMG's Australian consultancy arm is preparing cuts that could exceed 1,000 roles and a partner pay reduction of up to a fifth, following a client-data misuse scandal and regulatory investigation. Announcement timing is tied to appointment of a permanent CEO.",
+    "title": "The State of AI Fluency 2026",
+    "description": "The first AI fluency benchmark built from behavioral assessment rather than self-report. Across 412 completed conversational assessments, the average score is 52/100, with only 12% reaching Advanced or Expert tier — and the self-selected sample likely overstates the true workforce average.",
     "url": "news.html?story=2026-07-17-2"
   },
   {
     "id": "news-2026-07-17-3",
     "type": "news",
-    "title": "The State of AI Fluency 2026",
-    "description": "The first AI fluency benchmark built from behavioral assessment rather than self-report. Across 412 completed conversational assessments, the average score is 52/100, with only 12% reaching Advanced or Expert tier — and the self-selected sample likely overstates the true workforce average.",
+    "title": "Why Britain's Workforce Is Burning Out: New Data Reveals the True Cost of the Workforce Transformation Gap",
+    "description": "58% of UK workers report increased role pressure over the past two years; 42% are actively considering leaving due to workplace pressure, and 11% are already job-hunting.",
     "url": "news.html?story=2026-07-17-3"
   },
   {
     "id": "news-2026-07-17-4",
     "type": "news",
-    "title": "Why Britain's Workforce Is Burning Out: New Data Reveals the True Cost of the Workforce Transformation Gap",
-    "description": "58% of UK workers report increased role pressure over the past two years; 42% are actively considering leaving due to workplace pressure, and 11% are already job-hunting.",
-    "url": "news.html?story=2026-07-17-4"
-  },
-  {
-    "id": "news-2026-07-17-5",
-    "type": "news",
     "title": "McKinsey & Company: The Critical Loss of On-the-Job Mentoring Pipelines",
     "description": "McKinsey's new organizational analysis warns that as enterprises automate entry-level data processing and routine drafting, they are inadvertently dismantling their internal talent pipelines. Because junior professionals no longer execute the basic foundational work that historically built context and professional intuition, they are hitting an abrupt expertise cliff when moving into mid-level strategy positions. To resolve this, leaders must restructure work profiles to blend knowledge management, direct coaching loops, and simulation-based exercises directly into everyday workflows.",
-    "url": "news.html?story=2026-07-17-5"
+    "url": "news.html?story=2026-07-17-4"
   },
   {
     "id": "news-2026-07-15-0",
@@ -718,22 +753,15 @@
   {
     "id": "news-2026-07-02-1",
     "type": "news",
-    "title": "2026 People Readiness Report",
-    "description": "Survey of 1,100 senior leaders across 8 countries finds only 23% believe their workforce is ready for AI, a 6-point drop from 2025, even as AI adoption accelerated. A small \"Pacesetters\" cohort (9%) that paired workforce investment with job/workflow redesign was 1.5x more likely to report AI-driven revenue growth.",
+    "title": "88% of Leaders Are Confident Their Reorganization Will Deliver, Only 36% of Employees Agree",
+    "description": "Survey of nearly 1,000 global executives and employees post-reorganization finds a sharp leadership-employee perception gap: only 22% of employees felt they got sufficient training or tools to adapt, and only 57% of middle managers agreed leadership had adequately supported the transition, versus 80%+ of leaders who believed they had.",
     "url": "news.html?story=2026-07-02-1"
   },
   {
     "id": "news-2026-07-02-2",
     "type": "news",
-    "title": "88% of Leaders Are Confident Their Reorganization Will Deliver, Only 36% of Employees Agree",
-    "description": "Survey of nearly 1,000 global executives and employees post-reorganization finds a sharp leadership-employee perception gap: only 22% of employees felt they got sufficient training or tools to adapt, and only 57% of middle managers agreed leadership had adequately supported the transition, versus 80%+ of leaders who believed they had.",
-    "url": "news.html?story=2026-07-02-2"
-  },
-  {
-    "id": "news-2026-07-02-3",
-    "type": "news",
     "title": "Top Future of Work Trends for CHROs in 2026",
     "description": "Gartner's 2026 CHRO framework names \"workslop\" — fast, low-quality AI-assisted output from employees pressured to use AI everywhere — as a defining risk, alongside warnings that only 1 in 50 AI initiatives is delivering transformative value despite bold CEO growth targets tied to AI. As technology platforms become commoditized, Gartner also finds enterprise value shifting to \"process experts\" over \"technical prodigies\": top firms are reweighting recruitment toward systems thinking and end-to-end workflow re-engineering, while reintroducing high-touch practices like live skill assessments and AI-free behavioral checkouts to counter AI-padded application fraud.",
-    "url": "news.html?story=2026-07-02-3"
+    "url": "news.html?story=2026-07-02-2"
   }
 ]
