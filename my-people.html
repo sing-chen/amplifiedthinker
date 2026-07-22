@@ -305,6 +305,7 @@
       category: 'communication',
       image: 'images/people/vanessa-van-edwards.jpg',
       imageAlt: 'Vanessa Van Edwards',
+      imagePosition: 'center 26%',
       url: 'https://www.scienceofpeople.com',
       urlDisplay: 'scienceofpeople.com',
       large: true,
@@ -313,8 +314,8 @@
       quoteSource: 'Captivate',
       description: 'Vanessa Van Edwards is a behavioural investigator and author known for decoding human behaviour, communication, and charisma. Her expertise provides practical insights into effective communication, relationship-building, leadership, and negotiation skills.',
       books: [
-        { title: 'Captivate', href: 'https://www.goodreads.com/book/show/29483376-captivate', cover: 'images/books/captivate.jpg' },
-        { title: 'Cues', href: 'https://www.goodreads.com/book/show/55838980-cues', cover: 'images/books/cues.jpg' }
+        { title: 'Captivate', href: 'https://www.goodreads.com/book/show/31868165-captivate', cover: 'images/books/captivate.jpg' },
+        { title: 'Cues', href: 'https://www.goodreads.com/book/show/58065810-cues', cover: 'images/books/cues.jpg' }
       ]
     },
     {
@@ -342,6 +343,7 @@
       category: 'psychology',
       image: 'images/people/adam-grant.jpg',
       imageAlt: 'Adam Grant',
+      imagePosition: 'center 7%',
       url: 'https://adamgrant.net',
       urlDisplay: 'adamgrant.net',
       annotation: "Grant challenges assumptions before I even notice I'm carrying them. Think Again is the book I come back to again and again; its more like a manual for staying intellectually honest with myself. Rethinking a position used to feel like a loss, evidence that the first take was wrong. Now it reads like the thing that separates someone building an accurate picture from someone just defending an earlier one.",
@@ -486,7 +488,8 @@
     var meta = CATEGORY_META[person.category];
     var html = '';
     html += '<button type="button" class="modal-close" id="modal-close-btn" aria-label="Close">&times;</button>';
-    html += '<div class="modal-photo"><img src="' + escapeHTML(person.image) + '" alt="' + escapeHTML(person.imageAlt) + '"></div>';
+    var imgStyle = person.imagePosition ? ' style="object-position:' + escapeHTML(person.imagePosition) + '"' : '';
+    html += '<div class="modal-photo"><img src="' + escapeHTML(person.image) + '" alt="' + escapeHTML(person.imageAlt) + '"' + imgStyle + '></div>';
     html += '<div class="modal-body">';
     html += '<div class="pname" id="modal-name">' + escapeHTML(person.name) + '</div>';
     html += '<div class="ppills"><span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span></div>';
