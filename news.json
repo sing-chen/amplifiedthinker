@@ -1,5 +1,42 @@
 [
   {
+    "date": "2026-07-23",
+    "stories": [
+      {
+        "title": "Amazon Cuts Jobs in Its Artificial General Intelligence Unit",
+        "source": "CNBC",
+        "url": "https://www.cnbc.com/2026/07/22/amazon-lays-off-some-employees-in-its-agi-unit.html",
+        "summary": "Amazon eliminated an undisclosed number of roles within its AGI organization on July 22, even as it plans roughly $200 billion in AI infrastructure spending this year. The company is reallocating talent toward customer-facing AI priorities rather than foundational AGI research, reflecting intensifying competitive pressure from OpenAI, Google, and Anthropic.",
+        "implications": "Signals that even well-resourced AI leaders are narrowing bets rather than broadly scaling AI headcount — a caution against assuming AI investment automatically expands AI-adjacent jobs.",
+        "tags": ["workforce transformation", "macro signals"]
+      },
+      {
+        "title": "APAC Leads in AI Adoption But Lags in Workforce Readiness",
+        "source": "Aon",
+        "url": "https://www.aon.com/apac/in-the-press/asia-newsroom/2026/apac-leads-in-ai-adoption-but-lags-in-workforce-readiness-aon-study-finds",
+        "summary": "Aon's inaugural APAC Human Capital Trends Study finds 74% of APAC organizations have deployed or are piloting AI programs, moving from experimentation toward implementation faster than workforce and benefits structures can adapt — only 22% of employees in the region have access to customizable benefits versus a 33% global average.",
+        "implications": "Leaders scaling AI in Asia-Pacific markets should treat benefits and role-design modernization as a parallel workstream, not an afterthought to technology rollout.",
+        "tags": ["macro signals", "research and insights"]
+      },
+      {
+        "title": "New Report: The Skills Gap Is Moving Faster Than Learning Can Keep Up",
+        "source": "Chief Learning Officer",
+        "url": "https://www.chieflearningofficer.com/2026/06/17/the-skills-gap-is-moving-faster-than-we-are-new-report-finds/",
+        "summary": "A TalentLMS survey of 1,500 US respondents finds 70% of employees say they need faster ways to practice and apply new skills to keep pace with changing work demands, but 44% say day-to-day work leaves no time to learn; 53% are now pursuing skills development on their own initiative rather than through employer programs.",
+        "implications": "Points to a growing shift of learning responsibility onto individual workers — organizations that don't build learning into workflow (rather than alongside it) risk falling further behind self-directed reskilling.",
+        "tags": ["skills development"]
+      },
+      {
+        "title": "The \"Great Mismatch\": Shrinking Workforce, AI, and Labor Reallocation Through 2040",
+        "source": "Indeed Hiring Lab",
+        "url": "https://www.hiringlab.org/2026/05/14/how-a-shrinking-workforce-ai-and-labor-reallocation-will-define-the-next-15-years/",
+        "summary": "Analysis projects U.S. labor force participation will keep declining through 2034 as population aging outpaces new entrants, compounding with AI-driven task reallocation to reshape which occupations grow or shrink over the next 15 years — a structural rather than cyclical labor story.",
+        "implications": "Long-range workforce planning should treat demographic contraction and AI-driven reallocation as compounding forces, not separate risk categories, when sizing future talent pipelines.",
+        "tags": ["macro signals", "workforce transformation"]
+      }
+    ]
+  },
+  {
     "date": "2026-07-22",
     "stories": [
       {

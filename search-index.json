@@ -513,6 +513,34 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-07-23-0",
+    "type": "news",
+    "title": "Amazon Cuts Jobs in Its Artificial General Intelligence Unit",
+    "description": "Amazon eliminated an undisclosed number of roles within its AGI organization on July 22, even as it plans roughly $200 billion in AI infrastructure spending this year. The company is reallocating talent toward customer-facing AI priorities rather than foundational AGI research, reflecting intensifying competitive pressure from OpenAI, Google, and Anthropic.",
+    "url": "news.html?story=2026-07-23-0"
+  },
+  {
+    "id": "news-2026-07-23-1",
+    "type": "news",
+    "title": "APAC Leads in AI Adoption But Lags in Workforce Readiness",
+    "description": "Aon's inaugural APAC Human Capital Trends Study finds 74% of APAC organizations have deployed or are piloting AI programs, moving from experimentation toward implementation faster than workforce and benefits structures can adapt — only 22% of employees in the region have access to customizable benefits versus a 33% global average.",
+    "url": "news.html?story=2026-07-23-1"
+  },
+  {
+    "id": "news-2026-07-23-2",
+    "type": "news",
+    "title": "New Report: The Skills Gap Is Moving Faster Than Learning Can Keep Up",
+    "description": "A TalentLMS survey of 1,500 US respondents finds 70% of employees say they need faster ways to practice and apply new skills to keep pace with changing work demands, but 44% say day-to-day work leaves no time to learn; 53% are now pursuing skills development on their own initiative rather than through employer programs.",
+    "url": "news.html?story=2026-07-23-2"
+  },
+  {
+    "id": "news-2026-07-23-3",
+    "type": "news",
+    "title": "The \"Great Mismatch\": Shrinking Workforce, AI, and Labor Reallocation Through 2040",
+    "description": "Analysis projects U.S. labor force participation will keep declining through 2034 as population aging outpaces new entrants, compounding with AI-driven task reallocation to reshape which occupations grow or shrink over the next 15 years — a structural rather than cyclical labor story.",
+    "url": "news.html?story=2026-07-23-3"
+  },
+  {
     "id": "news-2026-07-22-0",
     "type": "news",
     "title": "SHRM releases \"Skills (R)evolution: Preparing Employees for Tomorrow's Jobs\"",
