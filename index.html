@@ -36,12 +36,17 @@
 
   /* ── ANNOUNCEMENT BANNER ── */
   .announce-banner{background:var(--warm-cream);border-top:1px solid rgba(154,86,54,.25);border-bottom:1px solid rgba(154,86,54,.25);padding:14px 40px}
-  .announce-inner{max-width:var(--page-max);margin:0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .announce-pill{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#8A4B2C;color:#fff;padding:3px 9px;border-radius:var(--radius-pill);flex-shrink:0}
-  .announce-date{font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;letter-spacing:.03em;color:#8A4B2C;white-space:nowrap;flex-shrink:0}
-  .announce-text{font-family:'Inter',sans-serif;font-size:14px;color:#5A4433;line-height:1.5}
+  .announce-inner{max-width:var(--page-max);margin:0 auto;display:flex;align-items:center;gap:10px}
+  .announce-progress-dot{--announce-fill:#8A4B2C;--announce-track:rgba(154,86,54,.2);flex-shrink:0;width:12px;height:12px;border-radius:50%;background:var(--announce-track)}
+  .announce-ticker{height:24px;overflow:hidden;position:relative;flex:1;min-width:0}
+  .announce-ticker-track{position:absolute;top:0;left:0;width:100%;transition:transform .6s ease}
+  .announce-item{height:24px;box-sizing:border-box;display:flex;align-items:center;gap:12px}
+  .announce-date{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;line-height:1.4;letter-spacing:.03em;color:#8A4B2C;white-space:nowrap;flex-shrink:0}
+  .announce-icon{width:16px;height:16px;flex-shrink:0;display:inline-flex;color:#8A4B2C}
+  .announce-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .announce-text{font-family:'Inter',sans-serif;font-size:14px;color:#5A4433;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
   .announce-text b{color:#4A2E1E}
-  .announce-link{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:#8A4B2C;text-decoration:none;white-space:nowrap;margin-left:auto;display:inline-flex;align-items:center;gap:5px;transition:color .15s}
+  .announce-link{font-family:'Inter',sans-serif;font-size:14px;font-weight:600;line-height:1.4;color:#8A4B2C;text-decoration:none;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;transition:color .15s}
   .announce-link:hover{color:#6B3820}
   .announce-link:focus-visible{outline:2px solid #8A4B2C;outline-offset:3px;border-radius:2px}
   .announce-link svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
@@ -53,8 +58,8 @@
   .explore-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
 
   /* ── SECTION CARDS ── */
-  .scard{display:flex;flex-direction:column;text-decoration:none;border-radius:var(--radius-xl);padding:32px 36px 36px;transition:border-color .2s,box-shadow .2s,transform .2s;position:relative;overflow:hidden;border:1px solid transparent}
-  .scard:hover{box-shadow:0 12px 32px -8px rgba(27,74,68,.15);transform:translateY(-3px)}
+  .scard{display:flex;flex-direction:column;text-decoration:none;border-radius:var(--radius-xl);padding:32px 36px 36px;transition:border-color .2s,box-shadow .2s,transform .2s;position:relative;overflow:hidden;border:1px solid transparent;box-shadow:0 4px 16px -6px rgba(27,74,68,.12)}
+  .scard:hover{box-shadow:0 12px 32px -8px rgba(27,74,68,.2);transform:translateY(-3px)}
   .scard:focus-visible{outline:2px solid var(--mid-teal);outline-offset:4px;border-radius:var(--radius-xl)}
   .scard-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;flex-shrink:0}
   .scard-icon svg{width:18px;height:18px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -84,24 +89,13 @@
   .scard-people .scard-cta{color:#55643A}
 
   /* News card — clay tint */
-  .scard-news{background:#EAD9C8;border-color:rgba(154,86,54,.22);display:flex;flex-direction:column}
+  .scard-news{background:#EAD9C8;border-color:rgba(154,86,54,.22)}
   .scard-news:hover{border-color:rgba(154,86,54,.4)}
   .scard-news .scard-icon{background:#8A4B2C;}
   .scard-news .scard-icon svg{stroke:#F5EAE0;}
   .scard-news .scard-title{color:#4A2E1E}
-  .scard-news .scard-desc{color:#5A4433;margin-bottom:16px;flex:1}
+  .scard-news .scard-desc{color:#5A4433}
   .scard-news .scard-cta{color:#8A4B2C}
-
-  /* News card — headline ticker */
-  .scard-ticker-label{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;color:#4A2E1E;margin-bottom:10px}
-  .scard-ticker{height:56px;overflow:hidden;position:relative;background:#F3E4D8;border-radius:var(--radius);margin-bottom:20px}
-  .scard-ticker-track{position:absolute;top:0;left:0;width:100%;transition:transform .6s ease}
-  .scard-ticker-item{height:56px;box-sizing:border-box;display:flex;align-items:center;padding:0 14px}
-  .scard-ticker-progress{position:absolute;bottom:0;left:0;height:2px;background:#8A4B2C;width:0%}
-  .scard-ticker-headline{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#4A2E1E;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  a.scard-ticker-item{text-decoration:none;position:relative;z-index:1}
-  a.scard-ticker-item:hover .scard-ticker-headline{color:#6B3820}
-  a.scard-ticker-item:focus-visible{outline:2px solid #8A4B2C;outline-offset:2px;border-radius:2px}
 
   /* accent stripe on hover */
   .scard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s}
@@ -128,10 +122,9 @@
     .explore-grid{grid-template-columns:1fr}
     .hero,.explore,.announce-banner{padding-left:20px;padding-right:20px}
     footer{padding-left:20px;padding-right:20px}
-    .announce-link{margin-left:0}
   }
   @media(prefers-reduced-motion:reduce){
-    .scard,.scard::after,.scard-cta svg,.scard-ticker-track{transition:none}
+    .scard,.scard::after,.scard-cta svg,.announce-ticker-track{transition:none}
   }
 
   /* ── DARK MODE ──
@@ -145,10 +138,12 @@
 
   [data-theme="dark"] .announce-banner{background:#2E2115;border-color:rgba(154,86,54,.4)}
   [data-theme="dark"] .announce-date{color:#D9895D}
+  [data-theme="dark"] .announce-icon{color:#D9895D}
   [data-theme="dark"] .announce-text{color:#D9BBA0}
   [data-theme="dark"] .announce-text b{color:#EEDBC6}
   [data-theme="dark"] .announce-link{color:#D9895D}
   [data-theme="dark"] .announce-link:hover{color:#EEDBC6}
+  [data-theme="dark"] .announce-progress-dot{--announce-fill:#D9895D;--announce-track:rgba(217,137,93,.25)}
 
   [data-theme="dark"] .scard-skills{background:#1C332E;border-color:rgba(91,167,159,.25)}
   [data-theme="dark"] .scard-skills:hover{border-color:rgba(91,167,159,.45)}
@@ -173,12 +168,6 @@
   [data-theme="dark"] .scard-news .scard-title{color:#E8C9AE}
   [data-theme="dark"] .scard-news .scard-desc{color:#C7A98F}
   [data-theme="dark"] .scard-news .scard-cta{color:#C97A4A}
-
-  [data-theme="dark"] .scard-ticker-label{color:#D9BBA0}
-  [data-theme="dark"] .scard-ticker{background:#241a13}
-  [data-theme="dark"] .scard-ticker-progress{background:#C97A4A}
-  [data-theme="dark"] .scard-ticker-headline{color:#E8C9AE}
-  [data-theme="dark"] a.scard-ticker-item:hover .scard-ticker-headline{color:#F0DAC4}
 </style>
 </head>
 <body>
@@ -234,12 +223,12 @@
   </div>
 </section>
 
-<div class="announce-banner" role="region" aria-label="Site announcement">
+<div class="announce-banner" id="announce-banner" role="region" aria-label="Site announcements">
   <div class="announce-inner">
-    <span class="announce-pill">New skill</span>
-    <span class="announce-date">Fri 17 Jul</span>
-    <span class="announce-text"><b>Systems Thinking</b> just joined the library — see interdependencies and feedback loops before they surface.</span>
-    <a class="announce-link" href="future-skills.html#s-systems">Explore it <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    <div class="announce-progress-dot" id="announce-progress-dot" aria-hidden="true"></div>
+    <div class="announce-ticker" id="announce-ticker">
+      <div class="announce-ticker-track" id="announce-ticker-track"></div>
+    </div>
   </div>
 </div>
 
@@ -254,7 +243,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       </div>
       <div class="scard-title">Future Skills</div>
-      <div class="scard-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more. Built for deliberate practice in the flow of real work.</div>
+      <div class="scard-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more.</div>
       <div class="scard-cta">Browse the library <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
@@ -263,25 +252,18 @@
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       </div>
       <div class="scard-title">The people whose work I keep turning to</div>
-      <div class="scard-desc">The thinkers, coaches, and practitioners who've shaped how I lead, communicate, and build capability — a curated virtual board I return to when I need a sharper perspective or a better question.</div>
+      <div class="scard-desc">The thinkers, coaches, and practitioners who've shaped how I lead, communicate, and build capability.</div>
       <div class="scard-cta">Meet them <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
-    <div class="scard scard-news" role="listitem">
+    <a href="news.html" class="scard scard-news" role="listitem">
       <div class="scard-icon">
         <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
       </div>
       <div class="scard-title">The stories reshaping how we work</div>
       <div class="scard-desc">A curated feed of the skills and workplace shifts worth knowing about.</div>
-      <div id="news-ticker-wrap" hidden>
-        <div class="scard-ticker-label">Latest Stories</div>
-        <div class="scard-ticker" id="news-ticker" aria-label="Latest news worth knowing">
-          <div class="scard-ticker-track" id="news-ticker-track"></div>
-          <div class="scard-ticker-progress" id="news-ticker-progress"></div>
-        </div>
-      </div>
-      <a href="news.html" class="scard-cta">Read the feed <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-    </div>
+      <div class="scard-cta">Read the feed <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+    </a>
 
   </div>
 </section>
@@ -313,6 +295,40 @@
 <script>
 (function () {
   'use strict';
+  var banner = document.getElementById('announce-banner');
+  var track = document.getElementById('announce-ticker-track');
+  var progressDot = document.getElementById('announce-progress-dot');
+  if (!track) return;
+
+  var ANNOUNCE_ITEM_HEIGHT = 24;
+  var ANNOUNCE_INTERVAL_MS = 5000;
+  var NEWS_MAX_COUNT = 3;
+  var NEWS_MAX_AGE_DAYS = 14;
+
+  // Hand-curated announcements. `type` controls both the pill label and how
+  // long the item stays in the banner — see EXPIRY_DAYS below.
+  var ANNOUNCEMENTS = [
+    {
+      type: 'skill',
+      date: '2026-07-17',
+      text: '<b>Systems Thinking</b> just joined the library — see interdependencies and feedback loops before they surface.',
+      linkHref: 'future-skills.html#s-systems',
+      linkLabel: 'Explore it'
+    },
+    {
+      type: 'feature',
+      date: '2026-07-23',
+      text: '<b>Dark Mode</b> has landed — toggle it anytime from the nav bar.'
+    }
+  ];
+
+  var EXPIRY_DAYS = { feature: 14, skill: 21 };
+  var PILL_LABELS = { feature: 'New feature', skill: 'New skill', story: 'New story' };
+  var CATEGORY_ICONS = {
+    feature: '<svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>',
+    skill: '<svg viewBox="0 0 24 24"><path d="M22 10 12 4 2 10l10 6 10-6z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>',
+    story: '<svg viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>'
+  };
 
   function escapeHTML(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -320,75 +336,130 @@
     });
   }
 
-  var TICKER_ITEM_HEIGHT = 56;
-  var TICKER_INTERVAL_MS = 3800;
-  var TICKER_MAX = 5;
-  var TICKER_UNPINNED_MAX_AGE_DAYS = 28;
+  function formatAnnounceDate(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    if (isNaN(d)) return '';
+    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+  }
 
-  fetch('news.json')
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      var digests = (data || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
-      if (!digests.length) return;
+  function daysSince(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    if (isNaN(d)) return Infinity;
+    var now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return Math.round((now - d) / 86400000);
+  }
 
-      var cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - TICKER_UNPINNED_MAX_AGE_DAYS);
+  function itemHTML(pillType, dateStr, textHTML, linkHref, linkLabel) {
+    return '<div class="announce-item">' +
+      '<span class="announce-date">' + escapeHTML(formatAnnounceDate(dateStr)) + '</span>' +
+      '<span class="announce-icon" role="img" aria-label="' + escapeHTML(PILL_LABELS[pillType]) + '" title="' + escapeHTML(PILL_LABELS[pillType]) + '">' + CATEGORY_ICONS[pillType] + '</span>' +
+      '<span class="announce-text">' + textHTML + '</span>' +
+      (linkHref ? '<a class="announce-link" href="' + escapeHTML(linkHref) + '">' + escapeHTML(linkLabel || 'Learn more') +
+        ' <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>' : '') +
+      '</div>';
+  }
 
-      var pinnedEntry = null;
-      digests.some(function (group) {
-        return (group.stories || []).some(function (s, i) {
-          if (s.pinned) { pinnedEntry = { id: group.date + '-' + i, story: s }; return true; }
-          return false;
+  function curatedItemsHTML() {
+    return ANNOUNCEMENTS
+      .filter(function (a) { return daysSince(a.date) <= EXPIRY_DAYS[a.type]; })
+      .map(function (a) { return itemHTML(a.type, a.date, a.text, a.linkHref, a.linkLabel); })
+      .join('');
+  }
+
+  function newsItemsHTML() {
+    return fetch('news.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var digests = (data || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+        var stories = [];
+        digests.some(function (group) {
+          if (daysSince(group.date) > NEWS_MAX_AGE_DAYS) return true;
+          (group.stories || []).some(function (s, i) {
+            stories.push({ id: group.date + '-' + i, date: group.date, story: s });
+            return stories.length >= NEWS_MAX_COUNT;
+          });
+          return stories.length >= NEWS_MAX_COUNT;
         });
-      });
 
-      var candidates = [];
-      digests.forEach(function (group) {
-        var groupDate = new Date(group.date + 'T00:00:00');
-        if (isNaN(groupDate) || groupDate < cutoff) return;
-        (group.stories || []).forEach(function (s, i) {
-          if (s.pinned) return;
-          candidates.push({ id: group.date + '-' + i, story: s });
-        });
-      });
+        return stories.map(function (x) {
+          return itemHTML('story', x.date, escapeHTML(x.story.title || ''), 'news.html?story=' + encodeURIComponent(x.id), 'Read it');
+        }).join('');
+      })
+      .catch(function () { return ''; });
+  }
 
-      var slotsForOthers = pinnedEntry ? TICKER_MAX - 1 : TICKER_MAX;
-      var others = candidates.slice(0, slotsForOthers);
-      var tickerEntries = pinnedEntry ? [pinnedEntry].concat(others) : others;
+  var intervalId = null;
+  var rafId = null;
 
-      if (!tickerEntries.length) return;
+  function stopTicker() {
+    if (intervalId) clearInterval(intervalId);
+    intervalId = null;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
 
-      var track = document.getElementById('news-ticker-track');
-      track.innerHTML = tickerEntries.map(function (x) {
-        return '<a class="scard-ticker-item" href="news.html?story=' + encodeURIComponent(x.id) + '">' +
-          '<span class="scard-ticker-headline">' + escapeHTML(x.story.title || '') + '</span>' +
-          '</a>';
-      }).join('');
+  function restartProgress() {
+    if (!progressDot) return;
+    if (rafId) cancelAnimationFrame(rafId);
+    var start = null;
+    function step(ts) {
+      if (start === null) start = ts;
+      var pct = Math.min(100, ((ts - start) / ANNOUNCE_INTERVAL_MS) * 100);
+      progressDot.style.background = 'conic-gradient(var(--announce-fill) ' + pct + '%, var(--announce-track) 0)';
+      if (pct < 100) rafId = requestAnimationFrame(step);
+    }
+    rafId = requestAnimationFrame(step);
+  }
 
-      document.getElementById('news-ticker-wrap').hidden = false;
+  // (Re)starts the ticker from scratch — call whenever track's children change.
+  function runTicker() {
+    stopTicker();
+    var items = track.children;
 
-      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduceMotion || tickerEntries.length < 2) return;
+    if (!items.length) {
+      if (banner) banner.hidden = true;
+      return;
+    }
+    if (banner) banner.hidden = false;
 
-      var progress = document.getElementById('news-ticker-progress');
-      function restartProgress() {
-        if (!progress) return;
-        progress.style.transition = 'none';
-        progress.style.width = '0%';
-        void progress.offsetWidth;
-        progress.style.transition = 'width ' + TICKER_INTERVAL_MS + 'ms linear';
-        progress.style.width = '100%';
-      }
+    track.style.transitionDuration = '0s';
+    track.style.transform = 'translateY(0px)';
+    void track.offsetHeight;
+    track.style.transitionDuration = '';
+
+    if (items.length < 2) {
+      if (progressDot) progressDot.hidden = true;
+      return;
+    }
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      if (progressDot) progressDot.hidden = true;
+      return;
+    }
+    if (progressDot) progressDot.hidden = false;
+
+    restartProgress();
+
+    var i = 0;
+    intervalId = setInterval(function () {
+      i = (i + 1) % items.length;
+      track.style.transform = 'translateY(-' + (i * ANNOUNCE_ITEM_HEIGHT) + 'px)';
       restartProgress();
+    }, ANNOUNCE_INTERVAL_MS);
+  }
 
-      var i = 0;
-      setInterval(function () {
-        i = (i + 1) % tickerEntries.length;
-        track.style.transform = 'translateY(-' + (i * TICKER_ITEM_HEIGHT) + 'px)';
-        restartProgress();
-      }, TICKER_INTERVAL_MS);
-    })
-    .catch(function () { /* leave ticker hidden if news.json can't be loaded */ });
+  track.innerHTML = curatedItemsHTML();
+  runTicker();
+
+  newsItemsHTML().then(function (newsHTML) {
+    if (!newsHTML) return;
+    track.insertAdjacentHTML('beforeend', newsHTML);
+    runTicker();
+  });
 })();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
