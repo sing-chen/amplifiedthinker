@@ -69,9 +69,9 @@
   .about-cta{margin-top:16px;padding-top:40px;border-top:1px solid rgba(172,196,182,.25);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 
   /* ── CONTACT ── */
-  .contact-block{margin-top:8px;padding-top:32px;border-top:1px solid rgba(172,196,182,.25);display:flex;flex-direction:column;gap:10px}
-  .contact-label{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-gray)}
-  .contact-body{font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:var(--text-muted)}
+  .contact-block{margin-top:32px;display:flex;flex-direction:column;gap:10px;background:#D4EAE7;border-left:3px solid var(--fg-brand);border-radius:10px;padding:22px 24px}
+  .contact-label{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+  .contact-body{font-family:'Inter',sans-serif;font-size:14px;line-height:1.65;color:var(--navy)}
   .contact-link{color:var(--navy);font-weight:500;text-decoration:underline;text-decoration-color:rgba(45,117,111,.35);text-underline-offset:2px}
 
   /* ── SITE UPDATES ── */
@@ -127,7 +127,7 @@
   [data-theme="dark"] .prose-divider{background:var(--line)}
   [data-theme="dark"] .aud-body{color:var(--fg-2)}
   [data-theme="dark"] .about-cta{border-top-color:var(--line)}
-  [data-theme="dark"] .contact-block{border-top-color:var(--line)}
+  [data-theme="dark"] .contact-block{background:#1C332E}
   [data-theme="dark"] .contact-body{color:var(--fg-2)}
   [data-theme="dark"] .contact-link{color:var(--fg-brand)}
   [data-theme="dark"] .updates-block{border-top-color:var(--line)}
@@ -233,7 +233,7 @@
     <div class="contact-block" id="contact-block">
       <p class="contact-label">Get in touch</p>
       <p class="contact-body" id="contact-body-full" style="display:none;">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, whether that's by email at <a href="mailto:singchen@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" class="contact-link">singchen@amplifiedthinker.com</a> or on <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
-      <p class="contact-body" id="contact-body-short" style="display:none;">I'd love to hear from you, reach out or connect with me on <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
+      <p class="contact-body" id="contact-body-short" style="display:none;">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, reach out via <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
     </div>
     <script>
       var isCustomDomain = /(^|\.)amplifiedthinker\.com$/.test(window.location.hostname);
@@ -285,6 +285,11 @@
 
   var toggle = document.querySelector('.updates-toggle');
   var body = document.getElementById('updates-body');
+
+  if (window.location.hash === '#updates') {
+    toggle.setAttribute('aria-expanded', 'true');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
 
   toggle.addEventListener('click', function () {
     var expanded = this.getAttribute('aria-expanded') === 'true';
