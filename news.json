@@ -1,5 +1,26 @@
 [
   {
+    "date": "2026-07-24",
+    "stories": [
+      {
+        "title": "OECD: \"Skills in the AI Age\" (AI Papers No. 60)",
+        "source": "OECD",
+        "url": "https://www.oecd.org/en/publications/skills-in-the-ai-age_972bd15e-en.html",
+        "summary": "New OECD analysis finds AI adoption among OECD-country firms nearly tripled from ~7% to ~20% of businesses between 2021 and 2025, but workers with advanced AI capabilities remain just ~1% of the workforce. Larger firms and startups are pulling ahead; SMEs are held back by cost, infrastructure, and skills shortages, risking a widening two-tier labor market.",
+        "implications": "Organizational leaders should treat the 1%-advanced-skills figure as a capacity constraint on AI strategy, not just a training gap — it caps how fast any AI roadmap can actually be staffed.",
+        "tags": ["skills development", "macro signals", "research and insights"]
+      },
+      {
+        "title": "India Skills Report 2026 — employability climbs, women surpass men",
+        "source": "ETS/CII/AICTE/AIU/Taggd",
+        "url": "https://organiser.org/2026/07/23/371280/bharat/how-india-is-building-a-future-ready-workforce-govts-skill-development-initiatives-explained/",
+        "summary": "India's national employability score rose to 56.35% (from 54.81% in 2025, up from 46% in 2020), based on Global Employability Test results from over 100,000 candidates. For the first time in five years, women's employability (54%) overtook men's (51.5%), and hiring intent for FY26-27 rose to 40% from 29%.",
+        "implications": "A non-Western data point for capability builders: as WEF projects an 85-million global skilled-labor shortfall by 2030, India's report frames itself as a surplus-talent exporter — worth watching for organizations building global delivery or offshore capability strategies.",
+        "tags": ["skills development", "macro signals"]
+      }
+    ]
+  },
+  {
     "date": "2026-07-23",
     "stories": [
       {

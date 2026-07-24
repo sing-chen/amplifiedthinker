@@ -513,6 +513,20 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-07-24-0",
+    "type": "news",
+    "title": "OECD: \"Skills in the AI Age\" (AI Papers No. 60)",
+    "description": "New OECD analysis finds AI adoption among OECD-country firms nearly tripled from ~7% to ~20% of businesses between 2021 and 2025, but workers with advanced AI capabilities remain just ~1% of the workforce. Larger firms and startups are pulling ahead; SMEs are held back by cost, infrastructure, and skills shortages, risking a widening two-tier labor market.",
+    "url": "news.html?story=2026-07-24-0"
+  },
+  {
+    "id": "news-2026-07-24-1",
+    "type": "news",
+    "title": "India Skills Report 2026 — employability climbs, women surpass men",
+    "description": "India's national employability score rose to 56.35% (from 54.81% in 2025, up from 46% in 2020), based on Global Employability Test results from over 100,000 candidates. For the first time in five years, women's employability (54%) overtook men's (51.5%), and hiring intent for FY26-27 rose to 40% from 29%.",
+    "url": "news.html?story=2026-07-24-1"
+  },
+  {
     "id": "news-2026-07-23-0",
     "type": "news",
     "title": "Amazon Cuts Jobs in Its Artificial General Intelligence Unit",
