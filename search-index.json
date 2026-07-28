@@ -513,6 +513,55 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-07-27-0",
+    "type": "news",
+    "title": "AI Adoption Is Outpacing Leadership Readiness, ManpowerGroup Research Finds",
+    "description": "Only 3% of organizations say their leaders are highly prepared to manage AI-enabled ways of working, even as 78% report employee anxiety about job displacement. The strongest productivity gains come from human-AI collaboration (34%) rather than full automation (8%), suggesting the bottleneck has shifted from technology deployment to leadership capability and trust.",
+    "url": "news.html?story=2026-07-27-0"
+  },
+  {
+    "id": "news-2026-07-27-1",
+    "type": "news",
+    "title": "Nearly Half of U.S. Workers Are Staying Put Out of Fear, Not Loyalty — and AI Anxiety Is Driving a Disengagement Spiral",
+    "description": "47% of workers cite job-market or employment-prospect fears as a reason for staying, versus 45% staying by genuine choice. Fear-driven \"stayers\" default to minimal effort (only 30% go beyond assigned tasks) versus voluntary stayers (49% discretionary effort), and workers who fear automation are twice as likely to believe extra effort is futile.",
+    "url": "news.html?story=2026-07-27-1"
+  },
+  {
+    "id": "news-2026-07-27-2",
+    "type": "news",
+    "title": "AI Automation Is Freezing Entry-Level Hiring, Building Long-Term \"Capability Debt\"",
+    "description": "A new Gartner survey of 110 HR heads finds 22% of CHROs report business leaders have stopped hiring for entry-level positions due to automated task execution, even though only 20% of the 95% of organizations that deployed AI tools in the past year report significant or transformational value. McKinsey frames the same trend as mounting \"capability debt\": a 2025 survey found 51% of organizations say generative AI is reducing their need for entry-level roles, widening the gap between the leadership judgment companies will need and the shrinking early-career pipeline meant to build it.",
+    "url": "news.html?story=2026-07-27-2"
+  },
+  {
+    "id": "news-2026-07-27-3",
+    "type": "news",
+    "title": "The Rise of the \"Agent Manager\" and the Re-Engineering of Middle Management",
+    "description": "McKinsey's latest organizational analysis tracks a fundamental transformation in middle management as autonomous virtual agents absorb daily administrative tracking and task assignment. Successful enterprises are shifting management profiles from supervisory coordinators to \"Agent Managers\" — leaders who orchestrate hybrid human-agent teams, curate creative output, and enforce ethical guardrails.",
+    "url": "news.html?story=2026-07-27-3"
+  },
+  {
+    "id": "news-2026-07-27-4",
+    "type": "news",
+    "title": "HR's Dual Mandate and the $1-to-$5 Investment Rule",
+    "description": "McKinsey finds that while 88% of corporations deploy automated systems in at least one business function, only 39% report material EBIT contributions. The research establishes a strict capital allocation benchmark: for every $1 spent on technology infrastructure, organizations must invest $5 in process redesign, capability building, and human-system integration.",
+    "url": "news.html?story=2026-07-27-4"
+  },
+  {
+    "id": "news-2026-07-27-5",
+    "type": "news",
+    "title": "OECD Employment Outlook 2026: Geographic Disparities Widen as AI and Trade Reshape Local Labor Markets",
+    "description": "The OECD's flagship annual report finds employment-rate gaps exceeding 20 percentage points between small regions within the same member country, with AI and trade shocks reshaping local labor markets unevenly — some regions lose manufacturing jobs while others gain service-sector work. Real wage growth across OECD economies slowed to 2.2% in Q1 2026, down from 2.7% a year earlier.",
+    "url": "news.html?story=2026-07-27-5"
+  },
+  {
+    "id": "news-2026-07-27-6",
+    "type": "news",
+    "title": "Upwork's Future Workforce Index 2026: Share of Independent Professionals Jumps as AI Raises the Premium on Judgment",
+    "description": "Upwork's second annual index, surveying 2,400 U.S.-based skilled knowledge workers, found the share identifying as independent professionals jumped from 28% to 38% in one year. The report frames this as AI commoditizing routine execution while raising the market value of judgment-driven, expertise-based work.",
+    "url": "news.html?story=2026-07-27-6"
+  },
+  {
     "id": "news-2026-07-24-0",
     "type": "news",
     "title": "OECD: \"Skills in the AI Age\" (AI Papers No. 60)",

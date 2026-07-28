@@ -1,5 +1,67 @@
 [
   {
+    "date": "2026-07-27",
+    "stories": [
+      {
+        "title": "AI Adoption Is Outpacing Leadership Readiness, ManpowerGroup Research Finds",
+        "source": "ManpowerGroup Talent Solutions",
+        "url": "https://www.mpgtalentsolutions.com/the-new-talent-equation",
+        "summary": "Only 3% of organizations say their leaders are highly prepared to manage AI-enabled ways of working, even as 78% report employee anxiety about job displacement. The strongest productivity gains come from human-AI collaboration (34%) rather than full automation (8%), suggesting the bottleneck has shifted from technology deployment to leadership capability and trust.",
+        "implications": "For organizational leaders, the AI transformation ceiling is now a people-capability ceiling, not a technology one — leadership development budgets are likely underweighted relative to AI tooling spend.",
+        "tags": ["leadership and culture", "research and insights"]
+      },
+      {
+        "title": "Nearly Half of U.S. Workers Are Staying Put Out of Fear, Not Loyalty — and AI Anxiety Is Driving a Disengagement Spiral",
+        "source": "Founder Reports",
+        "url": "https://founderreports.com/employee-engagement-report/",
+        "summary": "47% of workers cite job-market or employment-prospect fears as a reason for staying, versus 45% staying by genuine choice. Fear-driven \"stayers\" default to minimal effort (only 30% go beyond assigned tasks) versus voluntary stayers (49% discretionary effort), and workers who fear automation are twice as likely to believe extra effort is futile.",
+        "implications": "Retention metrics alone are masking a quality-of-engagement problem — leaders should treat \"why they're staying\" as a leading indicator distinct from headline retention rates.",
+        "tags": ["macro signals"]
+      },
+      {
+        "title": "AI Automation Is Freezing Entry-Level Hiring, Building Long-Term \"Capability Debt\"",
+        "source": "Gartner; McKinsey & Company",
+        "url": "https://www.gartner.com/en/newsroom/press-releases/2026-7-27-gartner-survey-finds-ai-automation-is-reducing-some-entry-level-hiring-at-nearly-one-quarter-of-organizations",
+        "summary": "A new Gartner survey of 110 HR heads finds 22% of CHROs report business leaders have stopped hiring for entry-level positions due to automated task execution, even though only 20% of the 95% of organizations that deployed AI tools in the past year report significant or transformational value. McKinsey frames the same trend as mounting \"capability debt\": a 2025 survey found 51% of organizations say generative AI is reducing their need for entry-level roles, widening the gap between the leadership judgment companies will need and the shrinking early-career pipeline meant to build it.",
+        "implications": "Capability builders must urgently redesign early-career roles around higher-value judgment work rather than routine execution — cutting entry-level pipelines for short-term efficiency gains risks a long-term leadership void.",
+        "tags": ["workforce transformation", "skills development", "leadership and culture", "research and insights"],
+        "pinned": true
+      },
+      {
+        "title": "The Rise of the \"Agent Manager\" and the Re-Engineering of Middle Management",
+        "source": "McKinsey & Company",
+        "url": "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights",
+        "summary": "McKinsey's latest organizational analysis tracks a fundamental transformation in middle management as autonomous virtual agents absorb daily administrative tracking and task assignment. Successful enterprises are shifting management profiles from supervisory coordinators to \"Agent Managers\" — leaders who orchestrate hybrid human-agent teams, curate creative output, and enforce ethical guardrails.",
+        "implications": "Organizational leaders must redesign middle-management career tracks away from administrative supervision toward human-agent orchestration, ethical auditing, and capability building.",
+        "tags": ["leadership and culture", "workforce transformation", "research and insights"]
+      },
+      {
+        "title": "HR's Dual Mandate and the $1-to-$5 Investment Rule",
+        "source": "McKinsey & Company",
+        "url": "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/the-organization-blog/hrs-dual-mandate-in-the-ai-era",
+        "summary": "McKinsey finds that while 88% of corporations deploy automated systems in at least one business function, only 39% report material EBIT contributions. The research establishes a strict capital allocation benchmark: for every $1 spent on technology infrastructure, organizations must invest $5 in process redesign, capability building, and human-system integration.",
+        "implications": "Enterprise transformation leads must treat workflow simplification and human-capability development as primary capital expenditures rather than secondary administrative costs.",
+        "tags": ["workforce transformation", "leadership and culture", "research and insights"]
+      },
+      {
+        "title": "OECD Employment Outlook 2026: Geographic Disparities Widen as AI and Trade Reshape Local Labor Markets",
+        "source": "OECD",
+        "url": "https://www.oecd.org/en/publications/oecd-employment-outlook-2026_7e710f54-en.html",
+        "summary": "The OECD's flagship annual report finds employment-rate gaps exceeding 20 percentage points between small regions within the same member country, with AI and trade shocks reshaping local labor markets unevenly — some regions lose manufacturing jobs while others gain service-sector work. Real wage growth across OECD economies slowed to 2.2% in Q1 2026, down from 2.7% a year earlier.",
+        "implications": "Organizational leaders operating across multiple regions should expect divergent local talent availability and wage pressure rather than a uniform national picture.",
+        "tags": ["macro signals", "research and insights", "workforce transformation"]
+      },
+      {
+        "title": "Upwork's Future Workforce Index 2026: Share of Independent Professionals Jumps as AI Raises the Premium on Judgment",
+        "source": "Upwork",
+        "url": "https://www.globenewswire.com/news-release/2026/07/14/3326964/0/en/Upwork-s-Future-Workforce-Index-2026-How-AI-is-Redefining-the-Value-of-Work-as-Skilled-Freelancing-Accelerates.html",
+        "summary": "Upwork's second annual index, surveying 2,400 U.S.-based skilled knowledge workers, found the share identifying as independent professionals jumped from 28% to 38% in one year. The report frames this as AI commoditizing routine execution while raising the market value of judgment-driven, expertise-based work.",
+        "implications": "Organizational leaders may need to compete harder to retain top judgment-heavy talent as AI lowers the cost of going independent for skilled professionals; note the source has a commercial interest in this narrative.",
+        "tags": ["workforce transformation", "macro signals"]
+      }
+    ]
+  },
+  {
     "date": "2026-07-24",
     "stories": [
       {
@@ -151,8 +213,7 @@
         "url": "https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/building-expertise-in-the-age-of-ai-who-trains-the-next-generation",
         "summary": "McKinsey's new organizational analysis warns that as enterprises automate entry-level data processing and routine drafting, they are inadvertently dismantling their internal talent pipelines. Because junior professionals no longer execute the basic foundational work that historically built context and professional intuition, they are hitting an abrupt expertise cliff when moving into mid-level strategy positions. To resolve this, leaders must restructure work profiles to blend knowledge management, direct coaching loops, and simulation-based exercises directly into everyday workflows.",
         "implications": "Capability builders must intentionally design structured practice environments and formal human-led feedback sessions to artificially recreate the implicit learning loops lost to software systems.",
-        "tags": ["skills development", "workforce transformation", "leadership and culture", "research and insights"],
-        "pinned": true
+        "tags": ["skills development", "workforce transformation", "leadership and culture", "research and insights"]
       }
     ]
   },
