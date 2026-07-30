@@ -1,5 +1,26 @@
 [
   {
+    "date": "2026-07-30",
+    "stories": [
+      {
+        "title": "Half of Europe's Job Postings Are Shrinking Even as AI Roles Surge",
+        "source": "Indeed Hiring Lab",
+        "url": "https://www.hiringlab.org/uk/blog/2026/07/27/july-2026-european-labour-market-chartbook/",
+        "summary": "Indeed's Job Postings Index for the Euro Area stood at 105 as of July 17 — nearly 10% below where it started the year — with broad-based softening across countries, even as AI-related postings continue to grow on a separate, upward trajectory. Spain is a notable outlier, with a national index of 145 versus the euro-area average.",
+        "implications": "European employers are bifurcating hiring — cooling broadly while still competing hard for AI-adjacent talent — a signal for org leaders to reassess where headcount investment is actually flowing.",
+        "tags": ["macro signals", "workforce transformation"]
+      },
+      {
+        "title": "\"Job Hugging\" Is Cracking: Engagement Data Shows Half of Stayers Don't Want to Be There",
+        "source": "Inc.",
+        "url": "https://www.inc.com/bruce-crumley/the-job-hugging-trend-is-cracking-why-half-of-employees-are-now-looking-to-leave/91373100",
+        "summary": "While 77% of workers say they intend to stay with their current employer, only 18% say it's because they genuinely want to — 56% cite financial pressure and job-market uncertainty. Researchers describe a \"quiet cracking\" pattern: employees mentally checking out while remaining in place, which correlates with lower engagement and productivity risk.",
+        "implications": "Retention metrics that look healthy (low turnover) may be masking a disengagement problem — leaders should pair stay-rate data with engagement/intent-to-stay-vs-want-to-stay splits.",
+        "tags": ["macro signals"]
+      }
+    ]
+  },
+  {
     "date": "2026-07-27",
     "stories": [
       {

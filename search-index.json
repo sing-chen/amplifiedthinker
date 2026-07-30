@@ -513,6 +513,20 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-07-30-0",
+    "type": "news",
+    "title": "Half of Europe's Job Postings Are Shrinking Even as AI Roles Surge",
+    "description": "Indeed's Job Postings Index for the Euro Area stood at 105 as of July 17 — nearly 10% below where it started the year — with broad-based softening across countries, even as AI-related postings continue to grow on a separate, upward trajectory. Spain is a notable outlier, with a national index of 145 versus the euro-area average.",
+    "url": "news.html?story=2026-07-30-0"
+  },
+  {
+    "id": "news-2026-07-30-1",
+    "type": "news",
+    "title": "\"Job Hugging\" Is Cracking: Engagement Data Shows Half of Stayers Don't Want to Be There",
+    "description": "While 77% of workers say they intend to stay with their current employer, only 18% say it's because they genuinely want to — 56% cite financial pressure and job-market uncertainty. Researchers describe a \"quiet cracking\" pattern: employees mentally checking out while remaining in place, which correlates with lower engagement and productivity risk.",
+    "url": "news.html?story=2026-07-30-1"
+  },
+  {
     "id": "news-2026-07-27-0",
     "type": "news",
     "title": "AI Adoption Is Outpacing Leadership Readiness, ManpowerGroup Research Finds",
