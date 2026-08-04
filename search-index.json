@@ -513,6 +513,34 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-08-04-0",
+    "type": "news",
+    "title": "Managers Say They Don't Feel Ready to Lead an AI-Fluent Workforce",
+    "description": "An Indeed/YouGov survey finds 43% of managers feel poorly or not-at-all equipped to lead AI-fluent employees, while 52% of workers say they aren't getting the AI training they need. Employer expectations for AI use are running two-to-three times ahead of worker comfort levels, and 31% of employers expect AI fluency to be required for nearly every job within two years.",
+    "url": "news.html?story=2026-08-04-0"
+  },
+  {
+    "id": "news-2026-08-04-1",
+    "type": "news",
+    "title": "Managers Are Using AI to Make Layoff and Firing Decisions — With Little Oversight",
+    "description": "59% of surveyed managers report using AI to help decide who gets laid off, and 58% for firing decisions — most commonly weighing performance, attendance, and cost. Concerningly, 14% say their AI tools factor in age (a protected class), 38% have received no ethical-AI training, and 58% can't confirm their company tested the tools for bias.",
+    "url": "news.html?story=2026-08-04-1"
+  },
+  {
+    "id": "news-2026-08-04-2",
+    "type": "news",
+    "title": "Bipartisan \"Federal Jobs for STARs Act\" Would Cut Degree Requirements Across Federal Hiring",
+    "description": "Reps. Bynum (D-OR), Krishnamoorthi (D-IL), Mackenzie (R-PA), and McGuire (R-VA) introduced legislation directing federal agencies to de-emphasize bachelor's degree requirements where not essential, establish OPM-recognized skills-based qualifications for military/apprenticeship/technical-education backgrounds, and create a dedicated USAJobs portal for non-degree candidates.",
+    "url": "news.html?story=2026-08-04-2"
+  },
+  {
+    "id": "news-2026-08-04-3",
+    "type": "news",
+    "title": "Singapore Employers Pay a Premium for AI Literacy and Critical Thinking Despite Cooling Hiring",
+    "description": "Singapore's Net Employment Outlook fell to +13% for Q3 2026 — its lowest since Q4 2021 — yet 66% of employers say they'll pay more for AI literacy and for critical thinking/problem-solving, and 64% for leadership and social influence. Hiring is becoming more selective, with investment concentrated on high-impact skills rather than headcount growth.",
+    "url": "news.html?story=2026-08-04-3"
+  },
+  {
     "id": "news-2026-07-30-0",
     "type": "news",
     "title": "Half of Europe's Job Postings Are Shrinking Even as AI Roles Surge",

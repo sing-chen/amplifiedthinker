@@ -1,5 +1,42 @@
 [
   {
+    "date": "2026-08-04",
+    "stories": [
+      {
+        "title": "Managers Say They Don't Feel Ready to Lead an AI-Fluent Workforce",
+        "source": "HR Dive",
+        "url": "https://www.hrdive.com/news/managers-say-they-dont-feel-ready-to-lead-an-ai-fluent-workforce/826354/",
+        "summary": "An Indeed/YouGov survey finds 43% of managers feel poorly or not-at-all equipped to lead AI-fluent employees, while 52% of workers say they aren't getting the AI training they need. Employer expectations for AI use are running two-to-three times ahead of worker comfort levels, and 31% of employers expect AI fluency to be required for nearly every job within two years.",
+        "implications": "Organizations are outrunning their own change-management capacity — manager enablement, not just employee training, is becoming the binding constraint on AI adoption.",
+        "tags": ["skills development", "leadership and culture"]
+      },
+      {
+        "title": "Managers Are Using AI to Make Layoff and Firing Decisions — With Little Oversight",
+        "source": "HR Dive",
+        "url": "https://www.hrdive.com/news/managers-are-using-ai-to-make-layoff-decisions/826697/",
+        "summary": "59% of surveyed managers report using AI to help decide who gets laid off, and 58% for firing decisions — most commonly weighing performance, attendance, and cost. Concerningly, 14% say their AI tools factor in age (a protected class), 38% have received no ethical-AI training, and 58% can't confirm their company tested the tools for bias.",
+        "implications": "AI governance in HR decision-making is running well ahead of policy, training, and bias auditing — a clear legal and reputational exposure for organizational leaders.",
+        "tags": ["workforce transformation", "leadership and culture"]
+      },
+      {
+        "title": "Bipartisan \"Federal Jobs for STARs Act\" Would Cut Degree Requirements Across Federal Hiring",
+        "source": "MeriTalk",
+        "url": "https://www.meritalk.com/articles/bipartisan-bill-would-expand-skills-based-hiring-for-federal-jobs/",
+        "summary": "Reps. Bynum (D-OR), Krishnamoorthi (D-IL), Mackenzie (R-PA), and McGuire (R-VA) introduced legislation directing federal agencies to de-emphasize bachelor's degree requirements where not essential, establish OPM-recognized skills-based qualifications for military/apprenticeship/technical-education backgrounds, and create a dedicated USAJobs portal for non-degree candidates.",
+        "implications": "Skills-based hiring is moving from private-sector practice into codified federal policy, which could set a benchmark (and talent pool precedent) other public and private employers reference.",
+        "tags": ["skills development", "research and insights"]
+      },
+      {
+        "title": "Singapore Employers Pay a Premium for AI Literacy and Critical Thinking Despite Cooling Hiring",
+        "source": "ManpowerGroup Singapore",
+        "url": "https://www.manpower.com.sg/en/insights/blogs/2026/06/manpowergroup-employment-outlook-survey-q3-2026",
+        "summary": "Singapore's Net Employment Outlook fell to +13% for Q3 2026 — its lowest since Q4 2021 — yet 66% of employers say they'll pay more for AI literacy and for critical thinking/problem-solving, and 64% for leadership and social influence. Hiring is becoming more selective, with investment concentrated on high-impact skills rather than headcount growth.",
+        "implications": "A slowing APAC hiring market is coexisting with rising skills premiums — a signal that \"quality over quantity\" hiring, not retrenchment from skills investment, is the emerging pattern leaders should plan around.",
+        "tags": ["macro signals", "skills development"]
+      }
+    ]
+  },
+  {
     "date": "2026-07-30",
     "stories": [
       {
