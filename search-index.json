@@ -513,6 +513,41 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-08-06-0",
+    "type": "news",
+    "title": "Google's AI & Economy ATLAS Finds Workplace AI Use Is Augmentation, Not Automation",
+    "description": "Google's inaugural AI & Economy ATLAS report analyzed 15 million de-identified Gemini interactions across 150 countries, 800 occupations, and 4,000 tasks. It found AI touches 68% of occupations (~90% of US employment) but workers use it for only ~21% of core tasks on average, with just 3% of occupations hitting heavy-use thresholds and 29% showing no meaningful use at all.",
+    "url": "news.html?story=2026-08-06-0"
+  },
+  {
+    "id": "news-2026-08-06-1",
+    "type": "news",
+    "title": "Ford, IBM, and Commonwealth Bank of Australia Reverse AI-Driven Layoffs",
+    "description": "Ford is rehiring engineers after automated systems couldn't handle quality issues, CBA reversed customer-service cuts after an AI voice bot increased call volume, and IBM is tripling entry-level hiring after AI handled only 94% of routine HR requests. Industry data shows 32% of US hiring managers who cut a role for AI later rehired for it, and 55% of leaders who made AI-related redundancies now call those calls wrong.",
+    "url": "news.html?story=2026-08-06-1"
+  },
+  {
+    "id": "news-2026-08-06-2",
+    "type": "news",
+    "title": "The Elusiveness of Merit-Based Hiring",
+    "description": "Kyle Brink argues the common framing of DEI-versus-merit is a false dichotomy: true merit requires empirically validated selection practices, not the \"face validity\" most organizations rely on. He introduces the concept of a \"merit mirage\" — managers championing seemingly objective hiring criteria that have no demonstrated predictive power for job performance.",
+    "url": "news.html?story=2026-08-06-2"
+  },
+  {
+    "id": "news-2026-08-06-3",
+    "type": "news",
+    "title": "Three Ways Leading Manufacturers Are Preparing Their Workforce for AI",
+    "description": "Drawing on WEF's Global Lighthouse Network manufacturing sites, the piece profiles how leading factories are operationalizing the Forum's new Human-Machine Collaboration Framework (launched June 2026), which maps 80+ manufacturing and supply-chain jobs to show how tasks and skills evolve as autonomous systems spread. WEF estimates three in four industrial jobs will change substantially within a decade, requiring workers skilled in judgment, machine oversight, and governance rather than manual execution.",
+    "url": "news.html?story=2026-08-06-3"
+  },
+  {
+    "id": "news-2026-08-06-4",
+    "type": "news",
+    "title": "Asia Pacific Leads the World in AI Adoption — and Faces Its Steepest Talent Gap",
+    "description": "APAC leads globally in AI deployment (52% in technology management, 51% in portfolio optimization) even as 61% of leaders expect workforce growth. Yet 42% cite an AI skills gap as their primary constraint — the highest of any region — and only 15% have reached full AI optimization maturity.",
+    "url": "news.html?story=2026-08-06-4"
+  },
+  {
     "id": "news-2026-08-04-0",
     "type": "news",
     "title": "Managers Say They Don't Feel Ready to Lead an AI-Fluent Workforce",
