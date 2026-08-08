@@ -1,5 +1,42 @@
 [
   {
+    "date": "2026-08-08",
+    "stories": [
+      {
+        "title": "World Bank: AI Offers a Growth \"Lifeline\" to Developing Economies — But Only With the Right Investments",
+        "source": "World Bank Group",
+        "url": "https://www.worldbank.org/en/news/press-release/2026/08/04/ai-offers-lifeline-to-developing-economies-in-an-era-of-weak-growth",
+        "summary": "New flagship report finds only 4.5% of jobs in developing economies face automation risk, versus 14.2% in wealthy nations, while nearly 16% of jobs in emerging markets could see meaningful productivity gains from AI — arriving as developing economies post their weakest average growth in thirty years. The Bank frames AI as a conditional opportunity: gains depend on foundational investment in electricity, connectivity, data infrastructure, and workforce skills, or the technology risks deepening global inequality instead.",
+        "implications": "Emerging-market leaders and capability builders have a narrow window to pair AI adoption with infrastructure and skills investment before the productivity gap with wealthy nations hardens into a structural divide.",
+        "tags": ["macro signals", "research and insights"]
+      },
+      {
+        "title": "EU Begins Enforcing AI Transparency Rules, While Deferring Harder Employment-AI Obligations to 2027",
+        "source": "European Commission",
+        "url": "https://commission.europa.eu/news-and-media/news/safer-and-more-transparent-ai-2026-08-02_en",
+        "summary": "As of August 2, 2026, the EU began enforcing Article 50 transparency rules requiring disclosure when people interact with AI systems, AI-generated content, or emotion-recognition/biometric tools, with fines up to €15 million or 3% of global turnover. Separately, the Digital Omnibus (signed July 8, 2026) pushed full high-risk compliance for employment-related AI — recruitment, performance monitoring, termination decisions — from August 2026 to December 2027.",
+        "implications": "HR and legal teams face live transparency obligations for AI-enabled HR tools now, even though the harder compliance deadline for high-risk employment AI has been pushed out — a two-stage governance timeline worth planning for immediately rather than in 2027.",
+        "tags": ["macro signals", "workforce transformation"]
+      },
+      {
+        "title": "SHRM's Midyear Check on 2026 HR Predictions: Upskilling and AI Recruiting Trends Tested Against Reality",
+        "source": "SHRM",
+        "url": "https://www.shrm.org/topics-tools/tracking-shrms-2026-workplace-predictions-midyear-review",
+        "summary": "SHRM's midyear review tracks how its seven predicted 2026 HR trends — including AI-driven recruiting, real-time upskilling, and shifting inclusion & diversity strategy — are actually playing out. Related SHRM data shows employer AI-tool subscriptions climbing to 33% of organizations (up 17 points from 2025), with skills-based, data-driven talent strategy continuing to outpace credential-based hiring.",
+        "implications": "Capability builders should use this as a checkpoint to compare their own upskilling and AI-adoption pace against the trend curve HR leaders predicted in January, correcting course before year-end planning locks in.",
+        "tags": ["skills development", "workforce transformation"]
+      },
+      {
+        "title": "New Frontline Data: Role Clarity Is High, But Managers Are Being Set Up to Fail",
+        "source": "Forbes Business Council",
+        "url": "https://www.forbes.com/councils/forbesbusinesscouncil/2026/08/03/frontline-execution-at-the-last-mile-closing-the-enablement-gap-between-leaders-and-workers/",
+        "summary": "A survey of 1,594 frontline workers and managers in retail, grocery, and hospitality finds workers rate role clarity highly (4.68/5), yet 46–52% of managers report new initiatives launch without adequate support, and only 23% of frontline workers believe senior leaders understand day-to-day workplace reality. Manager span of control widened from 10.9 to 12.1 direct reports over the past year, compounding the strain.",
+        "implications": "For organizations with large frontline workforces, the bottleneck to transformation is under-resourced middle management, not worker skill or clarity — a structural fix, not a training fix.",
+        "tags": ["leadership and culture", "workforce transformation"]
+      }
+    ]
+  },
+  {
     "date": "2026-08-06",
     "stories": [
       {

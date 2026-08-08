@@ -513,6 +513,34 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-08-08-0",
+    "type": "news",
+    "title": "World Bank: AI Offers a Growth \"Lifeline\" to Developing Economies — But Only With the Right Investments",
+    "description": "New flagship report finds only 4.5% of jobs in developing economies face automation risk, versus 14.2% in wealthy nations, while nearly 16% of jobs in emerging markets could see meaningful productivity gains from AI — arriving as developing economies post their weakest average growth in thirty years. The Bank frames AI as a conditional opportunity: gains depend on foundational investment in electricity, connectivity, data infrastructure, and workforce skills, or the technology risks deepening global inequality instead.",
+    "url": "news.html?story=2026-08-08-0"
+  },
+  {
+    "id": "news-2026-08-08-1",
+    "type": "news",
+    "title": "EU Begins Enforcing AI Transparency Rules, While Deferring Harder Employment-AI Obligations to 2027",
+    "description": "As of August 2, 2026, the EU began enforcing Article 50 transparency rules requiring disclosure when people interact with AI systems, AI-generated content, or emotion-recognition/biometric tools, with fines up to €15 million or 3% of global turnover. Separately, the Digital Omnibus (signed July 8, 2026) pushed full high-risk compliance for employment-related AI — recruitment, performance monitoring, termination decisions — from August 2026 to December 2027.",
+    "url": "news.html?story=2026-08-08-1"
+  },
+  {
+    "id": "news-2026-08-08-2",
+    "type": "news",
+    "title": "SHRM's Midyear Check on 2026 HR Predictions: Upskilling and AI Recruiting Trends Tested Against Reality",
+    "description": "SHRM's midyear review tracks how its seven predicted 2026 HR trends — including AI-driven recruiting, real-time upskilling, and shifting inclusion & diversity strategy — are actually playing out. Related SHRM data shows employer AI-tool subscriptions climbing to 33% of organizations (up 17 points from 2025), with skills-based, data-driven talent strategy continuing to outpace credential-based hiring.",
+    "url": "news.html?story=2026-08-08-2"
+  },
+  {
+    "id": "news-2026-08-08-3",
+    "type": "news",
+    "title": "New Frontline Data: Role Clarity Is High, But Managers Are Being Set Up to Fail",
+    "description": "A survey of 1,594 frontline workers and managers in retail, grocery, and hospitality finds workers rate role clarity highly (4.68/5), yet 46–52% of managers report new initiatives launch without adequate support, and only 23% of frontline workers believe senior leaders understand day-to-day workplace reality. Manager span of control widened from 10.9 to 12.1 direct reports over the past year, compounding the strain.",
+    "url": "news.html?story=2026-08-08-3"
+  },
+  {
     "id": "news-2026-08-06-0",
     "type": "news",
     "title": "Google's AI & Economy ATLAS Finds Workplace AI Use Is Augmentation, Not Automation",
