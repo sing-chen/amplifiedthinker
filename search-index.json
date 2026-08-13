@@ -591,6 +591,27 @@
     "url": "my-people.html?person=cal-newport"
   },
   {
+    "id": "news-2026-08-13-0",
+    "type": "news",
+    "title": "Oracle Prepares New Round of AI-Linked Layoffs Ahead of Fiscal Q2",
+    "description": "Oracle has drawn up plans for a new round of job cuts, with managers asked to submit affected-employee lists ahead of its fiscal Q2 opening September 1. This follows a 13% (21,000-person) headcount decline over the prior fiscal year, which the company partly attributes to AI adoption and deployment as it borrows heavily to fund AI data-center buildout.",
+    "url": "news.html?story=2026-08-13-0"
+  },
+  {
+    "id": "news-2026-08-13-1",
+    "type": "news",
+    "title": "Tech and Finance Sector Job Losses Tied to AI Persist at ~28,000/Month",
+    "description": "Payroll declines in financial-activities and information sectors — where AI adoption has been fastest — have accelerated through 2026, averaging 28,000 job losses per month based on government data. Bloomberg's August 7 segment tied this directly to July's unexpected national payroll contraction.",
+    "url": "news.html?story=2026-08-13-1"
+  },
+  {
+    "id": "news-2026-08-10-0",
+    "type": "news",
+    "title": "Kyndryl's 2026 People Readiness Report: Workforce AI-Readiness Fell Even as Adoption Surged",
+    "description": "In a global study of 1,100 senior business and technology leaders across eight countries, only 23% say their workforce is ready for AI — down 6 points from 2025 — even as AI deployment climbed to 57% of enterprises. Leaders rate IT infrastructure readiness far higher (35%) than workforce readiness, governance/compliance, and culture (23–25%), and only 11% of enterprises say they're hitting their AI goals.",
+    "url": "news.html?story=2026-08-10-0"
+  },
+  {
     "id": "news-2026-08-08-0",
     "type": "news",
     "title": "World Bank: AI Offers a Growth \"Lifeline\" to Developing Economies — But Only With the Right Investments",

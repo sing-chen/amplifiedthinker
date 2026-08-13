@@ -1,5 +1,39 @@
 [
   {
+    "date": "2026-08-13",
+    "stories": [
+      {
+        "title": "Oracle Prepares New Round of AI-Linked Layoffs Ahead of Fiscal Q2",
+        "source": "Business Insider",
+        "url": "https://finance.yahoo.com/technology/ai/articles/oracle-planning-round-layoffs-august-134527039.html",
+        "summary": "Oracle has drawn up plans for a new round of job cuts, with managers asked to submit affected-employee lists ahead of its fiscal Q2 opening September 1. This follows a 13% (21,000-person) headcount decline over the prior fiscal year, which the company partly attributes to AI adoption and deployment as it borrows heavily to fund AI data-center buildout.",
+        "implications": "A concrete case study in how AI capex is being funded partly through workforce reduction rather than reinvestment — a pattern worth tracking as a leading indicator for other capital-intensive tech firms.",
+        "tags": ["workforce transformation", "macro signals"]
+      },
+      {
+        "title": "Tech and Finance Sector Job Losses Tied to AI Persist at ~28,000/Month",
+        "source": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-07-01/tech-and-finance-sectors-losing-28-000-jobs-monthly-show-ai-impact-on-labor",
+        "summary": "Payroll declines in financial-activities and information sectors — where AI adoption has been fastest — have accelerated through 2026, averaging 28,000 job losses per month based on government data. Bloomberg's August 7 segment tied this directly to July's unexpected national payroll contraction.",
+        "implications": "Sector-specific AI displacement is now visible in monthly government labor data, not just anecdote — a signal that organizational leaders should start distinguishing AI-driven restructuring from cyclical hiring softness in workforce planning.",
+        "tags": ["macro signals", "workforce transformation"]
+      }
+    ]
+  },
+  {
+    "date": "2026-08-10",
+    "stories": [
+      {
+        "title": "Kyndryl's 2026 People Readiness Report: Workforce AI-Readiness Fell Even as Adoption Surged",
+        "source": "Kyndryl",
+        "url": "https://www.kyndryl.com/us/en/insights/people-readiness-report-2026",
+        "summary": "In a global study of 1,100 senior business and technology leaders across eight countries, only 23% say their workforce is ready for AI — down 6 points from 2025 — even as AI deployment climbed to 57% of enterprises. Leaders rate IT infrastructure readiness far higher (35%) than workforce readiness, governance/compliance, and culture (23–25%), and only 11% of enterprises say they're hitting their AI goals.",
+        "implications": "The bottleneck on AI ROI is shifting from technical deployment to human and governance readiness — capability builders should prioritize readiness diagnostics over further tool rollout.",
+        "tags": ["workforce transformation", "research and insights"]
+      }
+    ]
+  },
+  {
     "date": "2026-08-08",
     "stories": [
       {
