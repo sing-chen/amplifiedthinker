@@ -872,9 +872,9 @@
       </div>
     </div>
 
-    <!-- STRATEGIC SYNTHESIS & DECISION MAKING -->
-    <div class="scard cs" id="s-strategic" data-categories="cognitive" role="listitem">
-      <div class="sheader">
+    <!-- STRATEGIC SYNTHESIS & DECISION MAKING — available -->
+    <div class="scard active" id="s-strategic" data-categories="cognitive" role="listitem">
+      <div class="sheader" onclick="toggleSkill('s-strategic')" aria-expanded="false" aria-controls="sb-strategic" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-strategic')">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -885,7 +885,38 @@
             <div class="sname">Strategic Synthesis &amp; Decision-Making</div>
           </div>
           <div class="ssum"><span class="ssum-desc">Connect disparate information into a coherent picture and choose a path forward under uncertainty. </span><em>"What does this all mean — and what do we do?"</em></div>
-          <div class="sstatus ss-soon">Coming soon</div>
+          <div class="sstatus ss-avail">Available Now</div>
+        </div>
+        <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="sbody" id="sb-strategic">
+        <div class="sdef">
+          <div class="sdef-inner">
+            <div class="sthumb">
+              <img src="skills/strategic-synthesis/video-thumbnail.png" alt="Strategic Synthesis &amp; Decision-Making skill thumbnail" width="140" height="79" loading="lazy">
+            </div>
+            <div class="sdtext">"Strategic Synthesis &amp; Decision-Making is the practice of converging incomplete, conflicting inputs into a single defensible direction — by naming the trade-off explicitly, stress-testing the choice against plausible futures, and framing it so others can act on it."</div>
+          </div>
+          <div class="swhat">
+            <p>Without it, gathering input becomes a substitute for choosing. The decision still gets made — by the loudest voice, the nearest deadline, or the option nobody had standing to block. The trade-off gets paid either way; it just never gets named, so nobody can defend the choice a quarter later.</p>
+            <p>The skill produces a choice you can stand behind — with the trade-off stated out loud, the assumptions marked as assumptions, and the reasoning compressed into something a decision-maker can act on without reading the analysis behind it. The output isn't a better analysis; it's a decision other people can move on.</p>
+          </div>
+        </div>
+        <div class="slaunch">
+          <div class="lcards">
+            <a href="skills/strategic-synthesis/primer.html" class="lcard" aria-label="Open Strategic Synthesis and Decision-Making Primer">
+              <div class="lctype">Skill Primer</div>
+              <div class="lcdesc">Short skill introduction. Core concepts, mental models, and a real-world scenario showing the skill in practice.</div>
+              <div class="lctime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~10 minutes</div>
+              <div class="lccta">Open primer<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+            </a>
+            <a href="skills/strategic-synthesis/plan.html" class="lcard primary" aria-label="Open Strategic Synthesis and Decision-Making Full Learning Plan">
+              <div class="lctype">Full Learning Plan</div>
+              <div class="lcdesc">First principles, mental models, behavioural indicators, and curated resources, plus a 5-day habit builder (~15 min/day).</div>
+              <div class="lctime"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>~60–75 min</div>
+              <div class="lccta">Open full plan<span class="lcc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div>
+            </a>
+          </div>
         </div>
       </div>
     </div>
