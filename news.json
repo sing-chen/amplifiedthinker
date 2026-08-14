@@ -1,5 +1,27 @@
 [
   {
+    "date": "2026-08-14",
+    "stories": [
+      {
+        "title": "AI Employment Gap for Young Workers Widens to 19%",
+        "source": "Stanford Digital Economy Lab",
+        "url": "https://digitaleconomy.stanford.edu/news/canariesaug26/",
+        "summary": "New ADP payroll analysis (Nov 2022–Jun 2026) finds employment for 22–25-year-olds in highly AI-exposed occupations now runs ~19% below where it would be had it tracked less-exposed peers — up from 15% a year ago. The adjustment is happening through reduced entry-level hiring, not layoffs, and the researchers stress there's no evidence of broad, economy-wide displacement.",
+        "implications": "Capability builders and hiring managers should treat entry-level pipelines in codified-knowledge occupations as the leading edge of AI's labor effect — the risk shows up as a hiring freeze on juniors, not a layoff wave.",
+        "tags": ["skills development", "macro signals", "research and insights"]
+      },
+      {
+        "title": "Buried in OpenAI's Own Research: No Correlation Between AI Use and Revenue per Employee",
+        "source": "Fortune",
+        "url": "https://fortune.com/2026/08/13/buried-in-openais-latest-research-no-correlation-between-ai-use-and-revenue-per-employee/",
+        "summary": "A 69-page OpenAI-co-authored study (with Columbia Business School and Wharton researchers) analyzing enterprise ChatGPT usage from Oct 2025–Mar 2026 finds token usage per employee is not meaningfully associated with revenue per employee once controls are applied. Senior leaders use AI least intensively even as they drive adoption decisions; early-career employees use it most.",
+        "implications": "Leaders relying on adoption/usage metrics as a proxy for AI ROI are measuring the wrong thing; the paper suggests real value capture depends on empowering frontline usage rather than top-down mandates.",
+        "tags": ["workforce transformation", "research and insights"],
+        "pinned": true
+      }
+    ]
+  },
+  {
     "date": "2026-08-13",
     "stories": [
       {
@@ -198,8 +220,7 @@
         "url": "https://www.gartner.com/en/newsroom/press-releases/2026-7-27-gartner-survey-finds-ai-automation-is-reducing-some-entry-level-hiring-at-nearly-one-quarter-of-organizations",
         "summary": "A new Gartner survey of 110 HR heads finds 22% of CHROs report business leaders have stopped hiring for entry-level positions due to automated task execution, even though only 20% of the 95% of organizations that deployed AI tools in the past year report significant or transformational value. McKinsey frames the same trend as mounting \"capability debt\": a 2025 survey found 51% of organizations say generative AI is reducing their need for entry-level roles, widening the gap between the leadership judgment companies will need and the shrinking early-career pipeline meant to build it.",
         "implications": "Capability builders must urgently redesign early-career roles around higher-value judgment work rather than routine execution — cutting entry-level pipelines for short-term efficiency gains risks a long-term leadership void.",
-        "tags": ["workforce transformation", "skills development", "leadership and culture", "research and insights"],
-        "pinned": true
+        "tags": ["workforce transformation", "skills development", "leadership and culture", "research and insights"]
       },
       {
         "title": "The Rise of the \"Agent Manager\" and the Re-Engineering of Middle Management",
