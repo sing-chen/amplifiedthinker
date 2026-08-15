@@ -2,8 +2,12 @@
 
 **Status:** Agreed, not yet set up · **Date:** 2026-08-15
 
-Companion to [supabase-integration-plan.md](supabase-integration-plan.md). That document covers
-*what* gets built; this one covers *how work happens* while building it.
+Companion documents:
+
+- [supabase-integration-plan.md](supabase-integration-plan.md) — *what* gets built: architecture, data model, decisions.
+- [implementation-sequence.md](implementation-sequence.md) — *in what order*, and why.
+
+This one covers *how work happens* while building it.
 
 ---
 

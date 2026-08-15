@@ -6,8 +6,10 @@ Supersedes the original handoff brief (`supabase-integration-brief.md`), which w
 without access to this repo. Corrections to it are in the appendix, since several of its
 conclusions were right and worth keeping.
 
-See [dev-workflow.md](dev-workflow.md) for how work happens while building this — branches,
-preview deployments, and per-environment configuration.
+Companion documents:
+
+- [implementation-sequence.md](implementation-sequence.md) — the phased activity breakdown with rationale for each step. **The detailed version of the Phases section below.**
+- [dev-workflow.md](dev-workflow.md) — branches, preview deployments, and per-environment configuration.
 
 ---
 
