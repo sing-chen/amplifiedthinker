@@ -1,0 +1,266 @@
+# Amplified Thinker: Supabase, Auth, and Admin Portal
+
+**Status:** Baselined, not started · **Date:** 2026-08-15
+
+Supersedes the original handoff brief (`supabase-integration-brief.md`), which was written
+without access to this repo. Corrections to it are in the appendix, since several of its
+conclusions were right and worth keeping.
+
+---
+
+## Context
+
+The site is 16 hand-written HTML pages on Vercel with no build step. All user state lives in `localStorage`, which is per-browser and per-device — so progress through a learning plan on a laptop is invisible on a phone. That's the problem driving this work.
+
+The goal is a two-tier site:
+
+- **Guests** get all content, exactly as today, with no saved state.
+- **Signed-in users** get device-agnostic progress, completion tracking with start and finish dates, favourited and pinned news, notes on news stories and courses, and dashboards over their own data.
+
+Behind that sits a third tier: an **admin portal** so blog and news content is managed through the UI rather than by editing HTML files, running SQL, or hand-maintaining JSON.
+
+### Decisions taken
+
+| Decision | Choice |
+|---|---|
+| Architecture | **New surfaces in Astro; the 16 existing pages stay untouched in `public/`.** Retrofit later, one page at a time. |
+| Blog rendering | **Rendered from the DB on request.** Publish is instant. |
+| News content | **Moves into the DB** with immutable slugs, managed via admin UI. Replaces the `add-news` skill. |
+| Existing localStorage progress | **Offer a one-time import** on first login, then clear it. Theme stays local. |
+| Admin portal scope | **Blog + site config.** Skill primers and plans stay hand-authored HTML. |
+| Search | **Keep Fuse.js.** Only change where its index comes from. |
+
+---
+
+## Architecture
+
+The project becomes an **Astro project with all 16 existing pages in `public/`**. Astro ships everything in `public/` byte-for-byte untouched, so the current site keeps working exactly as it does today, while new surfaces — `/blog`, `/admin`, `/dashboard` — are built properly in `src/`.
+
+This gives one project, one deploy, and no two-codebase problem. Retrofitting an old page later is "move the file from `public/` to `src/pages/`, convert it" — one at a time, whenever it's worth doing, with no cutover.
+
+```
+public/            index.html, about.html, future-skills.html, my-people.html,
+                   news.html, search.html, skills/**, nav.js, styles.css,
+                   fuse.min.js, images/**          ← untouched, served as-is
+src/pages/         blog/, admin/, dashboard/       ← new, Astro
+src/pages/api/     server endpoints
+```
+
+### What is shared, and how
+
+- **Nav.** [nav.js](../nav.js) injects the entire nav at runtime and self-computes its path prefix (`nav.js:37`). The Astro base layout loads the same file with a plain `<script>` tag, so old and new pages get an identical nav for free. This is why the split doesn't cause visual drift.
+- **Design tokens.** New pages import the same [styles.css](../styles.css) from `public/`.
+- **Auth and progress.** Runtime modules in `public/` (below), loaded by both old and new pages.
+
+### Two consequences to accept
+
+- **A build error now blocks deployment of everything**, including the old pages. Today nothing can fail because nothing is built.
+- **Local dev changes.** `.claude/launch.json` runs `python -m http.server 8139`, which cannot run Astro or server endpoints. It becomes `npm run dev` (or `vercel dev`). No user-facing impact whatsoever — this only affects working on the site.
+
+### Shared runtime modules
+
+These live in `public/` and follow the `nav.js` pattern — runtime-loaded, no build, working at any nesting depth. Old pages and new pages both consume them:
+
+| File | Responsibility |
+|---|---|
+| `supabase-client.js` | Creates the client from the public URL + anon key. Single instance. |
+| `auth.js` | Session state, sign-in/out, `onAuthChange`, admin check. |
+| `progress.js` | Replaces the copy-pasted progress code in all 10 skill pages. Writes to Supabase when signed in, no-ops for guests. |
+
+Vendor `supabase.min.js` into the repo alongside [fuse.min.js](../fuse.min.js) so the old static pages can use it without a bundler.
+
+`nav.js` gains the auth UI — sign-in button, avatar, dashboard link. Because it injects into all 16 pages from one source (`nav.js:380`), signed-in state appears site-wide from a single edit.
+
+---
+
+## Data model
+
+### Ownership and roles
+
+```
+profiles          id (FK auth.users), display_name, avatar_url, is_admin, created_at
+```
+
+`is_admin` gates the whole admin portal, so it must not be self-settable. Users may update their own profile, but a trigger rejects any change to `is_admin`; that column is set only from the Supabase dashboard. Policies check it via a `security definer` function with a pinned `search_path`:
+
+```sql
+create function is_admin() returns boolean
+  language sql security definer set search_path = public stable
+as $$ select coalesce((select is_admin from profiles where id = auth.uid()), false) $$;
+```
+
+### User state
+
+```
+skill_progress    user_id, skill_slug, content_type ('primer'|'plan'),
+                  position, visited[], state jsonb,
+                  started_at, completed_at, updated_at
+                  PK (user_id, skill_slug, content_type)
+
+user_news         user_id, story_id, favorited, pinned, created_at
+                  PK (user_id, story_id)
+
+notes             id, user_id, target_type ('news'|'skill'), target_id,
+                  body, created_at, updated_at
+```
+
+`skill_progress` maps directly onto the shape already in `localStorage`, so the import is mechanical:
+
+```js
+// plan.html  → position=section, visited, state={quizSelected,quizRevealed,quizOrder,habitOpen}
+{ section, visited[], quizSelected, quizRevealed, quizOrder, habitOpen[] }  // :3064
+
+// primer.html → position=current, visited, state={}
+{ current, visited[] }                                                      // :1078
+```
+
+`started_at` and `completed_at` are new and are what the dashboards are built on. Define completion explicitly: a plan is complete when `visited` covers all 14 sections; a primer when it covers all slides.
+
+### Content
+
+```
+news_stories      id, slug, legacy_id, story_date, sort_order, title, source,
+                  url, summary, implications, tags[], pinned, status,
+                  created_at, updated_at
+
+blog_posts        id, slug, title, excerpt, body, category_id, status,
+                  published_at, author_id, created_at, updated_at
+blog_categories   id, slug, name, sort_order
+
+site_updates      id, update_date, body, published        -- replaces updates.json
+```
+
+Note `news.json`'s existing `pinned` flag is **editorial** — admin-set, at most one site-wide. That's `news_stories.pinned`, and it is a different concept from `user_news.pinned`, which is per-user. Don't conflate them.
+
+### News URLs: why slugs, not the current format
+
+Story URLs today are `news.html?story=<date>-<index>`, where the index is the story's **positional slot** in that day's array — parsed by splitting on the last dash (`middleware.js:20`).
+
+That format is safe only while news is hand-edited. The moment an admin UI exists, reordering is a drag away and deleting is one click — and either silently repoints every previously shared link for that day at a *different story*. Someone clicks a three-week-old LinkedIn post and lands on the wrong article, with no error anywhere.
+
+So:
+
+- Each story gets an **immutable `slug`**, auto-generated from the title, editable, uniqueness-checked: `/news/2026-08-14-ai-adoption-stalls`.
+- The 69 migrated stories keep their original `<date>-<index>` in `legacy_id`, and a server endpoint **301-redirects** old URLs to the slug URL.
+- Deletion is a `status = 'archived'` flag, never a hard delete, so a shared link never dies.
+
+For site management: reorder and delete freely, nothing breaks. For readers: shared links become readable, old links work forever, and the 301 consolidates SEO value onto the new URL.
+
+### RLS
+
+Enabled on every table in the first migration, before any data exists.
+
+| Tables | Policy |
+|---|---|
+| `skill_progress`, `user_news`, `notes` | `user_id = auth.uid()` for all operations |
+| `profiles` | Read own; update own; `is_admin` protected by trigger |
+| `news_stories`, `blog_posts`, `blog_categories`, `site_updates` | Public read where published; write only where `is_admin()` |
+
+Two things beyond table policies:
+
+- **The `service_role` key must never reach the browser.** It bypasses RLS entirely. Its only home is a server endpoint's environment variables.
+- Restrict what `anon` is granted on the `public` schema, not just what the policies allow.
+
+---
+
+## Search
+
+Keep [fuse.min.js](../fuse.min.js) and the existing search UX unchanged. Only the index source changes: `search-index.json` becomes `/api/search-index.json`, assembled from the DB plus the static page and person entries. `search.html:719` changes one fetch URL.
+
+The win is maintenance, not capability. The current index is 92 hand-maintained entries that `.claude/commands/add-skill.md` explicitly documents as manual, so it drifts. Generating it removes that entire class of staleness — and one of the six manual touchpoints from the add-skill workflow.
+
+Capability gains are limited by scope: skill primers and plans stay hand-authored HTML, so their content isn't in the DB and still can't be full-text searched. Client-side fuzzy search also beats Postgres full-text search on typo tolerance for short queries, and has no per-keystroke round-trip. Revisit only if the corpus grows past a few hundred entries. What the DB unlocks later is *filtered* search for signed-in users — "only things I've favourited," "only skills I haven't finished."
+
+---
+
+## Phases
+
+### Phase 1 — Extract progress into a shared module
+
+No Supabase, no Astro, no visible change. Move the duplicated progress code out of all 10 skill pages into `public/progress.js`, keeping `localStorage` as the backend.
+
+Files: `progress.js` (new), and the script blocks in `skills/*/plan.html` (~line 3050) and `skills/*/primer.html` (~line 1015).
+
+Deliberately first. Bolting Supabase onto 10 copy-pasted implementations means making the same edit ten times and getting it slightly wrong twice. After this, Phase 5 is a one-file change.
+
+### Phase 2 — Astro shell
+
+Introduce Astro with all existing pages moved into `public/`. No page conversions. Confirm every one of the 16 pages still serves identically, then add a base layout that loads `nav.js` and `styles.css` so new pages match.
+
+### Phase 3 — Supabase project, schema, RLS
+
+All tables, all policies, `is_admin()` and the profile trigger. Prove auth end to end on one throwaway page before touching the real site.
+
+### Phase 4 — Email
+
+Point Supabase Auth SMTP at Brevo; verify DKIM and DMARC **before** any real user can trigger a password reset.
+
+Two things to confirm first:
+- The brief describes outbound mail as *sent from Gmail, masked* to look like the custom domain. That isn't the same as Brevo being the SMTP relay. If Brevo only provides domain authentication, there are no existing SMTP credentials and a Brevo SMTP key must be created.
+- Cloudflare Email Routing requires Cloudflare to be authoritative DNS for `amplifiedthinker.com`, while Vercel needs its own records on the same zone. Inbound reportedly works today, so this is presumably already fine — confirm before changing DNS.
+
+### Phase 5 — Auth and progress sync
+
+Sign-in/out UI in `nav.js`, plus `auth.js` and `supabase-client.js`. Switch `progress.js` to Supabase for signed-in users.
+
+**The one-time import.** On first login, scan `localStorage` for `amplified_plan_<slug>` and `amplified_primer_<slug>` across the five live slugs. If anything is found, prompt before merging, then clear the keys. This code is disposable — mark it for deletion in a few months.
+
+**Theme stays in `localStorage`.** `nav.js:8` reads it before first paint; a DB round-trip there gives every visitor a flash of the wrong theme on every page load. For signed-in users, sync it to `profiles` as a convenience, but keep local as the fast path. Removing localStorage means *progress* state, not theme.
+
+Guests keep full content access and lose the resume banner. That's the intended trade — it's the reason to sign in.
+
+### Phase 6 — News into the DB
+
+Migrate the 21 date groups / 69 stories from [news.json](../news.json), generating slugs and populating `legacy_id`. Build `/news` and `/news/:slug` in Astro, plus the 301 redirect endpoint for legacy URLs. Add favourite, pin, and notes for signed-in users.
+
+`middleware.js` fetches `/news.json` and will break — but once news is genuinely server-rendered, its bot-sniffing shell has nothing left to do. Retire it rather than porting it.
+
+`search-index.json` becomes `/api/search-index.json`.
+
+### Phase 7 — Admin portal
+
+`/admin` pages for blog CRUD, categories, news, and site config (What's New, skill card states). Access gated by `is_admin()` — enforced in RLS, not just hidden in the UI. A non-admin loading the page must still be unable to write.
+
+### Phase 8 — Blog
+
+Public blog index and posts, rendered from the DB on request so publishing is instant. Categories and most-recent ordering. Sitemap and search index pick posts up automatically from the Phase 6 endpoints.
+
+### Phase 9 — Dashboards
+
+Progress and completion visuals over `skill_progress`. A charting library, vendored or imported through Astro.
+
+**Deferred:** leaderboards. The model supports them later — `profiles.display_name` plus a `security definer` function — but there's nothing meaningful to rank yet. The only scoreable artifact is a 5-question knowledge check with a visible answer-reveal button.
+
+---
+
+## Verification
+
+- **Phase 1:** load all 10 skill pages, advance sections, reload, confirm the resume banner restores identically. `localStorage` payloads must be byte-identical before and after the refactor.
+- **Phase 2:** diff every one of the 16 pages served through Astro against the current live site. They must be identical.
+- **Phase 3:** with the anon key alone, confirm `select` on every table returns zero rows when signed out.
+- **Phase 5:** the critical test is a user with existing local progress signing in for the first time, then opening the site on a second device. Progress must merge, never truncate. Test both directions.
+- **Phase 6:** `curl -I` an existing shared story URL (`/news.html?story=2026-08-14-0`) and confirm a 301 to the slug URL. Then reorder stories in that day via the admin UI and re-run it — it must still land on the same story.
+- **Phase 7:** sign in as a non-admin and attempt a write to `blog_posts` directly via the client. It must fail at the database, not just be hidden.
+- **Phase 8:** `curl` a blog post and confirm the body text is in the response, not just meta tags.
+
+---
+
+## Appendix: corrections to the original brief
+
+Its reasoning on RLS, on not rendering the blog client-side, and on email sequencing was sound. What it got wrong, having been written without the repo:
+
+1. **Progress tracking was described as unbuilt, and the next step as "blocked" on defining a learning library item.** It's shipped and working on all 10 skill pages. Items are `skills/<slug>/{primer,plan}` — flat, no nesting. Progress is *both* resumable position and completion. All three of its open questions were already answered in code.
+
+2. **"The real work is extracting the repeated header, nav, and footer."** Already done — `nav.js` injects the nav into all 16 pages from one source, and no page contains nav markup. The footer is duplicated, but across only the 6 root pages; the 10 skill pages have none.
+
+3. **"A `.html` file becomes `.astro` by renaming it."** Each `plan.html` carries ~49 inline `onclick=` handlers (~240 total). Astro bundles `<script>` as scoped modules by default, which breaks all of them. This is why those pages stay in `public/` — the cost is real, and this plan defers it indefinitely rather than paying it up front.
+
+4. **Option A (markdown in the repo + Astro) is the wrong shape for the goal** — it means publishing by editing files in git, which is what the admin portal exists to replace. Option B (DB pulled at build time) works but makes publishing wait on a rebuild.
+
+5. **§4's "database view or `security definer` function"** should drop the view half. Supabase's linter flags `security_definer_view` as an error for views in API-exposed schemas.
+
+6. **§6's account-linking claim is imprecise.** The failure isn't that GitHub "often" withholds verified emails. It's that users with private email settings get `<id>+<user>@users.noreply.github.com`, which can never match an email/password signup — so a duplicate account is guaranteed, not occasional. Verify current linking behaviour against Supabase docs before launch.
+
+7. **Contact email already exists** — `singchen@amplifiedthinker.com` is live on `about.html:235`.
+
+8. **A stale `github.io` fallback is still live.** `about.html:239` sniffs the hostname and hides the contact email on any non-`amplifiedthinker.com` host. If a second origin is still live, it's another URL for the auth redirect allowlist — or one to retire. `.claude/commands/add-skill.md:8` also still refers to `sing-chen.github.io/amplified` and `amplified.work`, neither of which appears anywhere in the site.
