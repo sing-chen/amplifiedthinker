@@ -79,12 +79,17 @@ pure refactor with an exact-match test, so it can ship to production on its own.
 
 | Activity | What it does, and why |
 |---|---|
-| Write `public/progress.js` covering both shapes | One module handling plan (`{section, visited, quiz…, habitOpen}`) and primer (`{current, visited}`). Follows the `nav.js` pattern — runtime-loaded, no build, works at any depth. |
-| Replace the inline block in all 10 skill pages | Removes ~10 duplicated implementations, leaves a script tag. This is the actual deliverable. |
+| Write `progress.js` covering both shapes | One module handling plan (`{section, visited, quiz…, habitOpen}`) and primer (`{current, visited}`). Follows the `nav.js` pattern — runtime-loaded, no build, works at any depth. Lives at the repo root alongside `nav.js`; it moves into `public/` in Phase 2 with everything else. |
+| Replace the inline block in all 10 skill pages | Removes 10 duplicated implementations, leaves a script tag. This is the actual deliverable. |
 | Verify byte-identical localStorage payloads | The gate. Proves nothing changed for anyone who already has progress saved. |
 
 **Done when:** progress saves and restores identically on all 10 pages, and stored JSON matches
 pre-refactor output exactly.
+
+**Note for later phases — the repo has mixed line endings.** `analytical-thinking` and
+`creative-thinking` pages are CRLF; the other three skills are LF. Each file is internally
+consistent. Any script that rewrites these files must normalise for matching and restore the
+original ending on write, or the real diff disappears under thousands of line-ending changes.
 
 ---
 

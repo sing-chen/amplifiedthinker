@@ -747,6 +747,7 @@
 <a href="#slide-stage" class="skip-link">Skip to slide content</a>
 
 <script src="../../nav.js"></script>
+<script src="../../progress.js"></script>
 
 <!-- Screen reader live region for slide announcements -->
 <div aria-live="polite" aria-atomic="true" id="slideAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
@@ -993,8 +994,8 @@
   var current = 0;
   var visited = new Set([0]);
 
-  // ── localStorage key for this primer ───────
-  var STORAGE_KEY = 'amplified_primer_critical-thinking';
+  // ── Progress store (see progress.js) ───────
+  var store = AmplifiedProgress.forPage();
 
   var slides   = Array.from(document.querySelectorAll('.slide'));
   var navLinks = Array.from(document.querySelectorAll('.nav-link'));
@@ -1049,30 +1050,10 @@
   // ── Progress persistence ─────────────────────
 
   function saveProgress() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        current: current,
-        visited: Array.from(visited)
-      }));
-    } catch (e) {
-      // localStorage unavailable (private browsing, storage full) — fail silently
-    }
-  }
-
-  function loadProgress() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      return JSON.parse(raw);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function clearProgress() {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {}
+    store.save({
+      current: current,
+      visited: Array.from(visited)
+    });
   }
 
   function hideBanner() {
@@ -1100,7 +1081,7 @@
       hideBanner();
       visited = new Set([0]);
       updateUI();
-      clearProgress();
+      store.clear();
     }, { once: true });
   }
 
@@ -1222,7 +1203,7 @@
   }
 
   // ── Init: restore saved progress if any ─────
-  var savedData = loadProgress();
+  var savedData = store.load();
   if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
     // Restore visited set so nav rail shows correct state on slide 0
     visited = new Set(savedData.visited || [0]);

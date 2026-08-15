@@ -1874,6 +1874,7 @@
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <script src="../../nav.js"></script>
+<script src="../../progress.js"></script>
 
 <!-- Screen reader live region for section announcements -->
 <div aria-live="polite" aria-atomic="true" class="sr-only" id="sectionAnnounce" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap"></div>
@@ -3026,8 +3027,10 @@
 </main>
 
 <script>
-// ── STORAGE KEY ──────────────────────────────
-const STORAGE_KEY = 'amplified_plan_strategic-synthesis';
+// ── PROGRESS STORE ───────────────────────
+// Storage lives in progress.js, shared by every skill page. This page owns
+// only the mapping between its own DOM and the stored shape.
+const store = AmplifiedProgress.forPage();
 
 // ── PROGRESS PERSISTENCE ─────────────────────
 function saveProgress() {
@@ -3039,33 +3042,17 @@ function saveProgress() {
     // Capture quiz state
     const quizRevealed = document.getElementById('kcScore').style.display === 'block';
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    store.save({
       section:      lastActiveId,
       visited:      Array.from(visited),
       quizSelected: kcSelected,
       quizRevealed: quizRevealed,
       quizOrder:    kcOrder,
       habitOpen:    habitOpen
-    }));
+    });
   } catch (e) {
-    // localStorage unavailable — fail silently
+    // DOM not in the expected shape — fail silently, as before
   }
-}
-
-function loadProgress() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch (e) {
-    return null;
-  }
-}
-
-function clearProgress() {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch (e) {}
 }
 
 function hideBanner() {
@@ -3232,7 +3219,7 @@ function resetAllProgress() {
   visited.clear();
   navLinks.forEach(link => link.classList.remove('visited'));
 
-  clearProgress();
+  store.clear();
 
   // Prevent the scrollTo below from re-triggering a save: updateNav() only
   // calls saveProgress() when the active section differs from lastActiveId.
@@ -3347,7 +3334,7 @@ btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1);
 window.addEventListener('scroll', updateNav, { passive: true });
 
 // ── Init: restore saved progress if any ─────
-const savedData = loadProgress();
+const savedData = store.load();
 kcOrder = (savedData && savedData.quizOrder) ? savedData.quizOrder : newQuizOrder();
 applyQuizOrder(kcOrder);
 if (savedData) {
