@@ -28,6 +28,7 @@ Behind that sits a third tier: an **admin portal** so blog and news content is m
 | News content | **Moves into the DB** with immutable slugs, managed via admin UI. Replaces the `add-news` skill. |
 | Existing localStorage progress | **Offer a one-time import** on first login, then clear it. Theme stays local. |
 | Admin portal scope | **Blog + site config.** Skill primers and plans stay hand-authored HTML. |
+| Announcement banner | **Both sources move to the DB**, configurable from the admin UI with no deploy. |
 | Search | **Keep Fuse.js.** Only change where its index comes from. |
 
 ---
@@ -128,6 +129,12 @@ blog_posts        id, slug, title, excerpt, body, category_id, status,
 blog_categories   id, slug, name, sort_order
 
 site_updates      id, update_date, body, published        -- replaces updates.json
+
+announcements     id, type ('skill'|'feature'|'story'), announce_date,
+                  text_html, link_href, link_label,
+                  starts_at, expires_at, active, sort_order,
+                  created_at, updated_at                  -- replaces the hardcoded
+                                                          -- ANNOUNCEMENTS array in index.html
 ```
 
 Note `news.json`'s existing `pinned` flag is **editorial** — admin-set, at most one site-wide. That's `news_stories.pinned`, and it is a different concept from `user_news.pinned`, which is per-user. Don't conflate them.
@@ -146,6 +153,23 @@ So:
 
 For site management: reorder and delete freely, nothing breaks. For readers: shared links become readable, old links work forever, and the 301 consolidates SEO value onto the new URL.
 
+### The announcement banner
+
+The rotating banner on the home page draws from two sources today, and both become DB-backed:
+
+- A hardcoded `ANNOUNCEMENTS` array at `index.html:310` — editable only by editing that file and deploying.
+- The three most recent news stories under 14 days old, from `fetch('news.json')` at `index.html:380`.
+
+The goal is that banner content becomes a DB edit served on the next page load: no commit, no push, no deploy.
+
+**Expiry becomes explicit.** Today it's implicit and type-based — `EXPIRY_DAYS = { feature: 14, skill: 21 }` at `index.html:332` — so items silently drop out. Replace this with `starts_at` / `expires_at` columns, defaulted per type in the admin form. Same automatic cleanup, but items can be scheduled ahead and the disappearance date is visible rather than inferred.
+
+**Icons stay in code.** Each `type` maps to an inline SVG at `index.html:334`. Adding items of existing types is pure DB work, as intended; inventing a new category still needs a code change to add its icon. Keep it that way — SVG markup is presentation, not content, and a DB field means hand-editing SVG in a textarea.
+
+**`text_html` is trusted HTML.** It is inserted unescaped at `index.html:366` — that's how `<b>` bolding works — while everything else in that function is escaped. Acceptable because writes are admin-only under RLS, but the admin form should present it as an HTML field rather than a plain text input.
+
+**Rendering stays client-side.** `index.html` remains a static file in `public/` and the banner already renders from a fetch, so only the URL changes. Banner content is supplementary rather than primary, so client-side rendering costs nothing in SEO terms here — unlike the blog, where it would.
+
 ### RLS
 
 Enabled on every table in the first migration, before any data exists.
@@ -154,7 +178,7 @@ Enabled on every table in the first migration, before any data exists.
 |---|---|
 | `skill_progress`, `user_news`, `notes` | `user_id = auth.uid()` for all operations |
 | `profiles` | Read own; update own; `is_admin` protected by trigger |
-| `news_stories`, `blog_posts`, `blog_categories`, `site_updates` | Public read where published; write only where `is_admin()` |
+| `news_stories`, `blog_posts`, `blog_categories`, `site_updates`, `announcements` | Public read where published; write only where `is_admin()` |
 
 Two things beyond table policies:
 
@@ -175,7 +199,36 @@ Capability gains are limited by scope: skill primers and plans stay hand-authore
 
 ## Phases
 
+### Impact key
+
+Each phase is marked for whether it changes what people see. Two columns, because admin and
+visitor experience diverge sharply here — most of the admin portal is invisible to visitors.
+
+| Marker | Meaning |
+|---|---|
+| ⚪ **None** | No user-facing code touched. Pure foundation. |
+| 🟡 **Silent** | User-facing code changed, intended effect is *zero* perceptible difference. Regression risk only, nothing to announce. |
+| 🔵 **Visible** | Users notice a difference, but it isn't new functionality. |
+| 🟢 **New** | New functionality or experience. Banner-worthy. |
+
+| Phase | Visitor | Admin | Announce? |
+|---|---|---|---|
+| 1 — Progress module extraction | 🟡 Silent | ⚪ None | No |
+| 2 — Astro shell | 🟡 Silent | 🔵 Visible *(dev workflow changes)* | No |
+| 3 — Supabase schema + RLS | ⚪ None | ⚪ None | No |
+| 4 — Email | ⚪ None | ⚪ None | No |
+| 5 — Auth + progress sync | 🟢 **New** + 🔵 one regression | 🟢 New | **Yes — the big one** |
+| 6 — News into DB | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes — favourites/notes** |
+| 7 — Admin portal + banner | ⚪ None | 🟢 **New** | No |
+| 8 — Blog | 🟢 **New** | 🟢 New | **Yes** |
+| 9 — Dashboards | 🟢 **New** | ⚪ None | **Yes** |
+
+Phases 1–4 are entirely invisible to visitors — roughly half the work, shippable to production
+without a single announcement. That is deliberate: it front-loads the risk into changes nobody sees.
+
 ### Phase 1 — Extract progress into a shared module
+
+**Impact:** 🟡 Silent (visitor) · ⚪ None (admin)
 
 No Supabase, no Astro, no visible change. Move the duplicated progress code out of all 10 skill pages into `public/progress.js`, keeping `localStorage` as the backend.
 
@@ -185,13 +238,19 @@ Deliberately first. Bolting Supabase onto 10 copy-pasted implementations means m
 
 ### Phase 2 — Astro shell
 
+**Impact:** 🟡 Silent (visitor) · 🔵 Visible (admin — local dev command changes, and `main` gains the ability to fail a build)
+
 Introduce Astro with all existing pages moved into `public/`. No page conversions. Confirm every one of the 16 pages still serves identically, then add a base layout that loads `nav.js` and `styles.css` so new pages match.
 
 ### Phase 3 — Supabase project, schema, RLS
 
+**Impact:** ⚪ None · ⚪ None — no site code touched beyond one throwaway test page.
+
 All tables, all policies, `is_admin()` and the profile trigger. Prove auth end to end on one throwaway page before touching the real site.
 
 ### Phase 4 — Email
+
+**Impact:** ⚪ None · ⚪ None — configuration only, and no user can trigger an auth email until Phase 5.
 
 Point Supabase Auth SMTP at Brevo; verify DKIM and DMARC **before** any real user can trigger a password reset.
 
@@ -201,7 +260,17 @@ Two things to confirm first:
 
 ### Phase 5 — Auth and progress sync
 
+**Impact:** 🟢 New + 🔵 one regression (visitor) · 🟢 New (admin) — **announce this one.**
+
 Sign-in/out UI in `nav.js`, plus `auth.js` and `supabase-client.js`. Switch `progress.js` to Supabase for signed-in users.
+
+This is the phase needing the most communication planning. Sign-in appears in the nav on every
+page and progress starts following users across devices — but guests **lose the resume banner**,
+which they get for free today. That is the only place in this plan where existing behaviour gets
+*worse* for anyone. It is intentional, and it is the reason to sign in, but it should be framed as
+"your progress now follows you everywhere" rather than letting people discover the banner
+silently vanished. The one-time import prompt softens it by offering a migration path at exactly
+the moment someone signs in.
 
 **The one-time import.** On first login, scan `localStorage` for `amplified_plan_<slug>` and `amplified_primer_<slug>` across the five live slugs. If anything is found, prompt before merging, then clear the keys. This code is disposable — mark it for deletion in a few months.
 
@@ -211,21 +280,36 @@ Guests keep full content access and lose the resume banner. That's the intended 
 
 ### Phase 6 — News into the DB
 
+**Impact:** 🔵 Visible + 🟢 New (visitor) · 🟡 Silent (admin) — **announce the favourites/notes half.**
+
 Migrate the 21 date groups / 69 stories from [news.json](../news.json), generating slugs and populating `legacy_id`. Build `/news` and `/news/:slug` in Astro, plus the 301 redirect endpoint for legacy URLs. Add favourite, pin, and notes for signed-in users.
+
+- **Visible:** story URLs change from `news.html?story=2026-08-14-0` to `/news/2026-08-14-<slug>`. Old links 301, so nothing breaks, but shared links look different from here on.
+- **New:** favourite, pin, and notes on stories — worth announcing in its own right.
+
+**Banner, first half.** The banner's news source must switch from `fetch('news.json')` (`index.html:380`) to the DB, because `news.json` no longer exists. Forced by this phase, not optional. Visitors should see no difference.
 
 `middleware.js` fetches `/news.json` and will break — but once news is genuinely server-rendered, its bot-sniffing shell has nothing left to do. Retire it rather than porting it.
 
 `search-index.json` becomes `/api/search-index.json`.
 
-### Phase 7 — Admin portal
+### Phase 7 — Admin portal and banner
+
+**Impact:** ⚪ None (visitor) · 🟢 New (admin) — everything here sits behind `is_admin()`.
 
 `/admin` pages for blog CRUD, categories, news, and site config (What's New, skill card states). Access gated by `is_admin()` — enforced in RLS, not just hidden in the UI. A non-admin loading the page must still be unable to write.
 
+**Banner, second half.** The hardcoded `ANNOUNCEMENTS` array at `index.html:310` moves into the `announcements` table with an admin CRUD screen. Deliberately a like-for-like swap — visitors should see an identical banner. The entire gain is on the admin side: banner content becomes a DB edit served on the next page load, with no commit, no push, and no deploy. See "The announcement banner" under Data model for the expiry, icon, and trusted-HTML decisions.
+
 ### Phase 8 — Blog
+
+**Impact:** 🟢 New · 🟢 New — **announce.** A whole new content section.
 
 Public blog index and posts, rendered from the DB on request so publishing is instant. Categories and most-recent ordering. Sitemap and search index pick posts up automatically from the Phase 6 endpoints.
 
 ### Phase 9 — Dashboards
+
+**Impact:** 🟢 New (visitor) · ⚪ None (admin) — **announce.**
 
 Progress and completion visuals over `skill_progress`. A charting library, vendored or imported through Astro.
 
@@ -241,6 +325,7 @@ Progress and completion visuals over `skill_progress`. A charting library, vendo
 - **Phase 5:** the critical test is a user with existing local progress signing in for the first time, then opening the site on a second device. Progress must merge, never truncate. Test both directions.
 - **Phase 6:** `curl -I` an existing shared story URL (`/news.html?story=2026-08-14-0`) and confirm a 301 to the slug URL. Then reorder stories in that day via the admin UI and re-run it — it must still land on the same story.
 - **Phase 7:** sign in as a non-admin and attempt a write to `blog_posts` directly via the client. It must fail at the database, not just be hidden.
+- **Phase 7 (banner):** screenshot the home page banner before and after the swap — they must be indistinguishable. Then add an announcement in the admin UI and confirm it appears on a hard refresh with no deploy.
 - **Phase 8:** `curl` a blog post and confirm the body text is in the response, not just meta tags.
 
 ---
