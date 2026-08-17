@@ -1,6 +1,6 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0 and 1 complete; Phase 2 unblocked · **Last updated:** 2026-08-17
+**Status:** In progress — Phases 0 and 1 live; Phase 2 built and verified, awaiting a Pages setting · **Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -28,7 +28,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 |---|---|---|---|---|---|
 | 0 — Branch + environment setup | ✅ **Done** (allowlist deferred to 3) | ⚪ None | ⚪ None | No | — |
 | 1 — Progress module extraction | ✅ **Done — live** | 🟡 Silent | ⚪ None | No | — |
-| 2 — Astro shell | ☐ Not started | 🟡 Silent | 🔵 Visible | No | 0 |
+| 2 — Astro shell | ◐ Built, not merged | 🟡 Silent | 🔵 Visible | No | 0 |
 | 3 — Supabase schema + RLS | ☐ Not started | ⚪ None | ⚪ None | No | 0 |
 | 4 — Email | ☐ Not started | ⚪ None | ⚪ None | No | 3 |
 | 5 — Auth + progress sync | ☐ Not started | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
@@ -97,6 +97,46 @@ refactor, both now fixed:**
 **Worth carrying forward:** neither defect was catchable by the byte-identical payload test, which
 by design only proved the refactor changed nothing. Both came from a human looking at a real
 browser. Later phases should not treat automated verification as sufficient for anything visual.
+
+### Phase 2 — built, verified locally, awaiting two things outside the repo (2026-08-17)
+
+Branch `feat/astro-shell`, commit `b03e6f2`. Astro 7.2.2, `output: 'static'`, no adapter. All 16 pages
+moved into `public/` as pure renames — git recorded every one at 100% similarity, zero content lines
+changed.
+
+**The gate passed, and more convincingly than planned.** The sequence said "diff all 16 preview pages
+against live". Instead every one of the **66 files in `public/` was compared byte-for-byte against
+`dist/`: 66 identical, 0 differing, 0 missing**, with the only addition being the new Astro page. That
+covers binaries and JSON too, not just the 16 HTML pages, and it runs in seconds rather than by eye.
+Re-verified under both build variants. The skill pages still load `progress.js`, derive the correct
+storage key, and retain all 38 inline `onclick` handlers — the specific thing Astro would have broken
+had those pages been converted rather than copied.
+
+**Design decisions worth keeping visible:**
+
+- **Static output, no adapter.** Both origins consume one identical build, which is what keeps the
+  GitHub origin cheap. The SSR adapter waits for Phase 8, where rendering on request is the actual
+  requirement rather than a default.
+- **`base` is env-driven**, because Vercel serves from `/` and Pages from `/amplifiedthinker/`.
+  Layouts read `import.meta.env.BASE_URL`; canonical strips the prefix so the Pages build still points
+  at `amplifiedthinker.com`, matching what the existing pages do.
+- **`_originals/` moved out of `images/`.** Inside `public/`, Astro would have published 6 MB of
+  full-resolution sources verbatim on any local build.
+
+**Two blockers, neither of them code:**
+
+1. **npm cannot install in the Google Drive working copy** — `EBADF` after 2m32s, twice; 13s on local
+   disk. Deployment is unaffected (Vercel and Actions build on Linux from a clean checkout), but local
+   development is fully blocked, which removes the fastest feedback loop exactly when the project has
+   gained a build that can fail. Phase 2's gate had to be run by mirroring the repo to local disk.
+   See [dev-workflow.md](dev-workflow.md).
+2. **GitHub Pages needs its source switched to "GitHub Actions"** before this merges, or the second
+   production origin 404s the moment the repo root loses `index.html`.
+
+**Unverifiable until production: `middleware.js`.** Vercel's preview wall masks 404s — a nonexistent
+path returns the same `302` as a real one — so nothing about preview *content* can be checked by
+script, and a bot-UA request cannot reach the middleware at all. A production baseline was captured
+before merging, to be re-run immediately after with rollback ready.
 
 ### Phase 0 — done (2026-08-17), one activity deferred to Phase 3
 

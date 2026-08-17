@@ -103,6 +103,27 @@ every unfinished branch publicly reachable by URL.
 
 Production is unaffected either way.
 
+**Phase 2 measured how total the blackout is: the wall masks 404s.** A path that does not exist on the
+deployment returns the same `302` as one that does, so curl cannot distinguish a working build from a
+broken one, a missing page from a present one, or a redirect from a render:
+
+```
+/about.html                       302   (exists)
+/definitely-not-a-real-path-xyz   302   (does not exist)
+```
+
+Two consequences worth planning around, both of which bit in Phase 2:
+
+- **Preview verification is entirely manual.** Automated checks confirm only that *a* deployment
+  exists at the alias. Everything about its content needs a signed-in browser.
+- **Server-side behaviour cannot be previewed at all.** `middleware.js` is the live example: its
+  bot-UA response is unreachable behind the wall, so the first real test is production. Where that
+  matters, capture a production baseline *before* merging and re-run it immediately after, with
+  Vercel's instant rollback as the safety net.
+
+This is the strongest argument for turning on Protection Bypass for Automation when server-side
+surfaces arrive in Phase 6.
+
 ### 5. Scope environment variables
 
 Settings → Environment Variables. Each variable has Production / Preview / Development
@@ -306,6 +327,44 @@ things change during the work:
 | 1 | `python -m http.server 8139` | Unchanged — no Astro yet. |
 | 2+ | `npm run dev` | Astro's dev server, port 4321. |
 | 6+ | `vercel dev` | Only when testing `/api/` endpoints, which `npm run dev` cannot fully run. |
+
+### ⚠️ Blocker: npm cannot install in the Google Drive working copy
+
+The repository currently lives at `G:\My Drive\01. Personal\Personal Projects\websites\amplified
+thinker`. **`npm install` fails there.** Measured in Phase 2:
+
+| Location | Result |
+|---|---|
+| `G:\My Drive\…` (Google Drive) | ❌ `EBADF: bad file descriptor` after **2m32s**, twice, cleanly reproduced |
+| Local disk (`C:\…`) | ✅ 201 packages in **13s** |
+
+Google Drive's virtual filesystem cannot survive the thousands of small file operations npm performs;
+it holds handles open and returns `ENOTEMPTY` / `EBADF` mid-install. There is no ignore mechanism in
+Drive for Desktop to exclude `node_modules`, so this cannot be configured away.
+
+**What this does and does not block:**
+
+- **Deployment is unaffected.** Vercel and GitHub Actions both install and build on Linux runners
+  from a clean checkout. They never see Drive. Phase 2 ships regardless.
+- **Local development is fully blocked.** No `npm run dev`, no local `npm run build`, so no way to
+  verify a build before pushing. That removes the fastest feedback loop precisely when the project
+  has just acquired a build step that can fail.
+
+**Recommendation: move the working copy to local disk**, e.g. `C:\dev\amplifiedthinker`. Git and
+GitHub are already the source of truth and the backup, so Drive sync is redundant for the code — and
+from Phase 2 onward it is actively harmful, since it would also try to sync `node_modules` and `dist`
+on every build.
+
+⚠️ **Before deleting the Drive copy, rescue `_originals/`.** It is gitignored, so those 6 MB of
+full-resolution source images exist *only* there — they are not in the repository and would be lost.
+Keeping `_originals/` in Google Drive as a separate folder is arguably its correct home anyway: it is
+source material, not code, and it genuinely benefits from Drive's backup.
+
+Also note `.claude/settings.local.json` is untracked and would need copying, and Claude Code keys its
+project memory to the working-copy path, so memory appears empty at a new location until moved.
+
+**Until the move happens**, builds can only be verified by mirroring the repo to local disk and
+building there — which is how Phase 2's byte-identical gate was actually run.
 
 ---
 
