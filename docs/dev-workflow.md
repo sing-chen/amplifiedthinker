@@ -328,10 +328,18 @@ things change during the work:
 | 2+ | `npm run dev` | Astro's dev server, port 4321. |
 | 6+ | `vercel dev` | Only when testing `/api/` endpoints, which `npm run dev` cannot fully run. |
 
-### ⚠️ Blocker: npm cannot install in the Google Drive working copy
+### Where the working copy lives — `C:\dev\amplifiedthinker`, not Google Drive
 
-The repository currently lives at `G:\My Drive\01. Personal\Personal Projects\websites\amplified
-thinker`. **`npm install` fails there.** Measured in Phase 2:
+**Resolved in Phase 2.** The working copy moved to `C:\dev\amplifiedthinker`. Open that path, not the
+Drive one. Verified there: `npm ci` in 7s, `npm run build` clean, the byte-identical gate passing
+66/66, and `npm run dev` serving both the new Astro page and the old static pages on port 4321.
+
+The Drive copy at `G:\My Drive\01. Personal\Personal Projects\websites\amplified thinker` was left in
+place rather than deleted. It is a stale checkout — do not commit from it.
+
+#### Why the move was necessary
+
+**`npm install` fails in Google Drive.** Measured in Phase 2:
 
 | Location | Result |
 |---|---|
@@ -350,21 +358,27 @@ Drive for Desktop to exclude `node_modules`, so this cannot be configured away.
   verify a build before pushing. That removes the fastest feedback loop precisely when the project
   has just acquired a build step that can fail.
 
-**Recommendation: move the working copy to local disk**, e.g. `C:\dev\amplifiedthinker`. Git and
-GitHub are already the source of truth and the backup, so Drive sync is redundant for the code — and
-from Phase 2 onward it is actively harmful, since it would also try to sync `node_modules` and `dist`
-on every build.
+Git and GitHub were already the source of truth and the backup, so Drive sync was redundant for the
+code — and from Phase 2 onward actively harmful, since it would also try to sync `node_modules` and
+`dist` on every build.
 
-⚠️ **Before deleting the Drive copy, rescue `_originals/`.** It is gitignored, so those 6 MB of
-full-resolution source images exist *only* there — they are not in the repository and would be lost.
-Keeping `_originals/` in Google Drive as a separate folder is arguably its correct home anyway: it is
-source material, not code, and it genuinely benefits from Drive's backup.
+#### What had to be carried over by hand
 
-Also note `.claude/settings.local.json` is untracked and would need copying, and Claude Code keys its
-project memory to the working-copy path, so memory appears empty at a new location until moved.
+Two things were gitignored and therefore existed *only* in the Drive copy. Both were copied to
+`C:\dev\amplifiedthinker`:
 
-**Until the move happens**, builds can only be verified by mirroring the repo to local disk and
-building there — which is how Phase 2's byte-identical gate was actually run.
+| Item | Note |
+|---|---|
+| `_originals/` | 6 MB of full-resolution source images, 9 files. Not in the repository — would have been lost outright. |
+| `.claude/settings.local.json` | Untracked local Claude Code settings. |
+
+⚠️ **If the Drive copy is ever deleted, check for new ignored files first.** Anything matching
+`.gitignore` is invisible to `git status` and to any "is it pushed?" check, so the usual safety net
+does not apply. `_originals/` is the standing example: keeping a copy in Google Drive is arguably its
+correct home, since it is source material rather than code and genuinely benefits from backup.
+
+Claude Code also keys project memory to the working-copy path, so memory starts empty at the new
+location until moved.
 
 ---
 

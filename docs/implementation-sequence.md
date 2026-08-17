@@ -125,10 +125,13 @@ had those pages been converted rather than copied.
 
 **Two blockers, neither of them code:**
 
-1. **npm cannot install in the Google Drive working copy** — `EBADF` after 2m32s, twice; 13s on local
-   disk. Deployment is unaffected (Vercel and Actions build on Linux from a clean checkout), but local
-   development is fully blocked, which removes the fastest feedback loop exactly when the project has
-   gained a build that can fail. Phase 2's gate had to be run by mirroring the repo to local disk.
+1. ~~npm cannot install in the Google Drive working copy~~ — **resolved.** `EBADF` after 2m32s,
+   twice, against 13s on local disk. Deployment was never affected (Vercel and Actions build on Linux
+   from a clean checkout), but local development was fully blocked — which removes the fastest
+   feedback loop exactly when the project gains a build that can fail. The working copy moved to
+   `C:\devmplifiedthinker`, verified with `npm ci` in 7s, a clean build, the 66/66 gate, and
+   `npm run dev` serving both old and new pages. `_originals/` and `.claude/settings.local.json` were
+   gitignored and existed only in the Drive copy, so both were carried over by hand.
    See [dev-workflow.md](dev-workflow.md).
 2. **GitHub Pages needs its source switched to "GitHub Actions"** before this merges, or the second
    production origin 404s the moment the repo root loses `index.html`.
