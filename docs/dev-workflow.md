@@ -222,15 +222,25 @@ static output mode and publishes to Pages, giving two build targets from one rep
 
 This is real added scope for Phase 2, and it is better paid there than discovered at merge.
 
-#### Two things to decide as the work progresses
+#### Resolved: the contact block is now identical on both origins
 
-- **The contact email is currently hidden on Pages** (`about.html`). Since those users often *cannot*
-  reach the custom domain, they are the segment least able to get in touch by any other route.
-  Consider showing the full contact block on both origins.
-- **NRD blocks age out.** `amplifiedthinker.com` was registered 2026-07-06, so it is roughly six
-  weeks old; most NRD filters release domains at 30–90 days. Re-test corporate access around
-  **October 2026**. If the block has lifted, the dual-target build becomes optional rather than
-  required — so avoid architecture that assumes Pages must be supported forever.
+The email used to be hidden on the GitHub origin. That was backwards — those users often *cannot*
+reach the custom domain, making them the segment least able to get in touch any other way.
+**Resolved 2026-08-17:** the hostname branching and the LinkedIn-only variant were both removed, so
+`about.html` serves one contact block everywhere. It now also renders with JavaScript disabled, since
+nothing has to un-hide it.
+
+**The wider lesson: `about.html` was the only page that varied by origin, and it varied the wrong
+way.** Treat per-origin branching as a smell. If the two origins must differ, the difference belongs
+in the build (Phase 2's static-vs-dynamic split), not in a runtime hostname check that nobody
+revisits.
+
+#### Still to revisit: NRD blocks age out
+
+`amplifiedthinker.com` was registered 2026-07-06, so it is roughly six weeks old; most NRD filters
+release domains at 30–90 days. Re-test corporate access around **October 2026**. If the block has
+lifted, the dual-target build becomes optional rather than required — so avoid architecture that
+assumes Pages must be supported forever.
 
 #### `.vercelignore` does not apply here — and never provided privacy
 

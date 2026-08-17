@@ -229,24 +229,16 @@
       </div>
     </div>
 
-    <!-- Contact: full version (with email) everywhere except the github.io origin, which gets the
-         short version (LinkedIn only).
+    <!-- Contact: one version, shown on every origin. The email used to be hidden on the github.io
+         origin, which had it backwards — some corporate networks block amplifiedthinker.com under
+         newly-registered-domain policies, so those users reach the site only via the GitHub URL and
+         were the ones least able to get in touch any other way.
 
-         The github.io origin is SUPPORTED, not legacy — some corporate networks block
-         amplifiedthinker.com under newly-registered-domain policies, so those users reach the site
-         only via the GitHub URL. Do not remove this branch or that origin.
-
-         Testing for github.io rather than for the custom domain is deliberate: it means Vercel
-         previews and localhost render what production renders. -->
+         No hostname branching, so this also renders with JavaScript disabled. -->
     <div class="contact-block" id="contact-block">
       <p class="contact-label">Get in touch</p>
-      <p class="contact-body" id="contact-body-full" style="display:none;">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, whether that's by email at <a href="mailto:singchen@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" class="contact-link">singchen@amplifiedthinker.com</a> or on <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
-      <p class="contact-body" id="contact-body-short" style="display:none;">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, reach out via <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
+      <p class="contact-body">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, whether that's by email at <a href="mailto:singchen@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" class="contact-link">singchen@amplifiedthinker.com</a> or on <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
     </div>
-    <script>
-      var isGitHubOrigin = /\.github\.io$/.test(window.location.hostname);
-      document.getElementById(isGitHubOrigin ? 'contact-body-short' : 'contact-body-full').style.display = '';
-    </script>
 
     <div class="updates-block" id="updates">
       <button class="updates-toggle" type="button" aria-expanded="false" aria-controls="updates-body">

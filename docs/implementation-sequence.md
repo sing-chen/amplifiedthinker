@@ -123,11 +123,13 @@ carries the Phase 1 `progress.js`. It had been assumed to be a stale artifact. I
 
 That single fact changes three things this plan had wrong:
 
-1. **`about.html`'s hostname sniff was live behaviour, not dead code** — and it was also firing on
-   Vercel previews and localhost, so every preview of that page showed the LinkedIn-only contact
-   block. A preview lying about production, in the phase whose whole purpose is making previews
-   trustworthy. Fixed: the test now blocklists `*.github.io` rather than allowlisting the custom
-   domain, so production behaviour is unchanged and previews finally match it.
+1. **`about.html`'s hostname sniff was live behaviour, not dead code** — and it was firing on Vercel
+   previews and localhost too, so every preview of that page showed the LinkedIn-only contact block.
+   A preview lying about production, in the phase whose whole purpose is making previews trustworthy.
+   **Removed entirely rather than corrected:** one contact block, email shown on every origin. The
+   hidden-email behaviour turned out to be exactly backwards, since NRD-blocked users often cannot
+   reach the custom domain and were the segment least able to get in touch any other way. Bonus: with
+   no runtime check to un-hide it, the block now renders with JavaScript disabled.
 2. **Phase 2 grows.** Moving the 16 pages into `public/` leaves Pages with no `index.html` at the repo
    root, so the GitHub origin breaks at merge. It needs a GitHub Actions workflow building Astro in
    static mode — two build targets from one repo. Recorded in the Phase 2 table below.

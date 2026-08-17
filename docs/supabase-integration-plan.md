@@ -385,9 +385,9 @@ Its reasoning on RLS, on not rendering the blog client-side, and on email sequen
    origin.** Three things follow:
 
    - `about.html` was hiding the contact email from precisely the audience least able to reach any
-     other route. **Resolved 2026-08-17:** the test now blocklists `*.github.io` rather than
-     allowlisting the custom domain, so previews and localhost match production. Whether the email
-     should be shown on the GitHub origin too is an open content decision.
+     other route. **Resolved 2026-08-17:** the hostname branching was removed entirely rather than
+     merely corrected — one contact block, shown on every origin, no runtime check to keep in step.
+     It now renders with JavaScript disabled too.
    - **Phase 2 must build for two targets.** Pages serves the repo root; moving pages into `public/`
      breaks it. It needs a GitHub Actions static build.
    - **Phase 5's hostname-based environment switch was backwards.** Allowlisting the custom domain as
