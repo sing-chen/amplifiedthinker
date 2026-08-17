@@ -1,2 +1,7 @@
-.claude
+# Claude Code: local machine state stays out, shared command definitions go in.
+# `.claude` on its own would exclude the directory outright and git would never
+# descend into it, so ignore its contents and re-include what should be tracked.
+.claude/*
+!.claude/commands/
+
 images/_originals/

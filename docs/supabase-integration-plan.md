@@ -356,4 +356,4 @@ Its reasoning on RLS, on not rendering the blog client-side, and on email sequen
 
 7. **Contact email already exists** — `singchen@amplifiedthinker.com` is live on `about.html:235`.
 
-8. **A stale `github.io` fallback is still live.** `about.html:239` sniffs the hostname and hides the contact email on any non-`amplifiedthinker.com` host. If a second origin is still live, it's another URL for the auth redirect allowlist — or one to retire. `.claude/commands/add-skill.md:8` also still refers to `sing-chen.github.io/amplified` and `amplified.work`, neither of which appears anywhere in the site.
+8. **A stale `github.io` fallback is still live.** `about.html:239` sniffs the hostname and hides the contact email on any non-`amplifiedthinker.com` host. If a second origin is still live, it's another URL for the auth redirect allowlist — or one to retire. **Still outstanding.** *(The matching stale reference in `.claude/commands/add-skill.md` was corrected on 2026-08-17, when that file was brought under version control.)*
