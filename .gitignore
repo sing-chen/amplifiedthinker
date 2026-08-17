@@ -3,5 +3,6 @@
 # descend into it, so ignore its contents and re-include what should be tracked.
 .claude/*
 !.claude/commands/
+!.claude/launch.json
 
 images/_originals/
