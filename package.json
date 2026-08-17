@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "backup": "powershell -ExecutionPolicy Bypass -File scripts/backup-to-drive.ps1",
+    "check:conn": "node scripts/check-connection.mjs",
     "verify:rls": "node scripts/verify-rls.mjs"
   },
   "devDependencies": {
