@@ -1,6 +1,9 @@
 # Dev workflow: branches, previews, and environments
 
-**Status:** Agreed, not yet set up · **Date:** 2026-08-15
+**Status:** In use — branch-per-phase and previews proven on Phase 1 · **Last updated:** 2026-08-17
+
+The Supabase and environment-variable sections are still untested, since no Supabase project
+exists yet. Everything about branches, previews and merging has now been exercised for real.
 
 Companion documents:
 

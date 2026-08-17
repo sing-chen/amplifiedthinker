@@ -1,6 +1,6 @@
 # Implementation sequence
 
-**Status:** Agreed, not started · **Date:** 2026-08-15
+**Status:** In progress — Phase 1 complete and live · **Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -24,24 +24,60 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 🔵 **Visible** | Users notice a difference, but it isn't new functionality. |
 | 🟢 **New** | New functionality or experience. Banner-worthy. |
 
-| Phase | Visitor | Admin | Announce? | Depends on |
-|---|---|---|---|---|
-| 0 — Branch + environment setup | ⚪ None | ⚪ None | No | — |
-| 1 — Progress module extraction | 🟡 Silent | ⚪ None | No | — |
-| 2 — Astro shell | 🟡 Silent | 🔵 Visible | No | 0 |
-| 3 — Supabase schema + RLS | ⚪ None | ⚪ None | No | 0 |
-| 4 — Email | ⚪ None | ⚪ None | No | 3 |
-| 5 — Auth + progress sync | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
-| 6 — News into the DB | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
-| 7 — Admin portal + banner | ⚪ None | 🟢 **New** | No | 6 |
-| 8 — Blog | 🟢 **New** | 🟢 New | **Yes** | 7 |
-| 9 — Dashboards | 🟢 **New** | ⚪ None | **Yes** | 5 |
+| Phase | Status | Visitor | Admin | Announce? | Depends on |
+|---|---|---|---|---|---|
+| 0 — Branch + environment setup | ◐ Partly done | ⚪ None | ⚪ None | No | — |
+| 1 — Progress module extraction | ✅ **Done — live** | 🟡 Silent | ⚪ None | No | — |
+| 2 — Astro shell | ☐ Not started | 🟡 Silent | 🔵 Visible | No | 0 |
+| 3 — Supabase schema + RLS | ☐ Not started | ⚪ None | ⚪ None | No | 0 |
+| 4 — Email | ☐ Not started | ⚪ None | ⚪ None | No | 3 |
+| 5 — Auth + progress sync | ☐ Not started | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
+| 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
+| 7 — Admin portal + banner | ☐ Not started | ⚪ None | 🟢 **New** | No | 6 |
+| 8 — Blog | ☐ Not started | 🟢 **New** | 🟢 New | **Yes** | 7 |
+| 9 — Dashboards | ☐ Not started | 🟢 **New** | ⚪ None | **Yes** | 5 |
 
 **Phases 0–4 are entirely invisible to visitors** — roughly half the work, shippable to production
 without a single announcement. That is deliberate: it front-loads risk into changes nobody sees.
 
-**Phases 0 and 1 have no dependencies** and can start immediately. Phase 1 in particular touches
-no Supabase, no Astro, and nothing about the eventual architecture.
+---
+
+## Progress log
+
+### Phase 1 — done, merged, live (2026-08-17)
+
+Shipped in `ed7a00b`, with follow-up fixes in `e067d8c` and `11c6be1`. Net −72 lines on the
+refactor itself; 10 duplicated implementations became one.
+
+- `progress.js` at the repo root, loaded by all 10 skill pages after `nav.js`. Owns storage only:
+  key naming, JSON, and the fail-silent try/catch. Pages keep their own DOM↔shape mapping.
+- Storage keys unchanged, and now derived from the URL rather than hardcoded per page — 10
+  constants removed.
+- Verified byte-identical output by seeding a known payload, reloading, and re-saving against both
+  the old and new code, including the pre-existing quirk where `section` is `null` until the first
+  scroll. Restore, resume, reset and save-on-navigate all exercised across all 10 pages.
+
+**Two defects surfaced by manual verification, both pre-existing rather than caused by the
+refactor, both now fixed:**
+
+1. Principles & Models accordions never persisted — `toggleAccordion()` didn't save and
+   `restoreState()` only handled `habitOpen`. Now tracked by id, with page defaults captured
+   separately so reset returns to a first-visit state rather than blank.
+2. `updateNav()` guarded both branches of its visited toggle with `s !== activeId`, so a link
+   that became active kept a stale `visited` class. With `.visited` declared after `.active` at
+   equal specificity, the current section rendered as visited. Fixed with a single `toggle`, plus
+   rail states redesigned so shape distinguishes them: empty ring / solid fill / fill with halo.
+
+**Worth carrying forward:** neither defect was catchable by the byte-identical payload test, which
+by design only proved the refactor changed nothing. Both came from a human looking at a real
+browser. Later phases should not treat automated verification as sufficient for anything visual.
+
+### Phase 0 — partly done
+
+Confirmed along the way rather than as a deliberate pass: preview deployments work, and they sit
+behind Vercel Authentication (see [dev-workflow.md](dev-workflow.md)). Still outstanding — the
+Supabase redirect allowlist, which cannot be done until a Supabase project exists in Phase 3, and
+a decision on branch protection for `main`.
 
 ---
 
@@ -66,9 +102,9 @@ See [dev-workflow.md](dev-workflow.md) for the specific settings and values.
 
 ---
 
-## Phase 1 — Extract progress into a shared module
+## Phase 1 — Extract progress into a shared module ✅ DONE
 
-**Impact:** 🟡 Silent · ⚪ None
+**Impact:** 🟡 Silent · ⚪ None · **Shipped 2026-08-17** — outcome in the Progress log above.
 
 **Why first among the real work:** the progress code is copy-pasted into all 10 skill pages.
 Adding Supabase to 10 copies means making the same edit ten times and getting it subtly wrong

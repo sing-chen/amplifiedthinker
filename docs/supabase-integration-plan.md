@@ -1,6 +1,9 @@
 # Amplified Thinker: Supabase, Auth, and Admin Portal
 
-**Status:** Baselined, not started · **Date:** 2026-08-15
+**Status:** In progress — Phase 1 complete and live · **Last updated:** 2026-08-17
+
+Per-phase status and outcomes live in [implementation-sequence.md](implementation-sequence.md).
+This document holds the architecture and data model, which have not changed since baselining.
 
 Supersedes the original handoff brief (`supabase-integration-brief.md`), which was written
 without access to this repo. Corrections to it are in the appendix, since several of its
@@ -71,7 +74,7 @@ These live in `public/` and follow the `nav.js` pattern — runtime-loaded, no b
 |---|---|
 | `supabase-client.js` | Creates the client from the public URL + anon key. Single instance. |
 | `auth.js` | Session state, sign-in/out, `onAuthChange`, admin check. |
-| `progress.js` | Replaces the copy-pasted progress code in all 10 skill pages. Writes to Supabase when signed in, no-ops for guests. |
+| `progress.js` | ✅ **Built in Phase 1.** Currently at the repo root, `localStorage`-backed, loaded by all 10 skill pages. Storage keys derive from the URL path. Phase 5 switches its backend to Supabase for signed-in users; it moves into `public/` in Phase 2. |
 
 Vendor `supabase.min.js` into the repo alongside [fuse.min.js](../fuse.min.js) so the old static pages can use it without a bundler.
 

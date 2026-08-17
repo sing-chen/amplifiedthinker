@@ -26,7 +26,15 @@ Key decisions to make before building:
 
 ## Infrastructure / Architecture
 
-*Nothing logged yet.*
+The Supabase, auth, and admin portal work is planned in detail and already under way — it is
+tracked in `docs/`, not here:
+
+- `docs/supabase-integration-plan.md` — architecture, data model, decisions
+- `docs/implementation-sequence.md` — phased plan, current status, progress log
+- `docs/dev-workflow.md` — branches, previews, environments
+
+Log new infrastructure *ideas* here; anything already committed to that plan belongs in the docs
+above, so status lives in one place.
 
 ---
 
@@ -42,4 +50,4 @@ Key decisions to make before building:
 
 ---
 
-*Last updated: June 2026*
+*Last updated: August 2026*
