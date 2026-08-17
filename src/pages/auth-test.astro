@@ -92,12 +92,21 @@ const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           <button type="button" id="at-signup">Sign up</button>
           <button type="button" id="at-signin">Sign in</button>
           <button type="button" id="at-signout">Sign out</button>
+          <button type="button" id="at-reset">Test redirect (password reset)</button>
         </div>
       </form>
       <p class="at-note">
-        Use a throwaway address. Until Phase 4 points SMTP at Brevo, confirmation
-        mail goes through Supabase's built-in mailer, which is rate-limited and
-        explicitly not for production.
+        Use a throwaway address. Until Phase 4 points SMTP at Brevo, mail goes
+        through Supabase's built-in mailer, which is rate-limited to a couple of
+        messages an hour and explicitly not for production.
+      </p>
+      <p class="at-note">
+        <strong>Test redirect</strong> is how you check the allowlist on an origin
+        where you already have an account. Sign-in sends no email and therefore
+        proves nothing about redirects; a password-reset link does, and it costs
+        one message rather than a second signup. The link must return you
+        <em>here</em> &mdash; if it lands on amplifiedthinker.com instead, this
+        origin is missing from the redirect allowlist.
       </p>
     </div>
 
@@ -292,6 +301,28 @@ const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
       document.getElementById('at-signout').addEventListener('click', function () {
         client.auth.signOut();
+      });
+
+      // The per-origin allowlist test. signInWithPassword sends no mail, so on
+      // any origin where an account already exists it proves nothing about
+      // redirects - and the redirect entry is precisely the thing that fails
+      // silently. A reset link exercises the same allowlist as a signup
+      // confirmation for the cost of one message, which matters while the
+      // built-in mailer is rate-limited to a couple an hour.
+      document.getElementById('at-reset').addEventListener('click', function () {
+        var email = document.getElementById('at-email').value.trim();
+        if (!email) {
+          sessionEl.textContent = 'Enter the email address first.';
+          return;
+        }
+        client.auth
+          .resetPasswordForEmail(email, { redirectTo: window.location.href })
+          .then(function (r) {
+            sessionEl.textContent = r.error
+              ? 'Reset error: ' + r.error.message
+              : 'Reset link sent. It must bring you back to ' + window.location.origin +
+                ' - anywhere else means this origin is not in the allowlist.';
+          });
       });
 
       // ---- checks -----------------------------------------------------------
