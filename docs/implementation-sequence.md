@@ -1,6 +1,6 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0 and 1 live; Phase 2 built and verified, awaiting a Pages setting · **Last updated:** 2026-08-17
+**Status:** In progress — Phases 0, 1 and 2 live. Phase 3 (Supabase) is next · **Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -28,7 +28,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 |---|---|---|---|---|---|
 | 0 — Branch + environment setup | ✅ **Done** (allowlist deferred to 3) | ⚪ None | ⚪ None | No | — |
 | 1 — Progress module extraction | ✅ **Done — live** | 🟡 Silent | ⚪ None | No | — |
-| 2 — Astro shell | ◐ Built, not merged | 🟡 Silent | 🔵 Visible | No | 0 |
+| 2 — Astro shell | ✅ **Done — live** | 🟡 Silent | 🔵 Visible | No | 0 |
 | 3 — Supabase schema + RLS | ☐ Not started | ⚪ None | ⚪ None | No | 0 |
 | 4 — Email | ☐ Not started | ⚪ None | ⚪ None | No | 3 |
 | 5 — Auth + progress sync | ☐ Not started | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
@@ -98,7 +98,44 @@ refactor, both now fixed:**
 by design only proved the refactor changed nothing. Both came from a human looking at a real
 browser. Later phases should not treat automated verification as sufficient for anything visual.
 
-### Phase 2 — built, verified locally, awaiting two things outside the repo (2026-08-17)
+### Phase 2 — done, merged, live on both origins (2026-08-17)
+
+Merged as `a68a6a3`. **Verified in production against the git blobs: all 66 tracked files in `public/`
+byte-identical on `amplifiedthinker.com` *and* `sing-chen.github.io/amplifiedthinker` — 0 mismatched
+on either.** The generated Astro page carries `/amplifiedthinker/` asset prefixes on Pages and bare `/`
+on Vercel, with canonical pointing at the custom domain from both.
+
+**`middleware.js` survived the framework build**, which was the phase's biggest unknown. Root-level
+Vercel Edge Middleware still fires under an Astro build, and all three cases are correct:
+
+| Request | Result |
+|---|---|
+| LinkedInBot UA + `?story=` | ✅ share shell, correct title |
+| Normal browser UA | ✅ real news page |
+| Bot UA, no `story` param | ✅ real news page |
+
+**No Pages downtime.** Pages kept serving its previous deployment through the merge and swapped when
+the Actions run finished — the earlier probe showing the old build was CDN lag, not an outage. The
+legacy `pages build and deployment` correctly stopped firing once the source moved to Actions.
+
+**Two process findings worth carrying:**
+
+1. **`workflow_dispatch` needs the workflow file on the default branch** before GitHub will show a
+   "Run workflow" button, so the intended verify-before-merge sequence was impossible until the file
+   landed on `main` (`9c01355`, pushed with `[skip ci]` so the run it would otherwise trigger — and
+   fail, since `main` had no `package.json` yet — never started).
+2. **The `github-pages` environment blocks non-default branches from deploying.** The dispatch against
+   the branch failed at `deploy` while `build` passed, which still proved `npm ci`, the Astro build and
+   the artifact upload on CI. The remaining unknown — serving under a subpath — was verified locally by
+   staging the build under a directory named `amplifiedthinker`, which needed no rule changes.
+
+**Near-miss worth recording:** the first production verification compared served bytes against the
+*working tree* and reported 25 of 28 text files mismatching, with all 3 binaries passing. That pattern
+is a line-ending artifact — `core.autocrlf=true` means the working tree is CRLF while every origin
+serves the LF blob. Comparing against `git show HEAD:<path>` gave 66/66. Phase 1's line-ending lesson
+resurfacing in a new disguise, and it briefly looked like a disaster.
+
+### Phase 2 — build notes (superseded by the entry above)
 
 Branch `feat/astro-shell`, commit `b03e6f2`. Astro 7.2.2, `output: 'static'`, no adapter. All 16 pages
 moved into `public/` as pure renames — git recorded every one at 100% similarity, zero content lines
@@ -247,9 +284,9 @@ touches tens of lines, a line-ending accident touches thousands.
 
 ---
 
-## Phase 2 — Astro shell
+## Phase 2 — Astro shell ✅ DONE
 
-**Impact:** 🟡 Silent (visitor) · 🔵 Visible (admin — dev command changes, `main` can now fail a build)
+**Impact:** 🟡 Silent (visitor) · 🔵 Visible (admin) · **Shipped 2026-08-17** — outcome in the Progress log above.
 
 **Why now:** every new surface needs somewhere to live. Doing this before any feature means
 features get built once, in their final home, rather than built twice.

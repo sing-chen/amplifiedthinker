@@ -301,6 +301,33 @@ To verify a branch end to end on the live Pages URL, allow it at **Settings → 
 github-pages → Deployment branches**. Worth removing again afterwards, since the rule's default is
 the safer posture.
 
+#### ⚠️ Comparing served bytes: compare against the git blob, never the working tree
+
+`core.autocrlf=true`, so the repository stores LF and the working tree gets CRLF on checkout. CI builds
+from a clean checkout, so **every origin serves LF**. Comparing a served file against the local
+working-tree copy therefore fails on every text file while every binary passes:
+
+```
+about.html   MISMATCH      images/favicon.png   ok
+nav.js       MISMATCH      images/og-cover.png  ok
+…25 text files mismatching, 3 images matching…
+```
+
+That pattern — all text differing, all binaries identical — is the signature of a line-ending
+artifact, not a deployment fault. Phase 2's first verification pass produced exactly this and looked
+briefly like a catastrophe.
+
+Compare against the blob instead, which is what was actually deployed:
+
+```bash
+git show "HEAD:public/$rel" | sha256sum        # authoritative
+curl -s "https://amplifiedthinker.com/$rel" | sha256sum
+```
+
+Re-run that way, all 66 files matched on both origins. Same lesson as Phase 1, in a new disguise: any
+comparison touching these files has to decide what it does about line endings *before* it reports a
+difference.
+
 #### Testing the Pages base path without deploying
 
 Most of what a Pages deployment would prove can be checked locally, which is faster and needs no
