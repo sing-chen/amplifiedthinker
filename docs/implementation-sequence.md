@@ -1,6 +1,8 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1 and 2 live. Phase 3 (Supabase) is next · **Last updated:** 2026-08-17
+**Status:** In progress — Phases 0, 1 and 2 live. Phase 3 applied and verified on
+`feat/supabase-schema`; **awaiting merge and production-origin verification** ·
+**Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -29,7 +31,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 0 — Branch + environment setup | ✅ **Done** (allowlist deferred to 3) | ⚪ None | ⚪ None | No | — |
 | 1 — Progress module extraction | ✅ **Done — live** | 🟡 Silent | ⚪ None | No | — |
 | 2 — Astro shell | ✅ **Done — live** | 🟡 Silent | 🔵 Visible | No | 0 |
-| 3 — Supabase schema + RLS | ☐ Not started | ⚪ None | ⚪ None | No | 0 |
+| 3 — Supabase schema + RLS | 🔨 **In progress** | ⚪ None | ⚪ None | No | 0 |
 | 4 — Email | ☐ Not started | ⚪ None | ⚪ None | No | 3 |
 | 5 — Auth + progress sync | ☐ Not started | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
 | 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
@@ -69,6 +71,173 @@ October 2026 as NRD filters age out, so avoid designs that assume it is permanen
 ---
 
 ## Progress log
+
+### Phase 3 — in progress, branch `feat/supabase-schema` (2026-08-17)
+
+**Everything that can be written without a project exists; nothing has been applied.**
+Creating the Supabase project needs the account holder, so the phase is deliberately split at
+that line rather than blocked behind it.
+
+| Built | |
+|---|---|
+| `supabase/migrations/20260817120000_initial_schema.sql` | All 9 tables, RLS enabled in the same block as each `create table`, every policy, `is_admin()`, the `is_admin` guard trigger, a signup trigger, and the grant narrowing. One transaction. |
+| `supabase/rollback/…_down.sql` | The hand-written down-path. A Vercel rollback restores code, never schema. |
+| `scripts/verify-rls.mjs` (`npm run verify:rls`) | The signed-out gate, over plain fetch against PostgREST — no client library between the assertion and the database. |
+| `src/pages/auth-test.astro` | The signed-in half. Throwaway; delete at the end of Phase 5. |
+| `supabase/README.md` | Apply, roll back, verify, and the dashboard settings SQL cannot reach. |
+
+| Done on the day | |
+|---|---|
+| Project `spehmrgmcdenqdftkyrt` created, EU | One project. The dev/prod split stays a Phase 5 activity. *Automatically expose new tables* off and *Enable automatic RLS* on, both verified afterwards by creating a probe table and asking what it inherited. |
+| Both migrations applied | The first failed once on ordering (finding 9) and rolled back whole. |
+| Redirect allowlist set, all four entries | Phase 0's last open activity, closed. |
+| **Signed-out gate: 22/22** | The phase's written "done when". |
+| **Signed-in checks: 8 PASS non-admin, 9 PASS admin** | The admin gate exercised in both directions, which no automated check could have done. |
+| Preview origin verified | Sign-in plus a password-reset redirect landing back on the branch URL — the wildcard entry proven by behaviour rather than by reading the pattern. |
+
+| Still open | |
+|---|---|
+| Merge to `main` | Deploys to both production origins. |
+| Verify both production origins | `amplifiedthinker.com` and, more importantly, `sing-chen.github.io/amplifiedthinker` — the origin whose users have no fallback. Each needs one password-reset email to test its redirect entry; sign-in alone sends no mail and proves nothing about redirects. |
+
+**Findings from building against the real code rather than the plan:**
+
+1. **The data model's localStorage example is one field stale, and the schema absorbed it for
+   free.** `supabase-integration-plan.md` documents plan state as
+   `{quizSelected, quizRevealed, quizOrder, habitOpen}`. The live page also saves `cardsOpen`,
+   added by Phase 1's accordion fix *after* the model was written. Because `state` is `jsonb`,
+   this cost nothing — the column that was chosen for flexibility had already been vindicated
+   before it existed. Recorded rather than corrected upstream, because the drift is the point.
+2. **`position` and `visited` are not the same type across content types.** `plan.html` stores
+   section-id *strings*; `primer.html` stores slide-index *numbers* (`new Set([0])`). Chosen:
+   `text` / `text[]`, with the coercion left in each page's mapping layer — exactly where
+   `progress.js` already draws that line ("each page still owns the mapping between its own DOM
+   and the stored shape"). The alternative, two columns or a wider type, would have moved
+   page-specific knowledge into the schema.
+3. **`force row level security` was written, then removed — it would have locked the one
+   documented way to grant admin.** FORCE applies RLS to the table owner, which is the role the
+   dashboard SQL editor runs as, and the `is_admin` guard trigger deliberately leaves a hole for
+   exactly that connection. Plain `enable` is correct here; the near-miss is noted in the
+   migration so nobody "hardens" it back.
+4. **Grants are the second layer, and the more reliable one.** Supabase grants `anon` broadly on
+   `public` by default, so a table whose policy is subtly wrong is protected only by RLS
+   defaulting to deny. The migration revokes and re-grants explicitly: `anon` ends with no
+   INSERT/UPDATE/DELETE anywhere and no SELECT at all on the four user-owned tables. The plan
+   called for this in one line ("restrict what `anon` is granted"); it is worth the section it got.
+5. **"At most one pinned story" made structural.** The data model describes the editorial pin as
+   at most one site-wide. `news.json` was checked — exactly one — so it became a partial unique
+   index rather than a convention Phase 7's admin UI would have to remember.
+6. **The Vercel scope is `singchen`**, recovered from preview URLs in
+   `.claude/settings.local.json`. `dev-workflow.md` carried it as `<your-scope>`; the allowlist
+   line is now concrete.
+7. **`is:inline` held.** The new page builds and, checked in a browser at both `/auth-test` and
+   `/auth-test/`, `nav.js` resolves links correctly from either. No `type="module"` in the
+   output. Verified rather than assumed, since this is the trap Phase 2 recorded.
+8. **The test page was rewritten to take credentials at runtime, and that is a small version of a
+   standing constraint.** It first read `PUBLIC_` env vars at build time — which works locally and
+   is silently useless everywhere else, because `.github/workflows/pages.yml` passes only
+   `ASTRO_BASE` and Vercel had no variables set. Verifying the deployed origins would have needed
+   the same two values configured in **three** build configs, for a page marked for deletion at the
+   end of Phase 5. It now takes them in two fields backed by `localStorage`, so it runs unchanged on
+   all four origins with no build config anywhere, refuses a `service_role` or `sb_secret_` key
+   (which would bypass RLS and turn every check green while proving nothing), and is inert for a
+   stray visitor after merge. **The general form is worth carrying: anything that must work on both
+   production origins should decide at runtime, because only one of them has a build you control.**
+   That is the same conclusion `supabase-client.js`'s hostname switch reaches from the other
+   direction.
+
+9. **The migration failed on its first real run, on ordering — and the failure mode is worth
+   knowing.** `is_admin()` sat in a "helper functions" section at the top, 40 lines above the
+   `profiles` table it reads, which errored with `42P01: relation "public.profiles" does not
+   exist`. The cause is that `check_function_bodies` is on by default and a **`LANGUAGE sql`**
+   body is fully parsed at `create function` time, so every object it names must already exist.
+   The instructive part is the contrast sitting ten lines below it: `handle_new_user()` names the
+   *same table* and would have been perfectly happy in that position, because **`LANGUAGE plpgsql`**
+   bodies get a syntax check only, never an object-existence check. Same reference, same schema,
+   different language, different rule. Fixed by moving `is_admin()` to immediately after
+   `profiles`, with the reason recorded inline so it does not get tidied back. An audit of every
+   other definition-versus-reference pair in the file came back clean, and `is_admin()` was the
+   only `LANGUAGE sql` function in it — so this was a single-instance bug, not a pattern.
+
+   **Cost of the transaction design: zero.** The failure rolled back whole, the database was
+   untouched, and the retry was a re-paste. That is the property the one-transaction shape was
+   chosen for, tested by accident on the first attempt.
+
+10. **The Supabase Advisor found 9 warnings the migration should not have left, and one of them was
+    live rather than theoretical.** Eight were mine: `set_updated_at` missing the pinned
+    `search_path` the other three functions had, and four `SECURITY DEFINER` functions granted
+    `EXECUTE` to `anon` and `authenticated`. Cleared in a **second migration**
+    (`20260817140000_harden_function_grants.sql`) rather than by editing the first — an applied
+    migration is history, and editing it means the file stops describing the database that exists.
+    The "all tables in one migration" principle is intact; this one creates no tables.
+
+    **Testing the warnings rather than trusting them changed two of the four verdicts.** Probing
+    each function over RPC before applying the fix:
+
+    | Function | Returns | Probe | Reality |
+    |---|---|---|---|
+    | `handle_new_user()` | `trigger` | 404 | **Never reachable.** PostgREST does not expose functions returning `trigger`, whoever holds `EXECUTE`. The Advisor's "callable via `/rest/v1/rpc/…`" was not true. |
+    | `profiles_guard_privileged_columns()` | `trigger` | 404 | Same. |
+    | `is_admin()` | `boolean` | 200 `false` | Reachable, and harmless — it filters on `auth.uid()`, null for anon, so it could only ever answer `false`. Revoked as least privilege, not as a fix. |
+    | `rls_auto_enable()` | `event_trigger` | **400** | **Genuinely reachable** — PostgREST resolved it and got as far as failing to serialise the return type. The one I was least inclined to touch, being Supabase's own, was the only live exposure. |
+
+    The asymmetry is the part worth keeping: a `trigger` return type is invisible to PostgREST, an
+    `event_trigger` return type is not. Not predictable from the warning text, and it is the
+    difference between a theoretical finding and a real one.
+
+11. **`is_admin()`'s gate assertion got stronger by accident.** It used to assert the function
+    *returns false* for an anonymous caller. Once `anon` lost `EXECUTE`, that assertion had to
+    become *cannot call it at all* — which is what should have been asserted from the start. The
+    weaker version proved the answer was harmless; the stronger one proves the door is shut.
+    `authenticated` keeps `EXECUTE`, because RLS policy expressions are evaluated with the querying
+    role's privileges, so a role must hold `EXECUTE` on any function its policies call.
+
+    Gate is now **22/22**, up from 19, with the three added checks all covering the RPC surface.
+
+12. **The last Advisor warning was tested rather than argued, and the test found something bigger
+    than the warning.** The claim — that `authenticated` needs `EXECUTE` on `is_admin()` because RLS
+    policy expressions are evaluated with the querying role's privileges — was asserted three times
+    from documentation before anyone ran it. Revoking the grant with a live session confirmed it
+    immediately, so the warning is permanent and the note in `supabase/README.md` stands.
+
+    **But the failure was not where it was predicted, and that is the finding.** The expectation was
+    that admin *writes* would break. What actually broke was reading your **own** profile row:
+
+    ```
+    FAIL  profiles: own row exists    permission denied for function is_admin
+    FAIL  profiles: select * ...      permission denied for function is_admin
+    ```
+
+    `profiles` carries two permissive SELECT policies, and permissive policies are **OR-ed** — so
+    evaluating the set evaluates the admin one too, for every caller. A function the role cannot
+    execute therefore does not disable the admin branch, it **errors the whole read for everyone**.
+
+    **Carry this into Phase 7:** adding an admin policy to an existing table can break ordinary
+    users' access to it if the function grants are wrong, and the symptom is a permission error on a
+    table whose own policies read perfectly.
+
+13. **The check written to detect this could not have detected it — it passed either way.** Check 7
+    asserted only `Boolean(error)`, and "permission denied for function is_admin" carries error code
+    `42501`, exactly as an RLS refusal does. So the check designed as the experiment's signal was
+    blind to the experiment, and the answer arrived from the three checks it had been assumed would
+    be uninformative. Now asserts *why* the write was refused (`row-level security` in the message),
+    not merely that it was.
+
+    A second cascade in the same run: check 1's failed read left `is_admin` null, which the page
+    read as `false`, so check 3 confidently reported `tried false -> true` about a value it never
+    obtained. The suite now aborts when it cannot read its own profile rather than emitting a board
+    of derived nonsense.
+
+    **The general lesson, and it applies to every check in this phase:** a test that passes on *any*
+    error is not testing what it claims. Both of these were written to fail closed and did — while
+    saying nothing true.
+
+**One assertion in the gate is time-limited, and the script says so.** "Every table returns zero
+rows when signed out" is true for the content tables only while they are empty — from Phase 6,
+`news_stories` returns published rows to anonymous callers by design. The durable invariant is the
+other half: `profiles`, `skill_progress`, `user_news` and `notes` are refused outright, because
+`anon` holds no grant on them at all. The script distinguishes the two so a future green board
+still means something.
 
 ### Phase 1 — done, merged, live (2026-08-17)
 
@@ -313,7 +482,7 @@ Instant, and no git revert needed first.
 
 ---
 
-## Phase 3 — Supabase schema and RLS
+## Phase 3 — Supabase schema and RLS 🔨 IN PROGRESS
 
 **Impact:** ⚪ None · ⚪ None — no site code touched beyond one throwaway test page.
 
@@ -323,13 +492,24 @@ natural moment that forces you back to do it.
 
 | Activity | What it does, and why |
 |---|---|
-| Create all tables in one migration | The whole shape is visible at once, so relationships get designed rather than accreted. |
-| Enable RLS and write policies before inserting any row | Removes any window where data exists unprotected. |
-| Add `is_admin()` and the profile-column trigger | Creates the admin gate, and ensures users cannot grant it to themselves. |
-| Prove auth end to end on one throwaway page | Validates the whole chain — signup, session, policy enforcement — before it touches a real page. |
+| **Create the Supabase project** | **✅ Done** — `spehmrgmcdenqdftkyrt`, EU, one project. The dev/prod split stays a Phase 5 activity, because there is no real user data to protect until then. |
+| Create all tables in one migration | The whole shape is visible at once, so relationships get designed rather than accreted. **✅ Applied** — 9 tables in one transaction. A second migration follows it, creating no tables, that tightens function grants. |
+| Enable RLS and write policies before inserting any row | Removes any window where data exists unprotected. **✅ Verified** — `enable row level security` sits in the same block as each `create table`, and `pg_tables` confirms all 9 `true` with 17 policies. Grants to `anon` are revoked and re-granted explicitly on top. |
+| Add `is_admin()` and the profile-column trigger | Creates the admin gate, and ensures users cannot grant it to themselves. **✅ Proven in both directions** — a non-admin is refused, an admin is permitted, and an admin cannot demote themselves either, since the trigger checks for any change rather than for escalation. |
+| Add the Supabase redirect allowlist, including the preview wildcard | **Deferred here from Phase 0**, which could not do it with no project to configure. **✅ Set and behaviourally verified** on localhost and the preview branch; the two production origins follow the merge. |
+| Prove auth end to end on one throwaway page | Validates the whole chain — signup, session, policy enforcement — before it touches a real page. **✅ Done** — and it earned its place: it caught two defects in its own checks that a green board had been hiding (findings 12 and 13). |
 
 **Done when:** using only the anon key, every table returns zero rows when signed out — verified
-by direct query, not by the UI hiding things.
+by direct query, not by the UI hiding things. `npm run verify:rls` is that direct query.
+
+**Read the gate precisely.** It has two passing states and only one of them is permanent: the four
+user-owned tables are *refused* (`anon` holds no grant), while the five content tables merely
+return `[]` *because they are empty*. From Phase 6 the latter legitimately serve published rows.
+The script separates them so the assertion does not quietly become meaningless.
+
+**Rollback:** `supabase/rollback/…_down.sql`, and it is genuinely cheap only during this phase —
+no row is inserted anywhere in Phase 3. From Phase 5 it destroys real user data. Note that a
+Vercel rollback restores *code*, never schema.
 
 ---
 

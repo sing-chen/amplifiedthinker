@@ -142,9 +142,12 @@ Site URL:       https://amplifiedthinker.com
 
 Redirect URLs:  https://amplifiedthinker.com/**
                 https://sing-chen.github.io/amplifiedthinker/**
-                https://amplifiedthinker-git-*-<your-scope>.vercel.app/**
+                https://amplifiedthinker-git-*-singchen.vercel.app/**
                 http://localhost:4321/**
 ```
+
+The scope was `<your-scope>` here until Phase 3 resolved it to `singchen` from the preview URLs
+already recorded in `.claude/settings.local.json`.
 
 Without the wildcard line, sign-in works in production and fails on every preview branch with no
 useful error. This is the failure mode the original brief flagged as a possibility; the branch
@@ -154,9 +157,11 @@ workflow makes it a certainty rather than a risk.
 Pages origin" below. Users blocked from the custom domain by corporate NRD policies reach the site
 only there, so omitting it means sign-in fails for the people with no fallback.
 
-⚠️ **This is Phase 0's one blocked activity.** There is no Supabase project yet, so there is nothing
-to configure. It moves into Phase 3, where the project gets created — recorded here so the values
-are settled in advance rather than invented under pressure.
+⚠️ **Phase 0's one blocked activity, now carried by Phase 3.** The values were settled here in
+advance precisely so they would not be invented under pressure later, and Phase 3 spent them
+unchanged. Applying them is still a dashboard action and still pending — see
+[../supabase/README.md](../supabase/README.md), which holds the runbook and the reason each of the
+four lines exists.
 
 ### One Supabase project until Phase 5, two after
 
@@ -190,6 +195,29 @@ user writing to a scratch database.
 The anon key is public by design and RLS is the actual security boundary, so both keys sitting
 in source is not a leak, even though it looks like one. The `service_role` key is a different
 matter entirely and must never appear in any file under `public/`.
+
+### Local config: `.env`
+
+Phase 3 added a gitignored `.env` (shape in `.env.example`) holding `PUBLIC_SUPABASE_URL` and
+`PUBLIC_SUPABASE_ANON_KEY`. Astro's `PUBLIC_` prefix is what exposes a value to the browser;
+anything without it stays server-side.
+
+**Only `npm run verify:rls` depends on it.** That is deliberate, and it is the reason there are no
+Supabase environment variables in Vercel's dashboard or in
+[.github/workflows/pages.yml](../.github/workflows/pages.yml) either.
+
+The alternative was tried on paper and rejected. Making `/auth-test` read build-time values would
+have meant the same two variables configured in **three** places — `.env`, Vercel scoped to Preview
+and Production, and the Pages workflow — for a page explicitly marked for deletion at the end of
+Phase 5, plus remembering to unpick all three afterwards. The page takes its credentials at runtime
+instead, so it runs unchanged on every origin with no build config at all.
+
+This is the same instinct as the hostname switch above, arriving at the same answer from the other
+direction: **anything that has to work on both production origins should decide at runtime, because
+only one of them has a build you control.** Pages builds from a workflow, Vercel from a dashboard,
+and keeping a value in step across both is a standing cost. `.env` is for the things with a shell
+around them, and after the Phase 5 dev/prod split it is how one machine points at the dev project
+without editing tracked code.
 
 ---
 
