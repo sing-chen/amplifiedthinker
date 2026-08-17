@@ -138,6 +138,23 @@ that line rather than blocked behind it.
    That is the same conclusion `supabase-client.js`'s hostname switch reaches from the other
    direction.
 
+9. **The migration failed on its first real run, on ordering — and the failure mode is worth
+   knowing.** `is_admin()` sat in a "helper functions" section at the top, 40 lines above the
+   `profiles` table it reads, which errored with `42P01: relation "public.profiles" does not
+   exist`. The cause is that `check_function_bodies` is on by default and a **`LANGUAGE sql`**
+   body is fully parsed at `create function` time, so every object it names must already exist.
+   The instructive part is the contrast sitting ten lines below it: `handle_new_user()` names the
+   *same table* and would have been perfectly happy in that position, because **`LANGUAGE plpgsql`**
+   bodies get a syntax check only, never an object-existence check. Same reference, same schema,
+   different language, different rule. Fixed by moving `is_admin()` to immediately after
+   `profiles`, with the reason recorded inline so it does not get tidied back. An audit of every
+   other definition-versus-reference pair in the file came back clean, and `is_admin()` was the
+   only `LANGUAGE sql` function in it — so this was a single-instance bug, not a pattern.
+
+   **Cost of the transaction design: zero.** The failure rolled back whole, the database was
+   untouched, and the retry was a re-paste. That is the property the one-transaction shape was
+   chosen for, tested by accident on the first attempt.
+
 **One assertion in the gate is time-limited, and the script says so.** "Every table returns zero
 rows when signed out" is true for the content tables only while they are empty — from Phase 6,
 `news_stories` returns published rows to anonymous callers by design. The durable invariant is the

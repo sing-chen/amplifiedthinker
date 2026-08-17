@@ -22,7 +22,11 @@ begin;
 
 
 -- ---------------------------------------------------------------------------
--- 1. Helper functions
+-- 1. Helper functions that depend on nothing
+--
+-- Only functions with no table references belong here. `is_admin()` reads
+-- `profiles`, so it lives further down, immediately after that table - see the
+-- note there for why the ordering is forced rather than stylistic.
 -- ---------------------------------------------------------------------------
 
 -- Keeps updated_at honest without every caller remembering to set it.
@@ -36,32 +40,9 @@ begin
 end;
 $$;
 
--- The admin gate. SECURITY DEFINER for two reasons, both load-bearing:
---
---   1. It reads `profiles` from inside a `profiles` policy. Without DEFINER that
---      recurses infinitely, because evaluating the policy would re-enter it.
---   2. It must work for a user who can only see their own profile row.
---
--- `search_path` is pinned so a caller cannot shadow `profiles` with a table of
--- their own and hand themselves admin. STABLE lets the planner call it once per
--- statement rather than once per row.
-create or replace function public.is_admin()
-returns boolean
-language sql
-security definer
-set search_path = public
-stable
-as $$
-  select coalesce((select p.is_admin from public.profiles p where p.id = auth.uid()), false);
-$$;
-
--- Anyone may ask; the answer is `false` unless they are actually an admin.
-revoke all on function public.is_admin() from public;
-grant execute on function public.is_admin() to anon, authenticated, service_role;
-
 
 -- ---------------------------------------------------------------------------
--- 2. profiles
+-- 2. profiles, and the admin gate that reads it
 -- ---------------------------------------------------------------------------
 
 create table public.profiles (
@@ -89,6 +70,42 @@ alter table public.profiles enable row level security;
 create trigger profiles_set_updated_at
   before update on public.profiles
   for each row execute function public.set_updated_at();
+
+-- The admin gate. SECURITY DEFINER for two reasons, both load-bearing:
+--
+--   1. It reads `profiles` from inside a `profiles` policy. Without DEFINER that
+--      recurses infinitely, because evaluating the policy would re-enter it.
+--   2. It must work for a user who can only see their own profile row.
+--
+-- `search_path` is pinned so a caller cannot shadow `profiles` with a table of
+-- their own and hand themselves admin. STABLE lets the planner call it once per
+-- statement rather than once per row.
+--
+-- IT MUST BE DEFINED AFTER `profiles`, AND THAT IS NOT A STYLE CHOICE.
+-- `check_function_bodies` is on by default, and for a LANGUAGE SQL function that
+-- means the body is fully parsed and every object it names must already exist.
+-- Defined above the table, this fails with:
+--
+--     42P01: relation "public.profiles" does not exist
+--
+-- The contrast is the useful part: `handle_new_user()` below names the same table
+-- and would have been perfectly happy up there, because LANGUAGE PLPGSQL bodies
+-- get a syntax check only, never an object-existence check. Same reference,
+-- different language, different validation rule. Do not "tidy" this back up into
+-- the helpers section.
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select coalesce((select p.is_admin from public.profiles p where p.id = auth.uid()), false);
+$$;
+
+-- Anyone may ask; the answer is `false` unless they are actually an admin.
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to anon, authenticated, service_role;
 
 -- `is_admin` must not be self-settable, or the admin gate is decorative.
 --
