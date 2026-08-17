@@ -129,7 +129,7 @@ had those pages been converted rather than copied.
    twice, against 13s on local disk. Deployment was never affected (Vercel and Actions build on Linux
    from a clean checkout), but local development was fully blocked — which removes the fastest
    feedback loop exactly when the project gains a build that can fail. The working copy moved to
-   `C:\devmplifiedthinker`, verified with `npm ci` in 7s, a clean build, the 66/66 gate, and
+   `C:\dev\amplifiedthinker`, verified with `npm ci` in 7s, a clean build, the 66/66 gate, and
    `npm run dev` serving both old and new pages. `_originals/` and `.claude/settings.local.json` were
    gitignored and existed only in the Drive copy, so both were carried over by hand.
    See [dev-workflow.md](dev-workflow.md).
