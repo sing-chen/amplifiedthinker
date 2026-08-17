@@ -17,3 +17,6 @@ dist/
 
 # Vercel CLI local state
 .vercel/
+
+# The Drive backup folder, if anyone ever points the backup script inside the repo.
+amplifiedthinker-backup/

@@ -13,9 +13,30 @@ The skill to build is: **$ARGUMENTS**
 
 ---
 
+## FILE LOCATIONS — read this before editing anything
+
+Phase 2 introduced an Astro build. **Every site file now lives under `public/`**, which Astro copies
+into the build untouched. Served URLs are unchanged, so this creates two kinds of path that look
+identical but are not:
+
+| Kind | Example | Needs `public/`? |
+|---|---|---|
+| A file you read or write | `public/skills/[slug]/plan.html`, `public/nav.js`, `public/search-index.json` | **Yes** |
+| A URL inside a page's HTML | `../../nav.js`, `<img src="skills/[slug]/video-thumbnail.png">`, `url` values in `search-index.json` | **No — never** |
+
+Adding `public/` to a URL inside a page breaks it at runtime; omitting it from a file path writes to
+the wrong place, or fails. The instructions below are already correct on both counts — follow them
+literally rather than normalising them.
+
+New Astro-built pages live in `src/pages/`, but skill pages are **not** among them: they stay
+hand-authored in `public/`, because each `plan.html` carries ~49 inline `onclick` handlers that
+Astro's default script bundling would break.
+
+---
+
 ## STEP 1 — READ THE TEMPLATES
 
-Canonical reference pages: [skills/creative-thinking/primer.html](skills/creative-thinking/primer.html), [skills/creative-thinking/plan.html](skills/creative-thinking/plan.html). Read both in full before doing anything else — they are the patterns to match exactly, not starting points to improve on.
+Canonical reference pages: [public/skills/creative-thinking/primer.html](public/skills/creative-thinking/primer.html), [public/skills/creative-thinking/plan.html](public/skills/creative-thinking/plan.html). Read both in full before doing anything else — they are the patterns to match exactly, not starting points to improve on.
 
 If the user attaches or names different/additional reference pages in their message, read those instead (or in addition) and treat them as canonical for this build. If two reference pages disagree on a component pattern, stop and ask the user which one to follow rather than guessing.
 
@@ -75,7 +96,7 @@ The plan must include:
 - Any structural departures from the standard 14-section plan, with rationale
 
 **Shared decisions**
-- Relationship cards: which other skills does this skill relate to, and what is the boundary statement for each? (check [skills/](skills/) for the current roster)
+- Relationship cards: which other skills does this skill relate to, and what is the boundary statement for each? (check [public/skills/](public/skills/) for the current roster)
 - Out-of-scope items: what is explicitly excluded, and why?
 - AI-context notes: which principles or sections warrant an AI-specific callout, and what angle each takes
 
@@ -95,7 +116,9 @@ Once the content plan is approved, build both files.
      **Required on both primer.html and plan.html.** Progress persistence lives in this shared
      module; without the tag, `AmplifiedProgress` is undefined and the page's entire inline
      script throws on load. The storage key is derived from the URL path, so no per-page
-     constant is needed — `skills/[skill-slug]/plan.html` yields `amplified_plan_[skill-slug]`.
+     constant is needed — the served URL `/skills/[skill-slug]/plan.html` yields
+     `amplified_plan_[skill-slug]`. Note that is the **URL**, not the file path: `public/` is
+     stripped when served, so the key is unaffected by the Phase 2 move.
    - Google Fonts: use the same imports as the template pages
    - No external JS dependencies beyond what the templates already use
 
@@ -111,7 +134,7 @@ Once the content plan is approved, build both files.
 
 8. Do not include video embed markup or its JS in primer.html — that's added separately as a later step (the `video-thumbnail.png` convention seen in existing skill folders is unrelated groundwork, not something to wire up here).
 
-9. Folder path: files go into `skills/[skill-slug]/` where slug is hyphenated lowercase (e.g. `creative-thinking`).
+9. Folder path: files go into `public/skills/[skill-slug]/` where slug is hyphenated lowercase (e.g. `creative-thinking`).
 
 ---
 
@@ -121,9 +144,9 @@ Once both files are built (and, if you ran a browser check, verified working), p
 
 **5a. Register the skill in nav.js**
 
-Add `'[skill-slug]': '[Skill Name]'` to the `names` map in [nav.js](nav.js) (currently around line 60) — a one-line addition to the existing object literal.
+Add `'[skill-slug]': '[Skill Name]'` to the `names` map in [nav.js](public/nav.js) (currently around line 60) — a one-line addition to the existing object literal.
 
-**5b. Flip the skill's card in future-skills.html from "coming soon" to available**
+**5b. Flip the skill's card in [public/future-skills.html](public/future-skills.html) from "coming soon" to available**
 
 Find the skill's existing `<!-- [SKILL NAME] -->` card block (search by its `id="s-[slug]"`). It currently looks like the other not-yet-live cards: `<div class="scard cs" ...>` with a plain `<div class="sheader">` (no click handler) and `<div class="sstatus ss-soon">Coming soon</div>`, and nothing after the `.shc` div.
 
@@ -141,18 +164,18 @@ Note the video-thumbnail.png referenced here won't exist yet (per Step 4's build
 
 **5c. Add the skill to search-index.json**
 
-[search-index.json](search-index.json) is a hand-maintained file that [search.html](search.html) fetches directly — it is NOT auto-generated from the skill pages, so a new skill is invisible to site search until it has an entry here. Add two entries (one `"type": "primer"`, one `"type": "plan"`) immediately after the pattern used by an existing skill (e.g. search for `"cr-primer"` / `"cr-plan"` and follow that shape exactly):
+[search-index.json](public/search-index.json) is a hand-maintained file that [search.html](public/search.html) fetches directly — it is NOT auto-generated from the skill pages, so a new skill is invisible to site search until it has an entry here. Add two entries (one `"type": "primer"`, one `"type": "plan"`) immediately after the pattern used by an existing skill (e.g. search for `"cr-primer"` / `"cr-plan"` and follow that shape exactly):
 - `id`: a short two-letter-ish prefix + `-primer` / `-plan` (e.g. `st-primer`)
 - `skill`, `title`, `description`: reuse the primer/plan's own `<title>`/meta description content, don't rephrase
 - `tags`: the skill name, each mental model name, key named frameworks/authors, plus `"primer"` or leave off for plan, and the skill's category (e.g. `"cognitive"`)
 - `slides` (primer) or `sections` (plan): the exact nav-rail labels from the built page, in order
-- `url`: `skills/[slug]/primer.html` or `skills/[slug]/plan.html`
+- `url`: `skills/[slug]/primer.html` or `skills/[slug]/plan.html` — a URL, so **no `public/` prefix**
 
 After editing, validate the file is still well-formed JSON before moving on (a trailing comma or missed brace here breaks site search entirely, not just this skill's entry).
 
 **5e. Generate the video-thumbnail image prompt**
 
-Give the user a ready-to-run image-generation prompt for `skills/[slug]/video-thumbnail.png`, in the same `@Create image` format used for every prior skill. Keep every brand token below identical, word-for-word, across skills — only the visual metaphor and the two text placeholders change. Do NOT invent new colors, change the palette's hex values, or alter the text/layout instructions; brand consistency across thumbnails matters more than novelty here.
+Give the user a ready-to-run image-generation prompt for `public/skills/[slug]/video-thumbnail.png`, in the same `@Create image` format used for every prior skill. Keep every brand token below identical, word-for-word, across skills — only the visual metaphor and the two text placeholders change. Do NOT invent new colors, change the palette's hex values, or alter the text/layout instructions; brand consistency across thumbnails matters more than novelty here.
 
 Template (fill in the two bracketed parts only):
 
@@ -162,7 +185,7 @@ Template (fill in the two bracketed parts only):
 
 Guidance for the visual metaphor: draw it from the skill's own content, not a generic stand-in — specifically, from whichever mental model or first principle best captures the skill's core motion or shape (e.g. Creative Thinking used scattering shapes converging toward one, drawn from its Divergent–Convergent model; Systems Thinking used interconnected nodes with looping arrows and one emphasized node, drawn from Feedback Loops and Leverage Points). Pick something concrete and drawable — shapes, arrows, nodes, layers — not an abstract description of the skill's definition.
 
-Tell the user to save the generated image as `skills/[slug]/video-thumbnail.png` once created, matching the filename convention of the other live skills.
+Tell the user to save the generated image as `public/skills/[slug]/video-thumbnail.png` once created, matching the filename convention of the other live skills.
 
 **5f. Generate the primer video prompt**
 
@@ -188,10 +211,10 @@ Report (don't create) a commit log entry in conventional commit format covering 
 ```
 feat: add [Skill Name] primer and learning plan
 
-- skills/[slug]/primer.html: [X]-slide primer covering [key topics]
-- skills/[slug]/plan.html: 14-section learning plan with [key structural notes]
-- nav.js, future-skills.html: register and activate the [Skill Name] card
-- search-index.json: add primer/plan entries so the skill surfaces in site search
+- public/skills/[slug]/primer.html: [X]-slide primer covering [key topics]
+- public/skills/[slug]/plan.html: 14-section learning plan with [key structural notes]
+- public/nav.js, public/future-skills.html: register and activate the [Skill Name] card
+- public/search-index.json: add primer/plan entries so the skill surfaces in site search
 ```
 
 Don't commit or deploy unprompted — ask first, per standard practice on this site.

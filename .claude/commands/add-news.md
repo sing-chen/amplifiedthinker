@@ -3,7 +3,18 @@ description: Turn a pasted "Daily workforce digest" output (or a bare URL) into 
 argument-hint: [paste the full daily digest text, paste a URL, or leave blank and paste/attach it in the next message]
 ---
 
-You are helping curate the News page at [news.html](news.html), backed by [news.json](news.json).
+You are helping curate the News page at [news.html](public/news.html), backed by
+[news.json](public/news.json).
+
+## File locations
+
+**Every site file lives under `public/`** since Phase 2 introduced the Astro build — `public/news.json`,
+`public/search-index.json`, `public/news.html`, and so on. Prose below names files without the prefix
+for readability, but every path you actually read or write needs it. Astro copies `public/` into the
+build untouched, so the served URLs are unchanged: `news.json` is still at `/news.json`.
+
+Pushing now triggers a build. A JSON edit cannot break it, but the site no longer updates
+unconditionally on push — if a deploy looks like it did nothing, check the Vercel build.
 
 ## Input
 
@@ -63,7 +74,7 @@ Rules:
 
 ## Step 3 — Merge into news.json
 
-Read [news.json](news.json). Determine the digest's date and convert to `YYYY-MM-DD`.
+Read [news.json](public/news.json). Determine the digest's date and convert to `YYYY-MM-DD`.
 
 - If a group with that `date` already exists, append the new stories to its `stories` array (don't duplicate a story with the same `title`+`url` already present).
 - If not, insert a new `{ "date": ..., "stories": [...] }` group. Order doesn't matter — news.html sorts newest-first on render — but keep the file's own entries in descending date order for readability when someone opens it by hand.
@@ -72,7 +83,7 @@ Show the user a short summary of what you're about to add (titles + date) before
 
 ## Step 3a — Update search-index.json
 
-[search.html](search.html) is a site-wide search page that reads [search-index.json](search-index.json). Each news story gets its own searchable entry there (`type: "news"`), so it must stay in sync whenever news.json changes.
+[search.html](public/search.html) is a site-wide search page that reads [search-index.json](public/search-index.json). Each news story gets its own searchable entry there (`type: "news"`), so it must stay in sync whenever news.json changes.
 
 Story ids are positional (`<date>-<index within that date's stories array>`), so an insertion anywhere but the end of a date's array shifts every id after it. Don't try to append/patch individual entries — regenerate **all** `type: "news"` entries from the current news.json and replace them wholesale, leaving every other entry (`page`, `primer`, `plan`, `person`) untouched.
 
@@ -83,8 +94,8 @@ Run this (adjust the python invocation to whatever's available — `python`, `py
 ```python
 import json
 
-news = json.load(open('news.json', encoding='utf-8'))
-idx = json.load(open('search-index.json', encoding='utf-8'))
+news = json.load(open('public/news.json', encoding='utf-8'))
+idx = json.load(open('public/search-index.json', encoding='utf-8'))
 
 idx = [e for e in idx if e.get('type') != 'news']
 
@@ -103,7 +114,7 @@ for group in news:
 
 idx.extend(news_entries)
 
-with open('search-index.json', 'w', encoding='utf-8', newline='\n') as f:
+with open('public/search-index.json', 'w', encoding='utf-8', newline='\n') as f:
     json.dump(idx, f, indent=2, ensure_ascii=False)
     f.write('\n')
 

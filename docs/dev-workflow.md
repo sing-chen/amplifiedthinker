@@ -437,6 +437,52 @@ Git and GitHub were already the source of truth and the backup, so Drive sync wa
 code — and from Phase 2 onward actively harmful, since it would also try to sync `node_modules` and
 `dist` on every build.
 
+#### Backing up to Drive — `npm run backup`
+
+Moving off Drive removed a backup, so [scripts/backup-to-drive.ps1](../scripts/backup-to-drive.ps1)
+puts one back. It is **not** a mirror of the working copy, deliberately:
+
+| Not backed up | Why |
+|---|---|
+| `node_modules/`, `dist/`, `.astro/` | Build artifacts. Syncing them is what made Drive unusable in the first place, and `npm ci` rebuilds them in 7s. |
+| `.git/` as a directory tree | Thousands of small, frequently-rewritten files — the exact pattern Drive corrupts. A half-synced `.git` is worse than no backup. |
+| Tracked source, as files | Already on GitHub in realtime, on every push. |
+
+| Backed up | Why |
+|---|---|
+| Full history as **one** `.bundle` file | Drive syncs single large files reliably. `git bundle --all` captures every branch and tag, including commits not yet pushed. ~17 MB. |
+| `_originals/` | Gitignored, so it exists nowhere else. |
+| `.claude/settings.local.json` | Untracked. |
+
+The script verifies the bundle before replacing the previous one, so a corrupt run cannot destroy a
+good backup. It also warns about the two things a bundle *cannot* capture — **uncommitted changes to
+tracked files** — and about any newly ignored path it doesn't know to back up, which is the standing
+trap: ignored files are invisible to `git status`, so the usual "is it pushed?" check does not cover
+them.
+
+**Restore, tested rather than assumed** — cloning from the bundle produced an identical HEAD and tree
+with a clean `fsck`:
+
+```bash
+git clone https://github.com/sing-chen/amplifiedthinker.git C:\dev\amplifiedthinker
+# then copy _originals/ and .claude/settings.local.json out of the backup folder
+npm ci
+```
+
+Only fall back to `git clone amplifiedthinker.bundle` if GitHub itself is unavailable.
+
+To run it on a schedule, register a Task Scheduler job (it is not scheduled by default — the honest
+default is manual, since GitHub already covers the code):
+
+```powershell
+schtasks /Create /SC DAILY /ST 18:00 /TN "amplifiedthinker backup" /TR "powershell -ExecutionPolicy Bypass -File C:\dev\amplifiedthinker\scripts\backup-to-drive.ps1"
+```
+
+⚠️ **The script is ASCII-only on purpose.** Windows PowerShell 5.1 reads a BOM-less `.ps1` as ANSI, so
+an em-dash in a comment becomes mojibake and breaks the parse. It also avoids `2>&1` on any git call,
+because 5.1 wraps a native command's stderr in `ErrorRecord`s — which turned `git bundle verify`
+printing "is okay" into a terminating error. Both cost a debug cycle; don't reintroduce either.
+
 #### What had to be carried over by hand
 
 Two things were gitignored and therefore existed *only* in the Drive copy. Both were copied to
