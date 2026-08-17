@@ -164,6 +164,29 @@ const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
       var client = null;
 
+      // This page's own URL, with any query string or fragment stripped.
+      //
+      // Phase 4 defect, found by clicking a real password-reset link: passing
+      // window.location.href as the redirect target breaks the SECOND auth
+      // round-trip on a page, and only the second. After the first one,
+      // supabase-js consumes the token and tidies the address bar - leaving a
+      // bare trailing '#'. That '#' then travels into the next redirectTo, and
+      // Supabase appends its own fragment to it, producing '##access_token=...'.
+      //
+      // supabase-js reads the fragment as url.split('#')[1], which for a double
+      // hash is the empty string, so it parses zero parameters and never sees
+      // the token. Nothing errors. The redirect lands on exactly the right
+      // origin and path, the allowlist is honoured, the mail is fine - and the
+      // page simply keeps showing the previous session, which is the most
+      // misleading possible outcome because it looks like a stale render.
+      //
+      // Carry this into Phase 5: auth.js will do the same kind of redirect, and
+      // the natural way to write it is the broken way. Never round-trip the
+      // current href; rebuild the target from origin and pathname.
+      function selfUrl() {
+        return window.location.origin + window.location.pathname;
+      }
+
       function setStatus(el, text, kind) {
         el.textContent = text;
         el.className = 'at-status' + (kind ? ' ' + kind : '');
@@ -285,7 +308,7 @@ const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         // on the GitHub Pages origin looks like "sign-in is broken" with no error
         // anywhere. This is the failure Phase 0 deferred to here.
         client.auth
-          .signUp({ ...c, options: { emailRedirectTo: window.location.href } })
+          .signUp({ ...c, options: { emailRedirectTo: selfUrl() } })
           .then(function (r) {
             sessionEl.textContent = r.error
               ? 'Sign-up error: ' + r.error.message
@@ -316,7 +339,7 @@ const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           return;
         }
         client.auth
-          .resetPasswordForEmail(email, { redirectTo: window.location.href })
+          .resetPasswordForEmail(email, { redirectTo: selfUrl() })
           .then(function (r) {
             sessionEl.textContent = r.error
               ? 'Reset error: ' + r.error.message
