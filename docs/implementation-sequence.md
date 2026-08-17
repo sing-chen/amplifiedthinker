@@ -1,6 +1,6 @@
 # Implementation sequence
 
-**Status:** In progress — Phase 1 complete and live · **Last updated:** 2026-08-17
+**Status:** In progress — Phases 0 and 1 complete; Phase 2 unblocked · **Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -26,7 +26,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 
 | Phase | Status | Visitor | Admin | Announce? | Depends on |
 |---|---|---|---|---|---|
-| 0 — Branch + environment setup | ◐ Partly done | ⚪ None | ⚪ None | No | — |
+| 0 — Branch + environment setup | ✅ **Done** (allowlist deferred to 3) | ⚪ None | ⚪ None | No | — |
 | 1 — Progress module extraction | ✅ **Done — live** | 🟡 Silent | ⚪ None | No | — |
 | 2 — Astro shell | ☐ Not started | 🟡 Silent | 🔵 Visible | No | 0 |
 | 3 — Supabase schema + RLS | ☐ Not started | ⚪ None | ⚪ None | No | 0 |
@@ -39,6 +39,32 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 
 **Phases 0–4 are entirely invisible to visitors** — roughly half the work, shippable to production
 without a single announcement. That is deliberate: it front-loads risk into changes nobody sees.
+
+---
+
+## Cross-cutting constraint: two production origins
+
+Phase 0 established that the site has **two supported production origins**, not one:
+
+| Origin | Runs code? |
+|---|---|
+| `amplifiedthinker.com` (Vercel) | Yes — server rendering and `/api/` endpoints |
+| `sing-chen.github.io/amplifiedthinker` (Pages) | **No** — static files only |
+
+The GitHub origin exists because some corporate networks block the custom domain under
+newly-registered-domain policies. Those users have no alternative route, so the origin is
+load-bearing rather than legacy.
+
+**The consequence for every phase from 6 onward:** anything requiring a server is unavailable to that
+audience. Client-side features carry over fine — auth, progress sync, favourites, pins, notes, and
+client-rendered dashboards all work on static hosting because Supabase JS runs in the browser. What
+cannot: the server-rendered blog (8), the admin portal (7 — no loss, it is admin-only), `/api/`
+endpoints and legacy-URL 301s (6), and `middleware.js` social previews.
+
+Where a feature matters to that audience, prefer a client-side or prerendered implementation over a
+server-rendered one. Where it does not, note the gap rather than silently shipping a broken page.
+Full capability matrix in [dev-workflow.md](dev-workflow.md); the constraint may lift around
+October 2026 as NRD filters age out, so avoid designs that assume it is permanent.
 
 ---
 
@@ -72,18 +98,63 @@ refactor, both now fixed:**
 by design only proved the refactor changed nothing. Both came from a human looking at a real
 browser. Later phases should not treat automated verification as sufficient for anything visual.
 
-### Phase 0 — partly done
+### Phase 0 — done (2026-08-17), one activity deferred to Phase 3
 
-Confirmed along the way rather than as a deliberate pass: preview deployments work, and they sit
-behind Vercel Authentication (see [dev-workflow.md](dev-workflow.md)). Still outstanding — the
-Supabase redirect allowlist, which cannot be done until a Supabase project exists in Phase 3, and
-a decision on branch protection for `main`.
+Ran as a deliberate pass after Phase 1 rather than before it. Mostly verification, which is the
+point — the value was in what turned out not to be true.
+
+- **Production branch confirmed by behaviour, not by setting.** `main`-only commits are live on
+  `amplifiedthinker.com`; the two feature branches only ever produced preview URLs.
+- **Previews confirmed working**, behind Vercel Authentication (proven during Phase 1).
+- **Supabase redirect allowlist — deferred to Phase 3.** There is no project to configure yet. The
+  exact values are settled in [dev-workflow.md](dev-workflow.md) so they don't get invented later
+  under pressure. This is the only Phase 0 activity not closed.
+- **Branch protection — decided against.** `deploy.bat` pushes straight to `main`, so requiring pull
+  requests would turn every content update into a PR. On a solo repo the protection guards against
+  nobody. Recorded as a decision rather than left open.
+
+**The finding — and it reshapes the architecture: there are two supported production origins.**
+`sing-chen.github.io/amplifiedthinker` is serving the full site, rebuilt from `main` — it already
+carries the Phase 1 `progress.js`. It had been assumed to be a stale artifact. It is not:
+
+> Some corporate networks block `amplifiedthinker.com` under newly-registered-domain policies. Those
+> users have been given the GitHub URL and can reach it. **Retiring Pages would cut off an audience
+> segment with no other route in.**
+
+That single fact changes three things this plan had wrong:
+
+1. **`about.html`'s hostname sniff was live behaviour, not dead code** — and it was firing on Vercel
+   previews and localhost too, so every preview of that page showed the LinkedIn-only contact block.
+   A preview lying about production, in the phase whose whole purpose is making previews trustworthy.
+   **Removed entirely rather than corrected:** one contact block, email shown on every origin. The
+   hidden-email behaviour turned out to be exactly backwards, since NRD-blocked users often cannot
+   reach the custom domain and were the segment least able to get in touch any other way. Bonus: with
+   no runtime check to un-hide it, the block now renders with JavaScript disabled.
+2. **Phase 2 grows.** Moving the 16 pages into `public/` leaves Pages with no `index.html` at the repo
+   root, so the GitHub origin breaks at merge. It needs a GitHub Actions workflow building Astro in
+   static mode — two build targets from one repo. Recorded in the Phase 2 table below.
+3. **Phase 5's environment switch was designed backwards.** `isProd = hostname is amplifiedthinker.com`
+   would classify the Pages origin as non-production, so after the dev/prod database split every
+   NRD-blocked user would read and write the *dev* database — progress appearing to save, then
+   missing. The rule is now to blocklist non-production (previews, localhost) rather than allowlist
+   production. See [dev-workflow.md](dev-workflow.md).
+
+Capability differs by origin: Pages serves files but runs no code, so client-side features (auth,
+progress sync, favourites, notes) work there while server-rendered surfaces (blog, admin, `/api/`,
+301 redirects, `middleware.js`) cannot. Full matrix in [dev-workflow.md](dev-workflow.md).
+
+**Worth carrying forward:** Phase 1's lesson was that automated checks miss visual defects. Phase 0's
+is the mirror image, twice over. First, *"we don't use that any more"* is a claim to test with `curl`,
+not accept — the appendix had hedged it as "if a second origin is still live" for weeks. Second, once
+the origin was confirmed live, asking *why* it was live mattered more than confirming *that* it was:
+the answer turned a tidy-up task into an architectural constraint, and caught a data-corruption bug
+five phases before it could bite.
 
 ---
 
-## Phase 0 — Branch and environment setup
+## Phase 0 — Branch and environment setup ✅ DONE
 
-**Impact:** ⚪ None · ⚪ None
+**Impact:** ⚪ None · ⚪ None · **Closed 2026-08-17** — outcome in the Progress log above.
 
 **Why first:** everything below assumes previews work and production is insulated. Half a day
 here prevents a class of bug that looks like broken code but is actually broken configuration —
@@ -91,12 +162,14 @@ the worst kind to debug, because the code is fine.
 
 | Activity | What it does, and why |
 |---|---|
-| Confirm Vercel production branch is `main` | Establishes the safety model everything else relies on. Verify rather than assume. |
-| Verify a throwaway branch gets a preview URL | Proves previews work *before* you need them under pressure. |
-| Add Supabase redirect allowlist entries, including the preview wildcard | Prevents sign-in failing silently on every branch. Cheap now, confusing later. |
-| Agree branch naming; optionally protect `main` | Removes the "did I just push to production" question. |
+| Confirm Vercel production branch is `main` | Establishes the safety model everything else relies on. Verify rather than assume. **✅ Verified by behaviour.** |
+| Verify a throwaway branch gets a preview URL | Proves previews work *before* you need them under pressure. **✅ Proven during Phase 1.** |
+| Add Supabase redirect allowlist entries, including the preview wildcard | Prevents sign-in failing silently on every branch. Cheap now, confusing later. **→ Deferred to Phase 3** — no project exists yet; values pre-agreed in `dev-workflow.md`. |
+| Agree branch naming; optionally protect `main` | Removes the "did I just push to production" question. **✅ Naming settled (`feat/…`, short, one per phase); protection decided against — it would break `deploy.bat`.** |
+| Audit which origins actually serve the site | Every live origin is an auth surface and a preview-fidelity risk. **✅ Found the GitHub Pages origin live *and load-bearing* — it serves users whose networks block the custom domain. `about.html` fixed so previews match production; Phase 2 and Phase 5 both re-scoped as a result.** |
 
-**Done when:** a throwaway branch deploys to a preview URL you can open in a browser.
+**Done when:** a throwaway branch deploys to a preview URL you can open in a browser — **met**, and
+previews now render the same contact block production does.
 
 See [dev-workflow.md](dev-workflow.md) for the specific settings and values.
 
@@ -148,10 +221,12 @@ failure mode.
 | Commit `vercel.json` with the build config | Keeps build settings in the branch rather than the Vercel dashboard, so `main` keeps deploying as static until merge. This is what makes the cutover reversible. |
 | Diff all 16 preview pages against live | The gate. Any difference means stop and investigate. |
 | Add a base layout loading `nav.js` and `styles.css` | New pages inherit the existing nav and design tokens for free, which is why the split causes no visual drift. |
-| Update `.claude/launch.json` to `npm run dev` | Local dev keeps working; `python -m http.server` cannot run Astro. |
+| Update `.claude/launch.json` to `npm run dev` | Local dev keeps working; `python -m http.server` cannot run Astro. Now version-controlled, so this change is reviewable rather than a silent local edit. |
+| Add a GitHub Actions workflow building Astro to static, published to Pages | **Added by Phase 0's finding, and non-optional.** Moving the 16 pages into `public/` leaves Pages with no `index.html` at the repo root, so the GitHub origin 404s at merge — cutting off users whose networks block the custom domain. Two build targets from one repo: Vercel gets the dynamic build, Pages a prerendered snapshot. |
+| Verify all 16 pages on **both** origins, not just the preview | The gate now has two halves. A Vercel-only check would have passed while the GitHub origin was dark. |
 
-**Done when:** all 16 pages are byte-identical on the preview URL, and a new blank Astro page
-renders with correct nav and styling.
+**Done when:** all 16 pages are byte-identical on the preview URL **and still served by the GitHub
+Pages origin**, and a new blank Astro page renders with correct nav and styling.
 
 **Rollback:** Vercel retains previous deployments — promote the last good one from the dashboard.
 Instant, and no git revert needed first.
