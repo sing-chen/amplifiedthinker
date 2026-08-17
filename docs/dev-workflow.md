@@ -232,6 +232,25 @@ This is real added scope for Phase 2, and it is better paid there than discovere
   **October 2026**. If the block has lifted, the dual-target build becomes optional rather than
   required — so avoid architecture that assumes Pages must be supported forever.
 
+#### `.vercelignore` does not apply here — and never provided privacy
+
+`.vercelignore` keeps `docs/` off `amplifiedthinker.com` (verified: `404` on Vercel). GitHub Pages
+has no equivalent file, so the same paths return `200` there:
+
+```
+docs/dev-workflow.md      →  amplifiedthinker.com: 404      github.io: 200
+```
+
+**This is not a leak.** The repository is public, so every file in `docs/` is already readable at
+`github.com/sing-chen/amplifiedthinker` and via `raw.githubusercontent.com` regardless of either
+config. `.vercelignore` was only ever keeping planning docs out of the *website's* URL space, not
+making them private. Write these docs as public documents, because they are.
+
+A Jekyll `_config.yml` with `exclude: [docs, deploy.bat]` would restore parity, but it is deliberately
+**not** being added: it changes the Pages build for a load-bearing origin that an audience has no
+fallback from, in exchange for hiding files that stay public on `github.com` anyway. Non-zero risk for
+near-zero gain.
+
 #### Allowlist consequence
 
 The Pages origin **must** be added to the Supabase redirect allowlist in Phase 3, or sign-in fails
