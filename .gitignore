@@ -5,4 +5,15 @@
 !.claude/commands/
 !.claude/launch.json
 
-images/_originals/
+# Full-resolution source images. Moved out of `images/` in Phase 2 so they sit
+# outside `public/`, which Astro copies into the build verbatim — inside it, a
+# local build would have published 6 MB of originals.
+_originals/
+
+# Astro / Node
+node_modules/
+dist/
+.astro/
+
+# Vercel CLI local state
+.vercel/

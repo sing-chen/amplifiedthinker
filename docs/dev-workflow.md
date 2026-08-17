@@ -103,6 +103,27 @@ every unfinished branch publicly reachable by URL.
 
 Production is unaffected either way.
 
+**Phase 2 measured how total the blackout is: the wall masks 404s.** A path that does not exist on the
+deployment returns the same `302` as one that does, so curl cannot distinguish a working build from a
+broken one, a missing page from a present one, or a redirect from a render:
+
+```
+/about.html                       302   (exists)
+/definitely-not-a-real-path-xyz   302   (does not exist)
+```
+
+Two consequences worth planning around, both of which bit in Phase 2:
+
+- **Preview verification is entirely manual.** Automated checks confirm only that *a* deployment
+  exists at the alias. Everything about its content needs a signed-in browser.
+- **Server-side behaviour cannot be previewed at all.** `middleware.js` is the live example: its
+  bot-UA response is unreachable behind the wall, so the first real test is production. Where that
+  matters, capture a production baseline *before* merging and re-run it immediately after, with
+  Vercel's instant rollback as the safety net.
+
+This is the strongest argument for turning on Protection Bypass for Automation when server-side
+surfaces arrive in Phase 6.
+
 ### 5. Scope environment variables
 
 Settings → Environment Variables. Each variable has Production / Preview / Development
@@ -261,6 +282,54 @@ A Jekyll `_config.yml` with `exclude: [docs, deploy.bat]` would restore parity, 
 fallback from, in exchange for hiding files that stay public on `github.com` anyway. Non-zero risk for
 near-zero gain.
 
+#### Deploying to Pages requires the branch to be allowed in the environment
+
+The `github-pages` environment enforces **deployment branch protection**, and by default only the
+default branch may deploy. Dispatching the workflow against a feature branch fails at the `deploy`
+job with:
+
+```
+Branch "feat/astro-shell" is not allowed to deploy to github-pages
+due to environment protection rules.
+```
+
+The `build` job still runs, so a dispatch against a branch remains a genuinely useful check — it
+proves `npm ci`, the Astro build and the artifact upload all work on CI, which is most of the risk.
+Only the publish step is gated.
+
+To verify a branch end to end on the live Pages URL, allow it at **Settings → Environments →
+github-pages → Deployment branches**. Worth removing again afterwards, since the rule's default is
+the safer posture.
+
+#### Testing the Pages base path without deploying
+
+Most of what a Pages deployment would prove can be checked locally, which is faster and needs no
+environment changes. Build with the Pages base, then stage the output under a directory of the same
+name so the served URL space matches:
+
+```bash
+ASTRO_BASE=/amplifiedthinker npm run build
+mkdir -p /tmp/pages-sim && cp -r dist /tmp/pages-sim/amplifiedthinker
+cd /tmp/pages-sim && python -m http.server 8141
+# → http://localhost:8141/amplifiedthinker/
+```
+
+Phase 2 used this to confirm every path resolves, assets load, and `nav.js` computes the right prefix
+under the subpath. **On Windows, set `ASTRO_BASE` from PowerShell, not Git Bash** — MSYS2 rewrites
+leading-slash values into Windows paths, so `/amplifiedthinker` silently became
+`C:/Program Files/Git/amplifiedthinker` and the build emitted mangled URLs.
+
+#### Why `nav.js` survives the subpath, and what would break it
+
+`nav.js` computes its link prefix by comparing the page's directory segments against **its own
+`document.currentScript.src`** (`public/nav.js:37-52`) rather than assuming a fixed depth. That is
+why it already worked on the Pages subpath before Astro existed, and why it handles Astro's
+directory-style URLs (`/shell-test/`, later `/blog/some-post/`) at any depth with no changes.
+
+It has one hard dependency: `document.currentScript` must be non-null, which means the script tag
+must not be bundled as a module. Any Astro `<script>` loading `nav.js` therefore needs `is:inline`,
+or every nav link resolves from the wrong depth. Recorded in `src/layouts/BaseLayout.astro` too.
+
 #### Allowlist consequence
 
 The Pages origin **must** be added to the Supabase redirect allowlist in Phase 3, or sign-in fails
@@ -306,6 +375,58 @@ things change during the work:
 | 1 | `python -m http.server 8139` | Unchanged — no Astro yet. |
 | 2+ | `npm run dev` | Astro's dev server, port 4321. |
 | 6+ | `vercel dev` | Only when testing `/api/` endpoints, which `npm run dev` cannot fully run. |
+
+### Where the working copy lives — `C:\dev\amplifiedthinker`, not Google Drive
+
+**Resolved in Phase 2.** The working copy moved to `C:\dev\amplifiedthinker`. Open that path, not the
+Drive one. Verified there: `npm ci` in 7s, `npm run build` clean, the byte-identical gate passing
+66/66, and `npm run dev` serving both the new Astro page and the old static pages on port 4321.
+
+The Drive copy at `G:\My Drive\01. Personal\Personal Projects\websites\amplified thinker` was left in
+place rather than deleted. It is a stale checkout — do not commit from it.
+
+#### Why the move was necessary
+
+**`npm install` fails in Google Drive.** Measured in Phase 2:
+
+| Location | Result |
+|---|---|
+| `G:\My Drive\…` (Google Drive) | ❌ `EBADF: bad file descriptor` after **2m32s**, twice, cleanly reproduced |
+| Local disk (`C:\…`) | ✅ 201 packages in **13s** |
+
+Google Drive's virtual filesystem cannot survive the thousands of small file operations npm performs;
+it holds handles open and returns `ENOTEMPTY` / `EBADF` mid-install. There is no ignore mechanism in
+Drive for Desktop to exclude `node_modules`, so this cannot be configured away.
+
+**What this does and does not block:**
+
+- **Deployment is unaffected.** Vercel and GitHub Actions both install and build on Linux runners
+  from a clean checkout. They never see Drive. Phase 2 ships regardless.
+- **Local development is fully blocked.** No `npm run dev`, no local `npm run build`, so no way to
+  verify a build before pushing. That removes the fastest feedback loop precisely when the project
+  has just acquired a build step that can fail.
+
+Git and GitHub were already the source of truth and the backup, so Drive sync was redundant for the
+code — and from Phase 2 onward actively harmful, since it would also try to sync `node_modules` and
+`dist` on every build.
+
+#### What had to be carried over by hand
+
+Two things were gitignored and therefore existed *only* in the Drive copy. Both were copied to
+`C:\dev\amplifiedthinker`:
+
+| Item | Note |
+|---|---|
+| `_originals/` | 6 MB of full-resolution source images, 9 files. Not in the repository — would have been lost outright. |
+| `.claude/settings.local.json` | Untracked local Claude Code settings. |
+
+⚠️ **If the Drive copy is ever deleted, check for new ignored files first.** Anything matching
+`.gitignore` is invisible to `git status` and to any "is it pushed?" check, so the usual safety net
+does not apply. `_originals/` is the standing example: keeping a copy in Google Drive is arguably its
+correct home, since it is source material rather than code and genuinely benefits from backup.
+
+Claude Code also keys project memory to the working-copy path, so memory starts empty at the new
+location until moved.
 
 ---
 
