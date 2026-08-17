@@ -93,11 +93,16 @@ Write-Host "  bundle: $bundleMb MB"
 Write-Host ""
 
 # --- 2. Warn about work the bundle cannot capture -----------------------------
-# A bundle contains COMMITS. Uncommitted edits to tracked files are in neither the
-# bundle nor GitHub, so a dirty tree is a genuine gap rather than a style complaint.
-$dirty = @(git status --porcelain --untracked-files=no)
+# A bundle contains COMMITS. Anything uncommitted is in neither the bundle nor GitHub,
+# so a dirty tree is a genuine gap rather than a style complaint.
+#
+# Untracked files are included on purpose. .gitignore already excludes build output, so a
+# `??` entry here is real new work that exists on one disk only - exactly what this warning
+# is for. An earlier version passed --untracked-files=no and would have stayed silent about
+# a brand-new source file.
+$dirty = @(git status --porcelain)
 if ($dirty.Count -gt 0) {
-  Write-Warning "$($dirty.Count) uncommitted change(s) to tracked files - NOT captured by this backup:"
+  Write-Warning "$($dirty.Count) uncommitted change(s) - NOT captured by this backup:"
   $dirty | ForEach-Object { Write-Host "    $_" }
   Write-Host "  Commit them if they matter; a bundle only contains committed history."
   Write-Host ""
@@ -125,6 +130,17 @@ if (Test-Path $originals) {
   Write-Host "  _originals: $n files"
 } else {
   Write-Warning "_originals/ not found - nothing to back up, but it should exist here"
+}
+
+# The recovery guide has to be readable when the local machine is gone, which is the only
+# time it is needed. Copying it out of docs/ on every run means the Drive copy tracks the
+# version-controlled one instead of drifting.
+$recovery = Join-Path $repo 'docs\recovery.md'
+if (Test-Path $recovery) {
+  Copy-Item -Force $recovery (Join-Path $Destination 'recovery.md')
+  Write-Host "  recovery.md"
+} else {
+  Write-Warning "docs/recovery.md not found - the backup folder has no restore instructions"
 }
 
 $localSettings = Join-Path $repo '.claude\settings.local.json'

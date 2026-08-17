@@ -18,6 +18,7 @@ The project has a written architecture and a phased plan. Read them rather than 
 | [docs/supabase-integration-plan.md](docs/supabase-integration-plan.md) | *What* gets built — architecture, data model, RLS design, decisions taken |
 | [docs/implementation-sequence.md](docs/implementation-sequence.md) | *In what order and why* — phase status, and a progress log of what each phase actually taught |
 | [docs/dev-workflow.md](docs/dev-workflow.md) | *How work happens* — branches, previews, both origins, environment settings, known traps |
+| [docs/recovery.md](docs/recovery.md) | Rebuilding a working state on new hardware. A copy lives in the Drive backup folder, since that is where it is needed |
 | [BACKLOG.md](BACKLOG.md) | Unscheduled ideas |
 
 `docs/` is excluded from the Vercel deploy but the repo is **public** — these are public documents.

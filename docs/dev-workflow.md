@@ -460,6 +460,11 @@ tracked files** — and about any newly ignored path it doesn't know to back up,
 trap: ignored files are invisible to `git status`, so the usual "is it pushed?" check does not cover
 them.
 
+The script also copies [recovery.md](recovery.md) into the backup folder on every run, so the
+step-by-step restore instructions are readable on a machine that has nothing installed — the only
+situation in which they are needed. **[docs/recovery.md](recovery.md) is the full guide;** what follows
+is the short version.
+
 **Restore, tested rather than assumed** — cloning from the bundle produced an identical HEAD and tree
 with a clean `fsck`:
 
