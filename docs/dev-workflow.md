@@ -282,6 +282,54 @@ A Jekyll `_config.yml` with `exclude: [docs, deploy.bat]` would restore parity, 
 fallback from, in exchange for hiding files that stay public on `github.com` anyway. Non-zero risk for
 near-zero gain.
 
+#### Deploying to Pages requires the branch to be allowed in the environment
+
+The `github-pages` environment enforces **deployment branch protection**, and by default only the
+default branch may deploy. Dispatching the workflow against a feature branch fails at the `deploy`
+job with:
+
+```
+Branch "feat/astro-shell" is not allowed to deploy to github-pages
+due to environment protection rules.
+```
+
+The `build` job still runs, so a dispatch against a branch remains a genuinely useful check — it
+proves `npm ci`, the Astro build and the artifact upload all work on CI, which is most of the risk.
+Only the publish step is gated.
+
+To verify a branch end to end on the live Pages URL, allow it at **Settings → Environments →
+github-pages → Deployment branches**. Worth removing again afterwards, since the rule's default is
+the safer posture.
+
+#### Testing the Pages base path without deploying
+
+Most of what a Pages deployment would prove can be checked locally, which is faster and needs no
+environment changes. Build with the Pages base, then stage the output under a directory of the same
+name so the served URL space matches:
+
+```bash
+ASTRO_BASE=/amplifiedthinker npm run build
+mkdir -p /tmp/pages-sim && cp -r dist /tmp/pages-sim/amplifiedthinker
+cd /tmp/pages-sim && python -m http.server 8141
+# → http://localhost:8141/amplifiedthinker/
+```
+
+Phase 2 used this to confirm every path resolves, assets load, and `nav.js` computes the right prefix
+under the subpath. **On Windows, set `ASTRO_BASE` from PowerShell, not Git Bash** — MSYS2 rewrites
+leading-slash values into Windows paths, so `/amplifiedthinker` silently became
+`C:/Program Files/Git/amplifiedthinker` and the build emitted mangled URLs.
+
+#### Why `nav.js` survives the subpath, and what would break it
+
+`nav.js` computes its link prefix by comparing the page's directory segments against **its own
+`document.currentScript.src`** (`public/nav.js:37-52`) rather than assuming a fixed depth. That is
+why it already worked on the Pages subpath before Astro existed, and why it handles Astro's
+directory-style URLs (`/shell-test/`, later `/blog/some-post/`) at any depth with no changes.
+
+It has one hard dependency: `document.currentScript` must be non-null, which means the script tag
+must not be bundled as a module. Any Astro `<script>` loading `nav.js` therefore needs `is:inline`,
+or every nav link resolves from the wrong depth. Recorded in `src/layouts/BaseLayout.astro` too.
+
 #### Allowlist consequence
 
 The Pages origin **must** be added to the Supabase redirect allowlist in Phase 3, or sign-in fails

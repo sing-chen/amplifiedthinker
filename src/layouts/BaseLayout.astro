@@ -13,6 +13,14 @@
 //      modules by default, which would break `nav.js`'s global-scope assumptions
 //      and any inline handler a page adds.
 //
+//      `is:inline` is load-bearing for a second, less obvious reason: nav.js
+//      derives its link prefix by comparing the page's directory against
+//      `document.currentScript.src` (nav.js:37-52). Bundled as a module, that
+//      would be `null` and every nav link would resolve from the wrong depth.
+//      Verified working at /amplifiedthinker/shell-test/ — nav.js computed `../`
+//      correctly, which is also why it already handled the Pages subpath before
+//      Astro existed. Do not remove is:inline to "modernise" this.
+//
 // Asset URLs go through `asset()` rather than a hardcoded leading slash, because
 // GitHub Pages serves this site from `/amplifiedthinker/` while Vercel serves from
 // `/`. See the `base` note in astro.config.mjs.
