@@ -155,6 +155,37 @@ that line rather than blocked behind it.
    untouched, and the retry was a re-paste. That is the property the one-transaction shape was
    chosen for, tested by accident on the first attempt.
 
+10. **The Supabase Advisor found 9 warnings the migration should not have left, and one of them was
+    live rather than theoretical.** Eight were mine: `set_updated_at` missing the pinned
+    `search_path` the other three functions had, and four `SECURITY DEFINER` functions granted
+    `EXECUTE` to `anon` and `authenticated`. Cleared in a **second migration**
+    (`20260817140000_harden_function_grants.sql`) rather than by editing the first — an applied
+    migration is history, and editing it means the file stops describing the database that exists.
+    The "all tables in one migration" principle is intact; this one creates no tables.
+
+    **Testing the warnings rather than trusting them changed two of the four verdicts.** Probing
+    each function over RPC before applying the fix:
+
+    | Function | Returns | Probe | Reality |
+    |---|---|---|---|
+    | `handle_new_user()` | `trigger` | 404 | **Never reachable.** PostgREST does not expose functions returning `trigger`, whoever holds `EXECUTE`. The Advisor's "callable via `/rest/v1/rpc/…`" was not true. |
+    | `profiles_guard_privileged_columns()` | `trigger` | 404 | Same. |
+    | `is_admin()` | `boolean` | 200 `false` | Reachable, and harmless — it filters on `auth.uid()`, null for anon, so it could only ever answer `false`. Revoked as least privilege, not as a fix. |
+    | `rls_auto_enable()` | `event_trigger` | **400** | **Genuinely reachable** — PostgREST resolved it and got as far as failing to serialise the return type. The one I was least inclined to touch, being Supabase's own, was the only live exposure. |
+
+    The asymmetry is the part worth keeping: a `trigger` return type is invisible to PostgREST, an
+    `event_trigger` return type is not. Not predictable from the warning text, and it is the
+    difference between a theoretical finding and a real one.
+
+11. **`is_admin()`'s gate assertion got stronger by accident.** It used to assert the function
+    *returns false* for an anonymous caller. Once `anon` lost `EXECUTE`, that assertion had to
+    become *cannot call it at all* — which is what should have been asserted from the start. The
+    weaker version proved the answer was harmless; the stronger one proves the door is shut.
+    `authenticated` keeps `EXECUTE`, because RLS policy expressions are evaluated with the querying
+    role's privileges, so a role must hold `EXECUTE` on any function its policies call.
+
+    Gate is now **22/22**, up from 19, with the three added checks all covering the RPC surface.
+
 **One assertion in the gate is time-limited, and the script says so.** "Every table returns zero
 rows when signed out" is true for the content tables only while they are empty — from Phase 6,
 `news_stories` returns published rows to anonymous callers by design. The durable invariant is the

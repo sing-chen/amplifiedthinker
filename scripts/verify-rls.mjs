@@ -202,9 +202,18 @@ for (const { name } of TABLES) {
   );
 }
 
-console.log('\nAdmin gate');
-{
-  const res = await fetch(`${URL_BASE}/rest/v1/rpc/is_admin`, {
+// Functions reachable at /rest/v1/rpc/ are part of the attack surface, and every
+// one of these is SECURITY DEFINER - they run as their owner, not the caller.
+// Anonymous callers should not be able to invoke any of them.
+//
+// `is_admin` was previously asserted to return `false` here. That was a weaker
+// claim: it proved the function answered harmlessly rather than that anon could
+// not reach it. The 20260817140000 migration revoked anon's EXECUTE, so the
+// assertion is now the stronger one. `authenticated` keeps EXECUTE, because RLS
+// policy expressions are evaluated with the querying role's privileges.
+console.log('\nSECURITY DEFINER functions (signed out) - all must be unreachable');
+for (const fn of ['is_admin', 'handle_new_user', 'profiles_guard_privileged_columns', 'rls_auto_enable']) {
+  const res = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     headers: { ...headers, 'Content-Type': 'application/json' },
     body: '{}',
@@ -213,10 +222,18 @@ console.log('\nAdmin gate');
   try {
     body = await res.json();
   } catch {
-    /* empty body is a fail below */
+    /* a body is not needed to judge this */
   }
-  const ok = res.status === 200 && body === false;
-  record(ok, 'is_admin() is false for an anonymous caller', ok ? 'false' : `HTTP ${res.status}, body ${JSON.stringify(body)}`);
+
+  // 404 counts: rls_auto_enable only exists when the "Enable automatic RLS"
+  // project setting was chosen, and a function anon cannot see is a function
+  // anon cannot call.
+  const unreachable = res.status === 401 || res.status === 403 || res.status === 404;
+  record(
+    unreachable,
+    `${fn}(): not callable by anon`,
+    unreachable ? `HTTP ${res.status}` : `HTTP ${res.status} - REACHABLE. Body: ${JSON.stringify(body)?.slice(0, 120)}`
+  );
 }
 
 // ---------------------------------------------------------------------------
