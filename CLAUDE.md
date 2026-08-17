@@ -19,6 +19,7 @@ The project has a written architecture and a phased plan. Read them rather than 
 | [docs/implementation-sequence.md](docs/implementation-sequence.md) | *In what order and why* — phase status, and a progress log of what each phase actually taught |
 | [docs/dev-workflow.md](docs/dev-workflow.md) | *How work happens* — branches, previews, both origins, environment settings, known traps |
 | [docs/recovery.md](docs/recovery.md) | Rebuilding a working state on new hardware. A copy lives in the Drive backup folder, since that is where it is needed |
+| [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, and the redirect allowlist |
 | [BACKLOG.md](BACKLOG.md) | Unscheduled ideas |
 
 `docs/` is excluded from the Vercel deploy but the repo is **public** — these are public documents.
@@ -34,7 +35,13 @@ public/          the 16 hand-written pages, shipped byte-for-byte untouched by A
 src/pages/       new Astro surfaces (blog, admin, dashboard — mostly still to come)
 src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages match old ones
 middleware.js    Vercel Edge Middleware, repo root. Serves social-preview meta tags to bots
+supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
+                 the apply/verify runbook plus the dashboard settings SQL cannot reach
+scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls)
 _originals/      full-resolution source images, gitignored — outside public/ on purpose
+.env             gitignored; shape in .env.example. Needed ONLY by npm run verify:rls.
+                 There are deliberately no Supabase env vars in Vercel or pages.yml —
+                 anything that must work on both origins decides at runtime instead
 ```
 
 **Two kinds of path that look alike.** A file you read or write needs `public/`; a URL inside a page
@@ -75,6 +82,17 @@ Pages is built by [.github/workflows/pages.yml](.github/workflows/pages.yml) wit
   `document.currentScript.src`; bundled as a module that is `null` and every nav link breaks. The
   skill pages also carry ~240 inline `onclick` handlers, which is why they stay in `public/`.
 - **`main` can now fail to deploy.** Before Phase 2 nothing was built, so nothing could fail.
+- **A new table lands with *no* grants, and that looks exactly like a broken policy.** The Phase 3
+  migration ends with `alter default privileges … revoke all on tables from anon, authenticated`,
+  so every future table must grant explicitly. Symptom: `permission denied for table X` even as an
+  admin, with a policy that reads correctly. It is opt-in by design — add the `grant` alongside the
+  `create policy`.
+- **`service_role` bypasses RLS entirely.** One line with that key undoes every policy in the
+  migration. It never goes in a `PUBLIC_` env var, never in anything under `public/`, and has no
+  home at all until a server endpoint exists in Phase 6. `npm run verify:rls` refuses to run with it.
+- **`is_admin` is settable only where `auth.uid()` is null** — the dashboard SQL editor. A trigger
+  rejects the account changing its own. Do not add `force row level security` to `profiles`: it
+  would apply RLS to the table owner and close that same door.
 - **Structural changes orphan `.claude/commands/`.** Both `/add-news` and `/add-skill` reference
   concrete file paths. Phase 1 broke them by adding `progress.js`; Phase 2 broke them again by moving
   everything into `public/`. Check them after any move or new shared module.

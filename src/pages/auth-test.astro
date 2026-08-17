@@ -1,0 +1,421 @@
+---
+// THROWAWAY. Phase 3's "prove auth end to end on one throwaway page".
+//
+// DELETE THIS FILE at the end of Phase 5, once auth.js and supabase-client.js
+// exist and the real sign-in UI lives in nav.js. It is a scaffold, not a surface:
+// it duplicates client setup on purpose so that Phase 3 can be verified without
+// committing to any of Phase 5's design.
+//
+// Why a page and not just scripts/verify-rls.mjs: that script proves what an
+// ANONYMOUS caller cannot do. The half it cannot reach is the signed-in half -
+// session handling, the signup trigger, the is_admin guard, and the redirect
+// allowlist, which only fails in a real browser on a real origin. Phases 0 and 1
+// both ended with a defect that only a human looking at a browser could find;
+// this is the browser.
+//
+// CREDENTIALS ARE ENTERED AT RUNTIME, not injected at build time. That is a
+// deliberate choice and it is what makes this page work identically on all four
+// origins - localhost, the Vercel preview, amplifiedthinker.com, and the GitHub
+// Pages origin - with no environment variables configured anywhere. The
+// alternative was PUBLIC_ vars in three build configs (.env, Vercel's dashboard,
+// and the Pages workflow) for a page marked for deletion, plus remembering to
+// remove all three later.
+//
+// It also means a stray visitor after merge finds an inert form: with no
+// credentials baked in, the page does nothing at all until someone supplies
+// them. The anon key is public by design and RLS is the real boundary either
+// way, but there is no reason to ship a key here when the page does not need one.
+//
+// The build-time values are still read, purely as a local-dev convenience: if
+// .env exists they prefill the form, and localStorage overrides them.
+//
+// noindex, and also behind Vercel's preview auth wall on any branch deployment.
+// Neither is a security boundary - RLS is - but there is no reason for it to be
+// crawlable.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const ENV_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+
+<BaseLayout
+  title="Auth test (Phase 3) · Amplified Thinker"
+  description="Throwaway page for verifying Supabase auth and RLS."
+  noindex={true}
+>
+  <section class="at-wrap">
+    <h1>Auth &amp; RLS test</h1>
+    <p class="at-lede">
+      Throwaway Phase 3 scaffold. Delete after Phase 5. Every check below runs
+      against the real database with the anon key and a real session &mdash; nothing
+      here is mocked, and nothing is hidden by the UI.
+    </p>
+
+    <div class="at-panel">
+      <h2>Connection</h2>
+      <p class="at-note">
+        Stored in this browser only, for this origin only. Nothing is sent anywhere
+        except the Supabase project you name here.
+      </p>
+
+      <label>Project URL
+        <input type="url" id="at-url" placeholder="https://your-ref.supabase.co" autocomplete="off" spellcheck="false" />
+      </label>
+      <label>Anon / publishable key
+        <input type="text" id="at-key" placeholder="eyJ… or sb_publishable_…" autocomplete="off" spellcheck="false" />
+      </label>
+
+      <div class="at-actions">
+        <button type="button" id="at-save">Connect</button>
+        <button type="button" id="at-forget">Forget</button>
+      </div>
+
+      <p id="at-conn" class="at-status">Not connected.</p>
+
+      <p class="at-warn at-key-warning">
+        <strong>Never paste a <code>service_role</code> or <code>secret</code> key here.</strong>
+        It bypasses RLS entirely, which would make every check below pass while
+        proving nothing. This page refuses one it can recognise, but do not rely on
+        that &mdash; check what you copied.
+      </p>
+    </div>
+
+    <div class="at-panel" id="at-session-panel" hidden>
+      <h2>Session</h2>
+      <p id="at-session">checking&hellip;</p>
+
+      <form id="at-form" autocomplete="on">
+        <label>Email <input type="email" id="at-email" required autocomplete="username" /></label>
+        <label>Password <input type="password" id="at-password" required minlength="8" autocomplete="current-password" /></label>
+        <div class="at-actions">
+          <button type="button" id="at-signup">Sign up</button>
+          <button type="button" id="at-signin">Sign in</button>
+          <button type="button" id="at-signout">Sign out</button>
+        </div>
+      </form>
+      <p class="at-note">
+        Use a throwaway address. Until Phase 4 points SMTP at Brevo, confirmation
+        mail goes through Supabase's built-in mailer, which is rate-limited and
+        explicitly not for production.
+      </p>
+    </div>
+
+    <div class="at-panel" id="at-checks-panel" hidden>
+      <h2>Checks</h2>
+      <button type="button" id="at-run">Run checks</button>
+      <ol id="at-results" class="at-results"></ol>
+    </div>
+  </section>
+
+  <style is:inline>
+    .at-wrap { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    .at-lede { opacity: .8; }
+    .at-warn { padding: .75rem 1rem; border-left: 3px solid #c2410c; background: rgba(194,65,12,.08); }
+    .at-key-warning { font-size: .9rem; }
+    .at-panel { margin: 2rem 0; padding: 1.25rem; border: 1px solid rgba(128,128,128,.35); border-radius: 8px; }
+    .at-panel h2 { margin-top: 0; font-size: 1.1rem; }
+    .at-panel label { display: block; margin: .5rem 0; }
+    .at-panel input { display: block; width: 100%; max-width: 30rem; padding: .4rem .55rem; font-family: ui-monospace, Consolas, monospace; font-size: .85rem; }
+    .at-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .9rem; }
+    .at-note { font-size: .85rem; opacity: .7; }
+    .at-status { font-size: .9rem; margin-bottom: 0; }
+    .at-status.ok { color: #15803d; }
+    .at-status.bad { color: #b91c1c; font-weight: 600; }
+    .at-results { padding-left: 1.4rem; line-height: 1.7; }
+    .at-results li.pass::marker { content: "PASS  "; }
+    .at-results li.fail::marker { content: "FAIL  "; }
+    .at-results li.pass { color: #15803d; }
+    .at-results li.fail { color: #b91c1c; font-weight: 600; }
+    .at-results code { font-size: .82em; opacity: .75; }
+  </style>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"
+    is:inline></script>
+
+  <!--
+    define:vars implies is:inline, which is what this page needs anyway: every
+    script on a page using BaseLayout must stay unbundled, or nav.js's
+    document.currentScript lookup breaks. See the note in BaseLayout.astro.
+  -->
+  <script define:vars={{ ENV_URL, ENV_KEY }}>
+    (function () {
+      'use strict';
+
+      var STORE_KEY = 'at_phase3_conn';
+
+      var results = document.getElementById('at-results');
+      var sessionEl = document.getElementById('at-session');
+      var connEl = document.getElementById('at-conn');
+      var urlInput = document.getElementById('at-url');
+      var keyInput = document.getElementById('at-key');
+      var sessionPanel = document.getElementById('at-session-panel');
+      var checksPanel = document.getElementById('at-checks-panel');
+
+      var client = null;
+
+      function setStatus(el, text, kind) {
+        el.textContent = text;
+        el.className = 'at-status' + (kind ? ' ' + kind : '');
+      }
+
+      // ---- credentials ------------------------------------------------------
+
+      function stored() {
+        try { return JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch (e) { return null; }
+      }
+
+      // Mirrors the same guard in scripts/verify-rls.mjs. A service_role key
+      // bypasses RLS, so it would turn every check below into a false PASS -
+      // the single worst outcome for a page whose entire job is proving the
+      // security model. Two formats to recognise: the legacy JWT, whose payload
+      // carries a `role` claim, and the newer `sb_secret_…` prefix.
+      function keyProblem(key) {
+        if (/^sb_secret_/i.test(key)) return 'that is a secret key';
+        if (/^service_role/i.test(key)) return 'that is a service_role key';
+
+        var parts = key.split('.');
+        if (parts.length !== 3) return null; // not a JWT we can read - allow
+
+        try {
+          var b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+          var payload = JSON.parse(atob(b64));
+          if (payload.role && payload.role !== 'anon') {
+            return 'that key has role "' + payload.role + '", not "anon"';
+          }
+        } catch (e) {
+          return null; // undecodable - allow, the checks still hold
+        }
+        return null;
+      }
+
+      function connect(url, key, remember) {
+        var problem = keyProblem(key);
+        if (problem) {
+          setStatus(connEl, 'Refused: ' + problem + '. It would bypass RLS and pass every check while proving nothing.', 'bad');
+          return false;
+        }
+
+        try {
+          client = window.supabase.createClient(url, key);
+        } catch (e) {
+          setStatus(connEl, 'Could not create a client: ' + e.message, 'bad');
+          return false;
+        }
+
+        if (remember) {
+          try { localStorage.setItem(STORE_KEY, JSON.stringify({ url: url, key: key })); } catch (e) {}
+        }
+
+        setStatus(connEl, 'Connected to ' + url, 'ok');
+        sessionPanel.hidden = false;
+        checksPanel.hidden = false;
+        watchSession();
+        return true;
+      }
+
+      document.getElementById('at-save').addEventListener('click', function () {
+        var url = urlInput.value.trim().replace(/\/+$/, '');
+        var key = keyInput.value.trim();
+        if (!url || !key) {
+          setStatus(connEl, 'Both the project URL and the anon key are needed.', 'bad');
+          return;
+        }
+        connect(url, key, true);
+      });
+
+      document.getElementById('at-forget').addEventListener('click', function () {
+        try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+        urlInput.value = '';
+        keyInput.value = '';
+        client = null;
+        sessionPanel.hidden = true;
+        checksPanel.hidden = true;
+        results.innerHTML = '';
+        setStatus(connEl, 'Forgotten. Nothing is stored for this origin.', null);
+      });
+
+      // localStorage wins; the build-time values are only a local-dev prefill and
+      // are normally absent on every deployed origin.
+      var saved = stored();
+      urlInput.value = (saved && saved.url) || ENV_URL || '';
+      keyInput.value = (saved && saved.key) || ENV_KEY || '';
+
+      if (urlInput.value && keyInput.value) {
+        connect(urlInput.value, keyInput.value, false);
+      } else {
+        setStatus(connEl, 'Not connected. Paste the project URL and anon key, then Connect.', null);
+      }
+
+      // ---- session ----------------------------------------------------------
+
+      function renderSession(session) {
+        sessionEl.textContent = session
+          ? 'Signed in as ' + session.user.email + '  (' + session.user.id + ')'
+          : 'Signed out.';
+      }
+
+      function watchSession() {
+        client.auth.getSession().then(function (r) { renderSession(r.data.session); });
+        client.auth.onAuthStateChange(function (_event, session) { renderSession(session); });
+      }
+
+      function creds() {
+        return {
+          email: document.getElementById('at-email').value.trim(),
+          password: document.getElementById('at-password').value,
+        };
+      }
+
+      document.getElementById('at-signup').addEventListener('click', function () {
+        var c = creds();
+        // emailRedirectTo is the allowlist test. If the current origin is missing
+        // from Auth -> URL Configuration -> Redirect URLs, the confirmation link
+        // silently sends the user to the Site URL instead, which on a preview or
+        // on the GitHub Pages origin looks like "sign-in is broken" with no error
+        // anywhere. This is the failure Phase 0 deferred to here.
+        client.auth
+          .signUp({ ...c, options: { emailRedirectTo: window.location.href } })
+          .then(function (r) {
+            sessionEl.textContent = r.error
+              ? 'Sign-up error: ' + r.error.message
+              : 'Sign-up accepted. Check the inbox if confirmation is on.';
+          });
+      });
+
+      document.getElementById('at-signin').addEventListener('click', function () {
+        client.auth.signInWithPassword(creds()).then(function (r) {
+          if (r.error) sessionEl.textContent = 'Sign-in error: ' + r.error.message;
+        });
+      });
+
+      document.getElementById('at-signout').addEventListener('click', function () {
+        client.auth.signOut();
+      });
+
+      // ---- checks -----------------------------------------------------------
+
+      function log(ok, label, detail) {
+        var li = document.createElement('li');
+        li.className = ok ? 'pass' : 'fail';
+        li.textContent = label + ' ';
+        if (detail) {
+          var code = document.createElement('code');
+          code.textContent = detail;
+          li.appendChild(code);
+        }
+        results.appendChild(li);
+      }
+
+      document.getElementById('at-run').addEventListener('click', function () {
+        results.innerHTML = '';
+        run().catch(function (e) { log(false, 'Suite threw', String(e)); });
+      });
+
+      async function run() {
+        var sessionRes = await client.auth.getSession();
+        var session = sessionRes.data.session;
+
+        if (!session) {
+          log(false, 'Signed in', 'sign in first - the signed-out half is covered by npm run verify:rls');
+          return;
+        }
+
+        var uid = session.user.id;
+
+        // 1. The signup trigger created a profile row.
+        var prof = await client.from('profiles').select('*').eq('id', uid).maybeSingle();
+        log(
+          !prof.error && prof.data && prof.data.id === uid,
+          'profiles: own row exists (created by on_auth_user_created)',
+          prof.error ? prof.error.message : 'is_admin=' + (prof.data && prof.data.is_admin)
+        );
+
+        // Several checks below invert depending on this, because both directions
+        // are worth proving and the page has to stay usable after you grant
+        // yourself admin in the SQL editor to test the other one.
+        var isAdmin = Boolean(prof.data && prof.data.is_admin);
+
+        // 2. Reading profiles returns exactly one row - own. Not "the UI only
+        //    shows one", but the database returning one. Admins legitimately see
+        //    every row (profiles_admin_select_all), so the assertion inverts.
+        var allProfiles = await client.from('profiles').select('id');
+        var visible = allProfiles.data ? allProfiles.data.length : 0;
+        log(
+          !allProfiles.error && (isAdmin ? visible >= 1 : visible === 1),
+          isAdmin ? 'profiles: admin sees all rows' : 'profiles: select * returns only own row',
+          allProfiles.error ? allProfiles.error.message : visible + ' row(s)'
+        );
+
+        // 3. THE admin gate. Flip to the OPPOSITE of the current value, so this
+        //    is always a real change and the trigger must always reject it -
+        //    whether the account is admin or not. Writing `is_admin: true`
+        //    unconditionally would be a no-op for an admin, and the check would
+        //    report a false escalation the moment you granted yourself admin to
+        //    test the other direction.
+        var esc = await client.from('profiles').update({ is_admin: !isAdmin }).eq('id', uid).select();
+        var changed = !esc.error && esc.data && esc.data.length > 0 && esc.data[0].is_admin === !isAdmin;
+        log(
+          !changed,
+          'profiles: cannot change own is_admin (tried ' + isAdmin + ' -> ' + !isAdmin + ')',
+          esc.error ? esc.error.code || esc.error.message : 'UPDATE returned ' + JSON.stringify(esc.data)
+        );
+
+        // 4. is_admin() agrees with the profile row. Asserting "false" outright
+        //    would make this page unusable for verifying the admin path.
+        var rpc = await client.rpc('is_admin');
+        log(
+          !rpc.error && rpc.data === isAdmin,
+          'is_admin() agrees with profiles.is_admin',
+          rpc.error ? rpc.error.message : 'both ' + String(rpc.data)
+        );
+
+        // 5. Own state round-trips.
+        var up = await client
+          .from('skill_progress')
+          .upsert({
+            user_id: uid,
+            skill_slug: 'systems-thinking',
+            content_type: 'plan',
+            position: 's-intro',
+            visited: ['s-intro'],
+            state: { habitOpen: [], cardsOpen: [] },
+          })
+          .select();
+        log(!up.error && up.data && up.data.length === 1, 'skill_progress: own row writes and reads back', up.error ? up.error.message : 'ok');
+
+        // 6. Writing someone else's row must fail the WITH CHECK.
+        var other = '00000000-0000-0000-0000-000000000001';
+        var foreign = await client
+          .from('skill_progress')
+          .insert({ user_id: other, skill_slug: 'rls-probe', content_type: 'plan' })
+          .select();
+        log(Boolean(foreign.error), "skill_progress: cannot write another user's row", foreign.error ? foreign.error.code : 'INSERT SUCCEEDED - policy is wrong');
+
+        // 7. Content tables are admin-write, so the expected outcome depends on
+        //    who is asking - and BOTH directions are worth proving. A gate that
+        //    only ever refuses has not been shown to be a gate.
+        var probeSlug = 'rls-probe-' + Date.now();
+        var blog = await client.from('blog_posts').insert({ slug: probeSlug, title: 'probe' }).select();
+
+        if (isAdmin) {
+          log(!blog.error && blog.data && blog.data.length === 1, 'blog_posts: admin INSERT accepted', blog.error ? blog.error.message : 'ok');
+          var cleanup = await client.from('blog_posts').delete().eq('slug', probeSlug);
+          log(!cleanup.error, 'blog_posts: admin probe row removed', cleanup.error ? cleanup.error.message : 'cleaned up');
+        } else {
+          log(Boolean(blog.error), 'blog_posts: non-admin INSERT rejected', blog.error ? blog.error.code : 'INSERT SUCCEEDED - policy is wrong');
+        }
+
+        // 8. Clean up after ourselves so a re-run starts from the same place.
+        var del = await client
+          .from('skill_progress')
+          .delete()
+          .eq('user_id', uid)
+          .eq('skill_slug', 'systems-thinking')
+          .eq('content_type', 'plan');
+        log(!del.error, 'skill_progress: own row deletes', del.error ? del.error.message : 'cleaned up');
+      }
+    })();
+  </script>
+</BaseLayout>

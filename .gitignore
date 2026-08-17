@@ -15,6 +15,16 @@ node_modules/
 dist/
 .astro/
 
+# Local Supabase config. `.env.example` is tracked and holds the shape.
+.env
+.env.local
+.env.*.local
+
+# Supabase CLI local state (linked project ref, local stack volumes). The
+# migrations themselves are tracked — they are the schema's source of truth.
+supabase/.temp/
+supabase/.branches/
+
 # Vercel CLI local state
 .vercel/
 

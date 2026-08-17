@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "backup": "powershell -ExecutionPolicy Bypass -File scripts/backup-to-drive.ps1"
+    "backup": "powershell -ExecutionPolicy Bypass -File scripts/backup-to-drive.ps1",
+    "verify:rls": "node scripts/verify-rls.mjs"
   },
   "devDependencies": {
     "astro": "^7.2.2"
