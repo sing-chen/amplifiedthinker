@@ -578,8 +578,9 @@ one browser on one device — actually goes away.
 | Add sign-in UI to `nav.js` | One edit puts auth state on all 16 pages, because the nav is injected from a single source. |
 | Switch `progress.js` to Supabase for signed-in users | The actual feature. Guests keep working exactly as before. |
 | Build the one-time localStorage import | Prompts before merging existing progress, then clears the keys. Disposable code — mark it for deletion in a few months. |
-| Keep theme in localStorage; sync to profile as a convenience | A DB round-trip before first paint would flash the wrong theme on every page load. |
-| Split into dev and prod Supabase projects | Real user data now exists. This is the moment that split earns its cost — not before. |
+| Keep theme in localStorage; sync to profile as a convenience | A DB round-trip before first paint would flash the wrong theme on every page load. **No migration needed** — `profiles.theme` already exists, added in Phase 3 precisely so this phase would not need one. |
+| Split into dev and prod Supabase projects | Real user data now exists. This is the moment that split earns its cost — not before. The existing project (`spehmrgmcdenqdftkyrt`) stays as prod; the new one is dev. |
+| **Delete `src/pages/auth-test.astro`** | **Carried forward from Phase 3**, and recorded here rather than only in that phase's log, because this is the list someone doing Phase 5 will actually read. It is a scaffold, and once `auth.js` and the real sign-in UI exist it is a second, diverging implementation of client setup. **Mine it before deleting it:** it holds working patterns for session handling, `onAuthStateChange`, the signup-trigger check, and RLS assertions that both admin and non-admin paths were verified against. |
 
 **Done when:** a user with existing local progress signs in, accepts the import, opens a second
 device, and sees the same state. **Test both directions** — the failure mode here is silent
