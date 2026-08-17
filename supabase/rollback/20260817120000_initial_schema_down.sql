@@ -12,6 +12,25 @@
 -- Deliberately does NOT touch auth.users. Dropping the schema should not delete
 -- accounts; if the intent is a clean slate, delete the users from the Auth
 -- dashboard separately and knowingly.
+--
+-- ⚠️ THE TRAP THAT CREATES, AND IT DOES NOT LOOK LIKE ONE.
+--
+-- Dropping `profiles` while leaving `auth.users` means every existing account
+-- loses its profile row. Re-applying the migration does NOT bring them back:
+-- `handle_new_user` is an AFTER INSERT trigger on auth.users, and those users
+-- were inserted long ago. The result is a user who signs in perfectly well, has
+-- no profile, gets `false` from is_admin() forever, and fails the auth-test
+-- page's first check for a reason that looks nothing like its cause.
+--
+-- So after any down-then-up cycle, either delete the accounts too, or backfill:
+--
+--     insert into public.profiles (id)
+--     select id from auth.users
+--     on conflict (id) do nothing;
+--
+-- This is why "safe while the tables are empty" is about the PUBLIC tables only.
+-- auth.users can hold rows the moment anyone signs up, including during Phase 3
+-- testing, and it is not covered by that reassurance.
 
 begin;
 
