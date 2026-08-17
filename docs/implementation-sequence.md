@@ -186,6 +186,44 @@ that line rather than blocked behind it.
 
     Gate is now **22/22**, up from 19, with the three added checks all covering the RPC surface.
 
+12. **The last Advisor warning was tested rather than argued, and the test found something bigger
+    than the warning.** The claim — that `authenticated` needs `EXECUTE` on `is_admin()` because RLS
+    policy expressions are evaluated with the querying role's privileges — was asserted three times
+    from documentation before anyone ran it. Revoking the grant with a live session confirmed it
+    immediately, so the warning is permanent and the note in `supabase/README.md` stands.
+
+    **But the failure was not where it was predicted, and that is the finding.** The expectation was
+    that admin *writes* would break. What actually broke was reading your **own** profile row:
+
+    ```
+    FAIL  profiles: own row exists    permission denied for function is_admin
+    FAIL  profiles: select * ...      permission denied for function is_admin
+    ```
+
+    `profiles` carries two permissive SELECT policies, and permissive policies are **OR-ed** — so
+    evaluating the set evaluates the admin one too, for every caller. A function the role cannot
+    execute therefore does not disable the admin branch, it **errors the whole read for everyone**.
+
+    **Carry this into Phase 7:** adding an admin policy to an existing table can break ordinary
+    users' access to it if the function grants are wrong, and the symptom is a permission error on a
+    table whose own policies read perfectly.
+
+13. **The check written to detect this could not have detected it — it passed either way.** Check 7
+    asserted only `Boolean(error)`, and "permission denied for function is_admin" carries error code
+    `42501`, exactly as an RLS refusal does. So the check designed as the experiment's signal was
+    blind to the experiment, and the answer arrived from the three checks it had been assumed would
+    be uninformative. Now asserts *why* the write was refused (`row-level security` in the message),
+    not merely that it was.
+
+    A second cascade in the same run: check 1's failed read left `is_admin` null, which the page
+    read as `false`, so check 3 confidently reported `tried false -> true` about a value it never
+    obtained. The suite now aborts when it cannot read its own profile rather than emitting a board
+    of derived nonsense.
+
+    **The general lesson, and it applies to every check in this phase:** a test that passes on *any*
+    error is not testing what it claims. Both of these were written to fail closed and did — while
+    saying nothing true.
+
 **One assertion in the gate is time-limited, and the script says so.** "Every table returns zero
 rows when signed out" is true for the content tables only while they are empty — from Phase 6,
 `news_stories` returns published rows to anonymous callers by design. The durable invariant is the

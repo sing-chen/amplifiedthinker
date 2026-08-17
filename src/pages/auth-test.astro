@@ -368,6 +368,20 @@ const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         // yourself admin in the SQL editor to test the other one.
         var isAdmin = Boolean(prof.data && prof.data.is_admin);
 
+        // If check 1 could not read the row, `isAdmin` is false because the read
+        // failed - not because the user is not an admin. Everything keyed off it
+        // below then reports confidently on a value it never obtained. Say so and
+        // stop, rather than emitting a board of cascading nonsense.
+        if (prof.error || !prof.data) {
+          log(false, 'ABORTED: cannot read own profile, so nothing below can be trusted',
+              prof.error ? prof.error.message : 'no row returned');
+          if (prof.error && /function is_admin/.test(prof.error.message || '')) {
+            log(false, 'Cause: authenticated lacks EXECUTE on is_admin()',
+                'profiles has two permissive SELECT policies and they are OR-ed, so the admin one is evaluated for everyone - a function the role cannot execute breaks the whole read. Fix: grant execute on function public.is_admin() to authenticated;');
+          }
+          return;
+        }
+
         // 2. Reading profiles returns exactly one row - own. Not "the UI only
         //    shows one", but the database returning one. Admins legitimately see
         //    every row (profiles_admin_select_all), so the assertion inverts.
@@ -435,7 +449,19 @@ const ENV_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           var cleanup = await client.from('blog_posts').delete().eq('slug', probeSlug);
           log(!cleanup.error, 'blog_posts: admin probe row removed', cleanup.error ? cleanup.error.message : 'cleaned up');
         } else {
-          log(Boolean(blog.error), 'blog_posts: non-admin INSERT rejected', blog.error ? blog.error.code : 'INSERT SUCCEEDED - policy is wrong');
+          // Assert WHY it was rejected, not merely that it was. Both an RLS
+          // refusal and "permission denied for function is_admin" are error
+          // 42501, so a bare Boolean(error) passes even when the policy is
+          // broken in a way that would also break every ordinary read. That
+          // false pass is exactly what happened the first time this was used to
+          // test whether authenticated needed EXECUTE on is_admin().
+          var msg = blog.error ? blog.error.message || '' : '';
+          var byPolicy = /row-level security/i.test(msg);
+          log(
+            byPolicy,
+            'blog_posts: non-admin INSERT rejected BY THE POLICY',
+            blog.error ? msg : 'INSERT SUCCEEDED - policy is wrong'
+          );
         }
 
         // 8. Clean up after ourselves so a re-run starts from the same place.
