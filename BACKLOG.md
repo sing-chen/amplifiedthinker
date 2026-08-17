@@ -36,6 +36,34 @@ tracked in `docs/`, not here:
 Log new infrastructure *ideas* here; anything already committed to that plan belongs in the docs
 above, so status lives in one place.
 
+### Bump `actions/deploy-pages` off deprecated Node 20
+**Status:** Idea · Not started · Noticed 2026-08-17 during Phase 3
+**Relates to:** [.github/workflows/pages.yml](.github/workflows/pages.yml)
+
+The Pages workflow emits this on every run:
+
+> Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on
+> Node.js 24: `actions/deploy-pages@v4`
+
+**Nothing is broken.** GitHub is force-running it on Node 24, so it works today. This is about the
+version pin ageing out, not a current fault.
+
+**Why it is worth tracking rather than ignoring:** this workflow is the only thing publishing
+`sing-chen.github.io/amplifiedthinker`, which is a *load-bearing* production origin — some corporate
+networks block the custom domain under newly-registered-domain policies, and those users have no
+other route in. A silent deprecation becoming a hard failure there takes down an audience segment
+with no fallback, and the failure would surface as a red X in an inbox rather than as a broken page
+anyone would notice.
+
+Action: bump to `actions/deploy-pages@v5` when it exists, or whichever version targets a supported
+runtime. Check `actions/checkout`, `actions/setup-node`, `actions/configure-pages` and
+`actions/upload-pages-artifact` in the same pass — the warning names only the action that tripped it,
+not everything on the same runtime.
+
+**Related, and separately worth knowing:** the same workflow run failed at `actions/deploy-pages@v4`
+with a `503` and a `429`, which was a transient GitHub Pages outage rather than anything in this
+repo. Recorded in the Phase 3 progress log so a future red X is not misread as this deprecation.
+
 ---
 
 ## Content
@@ -50,4 +78,4 @@ above, so status lives in one place.
 
 ---
 
-*Last updated: August 2026*
+*Last updated: 17 August 2026*
