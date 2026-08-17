@@ -1,7 +1,6 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1 and 2 live. Phase 3 applied and verified on
-`feat/supabase-schema`; **awaiting merge and production-origin verification** ·
+**Status:** In progress — Phases 0, 1, 2 and 3 live. Phase 4 (Email) is next ·
 **Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
@@ -31,7 +30,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 0 — Branch + environment setup | ✅ **Done** (allowlist deferred to 3) | ⚪ None | ⚪ None | No | — |
 | 1 — Progress module extraction | ✅ **Done — live** | 🟡 Silent | ⚪ None | No | — |
 | 2 — Astro shell | ✅ **Done — live** | 🟡 Silent | 🔵 Visible | No | 0 |
-| 3 — Supabase schema + RLS | 🔨 **In progress** | ⚪ None | ⚪ None | No | 0 |
+| 3 — Supabase schema + RLS | ✅ **Done — live** | ⚪ None | ⚪ None | No | 0 |
 | 4 — Email | ☐ Not started | ⚪ None | ⚪ None | No | 3 |
 | 5 — Auth + progress sync | ☐ Not started | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
 | 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
@@ -72,11 +71,16 @@ October 2026 as NRD filters age out, so avoid designs that assume it is permanen
 
 ## Progress log
 
-### Phase 3 — in progress, branch `feat/supabase-schema` (2026-08-17)
+### Phase 3 — done, merged, live on both origins (2026-08-17)
 
-**Everything that can be written without a project exists; nothing has been applied.**
-Creating the Supabase project needs the account holder, so the phase is deliberately split at
-that line rather than blocked behind it.
+Merged as `2173242`. **The 16 existing pages are untouched: 66/66 byte-identical against the git
+blobs on `amplifiedthinker.com` *and* `sing-chen.github.io/amplifiedthinker`, 0 differing, 0 missing
+on either** — the same gate Phase 2 used, re-run as a regression check. The only site-visible
+addition is `/auth-test/`, a throwaway scaffold marked for deletion at the end of Phase 5.
+
+**Database verified independently of the merge**, which is the useful property: 9 tables, RLS enabled
+in the same block as each `create table`, 17 policies, the signed-out gate at 22/22, and the admin
+gate exercised in both directions signed in. None of that depended on any deploy.
 
 | Built | |
 |---|---|
@@ -95,10 +99,18 @@ that line rather than blocked behind it.
 | **Signed-in checks: 8 PASS non-admin, 9 PASS admin** | The admin gate exercised in both directions, which no automated check could have done. |
 | Preview origin verified | Sign-in plus a password-reset redirect landing back on the branch URL — the wildcard entry proven by behaviour rather than by reading the pattern. |
 
-| Still open | |
+| Merged and verified | |
 |---|---|
-| Merge to `main` | Deploys to both production origins. |
-| Verify both production origins | `amplifiedthinker.com` and, more importantly, `sing-chen.github.io/amplifiedthinker` — the origin whose users have no fallback. Each needs one password-reset email to test its redirect entry; sign-in alone sends no mail and proves nothing about redirects. |
+| Merged to `main`, live on both origins | 66/66 byte-identical on each. |
+| Both production origins exercised | Connect, sign in, and the full check suite passing on `amplifiedthinker.com` and `sing-chen.github.io/amplifiedthinker`. |
+| **All four allowlist entries verified** | Two by real email links (localhost, preview), two by direct probe of `/auth/v1/verify` once the mailer rate limit bit — with a deliberately unlisted control confirming the probe discriminates. See finding 14. |
+
+**One deploy failed and it was not ours.** The Pages run for `d09475b` failed at
+`actions/deploy-pages@v4` with `503 … is githubstatus.com reporting a Pages outage?`, plus a `429`
+fetching the action itself. The identical workflow had succeeded three minutes earlier. Impact was
+nil: that commit touched only `docs/dev-workflow.md`, which sits outside `public/` and `src/`, so the
+build output was byte-identical to what had already published. Worth checking *what a failed deploy
+would have shipped* before treating a red X as an incident.
 
 **Findings from building against the real code rather than the plan:**
 
@@ -231,6 +243,27 @@ that line rather than blocked behind it.
     **The general lesson, and it applies to every check in this phase:** a test that passes on *any*
     error is not testing what it claims. Both of these were written to fail closed and did — while
     saying nothing true.
+
+14. **The allowlist can be tested without sending any email, and finding that out late cost the
+    phase its whole mail allowance.** Verification was designed around real emails: sign up on one
+    origin, then a password-reset link on each of the others. That works, and it proved localhost and
+    the preview branch — but the built-in mailer allows roughly two messages an hour, and the third
+    request silently did nothing, with the last two origins still unverified.
+
+    `/auth/v1/verify` decides its redirect **before** validating the token, so an obviously invalid
+    token still exercises the allowlist. Allowlisted origins are honoured; unlisted ones are silently
+    swapped for the Site URL — which is the exact failure mode the whole exercise exists to catch, now
+    reproducible on demand instead of by waiting on an inbox.
+
+    **The control is what makes it evidence.** Probing a deliberately unlisted origin in the same
+    batch returned the Site URL, so "honoured" means something rather than being the endpoint's
+    default. Without that control the four passes would have proved nothing.
+
+    **The general shape, which is the part worth carrying:** the expensive, rate-limited, human-in-
+    the-loop test was verifying two things at once — that mail works, and that this origin matches.
+    Only the first needs an inbox, and only once. Once separated, the per-origin half became a
+    scriptable probe that runs in two seconds. Look for that split before building a slow verification
+    loop, not after exhausting it.
 
 **One assertion in the gate is time-limited, and the script says so.** "Every table returns zero
 rows when signed out" is true for the content tables only while they are empty — from Phase 6,
@@ -482,7 +515,7 @@ Instant, and no git revert needed first.
 
 ---
 
-## Phase 3 — Supabase schema and RLS 🔨 IN PROGRESS
+## Phase 3 — Supabase schema and RLS ✅ DONE
 
 **Impact:** ⚪ None · ⚪ None — no site code touched beyond one throwaway test page.
 

@@ -80,6 +80,33 @@ Four lines, four reasons, none of them optional:
 | `amplifiedthinker-git-*-singchen.vercel.app` | The stable per-branch preview alias. Without the wildcard, sign-in works in production and fails on every branch with no useful error. The per-commit URL cannot be listed — it changes on every push. |
 | `localhost:4321` | Astro's dev server port. |
 
+#### Testing the allowlist without sending a single email
+
+The obvious way to check an entry is to trigger a real email and see where its link lands. That works,
+and it is what proved localhost and the preview branch — but the built-in mailer allows roughly two
+messages an hour, and four origins need checking. Phase 3 ran out of allowance with two entries left.
+
+**There is a direct probe.** `/auth/v1/verify` decides the redirect *before* it validates the token,
+so an obviously invalid token still exercises the allowlist:
+
+```bash
+curl -s -o /dev/null -w '%{redirect_url}\n' \
+  "https://<ref>.supabase.co/auth/v1/verify?token=deliberately-invalid&type=recovery&redirect_to=<URL-ENCODED-ORIGIN>"
+```
+
+- **Allowlisted** → redirects to the origin you asked for.
+- **Not allowlisted** → redirects to the **Site URL** instead. That silent substitution is the exact
+  failure this configuration is prone to, so seeing it happen on demand is the point.
+
+**Always run a known-bad control in the same batch** — something like `https://example.com/nope`. If
+that one is *also* honoured, the probe is measuring nothing and the passes mean nothing. Verified in
+Phase 3: the bad control fell back to `https://amplifiedthinker.com`, the four real entries did not.
+
+What this does **not** prove is delivery or token verification. Those are properties of the mailer and
+the token, not of the origin, so proving them once anywhere is enough; the per-origin question is only
+ever whether the entry matches. Use one real email to prove the whole chain works, then use the probe
+for every additional origin.
+
 ### 2. Email confirmation
 
 Leave whatever the project default is for Phase 3 — it only affects how tedious the
