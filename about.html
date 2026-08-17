@@ -229,15 +229,17 @@
       </div>
     </div>
 
-    <!-- Contact: full version (with email) on the amplifiedthinker.com custom domain, short version (LinkedIn only) on the github.io URL -->
+    <!-- Contact: full version (with email) everywhere except the legacy github.io mirror, which
+         gets the short version (LinkedIn only). Blocklisting the mirror rather than allowlisting
+         the custom domain means Vercel previews and localhost show what production shows. -->
     <div class="contact-block" id="contact-block">
       <p class="contact-label">Get in touch</p>
       <p class="contact-body" id="contact-body-full" style="display:none;">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, whether that's by email at <a href="mailto:singchen@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" class="contact-link">singchen@amplifiedthinker.com</a> or on <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
       <p class="contact-body" id="contact-body-short" style="display:none;">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, reach out via <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
     </div>
     <script>
-      var isCustomDomain = /(^|\.)amplifiedthinker\.com$/.test(window.location.hostname);
-      document.getElementById(isCustomDomain ? 'contact-body-full' : 'contact-body-short').style.display = '';
+      var isLegacyMirror = /\.github\.io$/.test(window.location.hostname);
+      document.getElementById(isLegacyMirror ? 'contact-body-short' : 'contact-body-full').style.display = '';
     </script>
 
     <div class="updates-block" id="updates">

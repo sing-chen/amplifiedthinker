@@ -356,4 +356,16 @@ Its reasoning on RLS, on not rendering the blog client-side, and on email sequen
 
 7. **Contact email already exists** — `singchen@amplifiedthinker.com` is live on `about.html:235`.
 
-8. **A stale `github.io` fallback is still live.** `about.html:239` sniffs the hostname and hides the contact email on any non-`amplifiedthinker.com` host. If a second origin is still live, it's another URL for the auth redirect allowlist — or one to retire. **Still outstanding.** *(The matching stale reference in `.claude/commands/add-skill.md` was corrected on 2026-08-17, when that file was brought under version control.)*
+8. **A `github.io` fallback is live — and so is the origin it exists for.** `about.html` sniffed the
+   hostname and hid the contact email on any non-`amplifiedthinker.com` host. Phase 0 confirmed by
+   request that `https://sing-chen.github.io/amplifiedthinker/` **is serving the full site**, rebuilt
+   from `main` (it already carries the Phase 1 `progress.js`). So the fallback was not dead code —
+   but it was also firing on Vercel previews and localhost, which made every preview of that page
+   unfaithful to production.
+
+   **Resolved 2026-08-17:** the test is now a blocklist on `*.github.io` rather than an allowlist on
+   the custom domain, so production, previews and localhost all render identically and only the
+   mirror gets the short version. Whether the mirror itself is retired is a separate decision — see
+   "The GitHub Pages mirror" in [dev-workflow.md](dev-workflow.md). *(The matching stale reference in
+   `.claude/commands/add-skill.md` was corrected on 2026-08-17, when that file was brought under
+   version control.)*

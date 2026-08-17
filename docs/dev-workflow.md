@@ -1,6 +1,6 @@
 # Dev workflow: branches, previews, and environments
 
-**Status:** In use — branch-per-phase and previews proven on Phase 1 · **Last updated:** 2026-08-17
+**Status:** In use — Phase 0 complete except the Supabase allowlist · **Last updated:** 2026-08-17
 
 The Supabase and environment-variable sections are still untested, since no Supabase project
 exists yet. Everything about branches, previews and merging has now been exercised for real.
@@ -57,6 +57,11 @@ no configuration. Four things to check or change:
 
 Settings → Git → Production Branch should be `main`. Everything else assumes only `main` reaches
 production.
+
+**Verified empirically in Phase 0**, which is better evidence than reading the setting: after Phase 1
+merged, `https://amplifiedthinker.com/progress.js` returned 200 and the plan pages carried the halo
+CSS from `11c6be1` — both `main`-only commits. Pushes to `main` reach production, and the two feature
+branches produced `…-git-<branch>-…` preview URLs rather than touching it.
 
 ### 2. Use the stable branch alias, not the per-commit URL
 
@@ -123,6 +128,14 @@ Without the wildcard line, sign-in works in production and fails on every previe
 useful error. This is the failure mode the original brief flagged as a possibility; the branch
 workflow makes it a certainty rather than a risk.
 
+Add `https://sing-chen.github.io/amplifiedthinker/**` **only if the Pages mirror is kept** — see
+"The GitHub Pages mirror" below. Retiring it is the cheaper option precisely because it removes an
+allowlist entry rather than adding one.
+
+⚠️ **This is Phase 0's one blocked activity.** There is no Supabase project yet, so there is nothing
+to configure. It moves into Phase 3, where the project gets created — recorded here so the values
+are settled in advance rather than invented under pressure.
+
 ### One Supabase project until Phase 5, two after
 
 **You do not need a separate dev project yet.** Until Phase 5 puts auth into production there is
@@ -147,13 +160,46 @@ matter entirely and must never appear in any file under `public/`.
 
 ## GitHub
 
-**Nothing is required.** Optionally, add branch protection on `main` (Settings → Branches) to
-block accidental direct pushes.
+### The GitHub Pages mirror — a second live copy of the site
 
-⚠️ **`deploy.bat` runs `git add . && git commit && git push`.** It pushes whatever branch is
-checked out, so it is branch-safe — but it commits *everything* indiscriminately, including
-half-finished work and any local scratch files. Use explicit git commands while developing and
-keep `deploy.bat` for content updates on `main`.
+`https://sing-chen.github.io/amplifiedthinker/` **is live and actively rebuilding from `main`.**
+Confirmed in Phase 0: it serves the full site and already carries the Phase 1 `progress.js`. This
+was assumed dead and is not.
+
+It is harmless today — every page's `<link rel="canonical">` and `robots.txt` sitemap already point
+at `amplifiedthinker.com`, so search engines are told which origin is authoritative. It stops being
+harmless later:
+
+- **Phase 2 breaks it.** Once the 16 pages move into `public/`, Pages serves the repo root and finds
+  no `index.html`. The mirror would start 404ing with no warning and no owner.
+- **Phase 5 has to account for it.** A second origin is a second Supabase redirect-allowlist entry
+  and a second surface where a session can be established. Fewer origins is strictly safer.
+- **`middleware.js` never ran there**, so shared news links from the mirror have always had broken
+  social previews.
+
+**Recommendation: retire it** (Settings → Pages → Source: None). One origin, one place auth can
+happen, and nothing silently rotting after Phase 2. If it is kept instead, it must be added to the
+Supabase redirect allowlist in Phase 3 and the Astro config given a Pages-compatible output path.
+
+### Branch protection — check `deploy.bat` before enabling it
+
+**Nothing is required.** Branch protection on `main` (Settings → Branches) sounds like free safety
+but conflicts with how content updates ship here:
+
+⚠️ **`deploy.bat` runs `git add . && git commit && git push` directly to whatever branch is checked
+out.** Turning on *Require a pull request before merging* makes that fail on `main`, so every typo
+fix becomes a PR. On a solo repo, the protection buys little — there is no one else to guard against —
+and the cost lands on the workflow used most often.
+
+**Recommendation: leave `main` unprotected**, and rely on the branch-per-phase habit plus explicit
+git commands for feature work. Revisit if anyone else ever gets push access.
+
+### `deploy.bat` commits everything
+
+Separately from the branch question: `deploy.bat` stages with `git add .`, so it commits
+*everything* in the working tree — half-finished work, local scratch files, anything untracked. It
+pushes whatever branch is checked out, so it is branch-*safe*, just not selective. Use explicit git
+commands while developing and keep `deploy.bat` for content updates on `main`.
 
 ---
 
