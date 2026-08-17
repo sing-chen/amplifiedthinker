@@ -293,22 +293,36 @@ assumes Pages must be supported forever.
 
 #### `.vercelignore` does not apply here — and never provided privacy
 
-`.vercelignore` keeps `docs/` off `amplifiedthinker.com` (verified: `404` on Vercel). GitHub Pages
-has no equivalent file, so the same paths return `200` there:
+⚠️ **Superseded by Phase 2, confirmed at the Phase 3 merge (2026-08-17).** The asymmetry below no
+longer exists — `docs/` is `404` on **both** origins:
 
 ```
-docs/dev-workflow.md      →  amplifiedthinker.com: 404      github.io: 200
+docs/dev-workflow.md      →  amplifiedthinker.com: 404      github.io: 404
 ```
+
+Nothing was done to achieve that. Pages used to serve the repository root, which is why it published
+`docs/`; since Phase 2 it serves the Actions build output in `dist/`, and `docs/` sits outside
+`public/` so it was never copied there. **Parity arrived as a side effect of a change made for an
+entirely different reason**, which is worth noticing twice over: the `_config.yml` deliberation below
+is now moot, and a documented fact about production quietly stopped being true a phase before anyone
+re-tested it.
+
+The original reasoning, kept because the conclusion still holds:
+
+`.vercelignore` keeps `docs/` off `amplifiedthinker.com` (verified: `404` on Vercel). GitHub Pages
+had no equivalent file, so the same paths returned `200` there.
 
 **This is not a leak.** The repository is public, so every file in `docs/` is already readable at
 `github.com/sing-chen/amplifiedthinker` and via `raw.githubusercontent.com` regardless of either
 config. `.vercelignore` was only ever keeping planning docs out of the *website's* URL space, not
 making them private. Write these docs as public documents, because they are.
 
-A Jekyll `_config.yml` with `exclude: [docs, deploy.bat]` would restore parity, but it is deliberately
-**not** being added: it changes the Pages build for a load-bearing origin that an audience has no
-fallback from, in exchange for hiding files that stay public on `github.com` anyway. Non-zero risk for
-near-zero gain.
+A Jekyll `_config.yml` with `exclude: [docs, deploy.bat]` would have restored parity, and was
+deliberately **not** added: it would have changed the Pages build for a load-bearing origin that an
+audience has no fallback from, in exchange for hiding files that stay public on `github.com` anyway.
+Non-zero risk for near-zero gain — and, as it turned out, for a gap that closed itself. Declining to
+act on a low-value item was the right call twice: once on the merits, and once because the premise
+expired.
 
 #### Deploying to Pages requires the branch to be allowed in the environment
 
