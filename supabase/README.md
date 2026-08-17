@@ -89,6 +89,36 @@ mailer is rate-limited and explicitly not for production.
 
 ---
 
+## The one Advisor warning that is meant to be there
+
+**Advisors → Security** should show exactly one entry:
+
+> `public.is_admin()` can be executed by the `authenticated` role as a `SECURITY DEFINER`
+> function via `/rest/v1/rpc/is_admin`.
+
+**Intentional. Do not "fix" it.** Two reasons:
+
+1. **The policies need it.** Every `*_admin_all` policy calls `is_admin()`, and RLS policy
+   expressions are evaluated with the querying role's privileges — so `authenticated` must hold
+   `EXECUTE` or admin writes fail. `anon` was revoked in `20260817140000`, because every policy
+   calling it is `to authenticated` and `anon` therefore never reaches one.
+2. **Phase 7 will probably call it directly**, to decide whether to render admin nav.
+
+It is not a leak. `is_admin()` filters on `auth.uid()`, so it only ever reports the caller's own
+admin status — something they can already read from their own `profiles` row.
+
+The standard being held here is **zero *unexplained* warnings**, not zero warnings. The eight
+cleared in `20260817140000` were grants made by accident; this one is a decision with a reason
+written down. If this list ever grows a second entry, that entry is signal.
+
+**If you ever do want literal zero**, the fix is not to revoke — it is to move the function out of
+the exposed schema (`create schema private; alter function public.is_admin() set schema private;`)
+and recreate the six policies that reference it. Policies can call functions in unexposed schemas
+perfectly well. That was weighed and deferred: it costs a migration and six policy rewrites to
+remove an exposure that reveals nothing, and it would break the `/auth-test` page's check 4.
+
+---
+
 ## Granting yourself admin
 
 `is_admin` is deliberately not self-settable — a trigger rejects any change made by
