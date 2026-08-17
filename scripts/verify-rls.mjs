@@ -98,19 +98,39 @@ if (!URL_BASE || !ANON_KEY) {
   process.exit(2);
 }
 
-// A service_role JWT carries "role":"service_role" in its payload. Catching it
-// here matters more than it looks: that key bypasses RLS, so every assertion
-// below would report a false PASS and the gate would certify nothing.
-try {
-  const payload = JSON.parse(Buffer.from(ANON_KEY.split('.')[1], 'base64').toString('utf8'));
-  if (payload.role && payload.role !== 'anon') {
-    console.error(`Refusing to run: the supplied key has role "${payload.role}", not "anon".`);
-    console.error('A service_role key bypasses RLS and would pass this suite while proving nothing.');
-    process.exit(2);
+// Refuse anything that is not an anon/publishable key. This matters more than it
+// looks: a privileged key bypasses RLS, so every assertion below would report a
+// false PASS and the gate would certify nothing - the single worst outcome for a
+// script whose entire job is proving the security model.
+//
+// Two key formats to recognise, and the prefix check has to come FIRST. The newer
+// `sb_secret_…` keys are not JWTs, so a decode-and-inspect approach throws, lands
+// in the catch, and waves them through - which is precisely backwards. Kept in
+// step with keyProblem() in src/pages/auth-test.astro.
+function keyProblem(key) {
+  if (/^sb_secret_/i.test(key)) return 'that is a secret key';
+  if (/^service_role/i.test(key)) return 'that is a service_role key';
+
+  const parts = key.split('.');
+  if (parts.length !== 3) return null; // not a JWT we can read - allow
+
+  try {
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+    if (payload.role && payload.role !== 'anon') {
+      return `that key has role "${payload.role}", not "anon"`;
+    }
+  } catch {
+    return null; // undecodable - allow, the assertions themselves still hold
   }
-} catch {
-  // Not a JWT we can read (newer publishable key formats). Carry on - the
-  // assertions themselves still hold, we just cannot pre-check the role.
+  return null;
+}
+
+const problem = keyProblem(ANON_KEY);
+if (problem) {
+  console.error(`Refusing to run: ${problem}.`);
+  console.error('It bypasses RLS and would pass this suite while proving nothing.');
+  console.error('Use the anon / publishable key from Project Settings -> API Keys.');
+  process.exit(2);
 }
 
 const headers = { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` };
