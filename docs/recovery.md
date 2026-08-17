@@ -187,9 +187,14 @@ with the provider, and no script here can restore them:
 |---|---|---|
 | GitHub account | Pushing; triggering both deploys | Set up a PAT or credential manager on the new machine |
 | Vercel account | Production deploys, rollbacks, env vars, Deployment Protection | Signed in via GitHub |
-| GoDaddy | DNS for `amplifiedthinker.com` | Registrar |
+| GoDaddy | **Registrar only** for `amplifiedthinker.com` | Holds the domain and the nameserver delegation — *not* the DNS records |
+| Cloudflare | **DNS zone** for `amplifiedthinker.com`, and inbound Email Routing | `marvin`/`susan.ns.cloudflare.com` are authoritative. A DNS change made at GoDaddy has no effect |
 | Supabase | Database, auth, RLS — from Phase 3 onward | See below |
-| Brevo | Auth email SMTP — from Phase 4 onward | — |
+| Brevo | Auth email SMTP, and outbound domain authentication — from Phase 4 onward | Account "Amplified Thinker". SMTP key values are shown once and are not recoverable — losing one means creating a new key and updating whatever used it |
+
+⚠️ **DNS records are not backed up by anything.** Cloudflare keeps no history, so the only copy
+of the zone as it stood before Phase 4 is [email-dns-baseline.md](email-dns-baseline.md).
+`npm run verify:email` re-checks it against the live zone.
 
 **Once Phase 3 lands, add to this list:** the Supabase project URL and `anon` key live in source (they
 are public by design — RLS is the security boundary), but the **`service_role` key does not and must

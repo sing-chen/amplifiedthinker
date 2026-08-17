@@ -1,6 +1,6 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1, 2 and 3 live. Phase 4 (Email) is next ·
+**Status:** In progress — Phases 0, 1, 2 and 3 live. Phase 4 (Email) started, on `feat/email` ·
 **Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
@@ -31,7 +31,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 1 — Progress module extraction | ✅ **Done — live** | 🟡 Silent | ⚪ None | No | — |
 | 2 — Astro shell | ✅ **Done — live** | 🟡 Silent | 🔵 Visible | No | 0 |
 | 3 — Supabase schema + RLS | ✅ **Done — live** | ⚪ None | ⚪ None | No | 0 |
-| 4 — Email | ☐ Not started | ⚪ None | ⚪ None | No | 3 |
+| 4 — Email | ◐ **In progress** | ⚪ None | ⚪ None | No | 3 |
 | 5 — Auth + progress sync | ☐ Not started | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
 | 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
 | 7 — Admin portal + banner | ☐ Not started | ⚪ None | 🟢 **New** | No | 6 |
@@ -554,14 +554,233 @@ Vercel rollback restores *code*, never schema.
 first impression, and you find out from the user who *doesn't* tell you. Sequencing this ahead of
 real users is the entire point.
 
+**The risk profile differs from Phase 3, and is worse in one way.** Phase 3's migrations were single
+transactions that rolled back whole, so a mistake cost nothing. This phase edits a live DNS zone,
+where changes propagate on a TTL and a wrong record breaks inbound mail that works today. The zone
+was captured before anything changed: [email-dns-baseline.md](email-dns-baseline.md), re-checkable
+with `npm run verify:email`.
+
 | Activity | What it does, and why |
 |---|---|
-| Confirm whether Brevo SMTP credentials actually exist | The brief assumed they do. The described setup — Gmail sending, masked — suggests Brevo may only be providing domain authentication, in which case an SMTP key must be created. Resolve before building on the assumption. |
-| Point Supabase Auth SMTP at Brevo | Replaces the built-in mailer, which is rate-limited and explicitly not for production use. |
-| Verify DKIM and DMARC alignment | Determines inbox versus spam. Do this before the first real send, not after. |
-| Confirm Cloudflare MX and Vercel records coexist | Both need records on the same DNS zone. Inbound reportedly works today, so this is a check rather than a change. |
+| Confirm whether Brevo SMTP credentials actually exist | The brief assumed they do. The described setup — Gmail sending, masked — suggests Brevo may only be providing domain authentication, in which case an SMTP key must be created. Resolve before building on the assumption. **✅ Resolved — and neither way the plan framed it.** A key exists *and* a second one is still needed; see finding 1. |
+| Confirm Cloudflare MX and Vercel records coexist | Both need records on the same DNS zone. Inbound reportedly works today, so this is a check rather than a change. **✅ Confirmed, and the real collision point identified** — not MX versus A, which cannot contend, but the single shared SPF TXT. See finding 2. |
+| Verify DKIM and DMARC alignment | Determines inbox versus spam. Do this before the first real send, not after. **◐ Half done from DNS** — both Brevo DKIM selectors publish live keys, DMARC is `p=quarantine` with relaxed alignment. The remaining half is not a DNS fact and cannot be read from one; see finding 3. |
+| Add Brevo to the SPF record | ☐ The one DNS change this phase makes. An `include` **edited into** the existing TXT, never a second record. |
+| Create a second Brevo SMTP key, for Supabase | ☐ The existing key belongs to Gmail Send-As and its value is not recoverable. Runbook in [../supabase/README.md](../supabase/README.md). |
+| Point Supabase Auth SMTP at Brevo | Replaces the built-in mailer, which is rate-limited and explicitly not for production use. ☐ |
+| Raise the Supabase auth email rate limit | ✅ 30/hour → 100/hour. Custom SMTP does not lift it by itself — Supabase caps on top of the provider. |
+| Turn off Brevo click tracking, open tracking and the unsubscribe header | ☐ **Added mid-phase by finding 10.** All three are on by default and all three are wrong for auth mail. |
 
-**Done when:** a test signup, password reset, and email change all arrive in a real inbox.
+**Done when:** a test signup, password reset, and email change all arrive in a real inbox — **and
+land in the inbox rather than spam**, which is the phase's actual rationale.
+
+**Revised mid-phase, because the original was insufficient.** Delivery was proven — all three types
+inbox-placed and DMARC-passing — while the mail itself still carried a click-tracked token and a
+one-click unsubscribe. So the condition now also requires that **the confirmation link points at
+`<ref>.supabase.co` rather than a tracking domain**. Arriving safely is not the same as arriving,
+and the first version of this line could not tell them apart.
+
+### What the DNS capture settled, before any change
+
+1. **Brevo SMTP credentials exist — and Supabase still needs its own.** The question was framed as
+   either/or: either a key exists, or Brevo is only doing domain authentication and one must be
+   created. The answer is both halves at once. A key named **"Gmail Send As"** was created
+   2026-07-06, four minutes before Gmail's *Send mail as* confirmation for
+   `singchen@amplifiedthinker.com` — so "sent from Gmail, masked" means **Gmail relaying through
+   Brevo's SMTP**, and outbound through Brevo has been working since July. But that key's value is
+   shown once and Gmail will not display it back, so it is unusable here, and sharing one key across
+   two senders would make a rotation for one silently break the other. Supabase gets a second key.
+
+   **The evidence was in the mailbox, not the dashboard.** The Brevo alert, the Gmail confirmation,
+   and messages actually sent from the alias each date and corroborate the others. Worth remembering
+   that account history is a queryable record when a dashboard is not to hand.
+
+   **Then confirmed directly**, because the above was still inference: Gmail → Settings → Accounts
+   and Import shows the alias as *"Mail is sent through: smtp-relay.brevo.com, secured connection on
+   port 587 using TLS"*. So Brevo outbound has been working since July **through the exact host and
+   port Supabase will use** — which is a materially better starting position than "an SMTP key
+   exists", and it settles the relay values without trusting recollection.
+
+2. **MX and A cannot collide; the SPF TXT is where the three systems actually meet.** Cloudflare
+   Email Routing owns inbound (`MX`, an SPF include), Brevo owns outbound (DKIM selectors, an SPF
+   include), Vercel owns the website (`A`, `CNAME`) and publishes no MX at all. So the coexistence
+   question, asked about MX versus Vercel, was safe by record type. The genuine hazard is the one
+   record two of them share: **a domain may have only one SPF record, and a second one beginning
+   `v=spf1` is a permanent error that fails SPF outright — including Cloudflare's inbound
+   authorisation.** "Add a record" is both the obvious way to add Brevo and the wrong one. The gate
+   asserts the single-record property first.
+
+3. **DKIM and DMARC are verifiable from DNS; alignment is not.** Both selectors resolve to live RSA
+   keys and DMARC is a real `p=quarantine` — a misaligned send goes to spam rather than merely
+   scoring badly. What DNS cannot say is what Brevo puts in the `Return-Path` for this account,
+   which decides whether SPF *aligns* or only DKIM does. That is a header on a delivered message,
+   so it gets read from one rather than argued from documentation — the same move as finding 12 in
+   Phase 3, which cost three assertions from docs before anyone ran the test.
+
+4. **Cloudflare is authoritative DNS, not GoDaddy.** `recovery.md` had GoDaddy against "DNS for
+   `amplifiedthinker.com`". It is the registrar; the zone is Cloudflare's. A record changed at
+   GoDaddy would do nothing — a bad thing to learn while trying to fix mail under pressure.
+   Corrected.
+
+5. **The obvious pre-flight test produces no evidence at all, and the giveaway is an absence.** The
+   plan says to verify alignment *before* the first real send. The cheap-looking way to do that is
+   to send one message from the Gmail alias to your own Gmail and read its `Authentication-Results`.
+   That test is void: Gmail sees the recipient is the sending account, matches the `Message-ID`
+   against the Sent copy, and delivers internally. *Show original* then renders the **sent** copy —
+   no `Received`, no `Authentication-Results`, no `Return-Path`, no `DKIM-Signature`, and
+   "Delivered after 0 seconds".
+
+   **The absence is the signal, and it is a quiet one.** There is no error and no failed check —
+   just a header block that starts at `MIME-Version:`. Had the summary table shown a PASS it would
+   have been believed. Plus-addressing does not rescue it either, since the mailbox is the same.
+   Same shape as finding 13 in Phase 3: a check that cannot fail is not a check, and here it could
+   not even report.
+
+   **What it cost, and what it did not.** It cost nothing except the instinct to retry it slightly
+   differently, which is the trap worth naming. It did not move the risk: DKIM keys are published
+   and live, DMARC is known, and **DMARC passes on DKIM alone**, so SPF alignment is a second route
+   to the same verdict rather than a prerequisite. The faithful test is Supabase-via-Brevo to a
+   mailbox that is not the sender's, which is the phase's "done when" anyway — and it is safe to
+   reach for it directly, because the first real send goes to a test inbox. *That* is what "before
+   the first real send" is protecting: a user receiving it, not us.
+
+6. **The first real send through Brevo passed everything, including the part that matters.**
+   Supabase → Brevo → Gmail, signup confirmation to a plus-addressed inbox on 2026-08-17:
+
+   | | |
+   |---|---|
+   | SPF | PASS, IP `77.32.148.23` (inside Brevo's `77.32.128.0/18`) |
+   | DKIM | PASS, **`d=amplifiedthinker.com`** — aligned, so DMARC passes on this alone |
+   | DMARC | PASS |
+   | From | `Amplified Thinker <noreply@amplifiedthinker.com>` |
+   | Placement | **`INBOX`**, no `CATEGORY_PROMOTIONS`, marked Important |
+   | Latency | 2 seconds, no greylisting |
+
+   **Placement is the assertion, not authentication.** Three PASSes are necessary and say nothing
+   about which tab a message lands in; the phase's rationale is inbox-versus-spam. This delivery is
+   admissible evidence where the earlier self-send was not, because it went to a different address
+   and arrived from outside, so Gmail applied real filtering to it.
+
+   The confirmation link was then clicked and landed on `/auth-test` rather than the bare Site URL —
+   worth checking explicitly, because the silent substitution of the Site URL is the exact failure
+   Phase 3's probe existed to catch, and it looks like success.
+
+7. **A real password-reset click found a defect that only exists on the *second* auth round-trip,
+   and it fails without erroring.** The reset email arrived, DMARC-clean, in the inbox, and its link
+   redirected to exactly the right origin and path — the allowlist honoured, the mail perfect. The
+   page then showed the *previous* session, as though nothing had happened.
+
+   The address bar had **two** hash marks: `/auth-test##access_token=…`.
+
+   `auth-test` passed `window.location.href` as its redirect target. After the first auth
+   round-trip, supabase-js consumes the token and tidies the URL, leaving a bare trailing `#`. That
+   `#` then travels into the next `redirectTo`, Supabase appends its own fragment, and the result is
+   a double hash. supabase-js reads the fragment as `url.split('#')[1]`, which for `##…` is the
+   **empty string** — so it parses zero parameters and never sees the token:
+
+   ```
+   #access_token=TOKEN   ->  split('#')[1] = "access_token=TOKEN"   ->  parsed
+   ##access_token=TOKEN  ->  split('#')[1] = ""                     ->  nothing
+   ```
+
+   **Nothing errors anywhere.** No failed request, no console message, no bad redirect. The only
+   symptom is a stale-looking session panel, which reads as a rendering quirk rather than a broken
+   auth flow. Fixed with a `selfUrl()` helper that rebuilds the target from `origin + pathname`.
+
+   **Three things worth carrying into Phase 5.** First, `auth.js` will do this same redirect and
+   `window.location.href` is the natural way to write it — the comment sits at the fix so it is read
+   at the moment it matters. Second, the bug is invisible on a first test: a fresh page works
+   perfectly, and only a *second* auth action on the same page fails, so any verification that
+   reloads between steps would miss it entirely. Third, and most in keeping with Phases 1 and 3:
+   every automated signal here was green. This came from a human clicking a link and noticing the
+   name on the session line was the wrong one.
+
+8. **The SPF record this phase changed turns out not to be the one doing the work — and the header
+   said so.** The question left open at finding 3 was what Brevo puts in the `Return-Path`, because
+   that decides whether SPF aligns. A delivered message answers it:
+
+   ```
+   smtp.mailfrom = bounces-…@gw.d.sender-sib.com
+   dkim=pass  header.i=@amplifiedthinker.com  header.s=brevo2
+   dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE)
+   ```
+
+   The envelope sender is Brevo's own bounce domain, so **SPF is never evaluated against
+   `amplifiedthinker.com` at all** — and it cannot align either, `sender-sib.com` and
+   `amplifiedthinker.com` being different organisational domains. The `include:spf.brevo.com` added
+   during this phase is **inert for the current flow**. Kept regardless: Brevo documents it, it costs
+   one lookup of ten, and it becomes load-bearing the moment a custom Return-Path on this domain is
+   configured. But it is precaution, and the gate now says so rather than showing a green line that
+   implies SPF is what carries this mail.
+
+   **DMARC is passing on DKIM alone, which makes DKIM a single point of failure.** Not a degradation
+   if a selector breaks — total failure, under `p=quarantine`, with no second mechanism beneath it.
+   Every auth email would go to spam. That is worth knowing before Phase 5, and it is the strongest
+   argument for eventually getting SPF to align rather than merely to exist.
+
+   **The method is the point, and it is the third time this project has paid off.** The recommendation
+   to add the include was made from Brevo's documentation and was reasonable; the header shows it does
+   nothing here. Phase 3 finding 12 flipped two of four Advisor verdicts by testing them; finding 14
+   found the allowlist was probeable without email. Same shape: the documented answer and the measured
+   answer differed, and only one of them was written down.
+
+9. **The gate raised a false alarm about the website within the hour, and the fix is a lesson about
+   what a check is allowed to assert.** The "apex A records still point at Vercel" assertion pinned
+   two exact addresses, captured at baseline. Forty minutes later it went red: `64.29.17.1` had
+   become `64.29.17.65`. Nothing in the zone had changed — the apex is a CNAME that Cloudflare
+   flattens, and Vercel rotates within its anycast `/24`s. The next run returned `.1` again.
+
+   Both origins were serving `200` throughout, so the only damage was to the gate's credibility —
+   which is the actual cost. **A check that fails for reasons unrelated to what it claims to watch
+   trains you to ignore a red line, and it will be red for a real reason exactly once.** The
+   assertion now matches the `/24` prefix, which is the thing that would genuinely change if the
+   apex stopped pointing at Vercel.
+
+   Notable that this surfaced during a phase editing that same zone by hand: a spurious "the website
+   records moved" is precisely the alarm most likely to be believed and acted on at the wrong moment.
+
+10. **Brevo rewrites auth links, injects a tracking pixel, and attaches a one-click unsubscribe to
+    password-reset-class mail — and none of it is visible in Gmail's authentication summary.** Found
+    by reading the full raw source of a message whose summary table had already been read and passed.
+
+    ```
+    <a href="https://bbgagihj.r.bh.d.sendibt3.com/tr/cl/CrxdO_mBR2li...">Confirm email address</a>
+    <img style="display:none" src="https://bbgagihj.r.bh.d.sendibt3.com/tr/op/m2WEwix2...">
+    List-Unsubscribe-Post: List-Unsubscribe=One-Click
+    ```
+
+    Three defaults, all wrong for authentication mail, in rising order of severity:
+
+    | | Why it is wrong here |
+    |---|---|
+    | **Open tracking** | An analytics beacon in transactional mail. Minor privacy and spam-score cost. |
+    | **Click tracking** | The confirmation link does not point at Supabase. **A bearer token now passes through a third party and into their click logs**, on a URL shaped exactly like phishing. Corporate filters that strip redirector links would break auth outright — landing hardest on the NRD-blocked audience, who already reach the site by only one route. |
+    | **`List-Unsubscribe`, one-click** | Gmail renders an Unsubscribe control beside the sender. **A user can unsubscribe from their own password reset**, and may then be suppressed — after which auth mail silently stops, unrecoverably, with the user unaware of what they did. |
+
+    **Confirmed on both the signup and recovery templates**, so it is account-wide rather than one
+    template's quirk — every future Supabase template inherits it too. And the recovery sample makes
+    the worst case concrete rather than predicted: Gmail renders an Unsubscribe control beside a
+    *password reset*, with the reset token routed through the click tracker.
+
+    **Provably Brevo's doing, not Supabase's**, which is what locates the fix. The DKIM `h=` list is
+    `…:list-unsubscribe:x-csa-complaints:list-unsubscribe-post:…` — those headers sit *inside*
+    Brevo's own signature, so Brevo added them before signing. Nothing in the Supabase templates
+    needs changing; all three are Brevo transactional settings.
+
+    **Why this is the phase's most useful finding, and how close it came to being missed.** Every
+    signal that had been checked was green: SPF, DKIM, DMARC, inbox placement, a link that worked
+    when clicked. The authentication summary Gmail offers — the thing this phase was designed
+    around — reports on *provenance* and says nothing about *content*, and the content is where the
+    real risk was. Delivery had been proven; safety had not, and the two had been treated as one.
+
+    The precedent now runs to four phases: Phase 1's accordion defects, Phase 3's findings 12 and
+    13, Phase 4's double-hash redirect, and this. **Every one was found by a human reading real
+    output, and every one had a green board above it.**
+
+11. **DMARC aggregate reports go to a GoDaddy address nobody reads** —
+   `rua=mailto:dmarc_rua@onsecureserver.net`, left behind from before the zone moved. The one
+   channel that would report an alignment failure points at a third party. Non-blocking, and the
+   gate warns rather than fails on it.
 
 ---
 

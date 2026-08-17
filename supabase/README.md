@@ -109,10 +109,92 @@ for every additional origin.
 
 ### 2. Email confirmation
 
-Leave whatever the project default is for Phase 3 — it only affects how tedious the
-throwaway test account is. **Phase 4 is where this gets decided properly**, by pointing
-SMTP at Brevo before any real user can trigger a password reset. Supabase's built-in
-mailer is rate-limited and explicitly not for production.
+`mailer_autoconfirm` is **false**: signup requires a confirmation email. That was left at
+the project default through Phase 3, where it only affected how tedious the throwaway test
+account was. Phase 4 is where it starts to matter, because from Phase 5 a real user can
+trigger one.
+
+### 3. SMTP — Phase 4
+
+**Auth → Emails → SMTP Settings.** Replaces the built-in mailer, which allows roughly
+**two messages an hour** — measured in Phase 3, where it ran out mid-verification with two
+origins left to check — and which Supabase explicitly does not support for production.
+
+#### The Brevo side
+
+The account is **Amplified Thinker**, and the domain is already authenticated: the
+`brevo-code` TXT and both `brevo1`/`brevo2._domainkey` CNAMEs resolve. Nothing about domain
+authentication needs doing. See [../docs/email-dns-baseline.md](../docs/email-dns-baseline.md).
+
+⚠️ **An SMTP key already exists, and Supabase must not use it.** The key created on
+2026-07-06 is named **"Gmail Send As"** and is in use by Gmail's *Send mail as* feature for
+the `singchen@amplifiedthinker.com` alias. Two reasons it cannot be reused:
+
+1. **Its value is not recoverable.** Brevo shows an SMTP key once, at creation. Gmail stores
+   it and will not display it back.
+2. **Sharing one key couples two unrelated senders.** Revoking or rotating it for Supabase
+   would silently break Gmail's alias sending, and vice versa — a failure that surfaces as
+   "my email stopped working" with nothing pointing at the cause.
+
+Create a **second** key at <https://app.brevo.com/settings/keys/smtp>, named for its use
+(`Supabase Auth`), **Standard** variant, **No expiration**. Copy the value immediately; it is
+shown once.
+
+⚠️ **"No expiration" is not the same as never expiring.** Brevo expires any SMTP key after **90
+consecutive days of inactivity**, whatever its expiry date. Choosing no fixed expiry removes one
+of the two clocks; it cannot remove that one.
+
+**The symptom, because it does not look like what it is:** auth mail stops, and the Supabase auth
+logs report an SMTP *authentication* failure — indistinguishable from a wrong password, with a
+configuration that reads as correct. If auth email breaks after a quiet period and nothing was
+changed, check the key before anything else. Tracked in [../BACKLOG.md](../BACKLOG.md).
+
+**The relay values are already proven on this domain.** Gmail → Settings → Accounts and Import
+shows the alias sending *"through smtp-relay.brevo.com, secured connection on port 587 using
+TLS"* — so that host and port have been carrying real mail for this domain since July, rather
+than being copied out of Brevo's documentation. The SMTP **login** (of the form
+`<id>@smtp-brevo.com`) is on the Brevo SMTP page; take it from there.
+
+#### The Supabase side
+
+| Field | Value |
+|---|---|
+| Sender email | `noreply@amplifiedthinker.com` |
+| Sender name | `Amplified Thinker` |
+| Host | `smtp-relay.brevo.com` |
+| Port | `587` |
+| Username | the Brevo SMTP login |
+| Password | the **new** `Supabase Auth` key |
+
+**Why `noreply@` rather than the existing `singchen@`:** the alias is a human identity that a
+person reads and replies to; auth mail is machine mail. Pointing both at one address means
+password-reset replies land in a personal inbox. Brevo accepts any address on an
+authenticated domain, so this needs no extra validation step. Note that nothing routes
+`noreply@` inbound — replies bounce, which is the intent, but it is a decision rather than an
+oversight.
+
+#### Turn off Brevo's marketing features — they are on by default and wrong for auth mail
+
+**Brevo → Transactional → Settings.** Three defaults apply to transactional sends and all three
+should be off. Verified present in a real Supabase confirmation email on 2026-08-17:
+
+| Setting | What it does to an auth email |
+|---|---|
+| **Click tracking** | Rewrites the confirmation link to `…sendibt3.com/tr/cl/…`. The token — a bearer credential — travels through a third party and into their click logs, on a URL shaped like phishing. Corporate filters that strip redirector links break auth entirely, which hits the NRD-blocked audience hardest since they have one route in. |
+| **Open tracking** | Injects a hidden `<img>` beacon. Privacy cost, small spam-score cost, no benefit. |
+| **`List-Unsubscribe` header** | Gmail shows an Unsubscribe control next to the sender. **A user can unsubscribe from their own password reset** and may then be suppressed, after which auth mail silently stops — unrecoverable by them, and invisible to you. |
+
+**How to confirm it is fixed:** send one signup, open *Show original*, and check the confirm link
+points at `https://<ref>.supabase.co/auth/v1/verify?…` rather than a tracking domain. Gmail's SPF /
+DKIM / DMARC summary will not tell you — it reports provenance, not content, and it read all-green
+while every one of these was active.
+
+#### Then raise the rate limit
+
+**Auth → Rate Limits → "Rate limit for sending emails".** Custom SMTP does not by itself lift
+this — Supabase applies its own cap on top of the provider's, and it defaults low. Removing
+the built-in mailer's ~2/hour ceiling is half the point of the phase, and it is not done until
+this number moves too.
 
 ---
 

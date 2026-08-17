@@ -64,6 +64,46 @@ not everything on the same runtime.
 with a `503` and a `429`, which was a transient GitHub Pages outage rather than anything in this
 repo. Recorded in the Phase 3 progress log so a future red X is not misread as this deprecation.
 
+### The Brevo SMTP key expires after 90 days of *inactivity*
+**Status:** Live risk · Noticed 2026-08-17 during Phase 4
+**Relates to:** [supabase/README.md](supabase/README.md), Supabase Auth SMTP settings
+
+The `Supabase Auth` SMTP key was created with **no fixed expiry**, so there is no date to diary.
+Brevo still expires a key after **90 consecutive days without a send**, and that clock is the only
+one left.
+
+**Why this is a real risk here rather than a theoretical one.** Phase 4 configures mail, but Phase 5
+is what lets anyone *trigger* it, and a personal site's signup volume can plausibly be zero for
+months afterwards. Ninety quiet days and the key dies on its own.
+
+**The failure mode is the one this phase exists to prevent, arriving from a different direction:**
+password resets stop working, nothing alerts, and you find out from the user who doesn't tell you.
+It surfaces in the Supabase auth logs as an SMTP *authentication* failure — which reads like a wrong
+password rather than an expired key, so the config looks fine while being useless.
+
+Options, none urgent: let Phase 5's real traffic keep it warm, send something deliberate each
+quarter, or check it as part of any periodic review. The cheapest mitigation is simply knowing this
+is the first thing to check when auth mail stops and nothing has changed.
+
+### DMARC passes on DKIM alone — SPF cannot align while Brevo owns the Return-Path
+**Status:** Known limitation · Noticed 2026-08-17 during Phase 4
+**Relates to:** [docs/email-dns-baseline.md](docs/email-dns-baseline.md), `npm run verify:email`
+
+Measured on a delivered auth email: `smtp.mailfrom` is `bounces-…@gw.d.sender-sib.com`, Brevo's own
+bounce domain. DMARC therefore passes on **DKIM only** — SPF is never evaluated against
+`amplifiedthinker.com`, and could not align with it even if it were.
+
+**Why it matters:** with `p=quarantine` live, DKIM is a single point of failure rather than one of
+two mechanisms. If a Brevo selector is ever rotated, removed, or mis-published, every auth email
+goes to spam immediately — no partial degradation, no fallback.
+
+**The fix, if it ever seems worth it:** configure a custom Return-Path on `amplifiedthinker.com` in
+Brevo, which makes the existing `include:spf.brevo.com` load-bearing and gives DMARC a second
+passing path. Check whether that is a paid feature before planning around it.
+
+Not urgent — DKIM is published, live, and verified in a real delivery. This is about removing a
+single point of failure, not repairing one.
+
 ---
 
 ## Content
