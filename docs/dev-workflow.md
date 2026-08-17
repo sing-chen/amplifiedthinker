@@ -78,7 +78,24 @@ cutover happens at merge — reviewable, and revertable with `git revert`.
 
 Never change the Framework Preset in the dashboard to accomplish something a branch file can do.
 
-### 4. Scope environment variables
+### 4. Previews are behind Vercel Authentication by default
+
+Preview URLs return `302 → vercel.com/sso-api` for anyone not signed in to the Vercel account.
+In a normal browser session this is invisible — you are already signed in, so the preview just
+works. It does mean:
+
+- Preview links cannot be shared with anyone outside the Vercel account.
+- Automated checks (curl, scripted browsers, an agent verifying a deploy) get the login wall
+  rather than the page, so verification on previews has to be done by hand.
+
+Leave it on unless that becomes a real cost. If it does, Settings → Deployment Protection offers
+**Protection Bypass for Automation**, which issues a secret to append as
+`?x-vercel-protection-bypass=<secret>` — preferable to disabling protection outright, which makes
+every unfinished branch publicly reachable by URL.
+
+Production is unaffected either way.
+
+### 5. Scope environment variables
 
 Settings → Environment Variables. Each variable has Production / Preview / Development
 checkboxes. Preview needs its own values so branch testing never writes to production data.
