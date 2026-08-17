@@ -158,19 +158,29 @@
   .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.2); }
   .nav-link.visited { color: rgba(255,255,255,0.95); }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
-  /* Unvisited reads as a hollow ring, visited as a solid fill. That contrast
-     carries down a 14-row rail far better than two similar shades at 6px. */
+  /* Three states, told apart by shape as much as colour — at 8px two similar
+     greens are not distinguishable on their own:
+       unvisited  empty ring
+       visited    solid sage fill
+       active     solid teal fill inside a halo */
   .nav-dot {
     width: 8px; height: 8px;
     border-radius: 50%;
     background: transparent;
-    border: 1.5px solid rgba(255,255,255,0.45);
+    border: 2px solid rgba(255,255,255,0.5);
     box-sizing: border-box;
     flex-shrink: 0;
-    transition: background 0.2s, border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
   }
-  .nav-link.active .nav-dot  { background: var(--teal); border-color: var(--teal); }
   .nav-link.visited .nav-dot { background: var(--sage); border-color: var(--sage); }
+  /* Declared after .visited deliberately: the two selectors have equal
+     specificity, and the current section must win when a link carries both.
+     The halo uses box-shadow so it costs no layout space. */
+  .nav-link.active .nav-dot {
+    background: var(--teal);
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(91,167,159,0.45);
+  }
   /* ── PREV / NEXT ARROWS ─────────────────────── */
   .nav-arrows {
     display: flex;
@@ -3434,8 +3444,10 @@ function updateNav() {
       link.setAttribute('aria-current', 'true');
       visited.add(s);
     }
-    if (visited.has(s) && s !== activeId) link.classList.add('visited');
-    else if (s !== activeId) link.classList.remove('visited');
+    // toggle, not add/else-remove: both branches used to be guarded by
+    // `s !== activeId`, so a link that became active kept a stale visited
+    // class and the current section rendered as visited.
+    link.classList.toggle('visited', visited.has(s) && s !== activeId);
   });
   if (activeId && activeId !== lastActiveId) {
     const activeLink = document.querySelector('.nav-link[data-section="' + activeId + '"]');
