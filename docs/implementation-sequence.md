@@ -86,10 +86,12 @@ pure refactor with an exact-match test, so it can ship to production on its own.
 **Done when:** progress saves and restores identically on all 10 pages, and stored JSON matches
 pre-refactor output exactly.
 
-**Note for later phases — the repo has mixed line endings.** `analytical-thinking` and
-`creative-thinking` pages are CRLF; the other three skills are LF. Each file is internally
-consistent. Any script that rewrites these files must normalise for matching and restore the
-original ending on write, or the real diff disappears under thousands of line-ending changes.
+**Note for later phases — line endings.** `core.autocrlf=true`, so the repo stores LF and the
+working tree gets CRLF on checkout. Working-tree files can still be found with either ending
+(anything written by a tool since the last checkout may be LF), and that inconsistency is enough
+to break a naive string match. Any script that rewrites these files should normalise to LF for
+matching and restore the file's existing ending on write. Verify by diff size: a correct run
+touches tens of lines, a line-ending accident touches thousands.
 
 ---
 

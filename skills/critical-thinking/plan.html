@@ -156,17 +156,21 @@
   }
   .nav-link:hover { color: var(--off-white); background: rgba(255,255,255,0.06); }
   .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.2); }
-  .nav-link.visited { color: rgba(255,255,255,0.85); }
+  .nav-link.visited { color: rgba(255,255,255,0.95); }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+  /* Unvisited reads as a hollow ring, visited as a solid fill. That contrast
+     carries down a 14-row rail far better than two similar shades at 6px. */
   .nav-dot {
-    width: 6px; height: 6px;
+    width: 8px; height: 8px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.2);
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.45);
+    box-sizing: border-box;
     flex-shrink: 0;
-    transition: background 0.2s;
+    transition: background 0.2s, border-color 0.2s;
   }
-  .nav-link.active .nav-dot  { background: var(--teal); }
-  .nav-link.visited .nav-dot { background: var(--sage); }
+  .nav-link.active .nav-dot  { background: var(--teal); border-color: var(--teal); }
+  .nav-link.visited .nav-dot { background: var(--sage); border-color: var(--sage); }
   /* ── PREV / NEXT ARROWS ─────────────────────── */
   .nav-arrows {
     display: flex;
@@ -3062,7 +3066,8 @@ function saveProgress() {
       quizSelected: kcSelected,
       quizRevealed: quizRevealed,
       quizOrder:    kcOrder,
-      habitOpen:    habitOpen
+      habitOpen:    habitOpen,
+      cardsOpen:    Array.from(openCards)
     });
   } catch (e) {
     // DOM not in the expected shape — fail silently, as before
@@ -3109,6 +3114,15 @@ function restoreState(data) {
   // Restore visited sections in nav
   if (data.visited) {
     data.visited.forEach(s => visited.add(s));
+  }
+
+  // Only applied when present. Saved state from before this field existed must
+  // not be read as "close the cards that ship open".
+  if (data.cardsOpen) {
+    Array.from(openCards).forEach(id => {
+      if (data.cardsOpen.indexOf(id) === -1) setAccordionOpen(id, false);
+    });
+    data.cardsOpen.forEach(id => setAccordionOpen(id, true));
   }
 }
 
@@ -3205,6 +3219,13 @@ function resetAllProgress() {
     header.setAttribute('aria-expanded', 'false');
   });
 
+  // Return the principle/model cards to what a first-time visitor sees, which
+  // on some pages means one card open rather than all of them closed.
+  Array.from(openCards).forEach(id => {
+    if (!defaultOpenCards.has(id)) setAccordionOpen(id, false);
+  });
+  defaultOpenCards.forEach(id => setAccordionOpen(id, true));
+
   // Clear visited-nav highlighting restored from storage
   visited.clear();
   navLinks.forEach(link => link.classList.remove('visited'));
@@ -3256,15 +3277,30 @@ function toggleDay(btn) {
 }
 
 // ── PRINCIPLES & MODEL ACCORDION ─────────────
+// Tracked by id, not index: ids are stable and the set of cards differs per
+// skill. Seeded from the DOM so cards that ship open are recorded accurately,
+// and the defaults kept separately so reset returns to them rather than blank.
+const openCards = new Set(
+  Array.from(document.querySelectorAll('.principle.open, .model-card.open')).map(c => c.id)
+);
+const defaultOpenCards = new Set(openCards);
+
+function setAccordionOpen(id, open) {
+  const card = document.getElementById(id);
+  if (!card) return;
+  card.classList.toggle('open', open);
+  const header = card.querySelector('[aria-expanded]');
+  if (header) header.setAttribute('aria-expanded', open);
+  const label = card.querySelector('.accordion-label');
+  if (label) label.textContent = open ? 'Collapse' : 'Expand';
+  if (open) openCards.add(id); else openCards.delete(id);
+}
+
 function toggleAccordion(id) {
   const card = document.getElementById(id);
   if (!card) return;
-  const isOpen = card.classList.contains('open');
-  card.classList.toggle('open', !isOpen);
-  const header = card.querySelector('[aria-expanded]');
-  if (header) header.setAttribute('aria-expanded', !isOpen);
-  const label = card.querySelector('.accordion-label');
-  if (label) label.textContent = isOpen ? 'Expand' : 'Collapse';
+  setAccordionOpen(id, !card.classList.contains('open'));
+  saveProgress();
 }
 
 // ── BIAS FIELD GUIDE ──────────────────────────
