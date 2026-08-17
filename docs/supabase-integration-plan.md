@@ -66,6 +66,23 @@ src/pages/api/     server endpoints
 - **A build error now blocks deployment of everything**, including the old pages. Today nothing can fail because nothing is built.
 - **Local dev changes.** `.claude/launch.json` runs `python -m http.server 8139`, which cannot run Astro or server endpoints. It becomes `npm run dev` (or `vercel dev`). No user-facing impact whatsoever — this only affects working on the site.
 
+### And one constraint discovered in Phase 0: there are two production origins
+
+This document originally assumed a single origin. It does not have one.
+`sing-chen.github.io/amplifiedthinker` is live, rebuilt from `main`, and **load-bearing** — some
+corporate networks block `amplifiedthinker.com` under newly-registered-domain policies, and those
+users have no other route in.
+
+GitHub Pages serves files but runs no code, so the Astro split has a second dimension beyond
+old-page/new-page: **client-side or prerendered, versus server-rendered.** The former reaches both
+audiences; the latter reaches only Vercel. Auth, progress sync, favourites, notes and client-rendered
+dashboards are all fine, because Supabase JS runs in the browser. The server-rendered blog, `/api/`
+endpoints and legacy-URL redirects are not.
+
+Practical rule for every phase below: **prefer client-side or prerendered where the feature matters to
+that audience.** Capability matrix, the Phase 2 dual-build requirement, and the environment-switch
+trap this creates are all in [dev-workflow.md](dev-workflow.md).
+
 ### Shared runtime modules
 
 These live in `public/` and follow the `nav.js` pattern — runtime-loaded, no build, working at any nesting depth. Old pages and new pages both consume them:
@@ -356,16 +373,28 @@ Its reasoning on RLS, on not rendering the blog client-side, and on email sequen
 
 7. **Contact email already exists** — `singchen@amplifiedthinker.com` is live on `about.html:235`.
 
-8. **A `github.io` fallback is live — and so is the origin it exists for.** `about.html` sniffed the
-   hostname and hid the contact email on any non-`amplifiedthinker.com` host. Phase 0 confirmed by
-   request that `https://sing-chen.github.io/amplifiedthinker/` **is serving the full site**, rebuilt
-   from `main` (it already carries the Phase 1 `progress.js`). So the fallback was not dead code —
-   but it was also firing on Vercel previews and localhost, which made every preview of that page
-   unfaithful to production.
+8. **The `github.io` "fallback" is not a fallback — it is a second supported production origin.**
+   `about.html` sniffed the hostname and hid the contact email on any non-`amplifiedthinker.com` host.
+   Phase 0 confirmed `https://sing-chen.github.io/amplifiedthinker/` **is serving the full site**,
+   rebuilt from `main` (it already carries the Phase 1 `progress.js`) — and, more importantly, *why*:
+   some corporate networks block the custom domain under newly-registered-domain policies, so those
+   users reach the site only through the GitHub URL.
 
-   **Resolved 2026-08-17:** the test is now a blocklist on `*.github.io` rather than an allowlist on
-   the custom domain, so production, previews and localhost all render identically and only the
-   mirror gets the short version. Whether the mirror itself is retired is a separate decision — see
-   "The GitHub Pages mirror" in [dev-workflow.md](dev-workflow.md). *(The matching stale reference in
+   This is the most consequential correction in this appendix, because it invalidates a design
+   decision elsewhere in this document rather than merely a fact. **The plan assumed one production
+   origin.** Three things follow:
+
+   - `about.html` was hiding the contact email from precisely the audience least able to reach any
+     other route. **Resolved 2026-08-17:** the test now blocklists `*.github.io` rather than
+     allowlisting the custom domain, so previews and localhost match production. Whether the email
+     should be shown on the GitHub origin too is an open content decision.
+   - **Phase 2 must build for two targets.** Pages serves the repo root; moving pages into `public/`
+     breaks it. It needs a GitHub Actions static build.
+   - **Phase 5's hostname-based environment switch was backwards.** Allowlisting the custom domain as
+     production would send NRD-blocked users to the *dev* Supabase project once the databases split —
+     silent data loss for real users. Blocklist non-production instead.
+
+   Capability matrix and the October 2026 re-test date are in
+   [dev-workflow.md](dev-workflow.md). *(The matching stale reference in
    `.claude/commands/add-skill.md` was corrected on 2026-08-17, when that file was brought under
    version control.)*

@@ -120,6 +120,7 @@ Auth → URL Configuration:
 Site URL:       https://amplifiedthinker.com
 
 Redirect URLs:  https://amplifiedthinker.com/**
+                https://sing-chen.github.io/amplifiedthinker/**
                 https://amplifiedthinker-git-*-<your-scope>.vercel.app/**
                 http://localhost:4321/**
 ```
@@ -128,9 +129,9 @@ Without the wildcard line, sign-in works in production and fails on every previe
 useful error. This is the failure mode the original brief flagged as a possibility; the branch
 workflow makes it a certainty rather than a risk.
 
-Add `https://sing-chen.github.io/amplifiedthinker/**` **only if the Pages mirror is kept** — see
-"The GitHub Pages mirror" below. Retiring it is the cheaper option precisely because it removes an
-allowlist entry rather than adding one.
+`https://sing-chen.github.io/amplifiedthinker/**` is **required, not optional** — see "The GitHub
+Pages origin" below. Users blocked from the custom domain by corporate NRD policies reach the site
+only there, so omitting it means sign-in fails for the people with no fallback.
 
 ⚠️ **This is Phase 0's one blocked activity.** There is no Supabase project yet, so there is nothing
 to configure. It moves into Phase 3, where the project gets created — recorded here so the values
@@ -146,11 +147,24 @@ not before. Paying that cost up front buys nothing.
 ### How config varies per environment with no build step
 
 `supabase-client.js` lives in `public/` and is loaded by static pages that cannot receive
-build-time values. Switch on hostname — the same pattern `about.html:239` already uses:
+build-time values. Switch on hostname — but **switch on what is *not* production**, not on the
+custom domain:
 
 ```js
-var isProd = /(^|\.)amplifiedthinker\.com$/.test(window.location.hostname);
+// Production is every real origin, and there are two of them. Non-production is the short,
+// known list: Vercel previews and localhost.
+var isPreview = /\.vercel\.app$/.test(window.location.hostname) ||
+                /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
+var isProd = !isPreview;
 ```
+
+⚠️ **Do not write `isProd = /amplifiedthinker\.com$/.test(hostname)`.** It looks correct and is the
+shape `about.html` originally used, but it classifies the Pages origin as non-production — so once
+Phase 5 splits dev and prod projects, every NRD-blocked user would silently read and write the *dev*
+database. Their progress would appear to save and then be missing from the real site. Allowlisting
+production means every new production origin is a bug waiting to happen; blocklisting non-production
+fails safe, because a forgotten preview host reading production data is far less damaging than a real
+user writing to a scratch database.
 
 The anon key is public by design and RLS is the actual security boundary, so both keys sitting
 in source is not a leak, even though it looks like one. The `service_role` key is a different
@@ -160,26 +174,68 @@ matter entirely and must never appear in any file under `public/`.
 
 ## GitHub
 
-### The GitHub Pages mirror — a second live copy of the site
+### The GitHub Pages origin — a supported second home, not a mirror to retire
 
 `https://sing-chen.github.io/amplifiedthinker/` **is live and actively rebuilding from `main`.**
-Confirmed in Phase 0: it serves the full site and already carries the Phase 1 `progress.js`. This
-was assumed dead and is not.
+Confirmed in Phase 0: it serves the full site and already carries the Phase 1 `progress.js`.
 
-It is harmless today — every page's `<link rel="canonical">` and `robots.txt` sitemap already point
-at `amplifiedthinker.com`, so search engines are told which origin is authoritative. It stops being
-harmless later:
+**It must stay live.** Some corporate networks block `amplifiedthinker.com` under
+newly-registered-domain (NRD) policies — security filtering that blocks domains registered within
+the last 30–90 days. Users on those networks have been given the GitHub URL and can reach it.
+Retiring Pages would cut off an audience segment that has no other route in.
 
-- **Phase 2 breaks it.** Once the 16 pages move into `public/`, Pages serves the repo root and finds
-  no `index.html`. The mirror would start 404ing with no warning and no owner.
-- **Phase 5 has to account for it.** A second origin is a second Supabase redirect-allowlist entry
-  and a second surface where a session can be established. Fewer origins is strictly safer.
-- **`middleware.js` never ran there**, so shared news links from the mirror have always had broken
-  social previews.
+So this is not a stale artifact. It is a **second supported origin with different capabilities**, and
+that has to be designed for rather than tidied away.
 
-**Recommendation: retire it** (Settings → Pages → Source: None). One origin, one place auth can
-happen, and nothing silently rotting after Phase 2. If it is kept instead, it must be added to the
-Supabase redirect allowlist in Phase 3 and the Astro config given a Pages-compatible output path.
+#### What each origin can serve
+
+| | `amplifiedthinker.com` (Vercel) | `sing-chen.github.io/amplifiedthinker` (Pages) |
+|---|---|---|
+| The 16 static pages | ✅ | ✅ |
+| `nav.js`, `styles.css`, `progress.js` | ✅ | ✅ |
+| Client-side auth + progress sync (Phase 5) | ✅ | ✅ — Supabase JS is client-side |
+| Favourites, pins, notes (Phase 6) | ✅ | ✅ — same reason |
+| Dashboards (Phase 9) | ✅ | ✅ if the charts render client-side |
+| Server-rendered blog (Phase 8) | ✅ | ❌ **static hosting only** |
+| Admin portal (Phase 7) | ✅ | ❌ |
+| `/api/` endpoints, legacy-URL 301s (Phase 6) | ✅ | ❌ |
+| `middleware.js` social-preview meta tags | ✅ | ❌ — never ran there |
+| Vercel Analytics (`/_vercel/insights/script.js`) | ✅ | ❌ — 404s, injected by Vercel at serve time |
+
+The dividing line is **anything needing a server**. Pages serves files; it does not run code.
+
+⚠️ **Analytics blind spot.** Because Vercel Analytics only exists on Vercel, traffic to the GitHub
+origin is invisible in the dashboard. The NRD-blocked audience is therefore **undercounted by an
+unknown amount** — which matters when judging how much that origin is worth supporting. Any decision
+about retiring it should not rest on Vercel traffic numbers, because those numbers exclude it by
+construction.
+
+#### What this means for Phase 2
+
+Phase 2 currently plans to move the 16 pages into `public/`. **That breaks Pages**, which serves the
+repo root and would find no `index.html`. The fix is a GitHub Actions workflow that builds Astro in
+static output mode and publishes to Pages, giving two build targets from one repo:
+
+- **Vercel** — the full dynamic build. Publishing a blog post is instant.
+- **Pages** — a prerendered static snapshot. Content appears on the next Actions run, and
+  server-only surfaces are absent by definition.
+
+This is real added scope for Phase 2, and it is better paid there than discovered at merge.
+
+#### Two things to decide as the work progresses
+
+- **The contact email is currently hidden on Pages** (`about.html`). Since those users often *cannot*
+  reach the custom domain, they are the segment least able to get in touch by any other route.
+  Consider showing the full contact block on both origins.
+- **NRD blocks age out.** `amplifiedthinker.com` was registered 2026-07-06, so it is roughly six
+  weeks old; most NRD filters release domains at 30–90 days. Re-test corporate access around
+  **October 2026**. If the block has lifted, the dual-target build becomes optional rather than
+  required — so avoid architecture that assumes Pages must be supported forever.
+
+#### Allowlist consequence
+
+The Pages origin **must** be added to the Supabase redirect allowlist in Phase 3, or sign-in fails
+for exactly the users who have no alternative origin.
 
 ### Branch protection — check `deploy.bat` before enabling it
 
