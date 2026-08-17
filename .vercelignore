@@ -1,2 +1,11 @@
-# Planning and internal docs — kept in the repo, not deployed to the live site.
+# Planning and internal docs — kept in the repo, not uploaded to Vercel.
+#
+# Since Phase 2 this is belt-and-braces rather than the mechanism: Vercel now serves
+# the build output in `dist/`, and `docs/` is outside `public/` so it was never going
+# to be copied there. Keeping the rule anyway means the docs are excluded from the
+# upload itself, and removing it would invite someone to wonder later why `docs/`
+# isn't reachable.
+#
+# Note this gives no privacy — the repository is public, so everything in `docs/` is
+# readable on github.com regardless. See docs/dev-workflow.md.
 docs/
