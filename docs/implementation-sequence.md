@@ -1,7 +1,8 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1 and 2 live. Phase 3 underway on `feat/supabase-schema`:
-migration written, **not yet applied — no Supabase project exists** · **Last updated:** 2026-08-17
+**Status:** In progress — Phases 0, 1 and 2 live. Phase 3 applied and verified on
+`feat/supabase-schema`; **awaiting merge and production-origin verification** ·
+**Last updated:** 2026-08-17
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -85,12 +86,19 @@ that line rather than blocked behind it.
 | `src/pages/auth-test.astro` | The signed-in half. Throwaway; delete at the end of Phase 5. |
 | `supabase/README.md` | Apply, roll back, verify, and the dashboard settings SQL cannot reach. |
 
-| Pending — needs the account holder | |
+| Done on the day | |
 |---|---|
-| Create the Supabase project | Nothing else can proceed. |
-| Apply the migration | Dashboard SQL editor or `npx supabase db push`. |
-| Set the redirect allowlist | Phase 0's one deferred activity. Exact values in `supabase/README.md`. |
-| Run both verification halves | The phase is not done until the gate is green. |
+| Project `spehmrgmcdenqdftkyrt` created, EU | One project. The dev/prod split stays a Phase 5 activity. *Automatically expose new tables* off and *Enable automatic RLS* on, both verified afterwards by creating a probe table and asking what it inherited. |
+| Both migrations applied | The first failed once on ordering (finding 9) and rolled back whole. |
+| Redirect allowlist set, all four entries | Phase 0's last open activity, closed. |
+| **Signed-out gate: 22/22** | The phase's written "done when". |
+| **Signed-in checks: 8 PASS non-admin, 9 PASS admin** | The admin gate exercised in both directions, which no automated check could have done. |
+| Preview origin verified | Sign-in plus a password-reset redirect landing back on the branch URL — the wildcard entry proven by behaviour rather than by reading the pattern. |
+
+| Still open | |
+|---|---|
+| Merge to `main` | Deploys to both production origins. |
+| Verify both production origins | `amplifiedthinker.com` and, more importantly, `sing-chen.github.io/amplifiedthinker` — the origin whose users have no fallback. Each needs one password-reset email to test its redirect entry; sign-in alone sends no mail and proves nothing about redirects. |
 
 **Findings from building against the real code rather than the plan:**
 
@@ -484,12 +492,12 @@ natural moment that forces you back to do it.
 
 | Activity | What it does, and why |
 |---|---|
-| **Create the Supabase project** | ⏸ **Blocked on the account holder.** Everything below waits on it. One project only — the dev/prod split is a Phase 5 activity, because there is no real user data to protect until then. |
-| Create all tables in one migration | The whole shape is visible at once, so relationships get designed rather than accreted. **✅ Written** — `supabase/migrations/20260817120000_initial_schema.sql`, 9 tables in one transaction. Not yet applied. |
-| Enable RLS and write policies before inserting any row | Removes any window where data exists unprotected. **✅ Written** — `enable row level security` sits in the same block as each `create table`, so the window does not exist even mid-migration. Grants to `anon` are revoked and re-granted explicitly on top. |
-| Add `is_admin()` and the profile-column trigger | Creates the admin gate, and ensures users cannot grant it to themselves. **✅ Written**, plus a signup trigger so every `auth.users` row gets a profile — without it `is_admin()` has nothing to read. |
-| Add the Supabase redirect allowlist, including the preview wildcard | **Deferred here from Phase 0**, which could not do it with no project to configure. **✅ Values resolved** (the Vercel scope is `singchen`) and recorded in `supabase/README.md`; ⏸ **applying them is a dashboard action.** |
-| Prove auth end to end on one throwaway page | Validates the whole chain — signup, session, policy enforcement — before it touches a real page. **✅ Built** — `src/pages/auth-test.astro`, renders and builds clean; ⏸ cannot run until the project exists. |
+| **Create the Supabase project** | **✅ Done** — `spehmrgmcdenqdftkyrt`, EU, one project. The dev/prod split stays a Phase 5 activity, because there is no real user data to protect until then. |
+| Create all tables in one migration | The whole shape is visible at once, so relationships get designed rather than accreted. **✅ Applied** — 9 tables in one transaction. A second migration follows it, creating no tables, that tightens function grants. |
+| Enable RLS and write policies before inserting any row | Removes any window where data exists unprotected. **✅ Verified** — `enable row level security` sits in the same block as each `create table`, and `pg_tables` confirms all 9 `true` with 17 policies. Grants to `anon` are revoked and re-granted explicitly on top. |
+| Add `is_admin()` and the profile-column trigger | Creates the admin gate, and ensures users cannot grant it to themselves. **✅ Proven in both directions** — a non-admin is refused, an admin is permitted, and an admin cannot demote themselves either, since the trigger checks for any change rather than for escalation. |
+| Add the Supabase redirect allowlist, including the preview wildcard | **Deferred here from Phase 0**, which could not do it with no project to configure. **✅ Set and behaviourally verified** on localhost and the preview branch; the two production origins follow the merge. |
+| Prove auth end to end on one throwaway page | Validates the whole chain — signup, session, policy enforcement — before it touches a real page. **✅ Done** — and it earned its place: it caught two defects in its own checks that a green board had been hiding (findings 12 and 13). |
 
 **Done when:** using only the anon key, every table returns zero rows when signed out — verified
 by direct query, not by the UI hiding things. `npm run verify:rls` is that direct query.
