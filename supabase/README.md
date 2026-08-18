@@ -109,10 +109,151 @@ for every additional origin.
 
 ### 2. Email confirmation
 
-Leave whatever the project default is for Phase 3 — it only affects how tedious the
-throwaway test account is. **Phase 4 is where this gets decided properly**, by pointing
-SMTP at Brevo before any real user can trigger a password reset. Supabase's built-in
-mailer is rate-limited and explicitly not for production.
+`mailer_autoconfirm` is **false**: signup requires a confirmation email. That was left at
+the project default through Phase 3, where it only affected how tedious the throwaway test
+account was. Phase 4 is where it starts to matter, because from Phase 5 a real user can
+trigger one.
+
+### 3. SMTP — Phase 4
+
+**Auth → Emails → SMTP Settings.** Replaces the built-in mailer, which allows roughly
+**two messages an hour** — measured in Phase 3, where it ran out mid-verification with two
+origins left to check — and which Supabase explicitly does not support for production.
+
+The provider is **Resend**. It was not the first choice — Brevo was, and the switch happened
+mid-phase for a reason worth reading before changing any of this: see *Why not Brevo* below.
+
+#### The Resend side
+
+**Domains → Add Domain**, `amplifiedthinker.com`, region **Ireland (eu-west-1)** to match the
+Supabase project. Under Advanced options:
+
+| Field | Value | Why |
+|---|---|---|
+| Custom Return-Path | `send` | Gives DMARC a second passing mechanism — see below |
+| Tracking Subdomain | **blank** | Leaving it empty disables the tracking toggles entirely |
+| Click tracking | **off** | Rewrites auth links. The defect that made Brevo unusable |
+| Open tracking | **off** | Injects a pixel |
+
+**Useful confirmation:** with tracking off, Resend hands you exactly **three** DNS records. A
+fourth — a `CNAME` for `links` — means tracking is still on. Add the three in Cloudflare by hand
+rather than using **Auto configure**, which asks for write access to the entire zone: the same zone
+holding the Email Routing MX records and the apex CNAME to Vercel. Three records is not worth that
+blast radius. Values and traps: [../docs/email-dns-baseline.md](../docs/email-dns-baseline.md).
+
+⚠️ **Leave Resend's "Enable Receiving" toggle off.** It publishes an `MX` at the **apex**, where
+Cloudflare Email Routing's three already live. Inbound is Cloudflare's job and it works.
+
+**What the Custom Return-Path buys, and why it is not cosmetic.** Brevo bounced from
+`gw.d.sender-sib.com`, its own domain — measured on a delivered message — so SPF was never
+evaluated against `amplifiedthinker.com` and could not align with it. DMARC passed on **DKIM
+alone**, which under `p=quarantine` makes one DNS record a single point of failure: rotate or
+mis-publish a selector and every auth email goes to spam at once, with no partial degradation.
+Resend bounces from `send.amplifiedthinker.com`, and the zone's `aspf=r` compares organisational
+domains, so SPF now aligns too. Two independent mechanisms instead of one.
+
+**The API key:** Resend → API keys → Create. Name `Supabase Auth`, permission **Sending access**
+(not Full access), domain restricted to `amplifiedthinker.com`. Shown once. Least privilege for the
+same reason `service_role` has no home here — a leaked sending-only key can send, and nothing else.
+
+#### The Supabase side
+
+**Auth → Emails → SMTP Settings.**
+
+| Field | Value |
+|---|---|
+| Sender email | `noreply@amplifiedthinker.com` |
+| Sender name | `Amplified Thinker` |
+| Host | `smtp.resend.com` |
+| Port | `587` |
+| Minimum interval per user | `60` seconds (default) |
+| Username | `resend` — the literal word, not an address |
+| Password | the Resend API key |
+
+The username catches people out: it is the same string for every Resend account. Resend's own SMTP
+page headlines port **465**; 587 is on its supported list and is the conventional choice for
+Supabase's mailer. Either works.
+
+⚠️ **"Minimum interval per user" is a per-recipient throttle, and a suppressed send looks exactly
+like a broken one.** Two auth emails to the same address inside 60 seconds and the second silently
+does not arrive. Check this before suspecting the provider.
+
+**Why `noreply@` rather than the existing `singchen@`:** the alias is a human identity that a
+person reads and replies to; auth mail is machine mail. Pointing both at one address means
+password-reset replies land in a personal inbox. Resend accepts any address on a verified domain,
+so this needs no extra validation step. Note that nothing routes `noreply@` inbound — replies
+bounce, which is the intent, but it is a decision rather than an oversight.
+
+#### Why not Brevo — and why Brevo is still here
+
+Brevo carried auth mail for a few hours on 2026-08-17 and delivered all three send types to the
+inbox, DMARC passing. It was still wrong, and none of it was fixable from its settings:
+
+| What Brevo did | Why it disqualified it |
+|---|---|
+| **Rewrote every link** to `…sendibt3.com/tr/cl/…` | The token is a bearer credential, travelling through a third party and into their click logs, on a URL shaped like phishing. Corporate filters that strip redirector links break auth entirely — which hits the NRD-blocked audience hardest, since they have one route in. |
+| **Injected an open-tracking pixel** | Privacy cost, small spam-score cost, no benefit. |
+| **Attached `List-Unsubscribe: One-Click`** to password resets | Gmail shows an Unsubscribe control on a security email. **A user can unsubscribe from their own password reset**, after which auth mail silently stops — invisible to you, and reversible only by an admin from Brevo's blocked-contacts page. |
+
+The Transactional → Settings page offers no switch for any of them on the free tier. Supabase cannot
+strip them either — it exposes no custom-header control. Confirmed as a product limitation rather
+than a missed setting.
+
+⚠️ **Brevo's DNS records must stay.** Gmail's *Send mail as* for `singchen@amplifiedthinker.com`
+still relays through `smtp-relay.brevo.com` on port 587, authenticating with the SMTP key created
+2026-07-06 and signing with the `brevo1`/`brevo2` selectors. That dependency is invisible from both
+the Resend and Supabase dashboards. Deleting the records or that key as migration leftovers breaks
+a working alias, and the failure surfaces as "my email stopped working" with nothing pointing at
+the cause. `npm run verify:email` keeps asserting them under a heading that says so.
+
+⚠️ **That Brevo key expires after 90 consecutive days of inactivity**, whatever its stated expiry —
+and the alias is low-traffic. The symptom is an SMTP *authentication* failure, indistinguishable
+from a wrong password. Tracked in [../BACKLOG.md](../BACKLOG.md).
+
+#### How to confirm it actually works
+
+Send one of each — signup, password reset, email change — and read **Show original** on the
+delivered message. Gmail's SPF / DKIM / DMARC summary will not tell you: it reports provenance, not
+content, and it read all-green on every Brevo message while all three defects were active.
+
+| Check | Expected |
+|---|---|
+| Link target | `https://<ref>.supabase.co/auth/v1/verify?…`, not a redirector |
+| Tracking pixel | absent |
+| `List-Unsubscribe` | absent |
+| `smtp.mailfrom` | `…@send.amplifiedthinker.com` |
+| Authentication | `spf=pass`, `dkim=pass` (`header.s=resend`), `dmarc=pass` |
+
+⚠️ **Resend's mail carries two DKIM signatures and only one counts.** The second is
+`d=amazonses.com` — Amazon signing its own outbound. It passes, it is not yours, and it cannot
+align with `header.from`. After a broken selector, the raw source will still show a `dkim=pass`.
+
+**Trigger the sends from a clean `/auth-test/` URL** with no `#` fragment in the address bar.
+The page builds its redirect target from `origin + pathname`, but production carries the older
+`window.location.href` version until Phase 4 merges, and that produces a `##` link that supabase-js
+cannot parse.
+
+#### Then raise the rate limit
+
+**Auth → Rate Limits → "Rate limit for sending emails".** Custom SMTP does not by itself lift
+this — Supabase applies its own cap on top of the provider's, and it defaults low. Removing
+the built-in mailer's ~2/hour ceiling is half the point of the phase, and it is not done until
+this number moves too.
+
+### 4. Signups are switched off — deliberately, and only until Phase 5
+
+**Auth → Sign In / Providers → "Allow new users to sign up": off** since 2026-08-18.
+
+Phase 4 finished its testing and nothing user-facing creates an account until Phase 5, so leaving it
+on would be an open endpoint with no consumer. It is off rather than merely unused because the
+`anon` key becomes public in Phase 5 — at which point `/auth/v1/signup` is callable directly, and
+the HTML page is not the thing to remove.
+
+⚠️ **Re-enable it as part of the change that protects it, not before.** An unprotected signup
+endpoint drains Resend's 100/day allowance — after which real password resets stop — and lets
+anyone trigger confirmation mail to strangers, whose spam complaints land on the sender reputation
+this phase was built to establish. Rationale and options in
+[../docs/implementation-sequence.md](../docs/implementation-sequence.md), Phase 5.
 
 ---
 

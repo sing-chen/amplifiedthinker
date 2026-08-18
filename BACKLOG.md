@@ -64,6 +64,28 @@ not everything on the same runtime.
 with a `503` and a `429`, which was a transient GitHub Pages outage rather than anything in this
 repo. Recorded in the Phase 3 progress log so a future red X is not misread as this deprecation.
 
+### The Brevo SMTP key behind the Gmail alias expires after 90 days of *inactivity*
+**Status:** Live risk · Noticed 2026-08-17 during Phase 4 · Rescoped 2026-08-18
+**Relates to:** [supabase/README.md](supabase/README.md), Gmail → Settings → Accounts and Import
+
+⚠️ **This no longer concerns auth mail.** Supabase moved to Resend on 2026-08-18, and Resend's API
+keys have no inactivity expiry. What remains is the key created 2026-07-06, which Gmail's *Send mail
+as* uses to relay `singchen@amplifiedthinker.com` through `smtp-relay.brevo.com`.
+
+Brevo expires an SMTP key after **90 consecutive days without a send**, whatever its stated expiry
+date. That alias is low-traffic by nature — it is a personal address on a personal site — so ninety
+quiet days is entirely plausible.
+
+**The failure mode is quiet and the symptom misleads.** Sending from the alias starts failing, and
+the error reads as an SMTP *authentication* failure — indistinguishable from a wrong password, with
+a configuration that looks correct. Gmail will not explain that a key aged out.
+
+**Why it is lower stakes than it was:** it now breaks one person's outbound alias rather than every
+user's password reset. Worth knowing, not worth scheduling.
+
+Options, none urgent: send something from the alias each quarter, or simply remember that this is
+the first thing to check when the alias stops working and nothing was changed.
+
 ---
 
 ## Content
@@ -78,4 +100,4 @@ repo. Recorded in the Phase 3 progress log so a future red X is not misread as t
 
 ---
 
-*Last updated: 17 August 2026*
+*Last updated: 18 August 2026*
