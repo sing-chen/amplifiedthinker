@@ -31,16 +31,36 @@ const RESOLVERS = ['1.1.1.1', '8.8.8.8'];
 // What must be true, and why each one is here.
 //
 //   Cloudflare Email Routing owns inbound: the MX records and the SPF include.
-//   Brevo owns outbound: the DKIM selectors and its own SPF include.
+//   Resend owns auth mail: everything under send.<domain>, plus one DKIM
+//     selector at the apex.
+//   Brevo owns the Gmail "Send mail as" alias, and nothing else any more.
 //   Vercel owns the website: the apex A records and the www CNAME.
 //
-// All three live on ONE zone, and exactly one record is shared between them -
-// the SPF TXT. That record is the whole risk surface of this phase.
+// Four systems, one zone, and exactly one record shared between them - the apex
+// SPF TXT. That record is the whole risk surface of this phase, and Resend
+// deliberately does not touch it.
 // ---------------------------------------------------------------------------
 const CLOUDFLARE_MX = ['route1.mx.cloudflare.net', 'route2.mx.cloudflare.net', 'route3.mx.cloudflare.net'];
 const CLOUDFLARE_SPF_INCLUDE = '_spf.mx.cloudflare.net';
 const BREVO_SPF_INCLUDE = 'spf.brevo.com';
 const BREVO_SELECTORS = ['brevo1', 'brevo2'];
+
+// Resend puts its bounce handling on a subdomain and signs from the apex. That
+// split is the whole reason for the switch: the Return-Path lands on
+// send.<domain>, whose organisational domain is <domain>, so SPF *aligns* for
+// DMARC. Brevo bounced from gw.d.sender-sib.com, which never could - measured on
+// a delivered message, and the reason DMARC passed on DKIM alone.
+//
+// Matched by shape rather than by value. The MX host carries an AWS region
+// (feedback-smtp.eu-west-1.amazonses.com and friends) chosen when the domain is
+// added, and pinning the exact string would make this gate fail if the domain is
+// ever recreated in another region - a failure about nothing, which is how a
+// check earns the right to be ignored. See the VERCEL_A_PREFIXES note.
+const RESEND_SUBDOMAIN = 'send';
+const RESEND_SELECTOR = 'resend';
+const RESEND_MX_PREFIX = 'feedback-smtp.';
+const RESEND_MX_SUFFIX = '.amazonses.com';
+const RESEND_SPF_INCLUDE = 'amazonses.com';
 // Vercel's anycast /24s, matched as PREFIXES rather than exact addresses.
 //
 // The apex holds a CNAME to Vercel that Cloudflare flattens, so a resolver
@@ -123,6 +143,12 @@ for (const sel of BREVO_SELECTORS) {
   dkim[sel] = { cname: await lookup('CNAME', host), txt: await lookup('TXT', host) };
 }
 
+const sendHost = `${RESEND_SUBDOMAIN}.${DOMAIN}`;
+const sendMx = await lookup('MX', sendHost);
+const sendTxt = await lookup('TXT', sendHost);
+const resendDkimHost = `${RESEND_SELECTOR}._domainkey.${DOMAIN}`;
+const resendDkimTxt = await lookup('TXT', resendDkimHost);
+
 console.log('Records as they stand');
 console.log(`  NS            ${ns.join(', ') || '(none)'}`);
 console.log(`  A    @        ${apexA.join(', ') || '(none)'}`);
@@ -135,6 +161,9 @@ for (const sel of BREVO_SELECTORS) {
   if (cname.length) console.log(`  CNAME ${sel}._domainkey  -> ${cname.join(', ')}`);
   for (const t of txt) console.log(`  TXT   ${sel}._domainkey  ${t.slice(0, 60)}... (${t.length} chars)`);
 }
+for (const r of sendMx) console.log(`  MX   ${String(r.priority).padEnd(4)}     ${r.exchange}   (on ${sendHost})`);
+for (const t of sendTxt) console.log(`  TXT  ${RESEND_SUBDOMAIN}     ${t}`);
+for (const t of resendDkimTxt) console.log(`  TXT   ${RESEND_SELECTOR}._domainkey  ${t.slice(0, 60)}... (${t.length} chars)`);
 
 // ---------------------------------------------------------------------------
 // Assertions
@@ -190,7 +219,72 @@ if (spf) {
   record(lookups <= 10, `SPF DNS lookups within the limit of 10`, `${lookups} used`);
 }
 
-console.log('\nOutbound - Brevo');
+console.log('\nOutbound - Resend (Supabase auth mail)');
+
+// Three states, not two, and the middle one is the dangerous one.
+//
+//   nothing published  -> Resend is not set up yet. A warning, because that is a
+//                         true statement about an unfinished phase, not a fault.
+//   all three present  -> pass.
+//   some present       -> FAIL, loudly. A published DKIM key with no Return-Path
+//                         SPF, or an SPF record with no key, is a domain that
+//                         sends mail which authenticates half way. Under
+//                         p=quarantine that is not degraded delivery, it is the
+//                         spam folder - and it is the state the zone passes
+//                         through while records are being pasted in one at a
+//                         time, so it is worth being able to see.
+const resendRecordsFound = [sendMx.length > 0, sendTxt.length > 0, resendDkimTxt.length > 0].filter(Boolean).length;
+
+if (resendRecordsFound === 0) {
+  warn(
+    'Resend is not configured on this zone yet',
+    `no records at ${sendHost} or ${resendDkimHost} - Phase 4 is not finished`
+  );
+} else {
+  record(
+    sendMx.some((r) => r.exchange.startsWith(RESEND_MX_PREFIX) && r.exchange.endsWith(RESEND_MX_SUFFIX)),
+    `MX on ${sendHost} points at Resend's bounce handler`,
+    sendMx.map((r) => r.exchange).join(', ') || 'none - bounces and complaints have nowhere to go'
+  );
+
+  // This subdomain MX cannot fight with Cloudflare Email Routing's. They answer
+  // for different names: route*.mx.cloudflare.net is the MX for the apex, this
+  // one is the MX for send.<domain>. The plan's third question was whether the
+  // two mail systems could share a zone; this is the same answer one level down.
+  record(
+    mx.some((r) => CLOUDFLARE_MX.includes(r.exchange)),
+    'apex MX is still Cloudflare, unaffected by the subdomain MX',
+    'inbound and outbound answer for different names'
+  );
+
+  const sendSpfRecords = sendTxt.filter((t) => /^v=spf1\b/i.test(t));
+  record(
+    sendSpfRecords.length === 1 && sendSpfRecords[0].includes(RESEND_SPF_INCLUDE),
+    `exactly one SPF record on ${sendHost}, including ${RESEND_SPF_INCLUDE}`,
+    sendSpfRecords.length === 1 ? sendSpfRecords[0] : `found ${sendSpfRecords.length}`
+  );
+
+  const resendKey = resendDkimTxt.find((t) => /(^|;)\s*p=[A-Za-z0-9+/]/.test(t));
+  record(
+    Boolean(resendKey),
+    `DKIM ${RESEND_SELECTOR}._domainkey publishes a key`,
+    resendKey ? `${resendKey.length} chars` : 'no key - every auth email will fail DMARC under p=quarantine'
+  );
+
+  // The mistake this catches is the exact one the Brevo step invited: Resend's
+  // SPF belongs on the subdomain, and the instinct is to fold it into the SPF
+  // record you already know about. Doing that spends an apex lookup, authorises
+  // Amazon SES to send as the bare domain, and still does not help - the
+  // Return-Path is on send.<domain>, so that is where the record is read.
+  if (spf.includes(RESEND_SPF_INCLUDE)) {
+    warn(
+      `apex SPF also includes ${RESEND_SPF_INCLUDE}`,
+      'Resend reads the record on the subdomain; this one is redundant and widens what may send as the bare domain'
+    );
+  }
+}
+
+console.log('\nOutbound - Brevo (Gmail "Send mail as" alias only, since the Resend switch)');
 
 record(
   apexTxt.some((t) => /^brevo-code:/i.test(t)),
@@ -198,11 +292,12 @@ record(
   apexTxt.find((t) => /^brevo-code:/i.test(t))
 );
 
-// These two are the only thing standing between auth mail and the spam folder.
-// Measured on a delivered message: dkim=pass header.i=@amplifiedthinker.com
-// header.s=brevo2, and DMARC passes on that alone because SPF cannot align.
-// So a broken DKIM selector is not a degradation here - it is total failure
-// under p=quarantine, with no second mechanism to fall back on.
+// These carried the auth mail before the Resend switch, and still carry the
+// Gmail "Send mail as" alias, which relays through Brevo's SMTP. Kept asserted
+// for that reason alone - deleting them because "we moved to Resend" would break
+// a working alias whose dependency on this zone is invisible from the Resend
+// dashboard. Measured while Brevo was carrying auth mail: dkim=pass
+// header.i=@amplifiedthinker.com header.s=brevo2, DMARC passing on DKIM alone.
 for (const sel of BREVO_SELECTORS) {
   const { cname, txt } = dkim[sel];
   const key = txt.find((t) => /(^|;)\s*p=[A-Za-z0-9+/]/.test(t));
@@ -245,6 +340,27 @@ if (policy) {
   // discovering from a user who never got their password reset.
   record(true, `policy is p=${policy}`, policy === 'none' ? 'failures still deliver' : 'a misaligned send WILL be quarantined or rejected');
 }
+// Relaxed SPF alignment is what makes the Resend arrangement work at all, and it
+// was already set here before Phase 4 - by luck rather than by design, so it is
+// worth asserting before something tidies it.
+//
+// Resend's Return-Path is on send.<domain>. Under aspf=r, DMARC compares
+// *organisational* domains: send.amplifiedthinker.com and amplifiedthinker.com
+// match, so SPF aligns and DMARC has two passing mechanisms. Under aspf=s it
+// would compare the names exactly, they would not match, and DMARC would fall
+// back to DKIM alone - which is the single point of failure the switch was
+// partly meant to remove. The tighter setting is the one that looks safer.
+if (dmarc) {
+  const aspf = /\baspf=([rs])/i.exec(dmarc)?.[1]?.toLowerCase() || 'r';
+  record(
+    aspf === 'r',
+    'SPF alignment is relaxed (aspf=r)',
+    aspf === 'r'
+      ? `${sendHost} aligns with ${DOMAIN}, so SPF counts toward DMARC`
+      : 'aspf=s - a Return-Path on a subdomain will NOT align; DMARC falls back to DKIM alone'
+  );
+}
+
 const rua = /\brua=mailto:([^;,\s]+)/i.exec(dmarc)?.[1];
 if (rua && !rua.endsWith(`@${DOMAIN}`)) {
   warn('DMARC aggregate reports go to a third party', `${rua} - you are not receiving them`);

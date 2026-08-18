@@ -190,7 +190,14 @@ with the provider, and no script here can restore them:
 | GoDaddy | **Registrar only** for `amplifiedthinker.com` | Holds the domain and the nameserver delegation — *not* the DNS records |
 | Cloudflare | **DNS zone** for `amplifiedthinker.com`, and inbound Email Routing | `marvin`/`susan.ns.cloudflare.com` are authoritative. A DNS change made at GoDaddy has no effect |
 | Supabase | Database, auth, RLS — from Phase 3 onward | See below |
-| Brevo | Auth email SMTP, and outbound domain authentication — from Phase 4 onward | Account "Amplified Thinker". SMTP key values are shown once and are not recoverable — losing one means creating a new key and updating whatever used it |
+| Resend | **Supabase auth email** — from Phase 4 onward | Domain `amplifiedthinker.com`, region eu-west-1, Return-Path on `send`. API keys are shown once; a replacement is created and pasted into Supabase Auth → SMTP, nothing else uses it |
+| Brevo | **The Gmail "Send mail as" alias only** — it carried auth mail for four hours on 2026-08-17 and no longer does | Account "Amplified Thinker". The key created 2026-07-06 is what Gmail authenticates with; its value is not recoverable, and replacing it means updating Gmail → Settings → Accounts and Import |
+
+⚠️ **Brevo looks like a leftover and is not.** Auth mail moved to Resend, but `singchen@amplifiedthinker.com`
+still sends through `smtp-relay.brevo.com` and signs with the `brevo1`/`brevo2` DKIM records on the
+Cloudflare zone. Neither the Resend nor the Supabase dashboard shows that dependency. Cancelling the
+Brevo account, or deleting those DNS records, breaks the alias — and the symptom is "my email
+stopped working" with nothing pointing at the cause.
 
 ⚠️ **DNS records are not backed up by anything.** Cloudflare keeps no history, so the only copy
 of the zone as it stood before Phase 4 is [email-dns-baseline.md](email-dns-baseline.md).

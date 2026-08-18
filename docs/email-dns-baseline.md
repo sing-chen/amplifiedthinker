@@ -46,7 +46,7 @@ to edit by accident.
 
 ## What Phase 4 changed
 
-One record, on 2026-08-17:
+**One record edited in place**, on 2026-08-17, when Brevo was still going to carry auth mail:
 
 ```
 - TXT  @   v=spf1 include:_spf.mx.cloudflare.net ~all
@@ -57,25 +57,56 @@ Verified immediately after with `npm run verify:email`: **16/16**, still exactly
 2 of 10 lookups used, and every inbound and website record unchanged. Propagation was effectively
 instant rather than TTL-bound.
 
-**The one record Phase 4 changes is the SPF TXT.** Everything else above is captured so that a
-mistake is recognisable, not because it is expected to move.
+**Three records added**, on 2026-08-18, moving Supabase auth mail from Brevo to Resend:
+
+```
++ TXT  resend._domainkey   p=MIGfMA0GCSqG...XtOyjtQIDAQAB      (218 chars)
++ MX   send            10  feedback-smtp.eu-west-1.amazonses.com
++ TXT  send                v=spf1 include:amazonses.com ~all
+```
+
+Verified with `npm run verify:email`: **21/21**. The apex SPF record was *not* touched — Resend
+reads the one on `send`, because that is where its Return-Path lives.
+
+⚠️ **The edit is the dangerous one; the additions are not.** Nothing existing was modified for
+Resend, so there is no prior value to restore — backing the switch out means deleting three
+hostnames that nothing else uses. This is why the Brevo SPF edit is written up at length above and
+these three get a code block: an in-place edit to a shared record is a different class of change
+from three new names, even though the dashboard presents them identically.
+
+**Two records the apex must never acquire.** Resend offers both, and both would break something
+that works:
+
+| Tempting | What it breaks |
+|---|---|
+| `include:amazonses.com` on the apex SPF | Nothing immediately — which is the problem. It spends an apex lookup, authorises SES to send as the bare domain, and does not help, because Resend's Return-Path is on `send`. The gate warns rather than fails. |
+| Resend's **Enable Receiving** toggle | Publishes an `MX` **at the apex**, where Cloudflare Email Routing's three already live. Two systems claiming inbound for one name. Left off; inbound is Cloudflare's and works. |
 
 ---
 
-## Three systems, one zone, and only one record shared
+## Four systems, one zone, and only one record shared
 
 The plan asked whether Cloudflare's MX records and Vercel's records can coexist. They can, and the
 reason is worth stating precisely, because it also identifies the only place they *can* collide:
 
 | System | Owns | Record types |
 |---|---|---|
-| **Cloudflare Email Routing** | Inbound mail | `MX`, and an SPF `include` |
-| **Brevo** | Outbound mail | `brevo-code` TXT, `brevo1`/`brevo2._domainkey` CNAMEs, and an SPF `include` |
+| **Cloudflare Email Routing** | Inbound mail | `MX` at the apex, and an SPF `include` |
+| **Resend** | Supabase auth mail | `MX` + SPF `TXT` on `send`, `resend._domainkey` TXT |
+| **Brevo** | The Gmail "Send mail as" alias, and nothing else | `brevo-code` TXT, `brevo1`/`brevo2._domainkey` CNAMEs, and an SPF `include` |
 | **Vercel** | The website | `A` at the apex, `CNAME` at `www` |
 
 MX and A are different record types answering different questions, so Vercel and Email Routing
-never contend — Vercel publishes no MX and wants none. **The single shared record is the SPF TXT**,
-which both mail systems need a piece of, and a domain may have only one of.
+never contend — Vercel publishes no MX and wants none. Resend and Email Routing both publish MX,
+but for *different names* — `send.amplifiedthinker.com` against the apex — which is the same
+answer one level down. **The single shared record is the apex SPF TXT**, which Cloudflare and Brevo
+each need a piece of, and a domain may have only one of. Resend deliberately sits outside it.
+
+⚠️ **Brevo's records are load-bearing for something the Resend dashboard cannot see.** Auth mail
+moved, but Gmail's "Send mail as" for `singchen@amplifiedthinker.com` still relays through Brevo
+SMTP and still authenticates with those DKIM selectors. Deleting them as leftovers of the migration
+would break a working alias. `npm run verify:email` keeps asserting them, under a section heading
+that says why.
 
 ⚠️ **This makes "add a record" the wrong instinct and the natural one.** Two TXT records both
 beginning `v=spf1` is not "the second is ignored" — it is a **permanent error**, and SPF evaluation
@@ -122,13 +153,39 @@ while trying to fix mail. Corrected in `recovery.md`.
 resolving, a Gmail confirmation message addressed to `singchen@amplifiedthinker.com` on 2026-07-06
 was forwarded through and is in the Gmail mailbox. Email Routing works end to end.
 
+**And confirmed again by delivery after the SPF edit**, on 2026-08-18. The gate proves the records
+resolve; only a message proves forwarding still happens. Editing the apex SPF was the single change
+this phase made to something that already worked, so it is the single thing worth re-testing by
+delivery rather than by record. Adding an `include` can only widen what is authorised — but that is
+a reason to expect the test to pass, not a reason to skip it.
+
 **DKIM is already published and live.** Both Brevo selectors resolve through to real RSA keys. This
 was set up when the Brevo account was created and needs no work in Phase 4.
 
 **DMARC is `p=quarantine`.** Not `p=none`. A send that fails alignment does not merely get a
-demerit — it goes to spam, which is the precise outcome this phase exists to prevent. Alignment is
-relaxed (`adkim=r; aspf=r`), so DKIM signed as `d=amplifiedthinker.com` aligns and DMARC passes on
-the DKIM half alone.
+demerit — it goes to spam, which is the precise outcome this phase exists to prevent.
+
+**`aspf=r` turned out to matter far more than it looked.** It was on the zone before Phase 4, set
+by whoever wrote the record originally rather than by design. Relaxed alignment compares
+*organisational* domains, so a Return-Path on `send.amplifiedthinker.com` aligns with a
+`From:` of `amplifiedthinker.com`. That single letter is what lets Resend's subdomain Return-Path
+count toward DMARC at all. Under `aspf=s` the names would be compared exactly, they would not
+match, and DMARC would fall back to DKIM alone — the arrangement Brevo forced. The gate asserts
+`aspf=r` for that reason: the tighter setting is the one that looks safer.
+
+Measured on delivered mail, both before and after the switch:
+
+| | Brevo (2026-08-17) | Resend (2026-08-18) |
+|---|---|---|
+| `smtp.mailfrom` | `bounces-…@gw.d.sender-sib.com` | `…@send.amplifiedthinker.com` |
+| SPF | never evaluated against this domain | `pass`, and **aligned** |
+| DKIM | `pass`, `header.s=brevo2` | `pass`, `header.s=resend` |
+| DMARC rests on | DKIM alone | either mechanism |
+
+⚠️ **Resend's mail carries two DKIM signatures and only one of them counts.** The second is
+`d=amazonses.com`, Amazon signing its own outbound. It passes, it is not yours, and it cannot align
+with `header.from`. A future raw source will still show a `dkim=pass` after a broken selector has
+taken the real one down.
 
 ⚠️ **DMARC aggregate reports go to `dmarc_rua@onsecureserver.net`** — a GoDaddy address, left behind
 from before the zone moved to Cloudflare. Nobody here reads them, so the one feedback channel that
