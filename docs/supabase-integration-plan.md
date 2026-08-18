@@ -273,15 +273,32 @@ Introduce Astro with all existing pages moved into `public/`. No page conversion
 
 All tables, all policies, `is_admin()` and the profile trigger. Prove auth end to end on one throwaway page before touching the real site.
 
-### Phase 4 — Email
+### Phase 4 — Email ✅ DONE (2026-08-18)
 
 **Impact:** ⚪ None · ⚪ None — configuration only, and no user can trigger an auth email until Phase 5.
 
-Point Supabase Auth SMTP at Brevo; verify DKIM and DMARC **before** any real user can trigger a password reset.
+**The decision: Supabase Auth SMTP points at Resend, not Brevo.** Auth mail is signed as
+`amplifiedthinker.com` and bounces from `send.amplifiedthinker.com`, so SPF and DKIM both align and
+DMARC passes on either. Brevo remains on the zone, but only for the Gmail *Send mail as* alias.
 
-Two things to confirm first:
-- The brief describes outbound mail as *sent from Gmail, masked* to look like the custom domain. That isn't the same as Brevo being the SMTP relay. If Brevo only provides domain authentication, there are no existing SMTP credentials and a Brevo SMTP key must be created.
-- Cloudflare Email Routing requires Cloudflare to be authoritative DNS for `amplifiedthinker.com`, while Vercel needs its own records on the same zone. Inbound reportedly works today, so this is presumably already fine — confirm before changing DNS.
+**Why not Brevo, given it was the plan.** It was configured first and delivered all three send types
+to the inbox, DMARC-passing, in about two seconds. It also rewrote every link through its click
+tracker — putting a bearer token through a third party's logs — injected an open-tracking pixel, and
+attached `List-Unsubscribe: One-Click` to password resets. None of the three can be switched off on
+its transactional sends, and Supabase exposes no custom-header control to compensate. Delivery was
+never the problem; what was delivered was.
+
+**Both of the questions this section originally raised were answered, and neither the way it framed
+them:**
+
+| Question as asked | Answer |
+|---|---|
+| Do Brevo SMTP credentials exist, or does Brevo only do domain authentication? | **Both at once.** A key existed — Gmail's *Send mail as* has relayed through `smtp-relay.brevo.com` since July — *and* a second was still needed, because a key's value is shown once and sharing one couples two unrelated senders. |
+| Can Cloudflare's MX records and Vercel's records coexist on one zone? | **Yes, and it was never the hazard.** MX and A are different record types; Vercel publishes no MX. The real collision point is the *single shared SPF TXT* — a domain may have only one, and a second `v=spf1` record is a permerror that takes Cloudflare's inbound authorisation down with it. |
+
+Full record, sixteen findings, and the runbook: [implementation-sequence.md](implementation-sequence.md)
+(*Phase 4 — done, merged, live*), [email-dns-baseline.md](email-dns-baseline.md), and
+[../supabase/README.md](../supabase/README.md).
 
 ### Phase 5 — Auth and progress sync
 

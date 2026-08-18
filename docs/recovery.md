@@ -203,10 +203,16 @@ stopped working" with nothing pointing at the cause.
 of the zone as it stood before Phase 4 is [email-dns-baseline.md](email-dns-baseline.md).
 `npm run verify:email` re-checks it against the live zone.
 
-**Once Phase 3 lands, add to this list:** the Supabase project URL and `anon` key live in source (they
-are public by design — RLS is the security boundary), but the **`service_role` key does not and must
-never be committed.** It exists only in Vercel's environment variables and the Supabase dashboard.
-Losing local access does not lose it; losing the Supabase account does.
+**Supabase credentials, since Phase 3 landed.** The project URL and `anon` key are public by design —
+they ship in the browser and RLS is the security boundary — so losing them costs nothing and they
+are not worth backing up.
+
+The **`service_role` key is the opposite, and must never be committed**: it bypasses RLS entirely, so
+one line carrying it undoes every policy in the schema. It currently has **no home at all**. There
+are deliberately no Supabase environment variables in Vercel or the Pages workflow, because anything
+that must work on both origins decides at runtime instead — so the key exists only in the Supabase
+dashboard until Phase 6 adds a server endpoint that needs it. Losing local access does not lose it;
+losing the Supabase account does.
 
 **Database contents are not covered by this guide at all.** A git bundle backs up code, not Postgres.
 From Phase 5, when real user progress exists, that needs its own backup with its own restore test —

@@ -19,7 +19,8 @@ The project has a written architecture and a phased plan. Read them rather than 
 | [docs/implementation-sequence.md](docs/implementation-sequence.md) | *In what order and why* — phase status, and a progress log of what each phase actually taught |
 | [docs/dev-workflow.md](docs/dev-workflow.md) | *How work happens* — branches, previews, both origins, environment settings, known traps |
 | [docs/recovery.md](docs/recovery.md) | Rebuilding a working state on new hardware. A copy lives in the Drive backup folder, since that is where it is needed |
-| [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, and the redirect allowlist |
+| [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, the redirect allowlist, and the email SMTP runbook |
+| [docs/email-dns-baseline.md](docs/email-dns-baseline.md) | The DNS zone as it stood before Phase 4 touched it. Cloudflare keeps no history, so this is the only restore reference there is |
 | [BACKLOG.md](BACKLOG.md) | Unscheduled ideas |
 
 `docs/` is excluded from the Vercel deploy but the repo is **public** — these are public documents.
@@ -37,7 +38,8 @@ src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages mat
 middleware.js    Vercel Edge Middleware, repo root. Serves social-preview meta tags to bots
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
                  the apply/verify runbook plus the dashboard settings SQL cannot reach
-scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls)
+scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls),
+                 verify-email-dns.mjs (npm run verify:email) — the mail DNS gate, needs no credential
 _originals/      full-resolution source images, gitignored — outside public/ on purpose
 .env             gitignored; shape in .env.example. Needed ONLY by npm run verify:rls.
                  There are deliberately no Supabase env vars in Vercel or pages.yml —
