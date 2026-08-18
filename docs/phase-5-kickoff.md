@@ -4,6 +4,11 @@ Paste the block below into a new session. Written 2026-08-18, immediately after 
 check `git log` and the Phase 4 progress-log entry if much time has passed, since the state
 described here is what makes the prompt useful.
 
+The prompt anchors to the **Phase 4 merge commit** rather than to whatever `main` happens to be at.
+A pinned head is stale the moment anything lands — including the commit that updates the pin — and a
+hash that does not match is exactly the kind of small wrongness that makes a fresh session distrust
+the rest of the file. `f5297ab` will not move, and everything after it is documentation.
+
 ---
 
 ```
@@ -21,7 +26,8 @@ READ FIRST
   is decided but unscheduled, and that distinction matters for question 1 below.
 
 STATE
-Phases 0-4 are done and live on both origins. main is clean at 1e50cfc. Supabase project
+Phases 0-4 are done and live on both origins. Phase 4 merged as f5297ab; everything on main after
+that commit is documentation only, so confirm the tree is clean and move on. Supabase project
 spehmrgmcdenqdftkyrt (EU) holds the full schema, RLS on every table, 17 policies, both gates
 passing. Auth email goes out through Resend, verified by delivery on all three send types.
 
