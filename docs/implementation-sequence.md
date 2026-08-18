@@ -53,20 +53,29 @@ Phase 0 established that the site has **two supported production origins**, not 
 | `amplifiedthinker.com` (Vercel) | Yes — server rendering and `/api/` endpoints |
 | `sing-chen.github.io/amplifiedthinker` (Pages) | **No** — static files only |
 
-The GitHub origin exists because some corporate networks block the custom domain under
-newly-registered-domain policies. Those users have no alternative route, so the origin is
-load-bearing rather than legacy.
+The GitHub origin exists because some corporate networks blocked the custom domain under
+newly-registered-domain policies, leaving those users no alternative route.
 
-**The consequence for every phase from 6 onward:** anything requiring a server is unavailable to that
-audience. Client-side features carry over fine — auth, progress sync, favourites, pins, notes, and
-client-rendered dashboards all work on static hosting because Supabase JS runs in the browser. What
-cannot: the server-rendered blog (8), the admin portal (7 — no loss, it is admin-only), `/api/`
-endpoints and legacy-URL 301s (6), and `middleware.js` social previews.
+**⚠️ This constraint now has an end date, and that changes how to design against it.** The block
+lifted on 2026-08-18, and the Pages URL was never shared outside the owner's organisation — so the
+origin's audience is zero and **it is slated for retirement**. It has not been retired yet, and both
+origins are live, so changes are still verified on both. What retires is the published URL; the
+repository, the history and the Actions workflows stay on GitHub.
 
-Where a feature matters to that audience, prefer a client-side or prerendered implementation over a
-server-rendered one. Where it does not, note the gap rather than silently shipping a broken page.
-Full capability matrix in [dev-workflow.md](dev-workflow.md); the constraint may lift around
-October 2026 as NRD filters age out, so avoid designs that assume it is permanent.
+**The consequence for every phase from 6 onward, while it lasts:** anything requiring a server is
+unavailable to that audience. Client-side features carry over fine — auth, progress sync, favourites,
+pins, notes, and client-rendered dashboards all work on static hosting because Supabase JS runs in
+the browser. What cannot: the server-rendered blog (8), the admin portal (7 — no loss, it is
+admin-only), `/api/` endpoints and legacy-URL 301s (6), and `middleware.js` social previews.
+
+**How to weigh it now.** Prefer a client-side or prerendered implementation where it is the better
+design anyway, and never deepen the dependency. But "this needs a server, so Pages cannot have it"
+has become a **scheduling** question rather than a veto — retiring the origin ahead of the feature is
+a legitimate answer, and is the reason the proposed contact form (Phase 7) changed shape. Do not
+contort a feature to serve an origin nobody uses.
+
+Full capability matrix in [dev-workflow.md](dev-workflow.md); staging and consequences in
+[../BACKLOG.md](../BACKLOG.md).
 
 ---
 

@@ -59,13 +59,28 @@ how a skill page references it.
 | `amplifiedthinker.com` (Vercel) | Full build. Server rendering and `/api/` endpoints work |
 | `sing-chen.github.io/amplifiedthinker` (GitHub Pages) | **Static files only.** No server, ever |
 
-The GitHub origin is **load-bearing, not legacy**: some corporate networks block the custom domain
-under newly-registered-domain policies, and those users have no other route in. Verify changes on
-both. Client-side features work on both (Supabase JS runs in the browser); anything server-rendered
-reaches Vercel only.
+**Both are live today, so verify changes on both.** Client-side features work on either (Supabase JS
+runs in the browser); anything server-rendered reaches Vercel only.
 
 Pages is built by [.github/workflows/pages.yml](.github/workflows/pages.yml) with
 `ASTRO_BASE=/amplifiedthinker`, since it serves from a subpath.
+
+### The Pages origin is slated for retirement — decided 2026-08-18, not yet done
+
+It existed because corporate networks blocked the custom domain under newly-registered-domain
+policies, leaving those users no other route in. **That block lifted on 2026-08-18**, 43 days after
+registration, and the origin was **never shared outside the owner's organisation** — so its entire
+audience was colleagues behind that block, and is now zero.
+
+⚠️ **This retires a published URL, not GitHub.** The repository, the git history and the Actions
+workflows all stay exactly where they are. "Retiring GitHub" would be a catastrophic misreading;
+what goes is `sing-chen.github.io/amplifiedthinker` as a way for the public to reach the site.
+
+**What this means while it is still live:** keep verifying both origins, but do not deepen the
+dependency. Prefer designs that get *simpler* when Pages goes, and treat "this would need a server,
+so it cannot work on Pages" as a scheduling question rather than a hard constraint — retiring the
+origin first is a legitimate answer. Timing, staging, and what falls away with it are in
+[BACKLOG.md](BACKLOG.md).
 
 ---
 

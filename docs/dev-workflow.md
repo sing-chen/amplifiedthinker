@@ -284,12 +284,34 @@ way.** Treat per-origin branching as a smell. If the two origins must differ, th
 in the build (Phase 2's static-vs-dynamic split), not in a runtime hostname check that nobody
 revisits.
 
-#### Still to revisit: NRD blocks age out
+#### Resolved: the NRD block lifted, and the Pages origin is slated for retirement
 
-`amplifiedthinker.com` was registered 2026-07-06, so it is roughly six weeks old; most NRD filters
-release domains at 30–90 days. Re-test corporate access around **October 2026**. If the block has
-lifted, the dual-target build becomes optional rather than required — so avoid architecture that
-assumes Pages must be supported forever.
+`amplifiedthinker.com` was registered 2026-07-06. The re-test was pencilled in for October 2026, on
+the basis that most NRD filters release domains at 30–90 days. **It lifted early: corporate access
+was confirmed working on 2026-08-18**, at 43 days.
+
+That alone would make the dual-target build optional. What makes retirement the decision is a second
+fact: **the Pages URL was never shared outside the owner's organisation.** Its entire audience was
+colleagues behind that block, so the audience is now zero rather than merely small — and there is no
+unknown population to strand.
+
+⚠️ **What retires is the published URL, not GitHub.** The repo, the history and the Actions
+workflows stay. Only `sing-chen.github.io/amplifiedthinker` stops being a way for the public to
+reach the site.
+
+**Not yet done, and both origins are still live** — so the capability matrix above still applies and
+changes still get verified on both. The advice this section used to give still holds, more strongly:
+avoid architecture that assumes Pages must be supported forever. Add to it that "this needs a server,
+so Pages cannot have it" is now a **scheduling** question — retiring the origin first is a legitimate
+answer where it was not before.
+
+⚠️ **What is given up, and it is not the NRD audience.** A bad deploy or a Vercel outage currently
+leaves a complete, working site on the other origin, and `main` has been able to fail to deploy since
+Phase 2. Retirement makes Vercel a single point of failure. Low risk, fast rollbacks — but a
+deliberate trade rather than a consequence of the NRD news.
+
+Staging, the search-indexing question, and everything that falls away with the workflow are in
+[../BACKLOG.md](../BACKLOG.md).
 
 #### `.vercelignore` does not apply here — and never provided privacy
 

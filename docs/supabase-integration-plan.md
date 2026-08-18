@@ -69,9 +69,15 @@ src/pages/api/     server endpoints
 ### And one constraint discovered in Phase 0: there are two production origins
 
 This document originally assumed a single origin. It does not have one.
-`sing-chen.github.io/amplifiedthinker` is live, rebuilt from `main`, and **load-bearing** — some
-corporate networks block `amplifiedthinker.com` under newly-registered-domain policies, and those
-users have no other route in.
+`sing-chen.github.io/amplifiedthinker` is live and rebuilt from `main`. It was **load-bearing** —
+some corporate networks blocked `amplifiedthinker.com` under newly-registered-domain policies, and
+those users had no other route in.
+
+**⚠️ Updated 2026-08-18: that block lifted, and the origin is slated for retirement.** It was never
+shared outside the owner's organisation, so its audience was exactly the colleagues behind the
+block, and is now zero. It has not been retired yet and both origins are still verified — but the
+constraint below is temporary, and features should not be contorted to satisfy it. What retires is
+the published URL; the repository and its workflows stay on GitHub. See [../BACKLOG.md](../BACKLOG.md).
 
 GitHub Pages serves files but runs no code, so the Astro split has a second dimension beyond
 old-page/new-page: **client-side or prerendered, versus server-rendered.** The former reaches both

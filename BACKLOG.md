@@ -48,12 +48,18 @@ The Pages workflow emits this on every run:
 **Nothing is broken.** GitHub is force-running it on Node 24, so it works today. This is about the
 version pin ageing out, not a current fault.
 
-**Why it is worth tracking rather than ignoring:** this workflow is the only thing publishing
-`sing-chen.github.io/amplifiedthinker`, which is a *load-bearing* production origin — some corporate
-networks block the custom domain under newly-registered-domain policies, and those users have no
-other route in. A silent deprecation becoming a hard failure there takes down an audience segment
-with no fallback, and the failure would surface as a red X in an inbox rather than as a broken page
-anyone would notice.
+**Why it was worth tracking:** this workflow is the only thing publishing
+`sing-chen.github.io/amplifiedthinker`, which was a *load-bearing* production origin — some corporate
+networks blocked the custom domain under newly-registered-domain policies, and those users had no
+other route in. A silent deprecation becoming a hard failure there would have taken down an audience
+segment with no fallback, surfacing as a red X in an inbox rather than as a broken page anyone would
+notice.
+
+⚠️ **Largely overtaken by events, as of 2026-08-18.** That origin is now slated for retirement (see
+the entry below), and this item **dies with the workflow** — if the retirement happens first, there
+is nothing left to bump. Worth doing only if the workflow is still running when the pin actually
+breaks, and the urgency is gone either way: an origin with no audience failing to publish is not an
+incident.
 
 Action: bump to `actions/deploy-pages@v5` when it exists, or whichever version targets a supported
 runtime. Check `actions/checkout`, `actions/setup-node`, `actions/configure-pages` and
@@ -65,7 +71,8 @@ with a `503` and a `429`, which was a transient GitHub Pages outage rather than 
 repo. Recorded in the Phase 3 progress log so a future red X is not misread as this deprecation.
 
 ### Vendor consolidation, retiring the GitHub origin, and the contact form
-**Status:** Reviewed 2026-08-18, **deliberately deferred** · Revisit in a future phase
+**Status:** Reviewed 2026-08-18. Vendor moves **deferred**; the Pages retirement is **decided but
+unscheduled** · Revisit in a future phase
 **Relates to:** [CLAUDE.md](CLAUDE.md), [docs/dev-workflow.md](docs/dev-workflow.md),
 [docs/implementation-sequence.md](docs/implementation-sequence.md)
 
@@ -107,7 +114,15 @@ Cloudflare Pages could host this, but it means an Astro adapter swap, rewriting 
 losing per-branch preview URLs, and re-proving the deployment. One vendor saved, a working system
 disturbed, during the phases that finally ship user-visible features.
 
-#### Retiring the GitHub Pages origin
+#### Retiring the GitHub Pages origin — **decided, not scheduled**
+
+Unlike the two candidates above, this one is settled in principle: **the Pages origin will be
+retired.** What is deferred is when and how, not whether. `CLAUDE.md`, `dev-workflow.md` and the
+cross-cutting constraint in the implementation sequence all now say so.
+
+⚠️ **What retires is the published URL, not GitHub.** The repository, the git history and the
+Actions workflows stay. Only `sing-chen.github.io/amplifiedthinker` stops being a public route to
+the site. Anyone reading this as "move off GitHub" has misread it.
 
 **The NRD block on `amplifiedthinker.com` lifted on 2026-08-18**, 43 days after registration —
 within the 30–90 day range `dev-workflow.md` predicted, and ahead of its October re-test date.
