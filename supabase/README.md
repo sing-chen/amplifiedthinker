@@ -240,6 +240,21 @@ this — Supabase applies its own cap on top of the provider's, and it defaults 
 the built-in mailer's ~2/hour ceiling is half the point of the phase, and it is not done until
 this number moves too.
 
+### 4. Signups are switched off — deliberately, and only until Phase 5
+
+**Auth → Sign In / Providers → "Allow new users to sign up": off** since 2026-08-18.
+
+Phase 4 finished its testing and nothing user-facing creates an account until Phase 5, so leaving it
+on would be an open endpoint with no consumer. It is off rather than merely unused because the
+`anon` key becomes public in Phase 5 — at which point `/auth/v1/signup` is callable directly, and
+the HTML page is not the thing to remove.
+
+⚠️ **Re-enable it as part of the change that protects it, not before.** An unprotected signup
+endpoint drains Resend's 100/day allowance — after which real password resets stop — and lets
+anyone trigger confirmation mail to strangers, whose spam complaints land on the sender reputation
+this phase was built to establish. Rationale and options in
+[../docs/implementation-sequence.md](../docs/implementation-sequence.md), Phase 5.
+
 ---
 
 ## The one Advisor warning that is meant to be there

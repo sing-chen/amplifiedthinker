@@ -918,11 +918,36 @@ one browser on one device — actually goes away.
 | Build the one-time localStorage import | Prompts before merging existing progress, then clears the keys. Disposable code — mark it for deletion in a few months. |
 | Keep theme in localStorage; sync to profile as a convenience | A DB round-trip before first paint would flash the wrong theme on every page load. **No migration needed** — `profiles.theme` already exists, added in Phase 3 precisely so this phase would not need one. |
 | Split into dev and prod Supabase projects | Real user data now exists. This is the moment that split earns its cost — not before. The existing project (`spehmrgmcdenqdftkyrt`) stays as prod; the new one is dev. |
+| **Decide how open signup is protected, before re-enabling it** | **Signup is currently switched off** in Supabase → Authentication (2026-08-18), because Phase 4 finished testing and nothing user-facing needs it until this phase. Turning it back on is a Phase 5 decision with a cost attached — see below. |
 | **Delete `src/pages/auth-test.astro`** | **Carried forward from Phase 3**, and recorded here rather than only in that phase's log, because this is the list someone doing Phase 5 will actually read. It is a scaffold, and once `auth.js` and the real sign-in UI exist it is a second, diverging implementation of client setup. **Mine it before deleting it:** it holds working patterns for session handling, `onAuthStateChange`, the signup-trigger check, and RLS assertions that both admin and non-admin paths were verified against. |
 
 **Done when:** a user with existing local progress signs in, accepts the import, opens a second
 device, and sees the same state. **Test both directions** — the failure mode here is silent
 truncation, not an error.
+
+### Signup becomes publicly callable in this phase, and the page is not the surface
+
+Through Phase 4, `/auth-test` was live on both production origins and inert: it takes the Supabase
+URL and `anon` key in two runtime fields, and neither is committed or set as an env var anywhere.
+The project ref is discoverable — it is in these docs, in a public repo, and in every auth email
+header — but the ref alone calls nothing.
+
+**This phase publishes the key, because that is what the key is for.** It ships in the browser on
+every page that talks to Supabase. From that moment `/auth/v1/signup` is callable with `curl`, and
+**deleting `auth-test.astro` closes nothing** — it would only remove a friendlier UI for an endpoint
+that is already open. The controls are all Supabase-side.
+
+| Exposure | Severity |
+|---|---|
+| Junk accounts | RLS confines each to its own rows. Clutter, not a breach. |
+| Email quota exhausted | Resend's free tier is 100/day. A script drains it in a minute, after which **real password resets stop** — the Phase 4 failure mode arriving by a different route. |
+| **Signups using other people's addresses** | The serious one. Confirmation mail goes to strangers who mark it spam, spending the sender reputation Phase 4 exists to build. `p=quarantine` means the damage lands on every subsequent auth email. |
+
+**So the activity is a decision, not a toggle.** CAPTCHA on the auth endpoints (Supabase supports
+hCaptcha and Turnstile) is the conventional answer; the email rate limit set in Phase 4 is a
+backstop rather than a defence, since it caps volume without distinguishing who caused it. Whatever
+is chosen, it belongs in the same change that re-enables signup — retrofitting it means running open
+for however long the gap is.
 
 ### Announcement planning
 
