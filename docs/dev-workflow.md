@@ -449,7 +449,8 @@ leading-slash values into Windows paths, so `/amplifiedthinker` silently became
 `nav.js` computes its link prefix by comparing the page's directory segments against **its own
 `document.currentScript.src`** (`public/nav.js:37-52`) rather than assuming a fixed depth. That is
 why it already worked on the Pages subpath before Astro existed, and why it handles Astro's
-directory-style URLs (`/shell-test/`, later `/blog/some-post/`) at any depth with no changes.
+directory-style URLs (`/sign-in/`, `/account/`, later `/blog/some-post/`) at any depth with no
+changes.
 
 It has one hard dependency: `document.currentScript` must be non-null, which means the script tag
 must not be bundled as a module. Any Astro `<script>` loading `nav.js` therefore needs `is:inline`,

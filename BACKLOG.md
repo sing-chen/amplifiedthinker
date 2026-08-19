@@ -865,17 +865,31 @@ refusing writes from a non-admin while accepting them from an admin.
 any signed-in page already has — so a script pasted into the browser console would do, with no new
 public surface and no second copy of the client setup.
 
-### Delete `shell-test.astro` when the blog ships
-**Status:** Idea · Not started · Noticed 2026-08-19 during Phase 5 step 33
-**Relates to:** [src/pages/shell-test.astro](src/pages/shell-test.astro)
+### ~~Delete `shell-test.astro` when the blog ships~~
+**Status:** ✅ **Done 2026-08-19**, same day it was raised · Phase 5 step 33
+**Relates to:** [src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro), [docs/recovery.md](docs/recovery.md)
 
-The Phase 2 scaffold, still live at `/shell-test/` on production. Its own header says to delete it
-once the first real Astro surface exists — **and that has now happened twice over**, in `/sign-in/`
-and `/account/`, which prove the same thing while also being useful.
+The Phase 2 scaffold. Its own header said to delete it once the first real Astro surface existed —
+which had happened twice over, in `/sign-in/` and `/account/`.
 
-Left in place at step 33 because that step named one page and deleting a second unasked is not what
-"delete the old test page" meant. ⚠️ Unlike `auth-test.astro`, it pulls **no third-party script** and
-holds no credentials field, so there is no reason to hurry.
+Logged rather than deleted alongside `auth-test.astro` because step 33 named one page. Taken the
+same day once that was raised.
 
-Its stated trigger is Phase 8's blog. Either take it then, or take it now — it is `noindex`, linked
-from nowhere, and nothing depends on it.
+⚠️ **It was not unreferenced, and that is the part worth keeping.** No *code* pointed at it, which
+is what a first check shows — but three documents did, and one was an instruction rather than a
+mention:
+
+| Where | What it said |
+|---|---|
+| [docs/recovery.md](docs/recovery.md) | **"open `/shell-test/`"** as a step in rebuilding on new hardware |
+| [docs/dev-workflow.md](docs/dev-workflow.md) | used it as the example of a directory-style Astro URL |
+| [src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro) | cited it as where `is:inline` was verified |
+
+All three now point at `/sign-in/`. **The recovery one mattered most:** that document exists to be
+followed on a machine where nothing works yet, with a copy kept in the Drive backup because that is
+where it is needed. A step telling you to open a page that returns 404 is worst exactly there — it
+reads as "the rebuild failed" rather than "the doc is stale".
+
+**The rule, and it applies to deleting anything:** *grep the docs, not just the code.* A dead link in
+a reference is an inconvenience; a dead step in a recovery runbook is a false alarm at the worst
+possible moment.

@@ -141,8 +141,12 @@ npm run dev
 ```
 
 Then open `http://localhost:4321/index.html` (a hand-written page) and
-`http://localhost:4321/shell-test/` (an Astro-generated one). Both should render with identical nav,
+`http://localhost:4321/sign-in/` (an Astro-generated one). Both should render with identical nav,
 fonts, and theme toggle.
+
+*(This used to name `/shell-test/`, a scaffold that existed only to prove that point. It was deleted
+on 2026-08-19 once real Astro pages were doing the same job — `/sign-in/` and `/account/` prove it
+and are useful as well.)*
 
 **2. The build produced the whole site**
 
