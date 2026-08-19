@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy &amp; Cookies · Amplified Thinker</title>
+<meta name="description" content="What Amplified Thinker collects, why, who else sees it, and what you can do about it. Written for the UK, under the UK GDPR and the Data Protection Act 2018.">
+<link rel="canonical" href="https://amplifiedthinker.com/privacy.html">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Amplified Thinker">
+<meta property="og:title" content="Privacy &amp; Cookies · Amplified Thinker">
+<meta property="og:description" content="What Amplified Thinker collects, why, who else sees it, and what you can do about it. Written for the UK, under the UK GDPR and the Data Protection Act 2018.">
+<meta property="og:url" content="https://amplifiedthinker.com/privacy.html">
+<meta property="og:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
+
+  /* ── PAGE WRAPPER ── */
+  .doc-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
+
+  /* ── MASTHEAD ── */
+  .doc-eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+  .doc-title{font-family:'Poppins',sans-serif;font-size:34px;font-weight:700;color:var(--fg-heading);letter-spacing:-.015em;line-height:1.15;margin-top:10px}
+  .doc-lede{font-family:'Inter',sans-serif;font-size:17px;line-height:1.7;color:var(--text-muted);margin-top:16px}
+  .doc-stamp{font-family:'Inter',sans-serif;font-size:13px;color:var(--warm-gray);margin-top:14px}
+
+  /* ── PROSE ── */
+  .doc-body{display:flex;flex-direction:column;gap:24px;margin-top:40px}
+  .doc-body p{font-family:'Inter',sans-serif;font-size:16px;line-height:1.8;color:var(--navy)}
+  .doc-body p strong{color:var(--fg-heading);font-weight:500}
+  .doc-body a{color:var(--teal);text-decoration:underline;text-decoration-color:rgba(91,167,159,.4);text-underline-offset:2px}
+  .doc-body a:hover{color:var(--mid-teal)}
+  .doc-body a:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px;border-radius:2px}
+
+  /* ── SECTION HEADINGS ──
+     Deliberately NOT the small uppercase eyebrow that about.html uses for its
+     four prose headings. Fourteen numbered sections is a document to be
+     navigated rather than read straight through, and an 11px letterspaced
+     label at that count stops being scannable. Same family and palette, one
+     size up, with the number carrying the brand colour. */
+  .doc-h2{font-family:'Poppins',sans-serif;font-weight:600;font-size:18px;color:var(--fg-heading);letter-spacing:-.01em;line-height:1.35;margin-top:20px;scroll-margin-top:88px}
+  .doc-h2 .doc-num{color:var(--fg-brand);font-weight:700;margin-right:8px}
+  .doc-h2:first-child{margin-top:0}
+
+  /* ── CONTENTS ── */
+  .doc-toc{border:1px solid rgba(172,196,182,.45);border-radius:var(--radius-lg);padding:20px 24px}
+  .doc-toc-label{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
+  .doc-toc ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+  .doc-toc li{font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.5;color:var(--text-muted)}
+  .doc-toc a{color:var(--navy);text-decoration:none;border-bottom:1px solid transparent}
+  .doc-toc a:hover{color:var(--mid-teal);border-bottom-color:rgba(91,167,159,.4)}
+
+  /* ── THE SHORT VERSION ──
+     A brand band, same treatment as .thesis on about.html. Fixed dark in both
+     themes, like the footer. */
+  .doc-claim{background:#1B4A44;border-radius:var(--radius-lg);padding:26px 30px}
+  .doc-claim p{font-family:'Poppins',sans-serif;font-size:16px;font-weight:500;color:rgba(255,255,255,.9);line-height:1.6}
+  .doc-claim ul{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+  .doc-claim li{font-family:'Inter',sans-serif;font-size:15px;color:rgba(255,255,255,.72);line-height:1.6;padding-left:20px;position:relative}
+  .doc-claim li::before{content:"";position:absolute;left:2px;top:10px;width:6px;height:6px;border-radius:50%;background:var(--sage)}
+
+  /* ── TABLES ── */
+  .doc-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .doc-table{width:100%;min-width:460px;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:14.5px}
+  .doc-table th,.doc-table td{text-align:left;padding:12px 14px;border-bottom:1px solid rgba(172,196,182,.35);vertical-align:top;line-height:1.55}
+  .doc-table thead th{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
+  .doc-table tbody th{font-weight:500;color:var(--fg-heading)}
+  .doc-table td{color:var(--text-muted)}
+  .doc-table code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:rgba(172,196,182,.22);padding:1px 5px;border-radius:4px;color:var(--navy)}
+  .doc-table tbody tr:last-child th,.doc-table tbody tr:last-child td{border-bottom:none}
+
+  /* ── CALLOUT ── */
+  .doc-callout{background:var(--light-sage);border-left:3px solid var(--teal);border-radius:0 var(--radius) var(--radius) 0;padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+  .doc-callout p{font-size:15px;line-height:1.7;color:var(--navy)}
+
+  /* ── LIST ── */
+  .doc-list{display:flex;flex-direction:column;gap:11px;margin:0;padding:0;list-style:none}
+  .doc-list li{font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;color:var(--navy);padding-left:26px;position:relative}
+  .doc-list li::before{content:"";position:absolute;left:6px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--sage)}
+
+  .doc-note{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-muted);line-height:1.6}
+  .doc-divider{height:1px;background:rgba(172,196,182,.35);margin:6px 0}
+
+  /* ── FOOTER (copied verbatim from index.html so the two cannot drift) ── */
+  footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
+  .fi{max-width:var(--page-max);margin:0 auto}
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
+  .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
+  .footer-nav a:hover{color:rgba(255,255,255,.85)}
+  .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+  .footer-sep{color:rgba(255,255,255,.15);user-select:none}
+  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
+  .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
+  .fn a:hover{color:rgba(255,255,255,.85)}
+  .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+
+  /* Hold the footer down on a short page. */
+  body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+  main{flex:1 0 auto}
+  footer{flex-shrink:0}
+
+  @media(max-width:640px){
+    .doc-page{padding:48px 20px 72px}
+    .doc-title{font-size:28px}
+    .doc-h2{font-size:16.5px}
+    .doc-claim{padding:22px 22px}
+    .doc-toc{padding:18px 20px}
+    footer{padding:24px 20px}
+  }
+
+  /* ── DARK MODE ──
+     doc-eyebrow, doc-h2, doc-title and the footer sit on tokens whose light
+     value matches the raw color, so they adapt for free. Everything below
+     started from navy, text-muted, light-sage or a sage-tinted rgba border,
+     none of which is an exact match for a single fg/line/bg token.
+
+     ⚠️ `.doc-body > p`, not `.doc-body p`. The claim band and the callout are
+     fixed-dark panels with their own white text, and both sit inside
+     .doc-body — a descendant selector here has equal specificity to
+     `.doc-claim p`, comes later in the sheet, and so repaints their text. */
+  [data-theme="dark"] .doc-body > p{color:var(--fg-1)}
+  [data-theme="dark"] .doc-lede{color:var(--fg-2)}
+  [data-theme="dark"] .doc-stamp{color:var(--fg-2)}
+  [data-theme="dark"] .doc-toc{border-color:var(--line)}
+  [data-theme="dark"] .doc-toc li{color:var(--fg-2)}
+  [data-theme="dark"] .doc-toc a{color:var(--fg-1)}
+  [data-theme="dark"] .doc-table th,[data-theme="dark"] .doc-table td{border-bottom-color:var(--line)}
+  [data-theme="dark"] .doc-table tbody th{color:var(--fg-heading)}
+  [data-theme="dark"] .doc-table td{color:var(--fg-2)}
+  [data-theme="dark"] .doc-table code{background:rgba(255,255,255,.08);color:var(--fg-1)}
+  [data-theme="dark"] .doc-callout{background:#1C332E;border-left-color:var(--teal)}
+  [data-theme="dark"] .doc-callout p{color:var(--fg-1)}
+  [data-theme="dark"] .doc-list li{color:var(--fg-1)}
+  [data-theme="dark"] .doc-note{color:var(--fg-2)}
+  [data-theme="dark"] .doc-divider{background:var(--line)}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="nav.js"></script>
+
+<main id="main-content">
+<article class="doc-page">
+
+  <p class="doc-eyebrow">Privacy</p>
+  <h1 class="doc-title">Privacy &amp; cookies</h1>
+  <p class="doc-lede">What Amplified Thinker collects, why, who else can see it, and what you can do about it.</p>
+  <p class="doc-stamp">Last updated 19 August 2026</p>
+
+  <div class="doc-body">
+
+    <div class="doc-claim">
+      <p>The short version</p>
+      <ul>
+        <li>Every page is free to read without an account, and nothing is stored about a guest's reading — not on our side, and not in their browser.</li>
+        <li>An account holds four things: your email address, your first name, a hash of your password, and your position in the primers and plans you open.</li>
+        <li>Nothing is sold or shared for marketing. There are no advertising cookies, no social pixels, and no cookies of any kind.</li>
+        <li>You can delete your account yourself, immediately, and no copy is kept.</li>
+      </ul>
+    </div>
+
+    <div class="doc-toc">
+      <p class="doc-toc-label">Contents</p>
+      <ol>
+        <li><a href="#s1">What's in this policy?</a></li>
+        <li><a href="#s2">Who is responsible for my information?</a></li>
+        <li><a href="#s3">What information do you collect about me?</a></li>
+        <li><a href="#s4">Why do you use it, and what is your legal basis?</a></li>
+        <li><a href="#s5">Does Amplified Thinker use cookies?</a></li>
+        <li><a href="#s6">What is stored on my device?</a></li>
+        <li><a href="#s7">What happens on the sign-in page?</a></li>
+        <li><a href="#s8">What email will I get?</a></li>
+        <li><a href="#s9">Who else sees my information?</a></li>
+        <li><a href="#s10">Does my information leave the UK?</a></li>
+        <li><a href="#s11">How long do you keep it?</a></li>
+        <li><a href="#s12">What are my rights?</a></li>
+        <li><a href="#s13">How do you keep it safe?</a></li>
+        <li><a href="#s14">What about children?</a></li>
+        <li><a href="#s15">How will I find out about changes?</a></li>
+        <li><a href="#s16">How do I contact you?</a></li>
+      </ol>
+    </div>
+
+    <h2 class="doc-h2" id="s1"><span class="doc-num">1.</span>What's in this policy?</h2>
+
+    <p>This policy says what personal information Amplified Thinker collects, why, who else can see it, and what you can do about it. It is written for the UK, under the <strong>UK GDPR and the Data Protection Act 2018</strong>.</p>
+
+    <p><strong>The whole site works without an account, and this policy covers you either way.</strong> If you are only reading, nothing about your reading is stored anywhere — no account, no profile, no history, and nothing written to your browser. What does exist is the ordinary server logs any website produces, and an anonymous page-view count. Sections 3 and 4 cover both.</p>
+
+    <p>If you create an account, we additionally hold your first name, your email address, a hash of your password, and your position in the primers and plans you open. That is the whole list. There is no advertising, no marketing list, and no profile built about you.</p>
+
+    <p>Each section says which of the two it applies to wherever that differs.</p>
+
+    <h2 class="doc-h2" id="s2"><span class="doc-num">2.</span>Who is responsible for my information?</h2>
+
+    <p>The data controller — the person responsible for your information — is <strong>Sing Chen</strong>, an individual rather than a company. Amplified Thinker is a personal project, not a business, so the way to reach us is by email: <a href="mailto:singchen@amplifiedthinker.com?subject=Privacy%20question">singchen@amplifiedthinker.com</a>. That is a monitored address and the right one for any question, request or complaint about your information, including the rights in section 12. There is no Data Protection Officer; the site is small enough that one is not required.</p>
+
+    <h2 class="doc-h2" id="s3"><span class="doc-num">3.</span>What information do you collect about me?</h2>
+
+    <p><strong>Technical information — everyone, including visitors with no account.</strong> Our hosting and database providers keep the standard server logs any website produces: IP address, browser user-agent, timestamps, and which pages were requested. These exist for security and diagnostics. We do not try to work out who you are from them, and in practice we could not.</p>
+
+    <p><strong>An anonymous page-view count — everyone, on amplifiedthinker.com only.</strong> Pages served from the main domain include Vercel Web Analytics. It sets no cookie and writes nothing to your browser. Visitors are told apart by a hash derived from the request, which is discarded after 24 hours, so it cannot follow you from one day to the next, let alone to another site. What is recorded with a page view is the time, the page address, the referring page, the country, region and city, the device type, and the browser and operating system version. No IP address is stored and no identifier is kept that could reconstruct your session.</p>
+
+    <p class="doc-note">The mirror of this site at <code>sing-chen.github.io/amplifiedthinker</code> runs no analytics at all — the script is served only by the main domain and simply does not exist there.</p>
+
+    <p><strong>Your account details — only if you sign up.</strong> Your first name and your email address, which you give us at sign-up, and a password stored only as a salted cryptographic hash. We never hold, and could not recover, the password itself — which is why a forgotten password is reset rather than looked up. Your first name is used to address the two emails the site sends, and to greet you on your account page.</p>
+
+    <p><strong>Your progress — only if you sign up.</strong> Per primer and per plan: the slide or section you are on, which ones you have opened, your quiz answers and expanded sections, and when you started and finished. There is no record of which other pages you looked at, and no analytics identifier tied to your account.</p>
+
+    <p><strong>Anything you email us — only if you choose to.</strong> If you write to the address above we hold your email address and whatever you write, for as long as it takes to deal with it. There is no contact form anywhere on the site, so nothing you send is written to our database.</p>
+
+    <h2 class="doc-h2" id="s4"><span class="doc-num">4.</span>Why do you use it, and what is your legal basis?</h2>
+
+    <p>The first four rows apply to everyone, account or not. The rest apply only once you have an account — a contract is a basis we can rely on only where there is one, and reading the site is not a contract.</p>
+
+    <div class="doc-table-wrap">
+      <table class="doc-table">
+        <thead>
+          <tr><th scope="col">What for</th><th scope="col">Our legal basis (UK GDPR Article 6)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Serving you the website at all, which necessarily involves your device's IP address reaching our providers</th>
+            <td><strong>Legitimate interests</strong> — Article 6(1)(f). We cannot deliver a page to you without it. Weighed against your rights and considered proportionate: it is the minimum a web request requires, and the data is not used to identify or profile you.</td>
+          </tr>
+          <tr>
+            <th scope="row">Keeping the site secure, available and free of abuse — including the bot check on the sign-in form</th>
+            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Running a site that stays up and whose sign-up form is not used to send mail to strangers.</td>
+          </tr>
+          <tr>
+            <th scope="row">Counting page views, anonymously and in aggregate</th>
+            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Knowing which pages are read at all, in order to decide what to write next. Limited to aggregate figures that cannot identify or re-identify anyone, and you have the right to object (section 12).</td>
+          </tr>
+          <tr>
+            <th scope="row">Replying to you if you email us</th>
+            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Answering someone who has chosen to get in touch. Applies whether or not you have an account.</td>
+          </tr>
+          <tr>
+            <th scope="row">Creating your account and signing you in</th>
+            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          </tr>
+          <tr>
+            <th scope="row">Storing your position in the primers and plans, and giving it back to you on any device</th>
+            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          </tr>
+          <tr>
+            <th scope="row">Addressing you by name in the two emails, and on your account page</th>
+            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          </tr>
+          <tr>
+            <th scope="row">Sending the service email you have asked for — confirming your address, resetting your password</th>
+            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          </tr>
+          <tr>
+            <th scope="row">Checking a password you have just chosen against a database of passwords exposed in past breaches</th>
+            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Stopping an account being created behind a password already known to attackers. See section 7 for how it works without your password leaving the browser.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>We do not rely on consent for any of this, so there is no consent for you to withdraw. Where we rely on legitimate interests you have the right to object — section 12 explains how. Nothing here involves automated decision-making or profiling that produces legal or similarly significant effects.</p>
+
+    <h2 class="doc-h2" id="s5"><span class="doc-num">5.</span>Does Amplified Thinker use cookies?</h2>
+
+    <p><strong>No.</strong> The site sets no cookies of any kind — not advertising cookies, not analytics cookies, not even a "strictly necessary" one. There is nothing here for you to accept or reject, which is why you have not been shown a cookie banner.</p>
+
+    <div class="doc-callout">
+      <p>That is unusual enough to be worth explaining rather than just asserting. Most sites need a cookie to remember who is signed in; this one keeps that in your browser's local storage instead (section 6). <strong>Local storage is not a cookie, but the law treats the two the same</strong> — the Privacy and Electronic Communications Regulations govern storing <em>any</em> information on your device, whatever the mechanism. So the question that matters is not "is it a cookie?" but "what is stored, and is it necessary?"</p>
+      <p>Answered in the next section: everything stored on your device is either strictly necessary for something you asked for, or a setting you chose yourself. <strong>Page-view counting stores nothing on your device at all</strong>, which is why it does not need consent either — the regulations are not engaged by it.</p>
+    </div>
+
+    <h2 class="doc-h2" id="s6"><span class="doc-num">6.</span>What is stored on my device?</h2>
+
+    <p>Up to four things, all written by your own browser and none of them readable by anyone else. The first happens whether or not you have an account:</p>
+
+    <div class="doc-table-wrap">
+      <table class="doc-table">
+        <thead>
+          <tr><th scope="col">Item</th><th scope="col">What it is</th><th scope="col">How long</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><code>theme</code></th>
+            <td>Light or dark, as you set it. Read before the page paints, which is what stops the screen flashing the wrong colour. Written only at the moment you change the setting, and it never leaves your device — including for account holders, since nothing syncs it.</td>
+            <td>Until you clear it</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>sb-…-auth-token</code></th>
+            <td>Your sign-in session, written by our authentication provider. Strictly necessary: without it you would be signed out on every page. Removed when you sign out.</td>
+            <td>The session</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>amplified_pw_recovery</code></th>
+            <td>A timestamp, written only while you are part-way through a password reset, so that reloading the page does not drop you out of it. Nothing about you is in it.</td>
+            <td>30 minutes</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>amplified_…</code></th>
+            <td>Leftovers. An earlier version of the site saved reading position in the browser for guests. That was removed, and any old entries are deliberately left untouched and unused rather than deleted behind your back.</td>
+            <td>Until you clear them</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>None of it is shared with anyone, none of it follows you to other websites, and clearing your browser storage removes all of it. There is no third-party storage of any kind — with one exception, which is the subject of the next section.</p>
+
+    <h2 class="doc-h2" id="s7"><span class="doc-num">7.</span>What happens on the sign-in page?</h2>
+
+    <p>Two things happen on <a href="sign-in/">the sign-in page</a> and nowhere else on the site. Both exist to protect the account, and both are worth stating plainly.</p>
+
+    <p><strong>A bot check.</strong> The form is protected by Cloudflare Turnstile, which usually resolves without you doing anything. It loads from <code>challenges.cloudflare.com</code>, so that host sees your IP address, and it may store data of its own on your device for the check. Cloudflare describes the signals it collects as strictly necessary for telling humans from bots; it does not use cookies to identify you and does not track you across sites. Without it, the sign-up form is an open invitation to send mail to strangers.</p>
+
+    <p><strong>A check against known breached passwords.</strong> When you choose or change a password, your browser checks it against the <a href="https://haveibeenpwned.com/Passwords" target="_blank" rel="noopener noreferrer">Have I Been Pwned</a> database of passwords exposed in past breaches. <strong>Your password is never sent anywhere.</strong> The check hashes it in your browser, sends only the first five characters of that hash, and receives back a list of matching hash endings to compare locally. Nobody at the other end can work out your password, which account it belongs to, or who you are. If the service is unreachable the check is skipped rather than guessed at, and you are told so.</p>
+
+    <h2 class="doc-h2" id="s8"><span class="doc-num">8.</span>What email will I get?</h2>
+
+    <p>An account sends exactly two emails, both triggered by you: a confirmation when you sign up, and a reset link when you ask for one. <strong>There is no newsletter and no marketing list</strong>, so there is nothing to unsubscribe from — you were never subscribed.</p>
+
+    <p>Those messages carry <strong>no open tracking and no click tracking</strong>. There is no invisible pixel reporting that you read them, and links are not rewritten to record the click — which also means a reset link goes where it says it goes.</p>
+
+    <p>The one other thing we would ever email you about is a change to this policy that affects information you have already given us. That is covered in section 15, and it is not marketing.</p>
+
+    <h2 class="doc-h2" id="s9"><span class="doc-num">9.</span>Who else sees my information?</h2>
+
+    <p>We do not sell your information and we do not share it for marketing. The site is run by one person, so a handful of services do the work that would otherwise need a server room. Each does one job:</p>
+
+    <div class="doc-table-wrap">
+      <table class="doc-table">
+        <thead>
+          <tr><th scope="col">Service</th><th scope="col">What it does</th><th scope="col">Who it affects</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Supabase</th><td>The database, sign-in, and the accounts themselves</td><td>Account holders</td></tr>
+          <tr><th scope="row">Resend</th><td>Delivers the two account emails</td><td>Account holders</td></tr>
+          <tr><th scope="row">Vercel</th><td>Hosts and delivers amplifiedthinker.com, and counts page views</td><td>Everyone on that domain</td></tr>
+          <tr><th scope="row">GitHub</th><td>Hosts and delivers the mirror at sing-chen.github.io</td><td>Everyone on that domain</td></tr>
+          <tr><th scope="row">Cloudflare</th><td>The domain's DNS and email routing, and the bot check on the sign-in page</td><td>Everyone; the bot check, sign-in visitors only</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Those services act under a data processing agreement and may not use your information for their own purposes. We may also disclose information where the law requires it.</p>
+
+    <p><strong>Two others are not our processors, and are called out separately for that reason.</strong></p>
+
+    <ul class="doc-list">
+      <li><strong>Google Fonts.</strong> Every page loads two typefaces from <code>fonts.googleapis.com</code>, which then fetches the font files from <code>fonts.gstatic.com</code>. This happens on your very first visit, before you have done anything, and it happens even if you never create an account. It receives no account information and sets nothing on your device, but — as with any file your browser requests from anywhere — those servers see your IP address. It is not run by us and is not covered by an agreement with us. <strong>Serving the fonts from our own domain would remove the request entirely, and that is the intention.</strong></li>
+      <li><strong>Have I Been Pwned.</strong> Contacted only when you choose a password, and only ever sent the first five characters of a hash. See section 7.</li>
+    </ul>
+
+    <h2 class="doc-h2" id="s10"><span class="doc-num">10.</span>Does my information leave the UK?</h2>
+
+    <p>It may. Your account and the two account emails are handled in <strong>Ireland</strong>. Our hosting, DNS and bot-check providers operate internationally, so technical information such as an IP address may be processed outside the UK, including in the United States.</p>
+
+    <p>Where that happens the transfer is covered by the UK International Data Transfer Addendum to the EU Standard Contractual Clauses, or another safeguard permitted under Article 46 of the UK GDPR, as set out in each provider's own agreement.</p>
+
+    <h2 class="doc-h2" id="s11"><span class="doc-num">11.</span>How long do you keep it?</h2>
+
+    <p>Your account and your progress are kept for as long as your account exists. There is no expiry, no dormancy sweep and no archive.</p>
+
+    <p><strong>Deletion is immediate and permanent.</strong> You can close your account yourself at any time from your <a href="account/">account page</a>. It asks for your password and then for your email address, because it cannot be undone. When it runs, the account, the profile and every progress record go together, in one operation. <strong>We keep no copy</strong> — there is no grace period and nothing we can restore afterwards. If you would rather ask us, <a href="mailto:singchen@amplifiedthinker.com?subject=Account%20deletion">email us</a> instead.</p>
+
+    <p>The only residue is technical: any routine database backup the provider happens to hold ages out on its own schedule, server logs follow our providers' standard retention — measured in days to months rather than years — and mail already delivered sits in your own inbox, where you control it.</p>
+
+    <p>Email you send us is kept while we deal with it and for a reasonable period afterwards, in case the conversation continues, then deleted. It is never added to a mailing list, because there is no mailing list.</p>
+
+    <h2 class="doc-h2" id="s12"><span class="doc-num">12.</span>What are my rights?</h2>
+
+    <p>Under the UK GDPR you have the right to see the information we hold about you; to have it corrected if it is wrong; to have it deleted; to restrict or object to how we use it; and to receive it in a portable, machine-readable format.</p>
+
+    <p><strong>If you have an account</strong>, some of this you can do yourself without asking. Your first name can be changed on the <a href="account/">account page</a>, and the same page will close your account outright, which covers erasure. There is no self-serve export yet, so <strong>for a copy of your data, email us and we will put it together by hand</strong> — that is a limitation of the site, not of your right, and we will respond within one month.</p>
+
+    <p><strong>If you do not have an account</strong>, the only information we hold that could relate to you is a server log entry containing your IP address. You have the same rights over it, including the right to object to our relying on legitimate interests. There is a limit worth being straight about: we have no way of telling which log entries are yours, so we cannot act on a request unless you can give us something that identifies them — and the UK GDPR does not require us to collect more information about you purely so that we can find you (Article 11). If you want to raise something, email us and we will do what we can.</p>
+
+    <p>If you are unhappy with how we have handled your information you can complain to the Information Commissioner's Office at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer">ico.org.uk</a> or on 0303 123 1113. We would rather you came to us first, so we have a chance to put it right.</p>
+
+    <h2 class="doc-h2" id="s13"><span class="doc-num">13.</span>How do you keep it safe?</h2>
+
+    <p>Everything travels over HTTPS. Your account is protected by access rules enforced by the database itself rather than only by the website, so one account cannot read another's progress even if the site were at fault. Passwords are stored only as salted hashes, a password already known to have been exposed in a breach is refused outright, and changing your password signs out every other device.</p>
+
+    <p>No service is perfectly secure and we do not claim otherwise. If you think your account has been compromised, reset your password and <a href="mailto:singchen@amplifiedthinker.com?subject=Account%20security">tell us straight away</a>.</p>
+
+    <h2 class="doc-h2" id="s14"><span class="doc-num">14.</span>What about children?</h2>
+
+    <p>Amplified Thinker is written for working adults and is not intended for children under 13. We do not knowingly collect their information. If you believe an account has been created by a child, please <a href="mailto:singchen@amplifiedthinker.com?subject=Account%20removal">get in touch</a> and it will be removed.</p>
+
+    <h2 class="doc-h2" id="s15"><span class="doc-num">15.</span>How will I find out about changes?</h2>
+
+    <p>If this policy changes we update the date at the top, and list anything material in <a href="about.html#updates">What's New</a>. Where a change affects how we use information you have already given us, <strong>we will tell account holders by email rather than relying on you noticing.</strong> That is the one message outside the two named in section 8, and it is not marketing.</p>
+
+    <h2 class="doc-h2" id="s16"><span class="doc-num">16.</span>How do I contact you?</h2>
+
+    <p>Any question about this policy, or about your information: <a href="mailto:singchen@amplifiedthinker.com?subject=Privacy%20question">singchen@amplifiedthinker.com</a>. It reaches a person, not a ticket queue.</p>
+
+    <div class="doc-divider"></div>
+
+    <p class="doc-note">Still deciding whether to create an account? <a href="why-sign-up.html">What an account actually gets you</a> sets out the difference in one table. The rules of using the site are on the <a href="terms.html">terms of use</a> page.</p>
+
+  </div>
+
+</article>
+</main>
+
+<footer>
+  <div class="fi">
+    <div class="footer-inner">
+      <p class="footer-tagline">Built for a world that keeps changing.</p>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="future-skills.html">Future Skills</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="my-people.html">My People</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="news.html">News</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="about.html">About</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="about.html#updates">What's New</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </nav>
+    </div>
+    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+  </div>
+</footer>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

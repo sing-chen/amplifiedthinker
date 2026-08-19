@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Sign Up · Amplified Thinker</title>
+<meta name="description" content="Everything on Amplified Thinker is free to read without an account. An account does one thing: it remembers where you are, on every device you use.">
+<link rel="canonical" href="https://amplifiedthinker.com/why-sign-up.html">
+<link rel="icon" type="image/png" href="images/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Amplified Thinker">
+<meta property="og:title" content="Why Sign Up · Amplified Thinker">
+<meta property="og:description" content="Everything on Amplified Thinker is free to read without an account. An account does one thing: it remembers where you are, on every device you use.">
+<meta property="og:url" content="https://amplifiedthinker.com/why-sign-up.html">
+<meta property="og:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
+
+  /* ── PAGE WRAPPER ── */
+  .doc-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
+
+  /* ── MASTHEAD ── */
+  .doc-eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+  .doc-title{font-family:'Poppins',sans-serif;font-size:34px;font-weight:700;color:var(--fg-heading);letter-spacing:-.015em;line-height:1.15;margin-top:10px}
+  .doc-lede{font-family:'Inter',sans-serif;font-size:17px;line-height:1.7;color:var(--text-muted);margin-top:16px}
+
+  /* ── PROSE ── */
+  .doc-body{display:flex;flex-direction:column;gap:28px;margin-top:44px}
+  .doc-body p{font-family:'Inter',sans-serif;font-size:16px;line-height:1.8;color:var(--navy)}
+  .doc-body p strong{color:var(--fg-heading);font-weight:500}
+  .doc-body a{color:var(--teal);text-decoration:underline;text-decoration-color:rgba(91,167,159,.4);text-underline-offset:2px}
+  .doc-body a:hover{color:var(--mid-teal)}
+  .doc-body a:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px;border-radius:2px}
+  .doc-h2{font-family:'Poppins',sans-serif;font-weight:700;font-size:11px;color:var(--fg-brand);letter-spacing:.1em;text-transform:uppercase;line-height:1.2;margin-bottom:-16px}
+
+  /* ── THE HEADLINE CLAIM ──
+     A brand band, same treatment as the .thesis block on about.html. This is
+     the one thing the page must land before anything else: nothing is behind
+     the account. Fixed dark in both themes, like the footer. */
+  .doc-claim{background:#1B4A44;border-radius:var(--radius-lg);padding:26px 30px}
+  .doc-claim p{font-family:'Poppins',sans-serif;font-size:17px;font-weight:500;color:rgba(255,255,255,.9);line-height:1.55}
+  .doc-claim p + p{font-size:15px;font-weight:400;color:rgba(255,255,255,.65);margin-top:10px}
+
+  /* ── COMPARISON TABLE ──
+     Scrolls inside its own container rather than widening the page. */
+  .doc-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .doc-table{width:100%;min-width:420px;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:15px}
+  .doc-table th,.doc-table td{text-align:left;padding:13px 14px;border-bottom:1px solid rgba(172,196,182,.35);vertical-align:top}
+  .doc-table thead th{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
+  .doc-table tbody th{font-weight:400;color:var(--navy);width:46%}
+  .doc-table td{text-align:center;color:var(--text-muted);width:27%}
+  .doc-table tbody tr:last-child th,.doc-table tbody tr:last-child td{border-bottom:none}
+  .yes,.no{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
+  .yes{color:var(--deep-teal)}
+  .no{color:var(--warm-gray)}
+  .yes svg,.no svg{width:14px;height:14px;stroke-width:2.5;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .doc-note{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-muted);line-height:1.6}
+
+  /* ── PLAIN LIST ── */
+  .doc-list{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+  .doc-list li{font-family:'Inter',sans-serif;font-size:16px;line-height:1.7;color:var(--navy);padding-left:26px;position:relative}
+  .doc-list li::before{content:"";position:absolute;left:6px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--sage)}
+
+  /* ── CTA ── */
+  .doc-cta{border-top:1px solid rgba(172,196,182,.35);padding-top:32px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+
+  /* ⚠️ THIS RULE IS LOAD-BEARING, and it is here because it has already cost a
+     defect once. The browser's own `[hidden] { display: none }` is a
+     lowest-weight UA rule, so ANY author `display` beats it — `.doc-cta` above
+     sets `display:flex`, which means a `hidden` CTA would stay fully visible.
+     That is exactly how the disabled "Send it again" button shipped with its
+     countdown painted over it. Same fix as auth-pages.css carries. */
+  [hidden]{display:none !important}
+  .doc-btn{font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;background:var(--deep-teal);color:var(--off-white);text-decoration:none;padding:12px 24px;border-radius:var(--radius);transition:background .15s}
+  .doc-btn:hover{background:var(--navy)}
+  .doc-btn:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+
+  /* ── FOOTER (copied verbatim from index.html so the two cannot drift) ── */
+  footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
+  .fi{max-width:var(--page-max);margin:0 auto}
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
+  .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
+  .footer-nav a:hover{color:rgba(255,255,255,.85)}
+  .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+  .footer-sep{color:rgba(255,255,255,.15);user-select:none}
+  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
+  .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
+  .fn a:hover{color:rgba(255,255,255,.85)}
+  .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+
+  /* Hold the footer down on a short page. */
+  body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+  main{flex:1 0 auto}
+  footer{flex-shrink:0}
+
+  @media(max-width:640px){
+    .doc-page{padding:48px 20px 72px}
+    .doc-title{font-size:28px}
+    .doc-claim{padding:22px 22px}
+    footer{padding:24px 20px}
+  }
+
+  /* ── DARK MODE ──
+     doc-eyebrow, doc-h2, doc-title and the footer already sit on tokens whose
+     light value matches the raw color, so they adapt for free. Everything
+     below started from navy, text-muted or a sage-tinted rgba border, none of
+     which is an exact match for a single fg/line token. */
+  [data-theme="dark"] .doc-body > p{color:var(--fg-1)}
+  [data-theme="dark"] .doc-lede{color:var(--fg-2)}
+  [data-theme="dark"] .doc-table th,[data-theme="dark"] .doc-table td{border-bottom-color:var(--line)}
+  [data-theme="dark"] .doc-table tbody th{color:var(--fg-1)}
+  [data-theme="dark"] .doc-table td{color:var(--fg-2)}
+  [data-theme="dark"] .yes{color:var(--fg-brand)}
+  [data-theme="dark"] .no{color:var(--fg-2)}
+  [data-theme="dark"] .doc-note{color:var(--fg-2)}
+  [data-theme="dark"] .doc-list li{color:var(--fg-1)}
+  [data-theme="dark"] .doc-cta{border-top-color:var(--line)}
+  [data-theme="dark"] .doc-btn{background:var(--teal);color:#0E1917}
+  [data-theme="dark"] .doc-btn:hover{background:var(--sage)}
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<script src="nav.js"></script>
+
+<main id="main-content">
+<article class="doc-page">
+
+  <p class="doc-eyebrow">Accounts</p>
+  <h1 class="doc-title">Why sign up?</h1>
+  <!--
+    ── Two audiences, one static page ──────────────────────────────────────
+    This page carries BOTH halves in its markup and shows one, because a static
+    file cannot tell a visitor with no account from one who simply is not signed
+    in on this device. The script at the foot picks.
+
+    Guest is the default in the HTML, deliberately: it is the larger audience,
+    it is who the page is written for, and it is the half that must still read
+    correctly if the script never runs at all.
+  -->
+  <p class="doc-lede" id="why-lede-out">Short answer: only if you want the site to remember where you are. Everything else is already yours without one.</p>
+  <p class="doc-lede" id="why-lede-in" hidden>You are signed in, so this already applies to you. Here is what that is doing in the background, and what it is not.</p>
+
+  <div class="doc-body">
+
+    <div class="doc-claim">
+      <p>Every primer, every plan, every article on this site is free to read without an account, and always will be.</p>
+      <p>There is no paywall, no locked chapter, and no "sign up to continue". An account adds one thing, and takes nothing away.</p>
+    </div>
+
+    <h2 class="doc-h2">What an account adds</h2>
+
+    <p><strong>It remembers your place.</strong> Progress saves to your account automatically as you work through a primer or a plan, and follows you to any device you sign in on. Close the tab on a train, open your laptop that evening, and the Resume button picks up exactly where you stopped.</p>
+
+    <p>That is the whole of it. The comparison below is the honest version, not the sales version.</p>
+
+    <div class="doc-table-wrap">
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th scope="col">&nbsp;</th>
+            <th scope="col" style="text-align:center">As a guest</th>
+            <th scope="col" style="text-align:center">With an account</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Read everything on the site</th>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Resume where you left off</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Quiz answers and open sections kept</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">The same position on another device</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Light or dark theme remembered</th>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Email address required</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="doc-note">Your theme choice is remembered on the device you set it on, whether or not you have an account. It never leaves that device for a guest.</p>
+
+    <h2 class="doc-h2">What browsing as a guest means</h2>
+
+    <p><strong>Nothing at all is stored about your reading.</strong> Not on our side, and not in your browser. There is no anonymous profile quietly accumulating against you, waiting to be claimed by an account later. If you read the whole library as a guest and then sign up, you start with a clean, empty record — because there was never anything else.</p>
+
+    <p>The trade is exactly the one in the table: a guest gets the entire library and no memory of it.</p>
+
+    <h2 class="doc-h2">What an account does not mean</h2>
+
+    <ul class="doc-list">
+      <li><strong>No newsletter.</strong> The only routine emails an account sends are a confirmation when you sign up and a link when you ask to reset your password — both triggered by you. There is nothing to unsubscribe from, because you were never subscribed. The one exception is a notice if the <a href="privacy.html">privacy policy</a> changes in a way that affects data you have already given us, which is not marketing either.</li>
+      <li><strong>No advertising, and nothing sold or shared.</strong> Your email address and your progress are used to run your account and for nothing else.</li>
+      <li><strong>No tracking you around the web.</strong> The site carries no advertising or social pixels of any kind.</li>
+      <li><strong>Not a commitment.</strong> You can delete your account yourself from the account page, at any time, without asking anyone. It happens immediately and no copy is kept.</li>
+    </ul>
+
+    <p>What is collected, where it is stored, and who processes it is set out in full on the <a href="privacy.html">privacy and cookies page</a>. It is worth two minutes before you decide.</p>
+
+    <!--
+      ⚠️ `#sign-up` on the button, not a bare `sign-in/`. The sign-in page opens
+      on the sign-in form by default, so without the hash someone who has just
+      read a whole page about creating an account would land on the wrong form
+      and have to ask for the right one. sign-in.astro seeds its mode from this.
+    -->
+    <div class="doc-cta" id="why-cta-out">
+      <a class="doc-btn" href="sign-in/#sign-up">Create an account</a>
+      <p class="doc-note">Takes about a minute: a first name, an email address, and a password. Already have one? <a href="sign-in/">Sign in</a>.</p>
+    </div>
+
+    <div class="doc-cta" id="why-cta-in" hidden>
+      <a class="doc-btn" href="account/">Go to your account</a>
+      <p class="doc-note">Change your name or password, or delete the account outright — immediately, and without asking anyone. Or pick up where you left off in <a href="future-skills.html">the skills library</a>.</p>
+    </div>
+
+  </div>
+
+</article>
+</main>
+
+<footer>
+  <div class="fi">
+    <div class="footer-inner">
+      <p class="footer-tagline">Built for a world that keeps changing.</p>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="future-skills.html">Future Skills</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="my-people.html">My People</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="news.html">News</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="about.html">About</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="about.html#updates">What's New</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </nav>
+    </div>
+    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+  </div>
+</footer>
+
+<!--
+  ── Which half of the page to show ────────────────────────────────────────
+  Reuses the answer nav.js has already worked out rather than writing a second
+  session parser — the same reasoning progress.js gives for its own peek().
+
+  ⚠️ THIS PAGE COSTS A GUEST NOTHING. nav.js loads the auth stack only when it
+  peeks a stored session or the path is /sign-in/ or /account/ — neither is true
+  here for a visitor with no account, so supabase.min.js is never fetched. The
+  toggle below is the whole cost, and it is three lines.
+
+  Two passes, because the peek is a guess and the library is the truth:
+
+    1. peekSession() answers synchronously, before any network request, so a
+       signed-in reader never sees the guest copy flash past first.
+    2. If the auth stack does arrive — which it only does when the peek was not
+       'out' — onAuthChange corrects a stale or expired token to the real answer.
+
+  There is no polling and no timeout. A guest is already correct on pass one,
+  and if the stack never loads for anyone else the page simply keeps showing the
+  guest half, which is accurate about the site and merely impersonal.
+-->
+<script>
+(function () {
+  'use strict';
+
+  function apply(signedIn) {
+    [['why-lede-out', !signedIn], ['why-lede-in', signedIn],
+     ['why-cta-out', !signedIn], ['why-cta-in', signedIn]]
+      .forEach(function (pair) {
+        var el = document.getElementById(pair[0]);
+        if (el) el.hidden = !pair[1];
+      });
+  }
+
+  var nav = window.AmplifiedNav;
+  var peek = nav && typeof nav.peekSession === 'function' ? nav.peekSession() : { state: 'out' };
+  if (peek.state === 'out') return;          // guest: the markup is already right
+
+  apply(true);
+
+  // Correct the guess once the real session is known. Bounded by the same
+  // condition that made us optimistic in the first place.
+  var waited = 0;
+  (function poll() {
+    var auth = window.AmplifiedAuth;
+    if (auth) { auth.onAuthChange(function (s) { apply(Boolean(s)); }); return; }
+    waited += 60;
+    if (waited > 6000) return;                // leave the optimistic view; harmless
+    window.setTimeout(poll, 60);
+  })();
+})();
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
