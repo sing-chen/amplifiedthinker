@@ -165,6 +165,77 @@
     '[data-theme="dark"] .snav-theme-icon-moon { display: none; }',
     '[data-theme="dark"] .snav-theme-icon-sun { display: block; }',
 
+    /* Auth control (filled in by auth.js; empty and inert for guests until
+       the session check settles, and permanently empty if Supabase is
+       unreachable — the nav must never depend on it) */
+    '.snav-auth {',
+    '  position: relative;',
+    '  display: flex; align-items: center; justify-content: center;',
+    '  min-width: 34px; height: 34px;',
+    '  margin-left: 4px; flex-shrink: 0;',
+    '}',
+    /* Outlined rather than plain text, borrowing the skill bar's .ssb-btn
+       language. As a bare link it read as a nav item that had drifted past the
+       search and theme icons; as a button the separation becomes the point —
+       it is an action, not a destination, and it sits where account controls
+       are looked for. */
+    '.snav-auth-signin {',
+    '  font-size: 12.5px; font-weight: 500;',
+    '  color: #ACC4B6;',
+    '  padding: 5px 12px; border-radius: 5px;',
+    '  border: 1px solid rgba(172,196,182,0.35);',
+    '  white-space: nowrap;',
+    '  transition: color 0.15s, background 0.15s, border-color 0.15s;',
+    '}',
+    '.snav-auth-signin:hover {',
+    '  color: #C4D8CC; background: rgba(172,196,182,0.12);',
+    '  border-color: rgba(172,196,182,0.6);',
+    '}',
+    /* ⚠️ Warm cream, and NOT sage — the swap is the point.
+       The avatar used #ACC4B6 on #1B4A44, which is character-for-character the
+       same pair as `.snav-links a.snav-active` above: the pill marking which
+       page you are on. Two different meanings wearing one colour, eight pixels
+       apart. Nothing was broken; it just quietly read as another nav item.
+       --warm-cream is the only token in the palette that is not a cool green,
+       so it separates from every other thing in this bar by hue rather than by
+       shade. 7.2:1 against the bar, 6.9:1 for the letter on it. */
+    '.snav-auth-avatar {',
+    '  width: 30px; height: 30px; border-radius: 50%;',
+    '  background: #EAD9C8; color: #1F4D4A;',
+    '  border: none; cursor: pointer; padding: 0;',
+    '  font-family: "Inter", system-ui, sans-serif;',
+    '  font-size: 13px; font-weight: 600;',
+    '  display: flex; align-items: center; justify-content: center;',
+    '}',
+    '.snav-auth-avatar:hover { background: #DFC9B4; }',
+    '.snav-auth-menu {',
+    '  position: absolute; top: calc(100% + 8px); right: 0;',
+    '  min-width: 200px; z-index: 9001;',
+    '  background: #1B4A44;',
+    '  border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;',
+    '  padding: 8px;',
+    '  box-shadow: 0 8px 20px rgba(0,0,0,0.25);',
+    '  display: flex; flex-direction: column; gap: 2px;',
+    '}',
+    /* display:flex above would otherwise defeat the hidden attribute */
+    '.snav-auth-menu[hidden] { display: none; }',
+    '.snav-auth-email {',
+    '  margin: 0 0 6px; padding: 4px 8px;',
+    '  font-size: 11.5px; color: rgba(255,255,255,0.6);',
+    '  word-break: break-all;',
+    '}',
+    '.snav-auth-menu a, .snav-auth-menu button {',
+    '  font-family: "Inter", system-ui, sans-serif;',
+    '  font-size: 13px; font-weight: 500;',
+    '  color: rgba(255,255,255,0.88);',
+    '  background: none; border: none;',
+    '  text-align: left; padding: 8px; border-radius: 5px;',
+    '  cursor: pointer;',
+    '}',
+    '.snav-auth-menu a:hover, .snav-auth-menu button:hover {',
+    '  background: rgba(255,255,255,0.08); color: #fff;',
+    '}',
+
     /* Mobile menu toggle (hidden on desktop) */
     '.snav-toggle {',
     '  display: none;',
@@ -228,7 +299,7 @@
     '.ssb-btn.ssb-btn-active { background: #2D756F; border-color: transparent; color: #fff; }',
 
     /* Focus styles for injected nav elements */
-    '#site-nav a:focus-visible, .ssb-btn:focus-visible, .snav-toggle:focus-visible, .snav-search:focus-visible {',
+    '#site-nav a:focus-visible, .ssb-btn:focus-visible, .snav-toggle:focus-visible, .snav-search:focus-visible, .snav-auth-avatar:focus-visible, .snav-auth-menu button:focus-visible {',
     '  outline: 2px solid #ACC4B6;',
     '  outline-offset: 3px;',
     '  border-radius: 4px;',
@@ -306,6 +377,7 @@
     '    <svg class="snav-theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
     '    <svg class="snav-theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>',
     '  </button>',
+    '  <div class="snav-auth" id="snav-auth"></div>',
     '  <button type="button" id="snav-toggle" class="snav-toggle" aria-expanded="false" aria-controls="snav-links" aria-label="Open menu">',
     '    <svg class="snav-icon-menu" viewBox="0 0 24 24" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>',
     '    <svg class="snav-icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="6" y1="18" x2="18" y2="6"></line></svg>',
@@ -392,6 +464,153 @@
     }
     applyLayoutFixes();
     syncThemeToggleUI();
+
+    // The auth slot is injected empty; auth.js fills it. Announce every
+    // injection rather than only the first, because watchForWipe() re-injects
+    // the whole nav after the Primer bundle replaces the body — which leaves a
+    // fresh, empty slot behind that nothing else would ever refill.
+    try {
+      document.dispatchEvent(new CustomEvent('amplified:nav-injected'));
+    } catch (e) { /* pre-CustomEvent browsers simply keep the guest nav */ }
+  }
+
+  /* ── Auth stack ───────────────────────────────────────────────────────
+     Loaded from here so all 16 pages get auth from one edit, which is the
+     same reason the nav itself is injected rather than copied.
+
+     ⚠️ THE LIBRARY IS 53 KB GZIPPED AND MOST VISITORS NEVER NEED IT. From
+     Phase 5 a guest gets no saved progress, so a signed-out visitor has no use
+     for Supabase on ANY page, including the skill pages. Downloading it for
+     them is 53 KB with a guaranteed benefit of zero.
+
+     So the session is peeked at in localStorage first — synchronously, with no
+     library — and the stack is fetched only when it can actually do something.
+     That also means the nav renders the RIGHT state immediately rather than
+     sitting blank while an async check completes. Same instinct as the theme
+     being applied at the top of this file: decide before first paint.
+  ─────────────────────────────────────────────────────────────────────── */
+
+  // 'out'     — no session stored. Render the sign-in link, download nothing.
+  // 'in'      — a live session. Render the avatar now, then load to refresh.
+  // 'unknown' — something is there but cannot be trusted: unreadable, expired,
+  //             or a shape this code does not recognise. Load the library and
+  //             let it decide, which is exactly the old unconditional
+  //             behaviour. This is the fallback that makes the optimisation
+  //             safe — the worst case is no better than before, never broken.
+  function peekSession() {
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (!/^sb-.+-auth-token$/.test(key)) continue;
+
+        var raw = localStorage.getItem(key);
+        if (!raw) continue;
+
+        // supabase-js stores this base64-prefixed in newer versions, plain JSON
+        // in older ones. Handle both rather than pinning to one, since the
+        // library updates independently of this file.
+        if (raw.indexOf('base64-') === 0) {
+          raw = decodeURIComponent(escape(atob(raw.slice(7))));
+        }
+
+        var data = JSON.parse(raw);
+        var expires = data && data.expires_at;
+        var email = data && data.user && data.user.email;
+        if (!expires || !email) return { state: 'unknown' };
+
+        // An expired access token does NOT mean signed out — supabase-js can
+        // refresh it. Hand over rather than guessing.
+        if (expires * 1000 <= Date.now()) return { state: 'unknown' };
+
+        // The name is optional and every caller must cope without it: accounts
+        // created before 2026-08-19 have none, and the stored session shape is
+        // the library's rather than ours.
+        var meta = data.user.user_metadata || {};
+        return { state: 'in', email: email, name: meta.display_name || null };
+      }
+      return { state: 'out' };
+    } catch (e) {
+      return { state: 'unknown' };
+    }
+  }
+
+  // The sign-in and account pages need the library whatever the session says:
+  // one is how you get a session, the other is how you change it.
+  function pageNeedsAuth() {
+    return /\/(sign-in|account)(\/|$)/i.test(pathname);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* The avatar letter and its tooltip, defined ONCE and exported.
+     auth.js repaints the same slot a moment later from the real session; if the
+     two disagreed about which letter to draw, the avatar would visibly change
+     character on every page load. Same rule, one place. */
+  function initialFor(name, email) {
+    var source = (name && name.trim()) || email || '';
+    return source ? source.trim().charAt(0).toUpperCase() : '?';
+  }
+
+  function labelFor(name, email) {
+    return (name && name.trim()) || email || '';
+  }
+
+  // Paints the slot before any network request. auth.js re-renders the same
+  // markup once loaded, adding the dropdown — so nothing moves when it arrives.
+  function paintAuthSlot(peek) {
+    var slot = document.getElementById('snav-auth');
+    if (!slot) return;
+
+    if (peek.state === 'out') {
+      slot.innerHTML = '<a class="snav-auth-signin" href="' + root('sign-in/') + '">Sign in</a>';
+    } else if (peek.state === 'in') {
+      slot.innerHTML =
+        '<button type="button" class="snav-auth-avatar" id="snav-auth-avatar"' +
+        ' aria-expanded="false" aria-haspopup="true"' +
+        ' title="' + escapeHtml(labelFor(peek.name, peek.email)) + '">' +
+        escapeHtml(initialFor(peek.name, peek.email)) + '</button>';
+    }
+    // 'unknown' leaves the slot empty on purpose: showing the wrong state and
+    // correcting it a moment later is worse than showing nothing briefly.
+  }
+
+  /* ⚠️ `async = false` on a dynamically inserted script is what preserves
+     EXECUTION ORDER — it does not make the load blocking. Without it the three
+     files race, and supabase-client.js can run before window.supabase exists.
+
+     These are classic scripts on purpose. Nothing here may become a module:
+     nav.js derives its own link prefix from document.currentScript.src, which
+     is null for a module, and every nav link on the site would then resolve
+     from the wrong depth. The same trap is why every Astro <script> needs
+     is:inline. See docs/dev-workflow.md. */
+  function loadAuthStack() {
+    if (window.__amplifiedAuthStack) return;
+    window.__amplifiedAuthStack = true;
+
+    ['supabase.min.js', 'supabase-client.js', 'auth.js'].forEach(function (file) {
+      var s = document.createElement('script');
+      s.src = root(file);
+      s.async = false;
+      s.defer = true;
+      document.head.appendChild(s);
+    });
+  }
+
+  function setupAuth() {
+    var peek = peekSession();
+    paintAuthSlot(peek);
+
+    // Re-paint after a nav re-injection, so a signed-in avatar survives the
+    // Primer bundle wiping the body. auth.js takes this over once loaded.
+    document.addEventListener('amplified:nav-injected', function () {
+      if (!window.AmplifiedAuth) paintAuthSlot(peek);
+    });
+
+    if (peek.state !== 'out' || pageNeedsAuth()) loadAuthStack();
   }
 
   /* ── Guard against the Primer bundle wiping the nav ─────────────────────
@@ -501,6 +720,25 @@
     });
   }
 
+  /* ── Shared with the auth stack ───────────────────────────────────────
+     root() is the only thing auth.js needs and cannot compute for itself:
+     the prefix comes from THIS script's own src, and a second script asking
+     document.currentScript gets its own location instead. Exporting it is
+     what lets the sign-in link resolve correctly under the Pages subpath.
+
+     peekSession() is exported for progress.js, which loads immediately below
+     this file on every skill page and needs the same answer for the same
+     reason: decide synchronously, before the library exists. A second copy of
+     the parser is a second thing to keep in step with supabase-js's storage
+     format, and the format has already changed once. */
+  window.AmplifiedNav = {
+    root: root,
+    depth: depth,
+    peekSession: peekSession,
+    initialFor: initialFor,
+    labelFor: labelFor
+  };
+
   /* ── Entry point ─────────────────────────────────────────────────────── */
   function init() {
     injectNav();
@@ -510,6 +748,9 @@
     if (activePage === 'skill' && isPrimer) {
       watchForWipe();
     }
+    // Last, and never before the nav exists: auth is additive to a nav that
+    // must work identically without it.
+    setupAuth();
   }
 
   if (document.body) {

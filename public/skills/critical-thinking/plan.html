@@ -3073,6 +3073,11 @@ function saveProgress() {
     store.save({
       section:      lastActiveId,
       visited:      Array.from(visited),
+      // The denominator for "4 of 12" style progress, recorded per save rather
+      // than looked up later. Section counts differ between skills and can
+      // change when content is edited, so a row that does not carry its own
+      // total cannot be turned into a percentage after the fact.
+      total:        sectionIds.length,
       quizSelected: kcSelected,
       quizRevealed: quizRevealed,
       quizOrder:    kcOrder,
@@ -3498,43 +3503,63 @@ btnNext.addEventListener('click', function () { scrollToSection(currentIdx + 1);
 window.addEventListener('scroll', updateNav, { passive: true });
 
 // ── Init: restore saved progress if any ─────
-const savedData = store.load();
-kcOrder = (savedData && savedData.quizOrder) ? savedData.quizOrder : newQuizOrder();
-applyQuizOrder(kcOrder);
-if (savedData) {
-  restoreState(savedData);
-}
+// Paint the section nav immediately so it is never blank while the
+// authoritative snapshot is still in flight. Idempotent — ready() re-runs it.
 updateNav();
 
-// Show resume banner if there's a saved section beyond the first
-if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
-  const resumeBanner       = document.getElementById('resumeBanner');
-  const resumeBtn          = document.getElementById('resumeBtn');
-  const resumeDismissBtn   = document.getElementById('resumeDismissBtn');
-  const resumeSectionLabel = document.getElementById('resumeSectionLabel');
+// ⚠️ store.ready(), not store.load(). A signed-in visitor's progress lives in
+// Supabase, and a network read cannot be made synchronous — so the whole
+// restore runs in a callback that fires once, whichever mode the page is in.
+// Guests get their (frozen) local snapshot the same way. See progress.js.
+store.ready(function (savedData) {
+  kcOrder = (savedData && savedData.quizOrder) ? savedData.quizOrder : newQuizOrder();
+  applyQuizOrder(kcOrder);
+  if (savedData) {
+    restoreState(savedData);
+  }
+  updateNav();
 
-  const savedLink = document.querySelector('.nav-link[data-section="' + savedData.section + '"]');
-  resumeSectionLabel.textContent = savedLink
-    ? savedLink.textContent.trim()
-    : savedData.section;
+  // Show resume banner if there's a saved section beyond the first
+  if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
+    const resumeBanner       = document.getElementById('resumeBanner');
+    const resumeBtn          = document.getElementById('resumeBtn');
+    const resumeDismissBtn   = document.getElementById('resumeDismissBtn');
+    const resumeSectionLabel = document.getElementById('resumeSectionLabel');
 
-  const hasQuizProgress = savedData.quizRevealed ||
-    (savedData.quizSelected && Object.keys(savedData.quizSelected).length > 0);
-  document.getElementById('resumeBannerNote').classList.toggle('hidden', !hasQuizProgress);
+    const savedLink = document.querySelector('.nav-link[data-section="' + savedData.section + '"]');
+    resumeSectionLabel.textContent = savedLink
+      ? savedLink.textContent.trim()
+      : savedData.section;
 
-  resumeBanner.classList.remove('hidden');
+    const hasQuizProgress = savedData.quizRevealed ||
+      (savedData.quizSelected && Object.keys(savedData.quizSelected).length > 0);
+    document.getElementById('resumeBannerNote').classList.toggle('hidden', !hasQuizProgress);
 
-  resumeBtn.addEventListener('click', function () {
-    hideBanner();
-    const idx = sectionIds.indexOf(savedData.section);
-    if (idx !== -1) scrollToSection(idx);
-  }, { once: true });
+    resumeBanner.classList.remove('hidden');
 
-  resumeDismissBtn.addEventListener('click', function () {
-    hideBanner();
-    resetAllProgress();
-  }, { once: true });
-}
+    resumeBtn.addEventListener('click', function () {
+      hideBanner();
+      const idx = sectionIds.indexOf(savedData.section);
+      if (idx !== -1) scrollToSection(idx);
+    }, { once: true });
+
+    // ⚠️ Destructive, and far more so than it looks. For a signed-in user this
+    // deletes the account's row for this plan on EVERY device, permanently.
+    // Before Phase 5 the same click cleared one key in one browser. Guests are
+    // not asked, because there is nothing stored to lose.
+    //
+    // No { once: true }: cancelling must leave the button working.
+    resumeDismissBtn.addEventListener('click', function () {
+      if (store.mode() === 'account' && !window.confirm(
+            'Start over? This permanently deletes your saved progress for ' +
+            'this plan, on every device you sign in on. It cannot be undone.')) {
+        return;
+      }
+      hideBanner();
+      resetAllProgress();
+    });
+  }
+});
 
 // ── Mobile "Sections" panel (rail-as-toolbar) ──────────────
 var railToggle = document.getElementById('railToggle');

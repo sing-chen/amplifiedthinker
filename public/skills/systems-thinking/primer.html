@@ -1041,7 +1041,10 @@
   function saveProgress() {
     store.save({
       current: current,
-      visited: Array.from(visited)
+      visited: Array.from(visited),
+      // See the matching note on the plan pages. Primers already vary: this
+      // deck has TOTAL slides, and not every skill's has the same number.
+      total: TOTAL
     });
   }
 
@@ -1065,12 +1068,19 @@
       saveProgress();
     }, { once: true });
 
+    // ⚠️ See the matching comment on the plan pages. For a signed-in user this
+    // deletes the account's row for this primer on every device, permanently.
     resumeDismissBtn.addEventListener('click', function () {
+      if (store.mode() === 'account' && !window.confirm(
+            'Start over? This permanently deletes your saved progress for ' +
+            'this primer, on every device you sign in on. It cannot be undone.')) {
+        return;
+      }
       hideBanner();
       visited = new Set([0]);
       updateUI();
       store.clear();
-    }, { once: true });
+    });
   }
 
   // ── Navigation ───────────────────────────────
@@ -1191,14 +1201,23 @@
   }
 
   // ── Init: restore saved progress if any ─────
-  var savedData = store.load();
-  if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
-    visited = new Set(savedData.visited || [0]);
-    updateUI();
-    showResumeBanner(savedData.current);
-  } else {
-    updateUI();
-  }
+  // Paint the deck immediately so the first slide is never blank while the
+  // authoritative snapshot is still in flight. Idempotent — ready() re-runs it.
+  updateUI();
+
+  // ⚠️ store.ready(), not store.load(). A signed-in visitor's progress lives in
+  // Supabase, and a network read cannot be made synchronous — so the restore
+  // runs in a callback that fires once, whichever mode the page is in. Guests
+  // get their (frozen) local snapshot the same way. See progress.js.
+  store.ready(function (savedData) {
+    if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
+      visited = new Set(savedData.visited || [0]);
+      updateUI();
+      showResumeBanner(savedData.current);
+    } else {
+      updateUI();
+    }
+  });
 
 })();
 </script>
