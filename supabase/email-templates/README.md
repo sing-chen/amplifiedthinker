@@ -42,14 +42,47 @@ to remember.
 Dashboard → **Authentication → Emails**, one tab per template. Paste the file
 contents into the message body and set the subject.
 
+⚠️ **These are the subjects production is actually sending**, read back from the
+`Subject:` headers of real emails on 2026-08-19 — not what anyone intended to
+type. Keep it that way: this table is the only record if a project is rebuilt,
+and a subject nobody verified is a subject nobody has.
+
 | Tab | File | Subject |
 |---|---|---|
 | Confirm signup | [`confirm-signup.html`](confirm-signup.html) | `👋 Welcome to Amplified Thinker: One step to confirm and activate your account` |
-| Reset Password | [`reset-password.html`](reset-password.html) | `Set a new password for Amplified Thinker` |
+| Reset Password | [`reset-password.html`](reset-password.html) | `🛡️ Amplified Thinker: Set a new password` |
 
 **Both projects.** Dev and prod each hold their own copy, like every other
 dashboard setting. A template edited on one is not on the other, and the failure
 is invisible — dev sends the good version while prod sends Supabase's default.
+
+### ⚠️ The subject may not save the first time, and the dashboard will not tell you
+
+Found on production on 2026-08-19, at the cost of three real signups.
+
+**Symptom.** The body was unmistakably ours — right design, right greeting — and
+the subject was Supabase's default. The dashboard showed the subject saved.
+Reloading showed it saved. Every email sent it as the default anyway.
+
+**⚠️ Note the shape, because it is the opposite of the failure above.** *Both*
+default means the template record is not being used at all — that is what
+pointed at the HTML comment parse. **Custom body plus default subject means the
+subject field alone did not commit.** Same screen, two different faults, and the
+combination tells you which.
+
+**What fixed it:** editing the subject by one character, saving, changing it
+back, and saving again. So the first save never committed that field.
+
+**The rule, and it applies to every dashboard setting that has no test:**
+
+> **The dashboard is not evidence.** A subject can look saved, survive a reload,
+> and not be the one being sent. The only proof is the `Subject:` header of an
+> email that actually arrived.
+
+So: save, send one, read the header. **If it comes back default, save again
+before investigating anything else** — that is the cheap branch, and skipping it
+cost two signups and a diversion into project-switcher and caching theories that
+were both wrong.
 
 **The other tabs stay at Supabase's defaults.** Magic Link, Invite, Change Email
 Address and Reauthentication are all unused: this site has no magic-link or
@@ -200,6 +233,12 @@ state unsaid tests whichever half the reader happens to imagine.
    one Outlook address. They disagree about new senders more than any other pair.
 3. Confirm the greeting uses the first name you typed, and that the whole email
    renders with images blocked (most clients block them by default).
+   ⚠️ **And read the `Subject:` header, not the subject line your client shows
+   you tidied up.** *Show original* in Gmail. It is Q-encoded when it contains
+   an emoji, so `=?UTF-8?Q?=F0=9F=91=8B_Welcome…` is the 👋 subject arriving
+   correctly — decode it rather than assuming it is mangled. **A default subject
+   here means the field did not save: go back, save it again, and re-send before
+   suspecting anything else.**
 4. Click the link. It should land on `/sign-in/`, which redirects to the home
    page signed in.
 5. Sign out, request a reset, and follow that link. `/sign-in/` should show
