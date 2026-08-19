@@ -146,13 +146,34 @@
   }
   .nav-link.active .nav-num  { color: var(--teal); }
   .nav-link.visited .nav-num { color: var(--sage); opacity: 0.7; }
+  /* Three states, told apart by SHAPE as much as colour. At this size two
+     similar greens are not distinguishable on their own, and the previous
+     version differed only in colour — a filled dot at 15% white, sage at 60%
+     opacity, and teal — which read as one dot in three shades rather than as
+     three states. Matches the plan pages, which had already solved this:
+       unvisited  empty ring
+       visited    solid sage fill
+       active     solid teal fill inside a halo
+     The halo is box-shadow, so it costs no layout space and cannot shift the
+     row it sits in. */
   .nav-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: rgba(255,255,255,0.15); flex-shrink: 0;
-    margin-left: auto; transition: background 0.15s;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.5);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
   }
-  .nav-link.active .nav-dot  { background: var(--teal); }
-  .nav-link.visited .nav-dot { background: var(--sage); opacity: 0.6; }
+  .nav-link.visited .nav-dot { background: var(--sage); border-color: var(--sage); }
+  /* Declared after .visited, matching the plan pages. Here the two cannot
+     collide — updateUI() sets .visited only when the slide is NOT current — but
+     the order is free insurance if that ever changes. */
+  .nav-link.active .nav-dot {
+    background: var(--teal);
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(91,167,159,0.45);
+  }
 
   /* ── SLIDE STAGE ────────────────────────────── */
   .stage {
