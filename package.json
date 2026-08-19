@@ -13,7 +13,8 @@
     "verify:rls": "node scripts/verify-rls.mjs",
     "verify:email": "node scripts/verify-email-dns.mjs",
     "keepalive": "node scripts/keepalive.mjs",
-    "verify:redirects": "node scripts/verify-redirects.mjs"
+    "verify:redirects": "node scripts/verify-redirects.mjs",
+    "verify:published": "node scripts/verify-published.mjs"
   },
   "devDependencies": {
     "astro": "^7.2.2"

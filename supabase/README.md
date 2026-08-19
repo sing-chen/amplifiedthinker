@@ -700,6 +700,49 @@ none.** The dashboard's *Create new user* is exactly this case. The client-side
 fallback is therefore still load-bearing and must not be removed on the strength
 of the constraint.
 
+### ⚠️ Backfilling existing accounts — and why the migration is not enough
+
+`20260819140000_display_name_not_null.sql` backfills **`profiles.display_name`
+only**. It does not touch `auth.users`, because that is Supabase's table and a
+migration has no business rewriting it.
+
+**So after that migration an account created before the name field has a derived
+profile name and still no name in `raw_user_meta_data`** — which is the copy the
+email templates and the nav greeting read. The visible result is emails that
+open generically and a nav that falls back to the address.
+
+**This is a data fix, not a migration**, so it belongs to whichever project
+holds the affected rows rather than to both on principle. Run it *after* the
+migration:
+
+```sql
+update auth.users
+set raw_user_meta_data =
+      coalesce(raw_user_meta_data, '{}'::jsonb)
+      || jsonb_build_object('display_name', p.display_name)
+from public.profiles p
+where p.id = auth.users.id
+  and coalesce(nullif(trim(raw_user_meta_data ->> 'display_name'), ''), '') = ''
+returning auth.users.email, raw_user_meta_data ->> 'display_name' as name;
+```
+
+⚠️ **The `returning` is the point.** A zero-row result means it changed nothing,
+and without it that is indistinguishable from success. An earlier version of
+this statement filtered on `like '%+%@gmail.com'` and silently skipped the one
+account that actually needed it.
+
+**It copies the DERIVED name**, which is a placeholder — `singfenchen@gmail.com`
+becomes `Singfenchen`. To set a real one, fix `profiles.display_name` first and
+then run the above, or substitute the literal:
+
+```sql
+update public.profiles set display_name = 'Sing'
+where id = (select id from auth.users where email = 'you@example.com');
+```
+
+Only pre-existing accounts need any of this. Every signup since 2026-08-19
+supplies a name at `signUp()` time, which lands in both stores unaided.
+
 **The derivation, when a signup supplies no name:** the email local part before
 any plus-addressing, title-cased, clipped to 60 characters —
 `singfenchen+p5b@gmail.com` becomes `Singfenchen`. An address that derives to

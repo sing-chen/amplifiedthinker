@@ -85,10 +85,14 @@ works — the template is rendered when the mail is triggered, so a name set
 afterwards is not in the email that was already sent.
 
 Every use is wrapped in `{{ if .Data.display_name }}`. Accounts created before
-2026-08-19 have no name and would otherwise be greeted as *"Welcome, "*. There
-is a backfill statement in [../README.md](../README.md) for existing rows —
-⚠️ and it must update **both** `raw_user_meta_data` and `profiles.display_name`,
-because the templates read the first and the site reads the second.
+2026-08-19 have no name and would otherwise be greeted as *"Welcome, "*.
+
+⚠️ **The `display_name` migration does NOT fix those accounts for email
+purposes.** It backfills `profiles.display_name`, which these templates never
+read. The statement that fixes `raw_user_meta_data` is a separate data fix —
+[../README.md](../README.md), *Backfilling existing accounts*. Applying the
+migration and stopping there leaves the emails greeting nobody, with no error
+and nothing to notice until one arrives.
 
 ---
 
