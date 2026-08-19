@@ -91,6 +91,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <button type="button" class="auth-btn auth-btn-danger-quiet" id="acct-delete-toggle"
                   aria-expanded="false" aria-controls="acct-delete-section">Delete your account</button>
         </div>
+
+        <!--
+          Where a finished action reports back.
+
+          It sits on THIS panel rather than inside the disclosure that did the
+          work, because that disclosure closes on success. A confirmation left
+          in a collapsed section is a confirmation nobody reads.
+
+          ⚠️ Deliberately NOT a redirect, unlike the reset flow on /sign-in/.
+          That page is a single errand and has nothing left to offer once the
+          password is set. This one is a destination someone navigated to on
+          purpose, and may well have come to do more than one thing. Ejecting
+          people from a settings page for the crime of finishing a task is the
+          opposite of helpful — and the sibling action on this same panel,
+          deletion, already stays put for the same reason.
+        -->
+        <p class="auth-status" id="acct-notice" role="status" aria-live="polite"></p>
       </div>
 
       <!--
@@ -352,17 +369,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             el('acct-password-submit').disabled = false;
             el('acct-current-password').value = '';
             el('acct-new-password').value = '';
+            out.textContent = '';
 
             // ⚠️ Two messages, because the second half can fail on its own and
             // the page must not claim it happened. Saying "other devices have
             // been signed out" when they have not is worse than saying nothing
             // — it is the sentence someone acts on when they think an account
             // has been taken.
-            out.textContent = u.othersSignedOut
+            notify(u.othersSignedOut
               ? 'Password updated, and any other devices have been signed out.'
               : 'Password updated. Other devices could not be signed out just ' +
-                'now — sign out and back in on this device to try again.';
-            out.className = 'auth-status good';
+                'now — sign out and back in on this device to try again.');
+
+            // Collapse the form. An emptied form sitting under "Password
+            // updated" invites the question the message just answered: did that
+            // work, or do I do it again? Focus returns to the button that
+            // opened it, which is standard for a disclosure and also puts the
+            // keyboard next to the confirmation.
+            closeSection('acct-password-toggle');
+            el('acct-password-toggle').focus();
           });
         }, function (err) {
           bad('Something went wrong: ' + (err && err.message ? err.message : 'unknown error'));
@@ -388,12 +413,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         el(toggleId).setAttribute('aria-expanded', 'false');
       }
 
+      // Reports a finished action on the details panel, above the disclosures.
+      // Empty string clears it. Always 'good' — the failure paths report inside
+      // whichever form is still open, where the fields that need correcting are.
+      function notify(message) {
+        var out = el('acct-notice');
+        out.textContent = message;
+        out.className = 'auth-status' + (message ? ' good' : '');
+      }
+
       function openSection(toggleId) {
         Object.keys(SECTIONS).forEach(function (id) {
           if (id !== toggleId) closeSection(id);
         });
         el(SECTIONS[toggleId]).hidden = false;
         el(toggleId).setAttribute('aria-expanded', 'true');
+
+        // ⚠️ Drop any standing confirmation. "Password updated" still on screen
+        // while a fresh form is open reads as though THIS attempt has already
+        // succeeded — a stale success is worse than no message, because it is
+        // the one people act on.
+        notify('');
 
         // Focus the first field rather than the panel. A disclosure that
         // reveals a form and leaves focus on the button makes a keyboard user
