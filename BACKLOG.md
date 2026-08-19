@@ -306,6 +306,38 @@ sign-out on this site was therefore signing the user out of **every device**: le
 computer also logged you out on your phone. Scope is now explicit everywhere — `local` for the
 button, `others` on password change, `global` spelled out in `deleteAccount()` where it is meant.
 
+### Offer "send it again" on the password-reset panel too
+**Status:** Idea · Not started · Raised 2026-08-19 during Phase 5, from live use
+**Relates to:** [src/pages/sign-in.astro](src/pages/sign-in.astro)
+
+The *Check your email* panel after a password reset offers **no way to ask for another one**. It
+replaces the form, so the only route back is navigating to `/sign-in/` and clicking *Forgotten your
+password?* a second time. Sign-up has a resend button on the same panel; reset does not.
+
+**Not an oversight in the code so much as a gap in the thinking** — the resend button was added on
+2026-08-19 after four dead confirmation links in one morning, and it was wired for the case that
+prompted it and no further. A reset email can go missing exactly as easily.
+
+⚠️ **The objection this has to answer is already recorded, and it is not "why bother".** It is that a
+*pressable* button is a trap: an email was just sent to get you to this panel, so the first press
+lands inside Supabase's 60-second per-recipient throttle, where the send is silently swallowed and
+looks identical to a failure. **The countdown is what makes the button safe**, and any version of
+this must start already counting down, exactly as sign-up does.
+
+**⚠️ It is not two arguments to `showSent()`.** The existing handler calls
+`auth.resend({ type: 'signup' })`, and **Supabase's resend endpoint does not support recovery** — a
+reset has to call `resetPasswordForEmail()` again. So the panel needs to know which kind of wait it
+is on, and the handler needs to branch.
+
+**And the copy has to carry the warning sign-up already carries** — *"Use the newest email, older
+links stop working"* — because issuing a new reset link **invalidates the previous one**. Someone
+who resends and then opens the older email gets a dead link, which is precisely the failure this
+whole area exists to prevent.
+
+**Why it was not done at the time:** raised while verifying the live deploy, alongside a real defect
+on the same panel. The defect was fixed straight away; this is a behaviour change and belongs on a
+branch with its own testing rather than in a hotfix.
+
 ### A "your password was changed" notification email
 **Status:** Idea · **Natural home: Phase 6**, when a server-side sending path exists · Raised 2026-08-19 during Phase 5
 **Relates to:** [supabase/email-templates/](supabase/email-templates/), `auth.users` trigger, Resend
