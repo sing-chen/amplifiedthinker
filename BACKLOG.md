@@ -796,3 +796,33 @@ the first thing to check when the alias stops working and nothing was changed.
 ---
 
 *Last updated: 18 August 2026*
+
+### De-duplicate the footer CSS — seven copies of the same rules
+**Status:** Idea · Not started · Raised 2026-08-19 during Phase 5
+**Relates to:** [public/styles.css](public/styles.css), the 16 hand-written pages,
+[src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro)
+
+The footer rules — `footer`, `.fi`, `.footer-inner`, `.footer-tagline`, `.footer-nav`,
+`.footer-sep`, `.fn` — exist **seven times**: inline in five hand-written pages, again in
+`search.html` under different class names, and now in `BaseLayout.astro`.
+
+**How it surfaced:** the Astro layout was written with the footer *markup* copied across and the
+CSS left behind, so `/sign-in/` and `/account/` shipped a bare list of default-styled links.
+⚠️ **Nothing could have caught it** — no build step, no check, and each page looked fine in
+isolation. It reached production and was found by eye.
+
+**Why it was not fixed properly at the time.** The obvious move is to lift the rules into
+`styles.css`, which everything already loads. But `footer { … }` is an **element selector**, and
+`search.html` has a `<footer class="search-footer">` with a different structure and its own rules.
+A shared element selector would restyle a page that was not part of the change.
+
+**So the real fix needs all 16 pages in one pass:** settle on one footer structure, move the rules
+to `styles.css`, delete the six inline copies, and reconcile `search.html` — either by giving it
+the standard markup or by keeping `.search-footer` as a documented deliberate variant.
+
+⚠️ **Until then, `BaseLayout.astro`'s copy is verbatim from `index.html` and must stay that way.**
+Two copies that drift are worse than two that are identical, because the difference will show up as
+a footer that looks subtly wrong on new pages only.
+
+**Worth pairing with:** the same question applies to any other rules the hand-written pages
+duplicate inline. Nobody has counted.
