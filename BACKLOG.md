@@ -826,3 +826,56 @@ a footer that looks subtly wrong on new pages only.
 
 **Worth pairing with:** the same question applies to any other rules the hand-written pages
 duplicate inline. Nobody has counted.
+
+### Re-verify the signed-in security rules — the old checks are in git
+**Status:** Note for Phase 7 · Raised 2026-08-19 when `auth-test.astro` was deleted
+**Relates to:** [scripts/verify-rls.mjs](scripts/verify-rls.mjs), Phase 6 and Phase 7
+
+**There is now no automated check that a signed-in user can only reach their own data.**
+`npm run verify:rls` covers the **signed-out** half only — it proves an anonymous caller is refused.
+The signed-in half lived in `src/pages/auth-test.astro`, deleted at Phase 5 step 33.
+
+**Nothing is broken.** The rules themselves are in the schema and were verified when written. What is
+gone is the tool for re-checking them after a change.
+
+⚠️ **This matters from Phase 6 onward**, which adds news, saved items and notes, and Phase 7, which
+adds the admin portal. Both rest on exactly these policies, and a mistake in one is silent — the site
+keeps working and simply shows someone more than it should.
+
+**Do not rewrite them from scratch.** The seven checks are preserved in the last commit that held the
+file:
+
+```
+git show 84566e4:src/pages/auth-test.astro
+```
+
+They cover: reading your own profile; `profiles` returning only your row (and *all* rows for an
+admin); **being unable to make yourself an admin**; `is_admin()` agreeing with the stored row; your
+own progress round-tripping; **being unable to write someone else's row**; and the content tables
+refusing writes from a non-admin while accepting them from an admin.
+
+**Two pieces of reasoning in there worth keeping**, both of which took a wrong version first:
+
+- The escalation check flips `is_admin` to the **opposite** of its current value, so it is always a
+  real change. Writing `true` unconditionally is a no-op for an admin and reports a false pass.
+- The content-table check proves the gate in **both** directions. ⚠️ *A gate that only ever refuses
+  has not been shown to be a gate.*
+
+**When it is rebuilt**, it does not need to be a page. Those checks only need a live session, which
+any signed-in page already has — so a script pasted into the browser console would do, with no new
+public surface and no second copy of the client setup.
+
+### Delete `shell-test.astro` when the blog ships
+**Status:** Idea · Not started · Noticed 2026-08-19 during Phase 5 step 33
+**Relates to:** [src/pages/shell-test.astro](src/pages/shell-test.astro)
+
+The Phase 2 scaffold, still live at `/shell-test/` on production. Its own header says to delete it
+once the first real Astro surface exists — **and that has now happened twice over**, in `/sign-in/`
+and `/account/`, which prove the same thing while also being useful.
+
+Left in place at step 33 because that step named one page and deleting a second unasked is not what
+"delete the old test page" meant. ⚠️ Unlike `auth-test.astro`, it pulls **no third-party script** and
+holds no credentials field, so there is no reason to hurry.
+
+Its stated trigger is Phase 8's blog. Either take it then, or take it now — it is `noindex`, linked
+from nowhere, and nothing depends on it.
