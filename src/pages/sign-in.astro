@@ -151,6 +151,35 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
 
     <!--
+      ── The password was changed ───────────────────────────────────
+      A panel rather than a line of status text, and it REPLACES the form,
+      matching what "Account created" does to the sign-up box.
+
+      ⚠️ It exists because the confirmation used to flash past. The old version
+      wrote a sentence under the form and redirected 1.4s later, which is long
+      enough to notice something happened and not long enough to read what.
+      This is the one action on the site with no way to check afterwards
+      whether it worked: the account page cannot show you your own password.
+
+      So the redirect stays -- being left on a spent form is its own dead end --
+      but it is announced, counted down, and skippable.
+    -->
+    <div class="auth-panel" id="auth-recover-done" hidden>
+      <h1>Password updated</h1>
+      <p class="auth-lede" id="auth-recover-done-detail"></p>
+      <p class="auth-muted">
+        Taking you back to the site<span id="auth-recover-count" aria-hidden="true"></span>.
+      </p>
+      <div class="auth-actions">
+        <!--
+          Same relative path as HOME in the script below. Absolute '/index.html'
+          would land outside the site on the Pages origin.
+        -->
+        <a class="auth-btn" href="../index.html">Go there now</a>
+      </div>
+    </div>
+
+    <!--
       ── Waiting on an email ────────────────────────────────────────
       Signing up and asking for a reset both end here, and it REPLACES the form
       rather than sitting under it. Leaving the email and password fields on
@@ -425,6 +454,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         loading: el('auth-loading'),
         form:    el('auth-form-panel'),
         recover: el('auth-recover-panel'),
+        done:    el('auth-recover-done'),
         sent:    el('auth-sent-panel')
       };
 
@@ -778,6 +808,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
       // ---- setting a new password -----------------------------------------
 
+      // Terminal. Once the password has been changed, nothing may move the page
+      // off the confirmation except the countdown or the visitor's own click.
+      var finished = false;
+
       // Seeded from the address bar, or from the flag that survives a reload
       // once the address bar has been emptied. Never from an event — see the
       // comment on arrivedForRecovery for why the event arrives too late.
@@ -817,19 +851,49 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           }
           recovering = false;
           clearRecovering();
+          finished = true;      // ⚠️ BEFORE show('done') — see settle()
+          out.textContent = '';
+
           // Other devices matter MORE here than on the account page. Someone
           // arriving through a reset link is disproportionately someone who
-          // thinks another person has their password.
-          out.textContent = r.othersSignedOut
-            ? 'Password updated, and other devices signed out. Taking you back to the site...'
-            : 'Password updated. Taking you back to the site...';
-          out.className = 'auth-status good';
-          // The one place a pause is right. Redirecting instantly would take
-          // the confirmation away before it could be read, on the one action
-          // where someone genuinely needs to know it worked.
-          setTimeout(function () { window.location.replace(HOME); }, 1400);
+          // thinks another person has their password — so whether the eviction
+          // actually happened is worth a sentence rather than a clause.
+          el('auth-recover-done-detail').textContent = r.othersSignedOut
+            ? 'Your new password is set, and every other device has been signed out. ' +
+              'Sign in again with the new password wherever you use the site.'
+            : 'Your new password is set. Other devices could not be signed out just ' +
+              'now, so anywhere already signed in stays signed in.';
+
+          show('done');
+          window.scrollTo(0, 0);
+          startRedirect();
         });
       });
+
+      /*
+       * Counts down, then goes. The wait is the point: this is the one action
+       * on the site with no way to check afterwards whether it worked, since
+       * the account page cannot show you your own password.
+       *
+       * ⚠️ The countdown is aria-hidden and the panel is not a live region. A
+       * number changing once a second inside one would be read out six times,
+       * which is how a confirmation becomes noise for anyone using a screen
+       * reader. The heading and the sentence carry the meaning; the counter
+       * only says how long the reader has, and the button beside it means
+       * nobody has to wait at all.
+       */
+      function startRedirect() {
+        var left = 6;
+        var out = el('auth-recover-count');
+
+        function tick() {
+          out.textContent = left > 0 ? ' in ' + left + ' second' + (left === 1 ? '' : 's') : '';
+          if (left <= 0) { window.location.replace(HOME); return; }
+          left--;
+          window.setTimeout(tick, 1000);
+        }
+        tick();
+      }
 
       // ---- lifecycle -------------------------------------------------------
 
@@ -848,6 +912,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           recovering = false;
           clearRecovering();
         }
+
+        // ⚠️ THE FOURTH THING the signed-in redirect below has eaten, and the
+        // cause of the confirmation "flashing past" reported on 2026-08-19.
+        //
+        // updateUser() fires USER_UPDATED. auth.js notifies, settle() runs with
+        // a live session and `recovering` already cleared, and the redirect
+        // fires IMMEDIATELY — so the 1.4s pause that was supposed to let the
+        // confirmation be read never got to run at all. The timer looked like
+        // the thing to lengthen, and lengthening it would have changed nothing.
+        //
+        // Rule for this page, now stated for the fourth time: every state that
+        // must be READ has to be checked ahead of that redirect.
+        if (finished) return;
+
         if (waiting) return;          // showing "check your email" — leave it
 
         // ⚠️ A dead link OUTRANKS the redirect, and this is the second time the
