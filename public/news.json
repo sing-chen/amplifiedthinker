@@ -1,5 +1,47 @@
 [
   {
+    "date": "2026-08-19",
+    "stories": [
+      {
+        "title": "Fear of Skills Obsolescence Hits 58% of US Workers, With Sharpest Spikes in Tech and Finance",
+        "source": "HR Dive",
+        "url": "https://www.hrdive.com/news/workers-report-fobo-a-fear-of-becoming-obsolete/828115/",
+        "summary": "A new Harris Poll/ETS survey of 15,357 US adults finds 58% of workers fear becoming professionally obsolete due to skills gaps — rising to 74% among tech workers and 73% in financial services. Two-thirds say upskilling costs are hard to cover and 63% struggle to find time to learn, yet nearly 9 in 10 want employers to push credential-setting.",
+        "implications": "The \"FOBO\" framing gives capability builders a concrete anxiety metric to design reskilling programs around — cost and time barriers, not motivation, are the binding constraint.",
+        "tags": ["skills development", "research and insights"]
+      },
+      {
+        "title": "India and Japan Advance Roadmap for Structured Skilled-Worker Mobility",
+        "source": "The Hans India",
+        "url": "https://www.thehansindia.com/amp/business/india-japan-discuss-roadmap-to-expand-skilled-workforce-mobility-1109638",
+        "summary": "India and Japan convened government, industry and training-provider stakeholders to build structured pathways combining technical training, Japanese-language instruction, and cultural preparation for Indian workers, part of a five-year target to exchange 500,000 personnel. Japanese employers will subsidize vocational and language training in India.",
+        "implications": "A concrete model of demographic-driven bilateral labor mobility (aging Japan, youth-abundant India) that other skills-scarce economies are likely to replicate — worth tracking as a template for skills-first immigration design.",
+        "tags": ["macro signals", "workforce transformation"]
+      },
+      {
+        "title": "Leadership Confidence Far Outpaces Readiness for AI-Driven Change",
+        "source": "HR Executive",
+        "url": "https://hrexecutive.com/new-research-reveals-leadership-readiness-gap-amid-rapid-workplace-change/",
+        "summary": "While 98% of people managers believe they're equipped to lead through future challenges, only 35% say AI has meaningfully simplified their role, and there's a sharp confidence gap by level: 66% of C-suite leaders feel ready for what's ahead versus just 42% of middle managers. Mid-level managers also receive far less training for difficult conversations (38%) than executives (61%).",
+        "implications": "The gap sits specifically at the frontline-manager layer — the group actually translating AI-driven change into daily team behavior — making manager capability-building a higher-leverage investment than executive AI briefings.",
+        "tags": ["leadership and culture", "workforce transformation", "research and insights"]
+      }
+    ]
+  },
+  {
+    "date": "2026-08-18",
+    "stories": [
+      {
+        "title": "Your Future Workforce Already Works for You",
+        "source": "Fortune",
+        "url": "https://fortune.com/2026/08/07/your-future-workforce-already-works-for-you-mercer-ravin-jesuthasan/",
+        "summary": "Mercer's Ravin Jesuthasan argues organizations should manage talent as a portfolio of skills deployed flexibly alongside AI rather than as static roles, with reskilling and deliberate on-the-job learning as the primary lever for durable advantage.",
+        "implications": "Reinforces the skills-based-organization case for leaders weighing whether to redesign job architecture around skills rather than titles.",
+        "tags": ["skills development", "workforce transformation", "leadership and culture"]
+      }
+    ]
+  },
+  {
     "date": "2026-08-14",
     "stories": [
       {

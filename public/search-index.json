@@ -591,16 +591,44 @@
         "url":  "my-people.html?person=cal-newport"
     },
     {
+        "id":  "news-2026-08-19-0",
+        "type":  "news",
+        "title":  "Fear of Skills Obsolescence Hits 58% of US Workers, With Sharpest Spikes in Tech and Finance",
+        "description":  "A new Harris Poll/ETS survey of 15,357 US adults finds 58% of workers fear becoming professionally obsolete due to skills gaps — rising to 74% among tech workers and 73% in financial services. Two-thirds say upskilling costs are hard to cover and 63% struggle to find time to learn, yet nearly 9 in 10 want employers to push credential-setting.",
+        "url":  "news.html?story=2026-08-19-0"
+    },
+    {
+        "id":  "news-2026-08-19-1",
+        "type":  "news",
+        "title":  "India and Japan Advance Roadmap for Structured Skilled-Worker Mobility",
+        "description":  "India and Japan convened government, industry and training-provider stakeholders to build structured pathways combining technical training, Japanese-language instruction, and cultural preparation for Indian workers, part of a five-year target to exchange 500,000 personnel. Japanese employers will subsidize vocational and language training in India.",
+        "url":  "news.html?story=2026-08-19-1"
+    },
+    {
+        "id":  "news-2026-08-19-2",
+        "type":  "news",
+        "title":  "Leadership Confidence Far Outpaces Readiness for AI-Driven Change",
+        "description":  "While 98% of people managers believe they're equipped to lead through future challenges, only 35% say AI has meaningfully simplified their role, and there's a sharp confidence gap by level: 66% of C-suite leaders feel ready for what's ahead versus just 42% of middle managers. Mid-level managers also receive far less training for difficult conversations (38%) than executives (61%).",
+        "url":  "news.html?story=2026-08-19-2"
+    },
+    {
+        "id":  "news-2026-08-18-0",
+        "type":  "news",
+        "title":  "Your Future Workforce Already Works for You",
+        "description":  "Mercer's Ravin Jesuthasan argues organizations should manage talent as a portfolio of skills deployed flexibly alongside AI rather than as static roles, with reskilling and deliberate on-the-job learning as the primary lever for durable advantage.",
+        "url":  "news.html?story=2026-08-18-0"
+    },
+    {
         "id":  "news-2026-08-14-0",
         "type":  "news",
         "title":  "AI Employment Gap for Young Workers Widens to 19%",
-        "description":  "New ADP payroll analysis (Nov 2022–Jun 2026) finds employment for 22–25-year-olds in highly AI-exposed occupations now runs ~19% below where it would be had it tracked less-exposed peers — up from 15% a year ago. The adjustment is happening through reduced entry-level hiring, not layoffs, and the researchers stress there\u0027s no evidence of broad, economy-wide displacement.",
+        "description":  "New ADP payroll analysis (Nov 2022–Jun 2026) finds employment for 22–25-year-olds in highly AI-exposed occupations now runs ~19% below where it would be had it tracked less-exposed peers — up from 15% a year ago. The adjustment is happening through reduced entry-level hiring, not layoffs, and the researchers stress there's no evidence of broad, economy-wide displacement.",
         "url":  "news.html?story=2026-08-14-0"
     },
     {
         "id":  "news-2026-08-14-1",
         "type":  "news",
-        "title":  "Buried in OpenAI\u0027s Own Research: No Correlation Between AI Use and Revenue per Employee",
+        "title":  "Buried in OpenAI's Own Research: No Correlation Between AI Use and Revenue per Employee",
         "description":  "A 69-page OpenAI-co-authored study (with Columbia Business School and Wharton researchers) analyzing enterprise ChatGPT usage from Oct 2025–Mar 2026 finds token usage per employee is not meaningfully associated with revenue per employee once controls are applied. Senior leaders use AI least intensively even as they drive adoption decisions; early-career employees use it most.",
         "url":  "news.html?story=2026-08-14-1"
     },
@@ -615,14 +643,14 @@
         "id":  "news-2026-08-13-1",
         "type":  "news",
         "title":  "Tech and Finance Sector Job Losses Tied to AI Persist at ~28,000/Month",
-        "description":  "Payroll declines in financial-activities and information sectors — where AI adoption has been fastest — have accelerated through 2026, averaging 28,000 job losses per month based on government data. Bloomberg\u0027s August 7 segment tied this directly to July\u0027s unexpected national payroll contraction.",
+        "description":  "Payroll declines in financial-activities and information sectors — where AI adoption has been fastest — have accelerated through 2026, averaging 28,000 job losses per month based on government data. Bloomberg's August 7 segment tied this directly to July's unexpected national payroll contraction.",
         "url":  "news.html?story=2026-08-13-1"
     },
     {
         "id":  "news-2026-08-10-0",
         "type":  "news",
-        "title":  "Kyndryl\u0027s 2026 People Readiness Report: Workforce AI-Readiness Fell Even as Adoption Surged",
-        "description":  "In a global study of 1,100 senior business and technology leaders across eight countries, only 23% say their workforce is ready for AI — down 6 points from 2025 — even as AI deployment climbed to 57% of enterprises. Leaders rate IT infrastructure readiness far higher (35%) than workforce readiness, governance/compliance, and culture (23–25%), and only 11% of enterprises say they\u0027re hitting their AI goals.",
+        "title":  "Kyndryl's 2026 People Readiness Report: Workforce AI-Readiness Fell Even as Adoption Surged",
+        "description":  "In a global study of 1,100 senior business and technology leaders across eight countries, only 23% say their workforce is ready for AI — down 6 points from 2025 — even as AI deployment climbed to 57% of enterprises. Leaders rate IT infrastructure readiness far higher (35%) than workforce readiness, governance/compliance, and culture (23–25%), and only 11% of enterprises say they're hitting their AI goals.",
         "url":  "news.html?story=2026-08-10-0"
     },
     {
@@ -642,8 +670,8 @@
     {
         "id":  "news-2026-08-08-2",
         "type":  "news",
-        "title":  "SHRM\u0027s Midyear Check on 2026 HR Predictions: Upskilling and AI Recruiting Trends Tested Against Reality",
-        "description":  "SHRM\u0027s midyear review tracks how its seven predicted 2026 HR trends — including AI-driven recruiting, real-time upskilling, and shifting inclusion \u0026 diversity strategy — are actually playing out. Related SHRM data shows employer AI-tool subscriptions climbing to 33% of organizations (up 17 points from 2025), with skills-based, data-driven talent strategy continuing to outpace credential-based hiring.",
+        "title":  "SHRM's Midyear Check on 2026 HR Predictions: Upskilling and AI Recruiting Trends Tested Against Reality",
+        "description":  "SHRM's midyear review tracks how its seven predicted 2026 HR trends — including AI-driven recruiting, real-time upskilling, and shifting inclusion & diversity strategy — are actually playing out. Related SHRM data shows employer AI-tool subscriptions climbing to 33% of organizations (up 17 points from 2025), with skills-based, data-driven talent strategy continuing to outpace credential-based hiring.",
         "url":  "news.html?story=2026-08-08-2"
     },
     {
@@ -656,15 +684,15 @@
     {
         "id":  "news-2026-08-06-0",
         "type":  "news",
-        "title":  "Google\u0027s AI \u0026 Economy ATLAS Finds Workplace AI Use Is Augmentation, Not Automation",
-        "description":  "Google\u0027s inaugural AI \u0026 Economy ATLAS report analyzed 15 million de-identified Gemini interactions across 150 countries, 800 occupations, and 4,000 tasks. It found AI touches 68% of occupations (~90% of US employment) but workers use it for only ~21% of core tasks on average, with just 3% of occupations hitting heavy-use thresholds and 29% showing no meaningful use at all.",
+        "title":  "Google's AI & Economy ATLAS Finds Workplace AI Use Is Augmentation, Not Automation",
+        "description":  "Google's inaugural AI & Economy ATLAS report analyzed 15 million de-identified Gemini interactions across 150 countries, 800 occupations, and 4,000 tasks. It found AI touches 68% of occupations (~90% of US employment) but workers use it for only ~21% of core tasks on average, with just 3% of occupations hitting heavy-use thresholds and 29% showing no meaningful use at all.",
         "url":  "news.html?story=2026-08-06-0"
     },
     {
         "id":  "news-2026-08-06-1",
         "type":  "news",
         "title":  "Ford, IBM, and Commonwealth Bank of Australia Reverse AI-Driven Layoffs",
-        "description":  "Ford is rehiring engineers after automated systems couldn\u0027t handle quality issues, CBA reversed customer-service cuts after an AI voice bot increased call volume, and IBM is tripling entry-level hiring after AI handled only 94% of routine HR requests. Industry data shows 32% of US hiring managers who cut a role for AI later rehired for it, and 55% of leaders who made AI-related redundancies now call those calls wrong.",
+        "description":  "Ford is rehiring engineers after automated systems couldn't handle quality issues, CBA reversed customer-service cuts after an AI voice bot increased call volume, and IBM is tripling entry-level hiring after AI handled only 94% of routine HR requests. Industry data shows 32% of US hiring managers who cut a role for AI later rehired for it, and 55% of leaders who made AI-related redundancies now call those calls wrong.",
         "url":  "news.html?story=2026-08-06-1"
     },
     {
@@ -678,7 +706,7 @@
         "id":  "news-2026-08-06-3",
         "type":  "news",
         "title":  "Three Ways Leading Manufacturers Are Preparing Their Workforce for AI",
-        "description":  "Drawing on WEF\u0027s Global Lighthouse Network manufacturing sites, the piece profiles how leading factories are operationalizing the Forum\u0027s new Human-Machine Collaboration Framework (launched June 2026), which maps 80+ manufacturing and supply-chain jobs to show how tasks and skills evolve as autonomous systems spread. WEF estimates three in four industrial jobs will change substantially within a decade, requiring workers skilled in judgment, machine oversight, and governance rather than manual execution.",
+        "description":  "Drawing on WEF's Global Lighthouse Network manufacturing sites, the piece profiles how leading factories are operationalizing the Forum's new Human-Machine Collaboration Framework (launched June 2026), which maps 80+ manufacturing and supply-chain jobs to show how tasks and skills evolve as autonomous systems spread. WEF estimates three in four industrial jobs will change substantially within a decade, requiring workers skilled in judgment, machine oversight, and governance rather than manual execution.",
         "url":  "news.html?story=2026-08-06-3"
     },
     {
@@ -691,43 +719,43 @@
     {
         "id":  "news-2026-08-04-0",
         "type":  "news",
-        "title":  "Managers Say They Don\u0027t Feel Ready to Lead an AI-Fluent Workforce",
-        "description":  "An Indeed/YouGov survey finds 43% of managers feel poorly or not-at-all equipped to lead AI-fluent employees, while 52% of workers say they aren\u0027t getting the AI training they need. Employer expectations for AI use are running two-to-three times ahead of worker comfort levels, and 31% of employers expect AI fluency to be required for nearly every job within two years.",
+        "title":  "Managers Say They Don't Feel Ready to Lead an AI-Fluent Workforce",
+        "description":  "An Indeed/YouGov survey finds 43% of managers feel poorly or not-at-all equipped to lead AI-fluent employees, while 52% of workers say they aren't getting the AI training they need. Employer expectations for AI use are running two-to-three times ahead of worker comfort levels, and 31% of employers expect AI fluency to be required for nearly every job within two years.",
         "url":  "news.html?story=2026-08-04-0"
     },
     {
         "id":  "news-2026-08-04-1",
         "type":  "news",
         "title":  "Managers Are Using AI to Make Layoff and Firing Decisions — With Little Oversight",
-        "description":  "59% of surveyed managers report using AI to help decide who gets laid off, and 58% for firing decisions — most commonly weighing performance, attendance, and cost. Concerningly, 14% say their AI tools factor in age (a protected class), 38% have received no ethical-AI training, and 58% can\u0027t confirm their company tested the tools for bias.",
+        "description":  "59% of surveyed managers report using AI to help decide who gets laid off, and 58% for firing decisions — most commonly weighing performance, attendance, and cost. Concerningly, 14% say their AI tools factor in age (a protected class), 38% have received no ethical-AI training, and 58% can't confirm their company tested the tools for bias.",
         "url":  "news.html?story=2026-08-04-1"
     },
     {
         "id":  "news-2026-08-04-2",
         "type":  "news",
         "title":  "Bipartisan \"Federal Jobs for STARs Act\" Would Cut Degree Requirements Across Federal Hiring",
-        "description":  "Reps. Bynum (D-OR), Krishnamoorthi (D-IL), Mackenzie (R-PA), and McGuire (R-VA) introduced legislation directing federal agencies to de-emphasize bachelor\u0027s degree requirements where not essential, establish OPM-recognized skills-based qualifications for military/apprenticeship/technical-education backgrounds, and create a dedicated USAJobs portal for non-degree candidates.",
+        "description":  "Reps. Bynum (D-OR), Krishnamoorthi (D-IL), Mackenzie (R-PA), and McGuire (R-VA) introduced legislation directing federal agencies to de-emphasize bachelor's degree requirements where not essential, establish OPM-recognized skills-based qualifications for military/apprenticeship/technical-education backgrounds, and create a dedicated USAJobs portal for non-degree candidates.",
         "url":  "news.html?story=2026-08-04-2"
     },
     {
         "id":  "news-2026-08-04-3",
         "type":  "news",
         "title":  "Singapore Employers Pay a Premium for AI Literacy and Critical Thinking Despite Cooling Hiring",
-        "description":  "Singapore\u0027s Net Employment Outlook fell to +13% for Q3 2026 — its lowest since Q4 2021 — yet 66% of employers say they\u0027ll pay more for AI literacy and for critical thinking/problem-solving, and 64% for leadership and social influence. Hiring is becoming more selective, with investment concentrated on high-impact skills rather than headcount growth.",
+        "description":  "Singapore's Net Employment Outlook fell to +13% for Q3 2026 — its lowest since Q4 2021 — yet 66% of employers say they'll pay more for AI literacy and for critical thinking/problem-solving, and 64% for leadership and social influence. Hiring is becoming more selective, with investment concentrated on high-impact skills rather than headcount growth.",
         "url":  "news.html?story=2026-08-04-3"
     },
     {
         "id":  "news-2026-07-30-0",
         "type":  "news",
-        "title":  "Half of Europe\u0027s Job Postings Are Shrinking Even as AI Roles Surge",
-        "description":  "Indeed\u0027s Job Postings Index for the Euro Area stood at 105 as of July 17 — nearly 10% below where it started the year — with broad-based softening across countries, even as AI-related postings continue to grow on a separate, upward trajectory. Spain is a notable outlier, with a national index of 145 versus the euro-area average.",
+        "title":  "Half of Europe's Job Postings Are Shrinking Even as AI Roles Surge",
+        "description":  "Indeed's Job Postings Index for the Euro Area stood at 105 as of July 17 — nearly 10% below where it started the year — with broad-based softening across countries, even as AI-related postings continue to grow on a separate, upward trajectory. Spain is a notable outlier, with a national index of 145 versus the euro-area average.",
         "url":  "news.html?story=2026-07-30-0"
     },
     {
         "id":  "news-2026-07-30-1",
         "type":  "news",
-        "title":  "\"Job Hugging\" Is Cracking: Engagement Data Shows Half of Stayers Don\u0027t Want to Be There",
-        "description":  "While 77% of workers say they intend to stay with their current employer, only 18% say it\u0027s because they genuinely want to — 56% cite financial pressure and job-market uncertainty. Researchers describe a \"quiet cracking\" pattern: employees mentally checking out while remaining in place, which correlates with lower engagement and productivity risk.",
+        "title":  "\"Job Hugging\" Is Cracking: Engagement Data Shows Half of Stayers Don't Want to Be There",
+        "description":  "While 77% of workers say they intend to stay with their current employer, only 18% say it's because they genuinely want to — 56% cite financial pressure and job-market uncertainty. Researchers describe a \"quiet cracking\" pattern: employees mentally checking out while remaining in place, which correlates with lower engagement and productivity risk.",
         "url":  "news.html?story=2026-07-30-1"
     },
     {
@@ -755,13 +783,13 @@
         "id":  "news-2026-07-27-3",
         "type":  "news",
         "title":  "The Rise of the \"Agent Manager\" and the Re-Engineering of Middle Management",
-        "description":  "McKinsey\u0027s latest organizational analysis tracks a fundamental transformation in middle management as autonomous virtual agents absorb daily administrative tracking and task assignment. Successful enterprises are shifting management profiles from supervisory coordinators to \"Agent Managers\" — leaders who orchestrate hybrid human-agent teams, curate creative output, and enforce ethical guardrails.",
+        "description":  "McKinsey's latest organizational analysis tracks a fundamental transformation in middle management as autonomous virtual agents absorb daily administrative tracking and task assignment. Successful enterprises are shifting management profiles from supervisory coordinators to \"Agent Managers\" — leaders who orchestrate hybrid human-agent teams, curate creative output, and enforce ethical guardrails.",
         "url":  "news.html?story=2026-07-27-3"
     },
     {
         "id":  "news-2026-07-27-4",
         "type":  "news",
-        "title":  "HR\u0027s Dual Mandate and the $1-to-$5 Investment Rule",
+        "title":  "HR's Dual Mandate and the $1-to-$5 Investment Rule",
         "description":  "McKinsey finds that while 88% of corporations deploy automated systems in at least one business function, only 39% report material EBIT contributions. The research establishes a strict capital allocation benchmark: for every $1 spent on technology infrastructure, organizations must invest $5 in process redesign, capability building, and human-system integration.",
         "url":  "news.html?story=2026-07-27-4"
     },
@@ -769,14 +797,14 @@
         "id":  "news-2026-07-27-5",
         "type":  "news",
         "title":  "OECD Employment Outlook 2026: Geographic Disparities Widen as AI and Trade Reshape Local Labor Markets",
-        "description":  "The OECD\u0027s flagship annual report finds employment-rate gaps exceeding 20 percentage points between small regions within the same member country, with AI and trade shocks reshaping local labor markets unevenly — some regions lose manufacturing jobs while others gain service-sector work. Real wage growth across OECD economies slowed to 2.2% in Q1 2026, down from 2.7% a year earlier.",
+        "description":  "The OECD's flagship annual report finds employment-rate gaps exceeding 20 percentage points between small regions within the same member country, with AI and trade shocks reshaping local labor markets unevenly — some regions lose manufacturing jobs while others gain service-sector work. Real wage growth across OECD economies slowed to 2.2% in Q1 2026, down from 2.7% a year earlier.",
         "url":  "news.html?story=2026-07-27-5"
     },
     {
         "id":  "news-2026-07-27-6",
         "type":  "news",
-        "title":  "Upwork\u0027s Future Workforce Index 2026: Share of Independent Professionals Jumps as AI Raises the Premium on Judgment",
-        "description":  "Upwork\u0027s second annual index, surveying 2,400 U.S.-based skilled knowledge workers, found the share identifying as independent professionals jumped from 28% to 38% in one year. The report frames this as AI commoditizing routine execution while raising the market value of judgment-driven, expertise-based work.",
+        "title":  "Upwork's Future Workforce Index 2026: Share of Independent Professionals Jumps as AI Raises the Premium on Judgment",
+        "description":  "Upwork's second annual index, surveying 2,400 U.S.-based skilled knowledge workers, found the share identifying as independent professionals jumped from 28% to 38% in one year. The report frames this as AI commoditizing routine execution while raising the market value of judgment-driven, expertise-based work.",
         "url":  "news.html?story=2026-07-27-6"
     },
     {
@@ -790,7 +818,7 @@
         "id":  "news-2026-07-24-1",
         "type":  "news",
         "title":  "India Skills Report 2026 — employability climbs, women surpass men",
-        "description":  "India\u0027s national employability score rose to 56.35% (from 54.81% in 2025, up from 46% in 2020), based on Global Employability Test results from over 100,000 candidates. For the first time in five years, women\u0027s employability (54%) overtook men\u0027s (51.5%), and hiring intent for FY26-27 rose to 40% from 29%.",
+        "description":  "India's national employability score rose to 56.35% (from 54.81% in 2025, up from 46% in 2020), based on Global Employability Test results from over 100,000 candidates. For the first time in five years, women's employability (54%) overtook men's (51.5%), and hiring intent for FY26-27 rose to 40% from 29%.",
         "url":  "news.html?story=2026-07-24-1"
     },
     {
@@ -804,7 +832,7 @@
         "id":  "news-2026-07-23-1",
         "type":  "news",
         "title":  "APAC Leads in AI Adoption But Lags in Workforce Readiness",
-        "description":  "Aon\u0027s inaugural APAC Human Capital Trends Study finds 74% of APAC organizations have deployed or are piloting AI programs, moving from experimentation toward implementation faster than workforce and benefits structures can adapt — only 22% of employees in the region have access to customizable benefits versus a 33% global average.",
+        "description":  "Aon's inaugural APAC Human Capital Trends Study finds 74% of APAC organizations have deployed or are piloting AI programs, moving from experimentation toward implementation faster than workforce and benefits structures can adapt — only 22% of employees in the region have access to customizable benefits versus a 33% global average.",
         "url":  "news.html?story=2026-07-23-1"
     },
     {
@@ -824,14 +852,14 @@
     {
         "id":  "news-2026-07-22-0",
         "type":  "news",
-        "title":  "SHRM releases \"Skills (R)evolution: Preparing Employees for Tomorrow\u0027s Jobs\"",
-        "description":  "New SHRM research introduces a \"Skills Strategist\" model identifying practices that distinguish organizations best positioned for future-of-work readiness. A key gap: 72% of HR professionals say their L\u0026D strategy is driven by skills needed in the next 1–2 years, while only 4% focus primarily on long-term skills needs.",
+        "title":  "SHRM releases \"Skills (R)evolution: Preparing Employees for Tomorrow's Jobs\"",
+        "description":  "New SHRM research introduces a \"Skills Strategist\" model identifying practices that distinguish organizations best positioned for future-of-work readiness. A key gap: 72% of HR professionals say their L&D strategy is driven by skills needed in the next 1–2 years, while only 4% focus primarily on long-term skills needs.",
         "url":  "news.html?story=2026-07-22-0"
     },
     {
         "id":  "news-2026-07-22-1",
         "type":  "news",
-        "title":  "Upskilling\u0027s \"Messy Middle\" and Fixing the Skills Mismatch",
+        "title":  "Upskilling's \"Messy Middle\" and Fixing the Skills Mismatch",
         "description":  "WEF argues many labor markets face a skills mismatch, not a talent shortage — coordination failures between educators, employers, and workers are the bottleneck. 85% of employers plan retraining and 77% offer AI training, but 63% still cite skills gaps as their top barrier.",
         "url":  "news.html?story=2026-07-22-1"
     },
@@ -846,21 +874,21 @@
         "id":  "news-2026-07-22-3",
         "type":  "news",
         "title":  "KPMG Australia prepares to cut up to 1,000+ jobs and reduce partner pay up to 20%",
-        "description":  "KPMG\u0027s Australian consultancy arm is preparing cuts that could exceed 1,000 roles and reduce partner pay by up to a fifth, following a client-data misuse scandal that already forced out its chairman, CEO, and audit boss. The cuts await appointment of a permanent CEO, with CFO John Sams reported as the frontrunner.",
+        "description":  "KPMG's Australian consultancy arm is preparing cuts that could exceed 1,000 roles and reduce partner pay by up to a fifth, following a client-data misuse scandal that already forced out its chairman, CEO, and audit boss. The cuts await appointment of a permanent CEO, with CFO John Sams reported as the frontrunner.",
         "url":  "news.html?story=2026-07-22-3"
     },
     {
         "id":  "news-2026-07-22-4",
         "type":  "news",
         "title":  "2026 People Readiness Report: The AI Adoption-Readiness Gap Widens",
-        "description":  "Kyndryl\u0027s global survey of 1,100 senior business leaders across 8 countries finds only 23% believe their workforce is ready to use AI effectively, a 6-point drop from 2025, even as 77% report generative AI has scaled across multiple functions. A small \"Pacesetters\" cohort (9%) that paired role redesign, AI-specific change management, and workforce readiness was 1.5x more likely to report AI-driven revenue growth and twice as likely to report innovation gains.",
+        "description":  "Kyndryl's global survey of 1,100 senior business leaders across 8 countries finds only 23% believe their workforce is ready to use AI effectively, a 6-point drop from 2025, even as 77% report generative AI has scaled across multiple functions. A small \"Pacesetters\" cohort (9%) that paired role redesign, AI-specific change management, and workforce readiness was 1.5x more likely to report AI-driven revenue growth and twice as likely to report innovation gains.",
         "url":  "news.html?story=2026-07-22-4"
     },
     {
         "id":  "news-2026-07-22-5",
         "type":  "news",
         "title":  "AI Job Postings Shift From Disruption Signal to Creation Signal",
-        "description":  "Analyzing postings since Claude Code\u0027s February 2025 launch, Indeed found US software developer job postings up nearly 15% — read as early evidence that AI coding tools are expanding demand for certain technical roles rather than only displacing them. Just over 60% of postings with \"AI\" in the title now sit outside traditional tech companies.",
+        "description":  "Analyzing postings since Claude Code's February 2025 launch, Indeed found US software developer job postings up nearly 15% — read as early evidence that AI coding tools are expanding demand for certain technical roles rather than only displacing them. Just over 60% of postings with \"AI\" in the title now sit outside traditional tech companies.",
         "url":  "news.html?story=2026-07-22-5"
     },
     {
@@ -887,15 +915,15 @@
     {
         "id":  "news-2026-07-17-3",
         "type":  "news",
-        "title":  "Why Britain\u0027s Workforce Is Burning Out: New Data Reveals the True Cost of the Workforce Transformation Gap",
+        "title":  "Why Britain's Workforce Is Burning Out: New Data Reveals the True Cost of the Workforce Transformation Gap",
         "description":  "58% of UK workers report increased role pressure over the past two years; 42% are actively considering leaving due to workplace pressure, and 11% are already job-hunting.",
         "url":  "news.html?story=2026-07-17-3"
     },
     {
         "id":  "news-2026-07-17-4",
         "type":  "news",
-        "title":  "McKinsey \u0026 Company: The Critical Loss of On-the-Job Mentoring Pipelines",
-        "description":  "McKinsey\u0027s new organizational analysis warns that as enterprises automate entry-level data processing and routine drafting, they are inadvertently dismantling their internal talent pipelines. Because junior professionals no longer execute the basic foundational work that historically built context and professional intuition, they are hitting an abrupt expertise cliff when moving into mid-level strategy positions. To resolve this, leaders must restructure work profiles to blend knowledge management, direct coaching loops, and simulation-based exercises directly into everyday workflows.",
+        "title":  "McKinsey & Company: The Critical Loss of On-the-Job Mentoring Pipelines",
+        "description":  "McKinsey's new organizational analysis warns that as enterprises automate entry-level data processing and routine drafting, they are inadvertently dismantling their internal talent pipelines. Because junior professionals no longer execute the basic foundational work that historically built context and professional intuition, they are hitting an abrupt expertise cliff when moving into mid-level strategy positions. To resolve this, leaders must restructure work profiles to blend knowledge management, direct coaching loops, and simulation-based exercises directly into everyday workflows.",
         "url":  "news.html?story=2026-07-17-4"
     },
     {
@@ -908,8 +936,8 @@
     {
         "id":  "news-2026-07-15-1",
         "type":  "news",
-        "title":  "Deloitte\u0027s 2026 Gen Z and Millennial Survey: AI Adoption Is Outpacing Organizational Readiness",
-        "description":  "Deloitte\u0027s 15th annual Gen Z and Millennial Survey (22,500+ respondents, 44 countries) finds AI use has gone mainstream — 74% of both Gen Zs and millennials now use AI at work, up sharply from 57%/56% a year ago — with many also using it for learning, career advice, and coping with work stress. But individual adoption is outpacing organizational readiness: roughly 30% say their employer isn\u0027t prepared for AI-driven change, over a third don\u0027t trust AI outputs, and Deloitte\u0027s own 2026 State of AI in the Enterprise report found 84% of companies haven\u0027t redesigned jobs around AI capabilities. Separately, the survey finds both generations deprioritizing traditional leadership tracks (only 6% cite it as their top career goal, citing burnout/work-life balance) in favor of continuous skill-building — AI fluency, leadership, and creativity top the list of skills they want to develop next.",
+        "title":  "Deloitte's 2026 Gen Z and Millennial Survey: AI Adoption Is Outpacing Organizational Readiness",
+        "description":  "Deloitte's 15th annual Gen Z and Millennial Survey (22,500+ respondents, 44 countries) finds AI use has gone mainstream — 74% of both Gen Zs and millennials now use AI at work, up sharply from 57%/56% a year ago — with many also using it for learning, career advice, and coping with work stress. But individual adoption is outpacing organizational readiness: roughly 30% say their employer isn't prepared for AI-driven change, over a third don't trust AI outputs, and Deloitte's own 2026 State of AI in the Enterprise report found 84% of companies haven't redesigned jobs around AI capabilities. Separately, the survey finds both generations deprioritizing traditional leadership tracks (only 6% cite it as their top career goal, citing burnout/work-life balance) in favor of continuous skill-building — AI fluency, leadership, and creativity top the list of skills they want to develop next.",
         "url":  "news.html?story=2026-07-15-1"
     },
     {
@@ -923,14 +951,14 @@
         "id":  "news-2026-07-10-1",
         "type":  "news",
         "title":  "McKinsey HR Monitor 2026: A Feedback Vacuum and a Risk-Averse Talent Freeze",
-        "description":  "McKinsey\u0027s global HR Monitor 2026 survey of 1,300 HR professionals and 5,500 employees surfaces two connected structural gaps. On feedback and development: HR believes only 3% of employees miss performance evaluations, but 20% of workers report receiving no career development or feedback meetings at all — and HR overestimates training time by nearly double, masking that 24% of the global knowledge workforce did zero training in the past year. On mobility: the same tracking shows voluntary attrition down 2 points year-over-year, with workers ranking compensation (52%), work-life balance (46%), and job security (45%) above career exploration when deciding to stay.",
+        "description":  "McKinsey's global HR Monitor 2026 survey of 1,300 HR professionals and 5,500 employees surfaces two connected structural gaps. On feedback and development: HR believes only 3% of employees miss performance evaluations, but 20% of workers report receiving no career development or feedback meetings at all — and HR overestimates training time by nearly double, masking that 24% of the global knowledge workforce did zero training in the past year. On mobility: the same tracking shows voluntary attrition down 2 points year-over-year, with workers ranking compensation (52%), work-life balance (46%), and job security (45%) above career exploration when deciding to stay.",
         "url":  "news.html?story=2026-07-10-1"
     },
     {
         "id":  "news-2026-07-10-2",
         "type":  "news",
         "title":  "Study Finds CEOs Pushing Return-to-Office Mandates Share One Trait: Narcissism",
-        "description":  "A six-year study by Wharton\u0027s Adam Grant with Marissa Shandell and Courtney Elliott, using proxies like CEO pay-package size and photo size in annual reports, found narcissism predicts RTO enthusiasm — in-person settings let leaders \"direct and inspire\" (and be admired) in ways video calls don\u0027t. An experimental prime (reflecting on Steve Jobs\u0027 and Larry Ellison\u0027s egos) causally increased opposition to remote work among the same leaders.",
+        "description":  "A six-year study by Wharton's Adam Grant with Marissa Shandell and Courtney Elliott, using proxies like CEO pay-package size and photo size in annual reports, found narcissism predicts RTO enthusiasm — in-person settings let leaders \"direct and inspire\" (and be admired) in ways video calls don't. An experimental prime (reflecting on Steve Jobs' and Larry Ellison's egos) causally increased opposition to remote work among the same leaders.",
         "url":  "news.html?story=2026-07-10-2"
     },
     {
@@ -943,15 +971,15 @@
     {
         "id":  "news-2026-07-10-4",
         "type":  "news",
-        "title":  "Chief People Officers\u0027 Outlook: What Geopolitics and the AI \"Scaling Stage\" Mean for Your Day-to-Day",
-        "description":  "The WEF\u0027s May 2026 Chief People Officers\u0027 Outlook — a survey of 140+ HR leaders at large global employers, fielded January–March 2026 — shows the ground shifting under knowledge workers in two ways. First, 83% of CPOs now expect their companies to move into the \"scaling\" stage of AI deployment within 6–12 months, meaning AI tools stop being optional pilots and start getting embedded into how your actual workflows and role expectations are defined — a marked jump from the exploratory phase most organizations were still in a year ago. Second, employers say the real bottleneck isn\u0027t headcount, it\u0027s matching — companies report they can\u0027t find people with the specific, current skills they need, even where job openings exist, and are prioritizing organizational redesign (74%) and upskilling (70%) to close that gap.",
+        "title":  "Chief People Officers' Outlook: What Geopolitics and the AI \"Scaling Stage\" Mean for Your Day-to-Day",
+        "description":  "The WEF's May 2026 Chief People Officers' Outlook — a survey of 140+ HR leaders at large global employers, fielded January–March 2026 — shows the ground shifting under knowledge workers in two ways. First, 83% of CPOs now expect their companies to move into the \"scaling\" stage of AI deployment within 6–12 months, meaning AI tools stop being optional pilots and start getting embedded into how your actual workflows and role expectations are defined — a marked jump from the exploratory phase most organizations were still in a year ago. Second, employers say the real bottleneck isn't headcount, it's matching — companies report they can't find people with the specific, current skills they need, even where job openings exist, and are prioritizing organizational redesign (74%) and upskilling (70%) to close that gap.",
         "url":  "news.html?story=2026-07-10-4"
     },
     {
         "id":  "news-2026-07-09-0",
         "type":  "news",
         "title":  "How Investing in People Can Support Future Economic Growth",
-        "description":  "China\u0027s 15th Five-Year Plan (2026–2030) sets out a dual growth strategy investing in both physical assets and people, marking a shift from the country\u0027s traditional infrastructure-led model. WEF argues that stronger human capital — higher skills, better health, greater adaptability — boosts productivity, absorbs new technology, and builds labor-market resilience, citing the US, Germany, Singapore, and South Korea as economies that escaped the middle-income trap by building education hubs before technology hubs.",
+        "description":  "China's 15th Five-Year Plan (2026–2030) sets out a dual growth strategy investing in both physical assets and people, marking a shift from the country's traditional infrastructure-led model. WEF argues that stronger human capital — higher skills, better health, greater adaptability — boosts productivity, absorbs new technology, and builds labor-market resilience, citing the US, Germany, Singapore, and South Korea as economies that escaped the middle-income trap by building education hubs before technology hubs.",
         "url":  "news.html?story=2026-07-09-0"
     },
     {
@@ -965,7 +993,7 @@
         "id":  "news-2026-07-09-2",
         "type":  "news",
         "title":  "AI and the Future of Entry-Level Work: A Framework for Safeguarding Early-Career Pathways",
-        "description":  "WEF and PwC find more than one in three young workers globally (37%) are in occupations with medium-to-high exposure to AI-driven task change, rising to three in four in some regions — with entry-level hiring already slowing in higher-exposure roles, though broader economic factors are contributing too. The report proposes a four-part framework — job access, job design, talent pipelines, and education-system alignment — for redesigning entry-level roles rather than eliminating them, noting a parallel shift where 42% of Gen Z workers (including 37% of bachelor\u0027s degree holders) are now in or pursuing blue-collar and skilled trades.",
+        "description":  "WEF and PwC find more than one in three young workers globally (37%) are in occupations with medium-to-high exposure to AI-driven task change, rising to three in four in some regions — with entry-level hiring already slowing in higher-exposure roles, though broader economic factors are contributing too. The report proposes a four-part framework — job access, job design, talent pipelines, and education-system alignment — for redesigning entry-level roles rather than eliminating them, noting a parallel shift where 42% of Gen Z workers (including 37% of bachelor's degree holders) are now in or pursuing blue-collar and skilled trades.",
         "url":  "news.html?story=2026-07-09-2"
     },
     {
@@ -979,48 +1007,48 @@
         "id":  "news-2026-07-08-1",
         "type":  "news",
         "title":  "OECD: skills-first hiring is becoming structural, not experimental",
-        "description":  "The OECD\u0027s follow-up report argues skills-first approaches to hiring, talent management, and development are moving from pilot to necessity for labor market functioning and productivity, while flagging persistent barriers: uneven digital access, weak skills-validation infrastructure, and employer distrust of non-traditional credentials.",
+        "description":  "The OECD's follow-up report argues skills-first approaches to hiring, talent management, and development are moving from pilot to necessity for labor market functioning and productivity, while flagging persistent barriers: uneven digital access, weak skills-validation infrastructure, and employer distrust of non-traditional credentials.",
         "url":  "news.html?story=2026-07-08-1"
     },
     {
         "id":  "news-2026-07-08-2",
         "type":  "news",
-        "title":  "Green and AI skills are converging into a \"twin transition,\" and supply isn\u0027t keeping up",
-        "description":  "LinkedIn\u0027s Economic Graph data shows AI talent rapidly adding green skills (operational efficiency use up 579%, lifecycle management up 152%), while overall climate-skill growth has slowed from 5.5% (2023–24) to 4.3% (2024–25). Only about a third of Europe\u0027s AI workforce holds meaningful green expertise, even as green hiring grows twice as fast as green-skills acquisition.",
+        "title":  "Green and AI skills are converging into a \"twin transition,\" and supply isn't keeping up",
+        "description":  "LinkedIn's Economic Graph data shows AI talent rapidly adding green skills (operational efficiency use up 579%, lifecycle management up 152%), while overall climate-skill growth has slowed from 5.5% (2023–24) to 4.3% (2024–25). Only about a third of Europe's AI workforce holds meaningful green expertise, even as green hiring grows twice as fast as green-skills acquisition.",
         "url":  "news.html?story=2026-07-08-2"
     },
     {
         "id":  "news-2026-07-07-0",
         "type":  "news",
-        "title":  "PwC\u0027s 2026 Global AI Jobs Barometer finds a \"two-track\" labor market emerging",
-        "description":  "PwC\u0027s analysis of job postings and wage data finds AI is splitting roles into \"professionalised\" (AI automates routine tasks, human judgment gets emphasized) and \"democratised\" (AI lowers the skill floor) tracks. Professionalised roles are growing twice as fast with 42% faster wage growth; the AI skills wage premium hit 62%, up from 57% a year earlier.",
+        "title":  "PwC's 2026 Global AI Jobs Barometer finds a \"two-track\" labor market emerging",
+        "description":  "PwC's analysis of job postings and wage data finds AI is splitting roles into \"professionalised\" (AI automates routine tasks, human judgment gets emphasized) and \"democratised\" (AI lowers the skill floor) tracks. Professionalised roles are growing twice as fast with 42% faster wage growth; the AI skills wage premium hit 62%, up from 57% a year earlier.",
         "url":  "news.html?story=2026-07-07-0"
     },
     {
         "id":  "news-2026-07-07-1",
         "type":  "news",
-        "title":  "McKinsey\u0027s State of Organizations 2026: \"$5 on people for every $1 on tech\" as the AI value threshold",
-        "description":  "Drawing on a survey of 10,000+ senior executives across 15 countries, McKinsey identifies three converging forces reshaping organizations — AI/tech acceleration, economic and geopolitical disruption, and shifting employee expectations — and reports one executive\u0027s estimate that realizing AI value requires spending roughly $5 on people for every $1 spent on technology.",
+        "title":  "McKinsey's State of Organizations 2026: \"$5 on people for every $1 on tech\" as the AI value threshold",
+        "description":  "Drawing on a survey of 10,000+ senior executives across 15 countries, McKinsey identifies three converging forces reshaping organizations — AI/tech acceleration, economic and geopolitical disruption, and shifting employee expectations — and reports one executive's estimate that realizing AI value requires spending roughly $5 on people for every $1 spent on technology.",
         "url":  "news.html?story=2026-07-07-1"
     },
     {
         "id":  "news-2026-07-06-0",
         "type":  "news",
         "title":  "Employers who laid off workers citing AI are already starting to regret it",
-        "description":  "Ford, Commonwealth Bank of Australia, and IBM are all reversing AI-driven layoffs after automation couldn\u0027t cover the full scope of the work: Ford rehired engineers for quality issues, CBA restored customer service staff after AI voice bots couldn\u0027t handle call volume, and IBM is tripling entry-level hiring after its AI handled only 94% of HR requests, missing the ethically complex 6%.",
+        "description":  "Ford, Commonwealth Bank of Australia, and IBM are all reversing AI-driven layoffs after automation couldn't cover the full scope of the work: Ford rehired engineers for quality issues, CBA restored customer service staff after AI voice bots couldn't handle call volume, and IBM is tripling entry-level hiring after its AI handled only 94% of HR requests, missing the ethically complex 6%.",
         "url":  "news.html?story=2026-07-06-0"
     },
     {
         "id":  "news-2026-07-06-1",
         "type":  "news",
         "title":  "Challenger Report: June layoffs cool to 45,849, down 53% from May; AI leads reasons for fourth consecutive month",
-        "description":  "Total job cuts fell sharply month over month, but AI remained the top-cited reason for cuts (31% of June\u0027s total) for a fourth straight month; tech now accounts for nearly a third of all 2026 layoffs.",
+        "description":  "Total job cuts fell sharply month over month, but AI remained the top-cited reason for cuts (31% of June's total) for a fourth straight month; tech now accounts for nearly a third of all 2026 layoffs.",
         "url":  "news.html?story=2026-07-06-1"
     },
     {
         "id":  "news-2026-07-06-2",
         "type":  "news",
-        "title":  "The Human Skills Employers Are Hiring For That Can\u0027t Be Replaced By AI",
+        "title":  "The Human Skills Employers Are Hiring For That Can't Be Replaced By AI",
         "description":  "Drawing on the 2026 Corporate Recruiters Survey (600+ recruiters, 39 countries), communication and problem-solving top employer priorities, with hiring increasingly weighted toward learning mindset and leadership capability over narrow technical depth.",
         "url":  "news.html?story=2026-07-06-2"
     },
@@ -1042,14 +1070,14 @@
         "id":  "news-2026-07-05-2",
         "type":  "news",
         "title":  "Deloitte: Winning Organizations Will Build the \"Human Advantage\"",
-        "description":  "7 in 10 business leaders say speed and agility are now their primary competitive strategy, with orchestrating people and resources cited as the top driver. Only 6% of leaders say they\u0027re making real progress designing effective human-AI interaction, despite it being flagged as the key differentiator.",
+        "description":  "7 in 10 business leaders say speed and agility are now their primary competitive strategy, with orchestrating people and resources cited as the top driver. Only 6% of leaders say they're making real progress designing effective human-AI interaction, despite it being flagged as the key differentiator.",
         "url":  "news.html?story=2026-07-05-2"
     },
     {
         "id":  "news-2026-07-03-0",
         "type":  "news",
         "title":  "Middle managers are absorbing the cost of AI adoption",
-        "description":  "Harvard Business School research (18 interviews across two consulting firms) found senior leaders capturing AI\u0027s strategic upside while middle managers absorb new work — validating AI outputs, catching errors, coaching teams — without added support or relief from existing delivery pressure.",
+        "description":  "Harvard Business School research (18 interviews across two consulting firms) found senior leaders capturing AI's strategic upside while middle managers absorb new work — validating AI outputs, catching errors, coaching teams — without added support or relief from existing delivery pressure.",
         "url":  "news.html?story=2026-07-03-0"
     },
     {
@@ -1070,7 +1098,7 @@
         "id":  "news-2026-07-02-2",
         "type":  "news",
         "title":  "Top Future of Work Trends for CHROs in 2026",
-        "description":  "Gartner\u0027s 2026 CHRO framework names \"workslop\" — fast, low-quality AI-assisted output from employees pressured to use AI everywhere — as a defining risk, alongside warnings that only 1 in 50 AI initiatives is delivering transformative value despite bold CEO growth targets tied to AI. As technology platforms become commoditized, Gartner also finds enterprise value shifting to \"process experts\" over \"technical prodigies\": top firms are reweighting recruitment toward systems thinking and end-to-end workflow re-engineering, while reintroducing high-touch practices like live skill assessments and AI-free behavioral checkouts to counter AI-padded application fraud.",
+        "description":  "Gartner's 2026 CHRO framework names \"workslop\" — fast, low-quality AI-assisted output from employees pressured to use AI everywhere — as a defining risk, alongside warnings that only 1 in 50 AI initiatives is delivering transformative value despite bold CEO growth targets tied to AI. As technology platforms become commoditized, Gartner also finds enterprise value shifting to \"process experts\" over \"technical prodigies\": top firms are reweighting recruitment toward systems thinking and end-to-end workflow re-engineering, while reintroducing high-touch practices like live skill assessments and AI-free behavioral checkouts to counter AI-padded application fraud.",
         "url":  "news.html?story=2026-07-02-2"
     }
 ]
