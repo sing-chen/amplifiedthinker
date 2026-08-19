@@ -270,6 +270,9 @@
   .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
   .footer-sep{color:rgba(255,255,255,.15);user-select:none}
   .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
+  .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
+  .fn a:hover{color:rgba(255,255,255,.85)}
+  .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
 
   @media(max-width:900px){
     .why-grid{grid-template-columns:1fr;gap:36px}
@@ -994,7 +997,7 @@
         <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </nav>
     </div>
-    <div class="fn">© <span id="yr"></span> Sing Chen</div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
   </div>
 </footer>
 

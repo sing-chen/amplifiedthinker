@@ -486,6 +486,14 @@
   text-align: center;
 }
 
+.fn a {
+  color: rgba(255,255,255,.62);
+  text-decoration: none;
+  transition: color .15s;
+}
+.fn a:hover { color: var(--white); }
+.fn a:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; border-radius: 2px; }
+
 .search-inline-link {
   color: var(--mid-teal);
   text-decoration: none;
@@ -652,7 +660,7 @@
       <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </nav>
   </div>
-  <p class="fn">© <span id="yr"></span> Sing Chen</p>
+  <p class="fn">© <span id="yr"></span> Sing Chen · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></p>
   <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 </footer>
 
