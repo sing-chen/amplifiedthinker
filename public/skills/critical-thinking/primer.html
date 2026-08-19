@@ -1063,7 +1063,7 @@
     resumeBanner.classList.add('hidden');
   }
 
-  function showResumeBanner(savedSlide) {
+  function showResumeBanner(savedSlide, savedVisited) {
     var slideNum    = savedSlide + 1;
     var slideTitle  = slideTitles[savedSlide] || ('Slide ' + slideNum);
     resumeSlideLabel.textContent = slideNum + ' — ' + slideTitle;
@@ -1074,7 +1074,7 @@
       // Activate saved slide directly without goTo animation — state already set
       slides[current].classList.remove('active');
       current = savedSlide;
-      visited = new Set(savedData.visited || [savedSlide]);
+      visited = new Set(savedVisited || [savedSlide]);
       slides[current].classList.add('active');
       updateUI();
       saveProgress();
@@ -1227,7 +1227,7 @@
       visited = new Set(savedData.visited || [0]);
       updateUI();
       // Show resume prompt — don't silently jump
-      showResumeBanner(savedData.current);
+      showResumeBanner(savedData.current, savedData.visited);
     } else {
       updateUI();
     }

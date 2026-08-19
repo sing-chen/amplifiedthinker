@@ -1121,7 +1121,7 @@
     resumeBanner.classList.add('hidden');
   }
 
-  function showResumeBanner(savedSlide) {
+  function showResumeBanner(savedSlide, savedVisited) {
     var slideNum   = savedSlide + 1;
     var slideTitle = slideTitles[savedSlide] || ('Slide ' + slideNum);
     resumeSlideLabel.textContent = slideNum + ' — ' + slideTitle;
@@ -1131,7 +1131,7 @@
       hideBanner();
       slides[current].classList.remove('active');
       current = savedSlide;
-      visited = new Set(savedData.visited || [savedSlide]);
+      visited = new Set(savedVisited || [savedSlide]);
       slides[current].classList.add('active');
       updateUI();
       saveProgress();
@@ -1282,7 +1282,7 @@
     if (savedData && typeof savedData.current === 'number' && savedData.current > 0 && savedData.current < TOTAL) {
       visited = new Set(savedData.visited || [0]);
       updateUI();
-      showResumeBanner(savedData.current);
+      showResumeBanner(savedData.current, savedData.visited);
     } else {
       updateUI();
     }
