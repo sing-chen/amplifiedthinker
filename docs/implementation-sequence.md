@@ -1475,6 +1475,54 @@ would be *silent*, pass the argument explicitly even when it matches the default
 symptom, not a review. Three of this phase's defects came out of reading documentation for something
 adjacent to the thing being built.
 
+### ⚠️ The signed-in-with-history state is unreachable by any check in this repo, 2026-08-19
+
+**Three defects reached production and were found by a human using the site within the hour.** None
+was caught by anything automated, and the reason is the same each time — worth stating as a property
+of the test surface rather than as three separate misses.
+
+| Defect | Why every check missed it |
+|---|---|
+| Resend button visible on the reset panel | Asserted `element.hidden === true` — the **property**, which was correct. `display: flex` outranked the browser's `[hidden]`, so it rendered anyway. Nothing asked what was being *painted*. |
+| **Resume blanked the primer deck** | The banner only exists for **a signed-in account with saved progress**. Guests never see it; a stubbed store never reaches the handler; a fabricated session cannot produce it, because the row is read from Supabase. |
+| Reset confirmation flashing past | Needed a real `USER_UPDATED` event from a real `updateUser`, on a page holding a live session. |
+
+**The general form.** Every mode available to an automated check on this project — guest, stubbed
+store, fabricated session — passes *through* the signed-in-with-history state without touching it:
+
+- **Guest**: `progress.js` neither reads nor writes since this phase. There is no banner, no restore,
+  no resume, nothing to click.
+- **Stubbed store**: whatever the stub returns is what gets tested. The stub is written from the same
+  understanding that wrote the bug, so it agrees with it.
+- **Fabricated session**: `localStorage` can hold a session `getSession()` accepts, which is genuinely
+  useful and was used repeatedly today. ⚠️ **But it cannot fabricate a ROW.** The access token is not
+  real, so PostgREST rejects it, and every code path gated on returned data is skipped.
+
+**So the deciding question for any Phase 5+ feature is: does this path need data that only exists
+because a real person used the site before?** If yes, no check in this repo reaches it. That is not
+a gap to be closed by writing more tests of the same kinds — all three kinds share the blind spot.
+
+**What actually covers it**, in order of cost:
+
+1. **A real account that has already used the site**, driven by hand. It is what found all three.
+2. A seeded account on the **dev** project with rows written by a real session, kept for testing.
+   ⚠️ Not built. It would have caught the resume bug and nothing else so far.
+
+**Sharpens what `CLAUDE.md` already says.** *"Automated checks are necessary but never sufficient for
+anything visual."* True, and this is narrower and more actionable: **anything gated on saved progress
+is only exercised by signing in and using the site**, visual or not. The resume bug was a
+`ReferenceError`, not a visual defect at all.
+
+⚠️ **Phase 9 is built entirely on this state.** Dashboards, completion tracking and progress
+percentages are, by definition, features about data a returning user has accumulated. Every one of
+them lives in the region no check here can reach. Plan the seeded-account fixture before that phase,
+not during it.
+
+**One thing that did work, and is worth keeping.** All three fixes were verified against
+**production itself** afterwards — fetching the served file and matching on the changed line, and
+`npm run verify:published -- after` for the fingerprint. Checking what an origin actually serves is
+cheap, needs no session, and is the one form of verification that cannot be fooled by a stub.
+
 ### Guests lose progress entirely, not just the banner
 
 **Scope correction, 2026-08-18.** The plan says guests keep working exactly as today except for the
