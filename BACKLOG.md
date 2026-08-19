@@ -7,7 +7,18 @@ Ideas and future enhancements. Not prioritised — review periodically and promo
 ## Enhancements
 
 ### A "why sign up" page, comparing an account with browsing as a guest
-**Status:** Idea · Not started · Raised 2026-08-19 during Phase 5
+**Status:** ✅ **Built 2026-08-19** as [public/why-sign-up.html](public/why-sign-up.html) · Raised 2026-08-19 during Phase 5
+
+✅ **Shipped with the comparison table below intact**, plus the two things the entry said had to
+be on it: the guest column first, and the fact that nothing is stored about a guest's reading at
+all. Linked from the footer of every page, from the sign-in panel ("What does an account get me?",
+shown in every mode except password reset), and from the privacy page.
+
+⚠️ **The guest "not being saved" notice on skill pages is NOT yet linked to it.** That was the third
+placement this entry called for, and it is the one that reaches someone at the exact moment they
+lose something. Still open.
+
+Original entry follows.
 **Relates to:** [src/pages/account.astro](src/pages/account.astro), `public/` (a new page),
 [src/pages/sign-in.astro](src/pages/sign-in.astro), [public/progress.js](public/progress.js)
 
@@ -42,6 +53,82 @@ and the only email an account ever sends is a confirmation or a password reset.
 **Where it is linked from:** the sign-up form, the guest "not being saved" notice on skill pages, and
 probably the nav. Sequence it with the launch announcement — the announcement and this page are
 making the same argument to the same people at the same moment.
+
+### Self-hosting the two typefaces, and removing the Google Fonts request
+**Status:** Idea · Not started · Raised 2026-08-19 while writing the privacy page
+**Relates to:** all 16 pages in `public/`, [src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro),
+[public/privacy.html](public/privacy.html)
+
+Every page loads Poppins and Inter from `fonts.googleapis.com`, which then pulls the font files from
+`fonts.gstatic.com`. That discloses the visitor's IP address and browser to Google **on every page
+view, for every visitor, account or not** — the only third party with that reach on this site.
+
+**Writing the privacy page is what surfaced it.** It had to be named there, because a privacy page
+that lists Supabase and Cloudflare and omits the request every single visitor makes is not an honest
+one. Naming it is the minimum; removing it is the fix.
+
+Self-hosting means downloading the woff2 files, adding `@font-face` rules, and dropping the two
+`preconnect` hints and the stylesheet link. It also removes a render-blocking third-party request
+from the critical path, so it is a performance change as much as a privacy one.
+
+⚠️ **It touches the `<head>` of all 16 hand-written pages plus BaseLayout**, which is the same
+one-pass-over-everything problem as the duplicated footer CSS. Worth doing in the same pass as that.
+
+⚠️ **Some jurisdictions treat the Google Fonts request as requiring consent**, which is the sharper
+version of the argument: self-hosting removes the question entirely rather than answering it.
+
+### Keeping the legal pages in step with the sibling Promptly site
+**Status:** Watch item · Raised 2026-08-19
+**Relates to:** [public/privacy.html](public/privacy.html), [public/terms.html](public/terms.html),
+`G:\My Drive\01. Personal\Personal Projects\websites\promptly` — `dist/privacy/`, `dist/terms/`
+
+**Same controller, same jurisdiction, two sites.** Promptly and Amplified Thinker are both run by
+Sing Chen under Scots law, so the two sets of legal pages make the same statements about the same
+person. Amplified Thinker's were written *against* Promptly's on 2026-08-19 and follow its structure
+deliberately.
+
+⚠️ **A change to one is usually a change to both.** Anything touching the controller's identity,
+contact address, jurisdiction, the ICO complaint route, the age threshold (13), or the international
+transfer safeguards applies to both sites. Check the sibling before editing either.
+
+**Two wiring patterns were carried across from Promptly on 2026-08-19**, both with its reasoning:
+
+1. ✅ **Deep links into a form mode.** `/sign-in/#sign-up` and `/sign-in/#forgot` now open on the
+   right form, seeded into `mode` before `settle()` calls `setMode(mode)`. Promptly's comment names
+   the failure exactly: without it the deep links are *cosmetic* — every one lands on the sign-in
+   form and the reader, who has already decided, has to find the mode themselves. The why-sign-up
+   CTA uses it. ⚠️ A `hashchange` listener was added on top, which Promptly does **not** have: the
+   seed only fires on load, so changing the hash on an open page left the form contradicting the
+   address bar. It is guarded to exact matches and to the form panel being the visible one, because
+   Supabase also writes and clears that hash during recovery.
+2. ✅ **Both audiences in one static file.** why-sign-up.html carries a guest half and a signed-in
+   half and shows one. Promptly's reasoning is the load-bearing part: *a static page cannot tell a
+   visitor with no account from one who simply is not signed in on this device.* Guest is the
+   default in the markup, so the page still reads correctly if the script never runs.
+   ⚠️ **This costs a guest nothing** — nav.js loads the auth stack only on a peeked session or on
+   `/sign-in/` and `/account/`, so supabase.min.js is never fetched for the audience the page is
+   written for. Verified in the network log.
+
+⚠️ **Promptly puts NO terms or privacy link on its sign-up form** — footer only. Amplified Thinker
+links both from the sign-up panel deliberately, since that is the moment the data is handed over.
+That is a divergence in this site's favour, not an oversight to correct.
+
+**Where they legitimately differ, and why — do not "align" these away:**
+
+| | Promptly | Amplified Thinker |
+|---|---|---|
+| Analytics | None at all | ⚠️ **Vercel Web Analytics on every page** of the .com origin |
+| Third party every visitor touches | `esm.sh` | **Google Fonts** |
+| Outbound on password entry | — | **Have I Been Pwned** range API |
+| Bot check | — | **Cloudflare Turnstile**, sign-in page only |
+| Self-serve export | Yes, covers the portability right | ❌ **No** — the page says so, and offers to do it by hand |
+| Contact | `contact@promptly.simplelogin.com` | `singchen@amplifiedthinker.com` |
+
+✅ **The export gap is the one worth closing.** Promptly satisfies the Article 20 portability right
+with a download button; Amplified Thinker promises a manual response within one month instead. That
+is honest and lawful, but it is a standing obligation on a human rather than a feature. A "download
+my data" button on the account page — one query, one JSON file — would retire it. Natural fit with
+Phase 9, which is already building on the same table.
 
 ### Emailing the user when their account is deleted
 **Status:** ❌ **Declined 2026-08-19** — re-authentication was built instead · Raised 2026-08-19
@@ -131,7 +218,48 @@ What they need:
 confirmation email is the first thing a new account holder ever receives from the site.
 
 ### Privacy and cookies page, and the sign-up link to it
-**Status:** Idea · Not started · Raised 2026-08-18 during Phase 5
+**Status:** ✅ **Built 2026-08-19** as [public/privacy.html](public/privacy.html) · Raised 2026-08-18 during Phase 5
+
+✅ **Shipped, and the link went on the sign-up panel as this entry required** — below the button,
+alongside the terms link, shown in sign-up mode only. Also in the footer of every page, and next to
+the delete control on the account page.
+
+⚠️ **First draft was rewritten the same day against the sibling Promptly site**, which turned out to
+have a far more rigorous notice than this entry had specified. Four things were missing from the
+draft *and* from this entry, and none of them are optional under the UK GDPR:
+
+1. **Server logs.** Our hosting and database providers keep IP address, user-agent, timestamps and
+   requested paths. The entry's table covered only account data, so the draft said guests leave no
+   trace — which was **wrong**, and wrong in the direction that matters.
+2. **A legal basis table (Article 6).** Every purpose now names legitimate interests or contract.
+   The distinction is load-bearing: a contract can only be relied on where there is one, so it
+   cannot cover anyone reading the site without an account.
+3. **International transfers (Article 46).** Accounts and mail are in Ireland; hosting, DNS and the
+   bot check are global, including the US.
+4. **Rights, and the ICO.** Including the honest limit for guests: we cannot tell which log entries
+   are theirs, and Article 11 does not require us to collect more data in order to find out.
+
+**Two things were checked rather than assumed, and both changed the page:**
+
+1. ⚠️ **Vercel Web Analytics turned out to need no consent, so there is no banner.** Its own privacy
+   documentation is explicit: no cookie, no browser storage, visitors distinguished by a hash of the
+   request that is discarded after 24 hours, and no cross-site identifier. Nothing on the site
+   stores anything on a device for a purpose the visitor did not ask for, so a consent banner would
+   have been theatre. **The page says so, and says why** — that reasoning is the disclosure.
+2. ⚠️ **Google Fonts was missed by this entry entirely.** Every one of the 16 pages loads two
+   typefaces from `fonts.googleapis.com`, which discloses the visitor's IP to Google on every page
+   view, account or not. It is the one third party *every* visitor touches, and it was not in the
+   table above. It is now named on the page rather than quietly omitted. **Self-hosting the fonts
+   would remove it** — see the entry below.
+
+**Also disclosed, and not in the original table:** the breached-password check sends the first five
+characters of a SHA-1 hash to Have I Been Pwned. It never leaves the browser in any recoverable
+form, but it is an outbound request triggered by typing a password, so it is described in full.
+
+**What the theme row got wrong:** `profiles.theme` exists in the schema but nothing writes it, so
+the theme is localStorage-only in practice. The page says that, not what the column implies.
+
+Original entry follows, including the cookie inventory it was built from.
 **Relates to:** `public/` (a new page), [src/pages/sign-in.astro](src/pages/sign-in.astro),
 [supabase/migrations/20260817120000_initial_schema.sql](supabase/migrations/20260817120000_initial_schema.sql)
 
