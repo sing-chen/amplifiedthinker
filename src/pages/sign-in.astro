@@ -121,6 +121,31 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </p>
 
         <button type="submit" id="auth-submit">Sign in</button>
+
+        <!--
+          ⚠️ Sign-up only, and it sits BELOW the button on purpose.
+
+          This is the moment someone is being asked to hand over a name and an
+          address, so the two documents that say what happens to them have to be
+          reachable from here — a link on the account page would arrive after
+          the decision. Below the button rather than above it because it is a
+          reference, not a step: nothing has to be read or ticked to continue.
+
+          No consent checkbox. Nothing here is optional processing, so a tickbox
+          would be theatre, and it would put a barrier in front of the one action
+          the page exists for.
+
+          ⚠️ These links must not outlive the pages. A dead link here is worse
+          than none at all — it appears exactly where someone is deciding whether
+          to trust the site. If privacy.html or terms.html is ever renamed, this
+          block moves with it.
+        -->
+        <p class="auth-hint" id="auth-legal" hidden>
+          Creating an account means you accept the
+          <a href={`${base}/terms.html`}>terms of use</a>. What is stored and who
+          handles it is set out in
+          <a href={`${base}/privacy.html`}>privacy &amp; cookies</a>.
+        </p>
       </form>
 
       <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p>
@@ -129,6 +154,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <button type="button" class="auth-link" id="auth-to-signup">Create an account</button>
         <button type="button" class="auth-link" id="auth-to-signin" hidden>I already have an account</button>
         <button type="button" class="auth-link" id="auth-to-forgot">Forgotten your password?</button>
+        <!--
+          An <a> among the buttons on purpose: this one leaves the page, and it
+          should behave like a link — middle-click, open in a new tab, and read
+          as a link to a screen reader. `.auth-link` sets no background, border
+          or padding, so it lands identically on either element, and
+          `.auth-link[hidden]` is the author rule that actually hides it (the
+          UA's [hidden] loses to any author `display`).
+        -->
+        <a class="auth-link" id="auth-why" href={`${base}/why-sign-up.html`}>What does an account get me?</a>
       </div>
     </div>
 
@@ -466,7 +500,29 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
       var statusEl = el('auth-status');
       var submitBtn = el('auth-submit');
-      var mode = 'signin';           // signin | signup | forgot
+      // signin | signup | forgot
+      //
+      // ⚠️ SEEDED FROM THE HASH, so `/sign-in/#sign-up` and `/sign-in/#forgot`
+      // open on the right form. Without this the deep links are cosmetic: every
+      // one of them lands on the sign-in form and the reader has to find the
+      // mode themselves, which is worse than not linking at all — they arrived
+      // having already decided.
+      //
+      // Seeding the variable rather than calling setMode() here is deliberate.
+      // settle() does `setMode(mode)` the moment it shows the form, and that is
+      // the call that keeps every hidden/required pair in step. Calling setMode
+      // now would run it twice; setting `mode` and never calling it at all would
+      // paint a form whose `required` attributes silently disagree with it.
+      //
+      // Exact matches only. A real recovery link arrives as
+      // `#access_token=…&type=recovery`, and a substring test would be one
+      // rename away from mistaking one for the other.
+      var mode = (function () {
+        var hash = window.location.hash;
+        if (hash === '#sign-up') return 'signup';
+        if (hash === '#forgot') return 'forgot';
+        return 'signin';
+      })();
       var captchaToken = null;
       var widgetId = null;
 
@@ -681,6 +737,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         // one they just asked for.
         el('auth-email-promise').hidden = !isSignup;
 
+        // Same reasoning, and the same toggle: the terms and privacy links are
+        // for the person deciding to create an account, not for someone signing
+        // back into one they already agreed to.
+        el('auth-legal').hidden = !isSignup;
+
         el('auth-password-row').hidden = isForgot;
         el('auth-password').required = !isForgot;
         el('auth-password').autocomplete = isSignup ? 'new-password' : 'current-password';
@@ -689,11 +750,38 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         el('auth-to-signup').hidden = isSignup;
         el('auth-to-signin').hidden = !isSignup && !isForgot;
         el('auth-to-forgot').hidden = isForgot;
+
+        // Useful while deciding whether to create an account, and while looking
+        // at the account you already have. Not while resetting a password —
+        // that person is mid-task and has already decided.
+        el('auth-why').hidden = isForgot;
       }
 
       el('auth-to-signup').addEventListener('click', function () { setMode('signup'); });
       el('auth-to-signin').addEventListener('click', function () { setMode('signin'); });
       el('auth-to-forgot').addEventListener('click', function () { setMode('forgot'); });
+
+      // Seeding `mode` above covers arriving with a hash. It does NOT cover the
+      // hash changing on a page that is already open — no reload, so none of
+      // the code above runs again, and the form silently keeps its old mode
+      // while the address bar claims otherwise.
+      //
+      // ⚠️ NARROW ON PURPOSE, because the hash is not ours alone. Supabase
+      // delivers recovery tokens in it and then clears it, so this fires during
+      // the reset flow too. Two guards, both needed:
+      //
+      //   1. Exact matches only, so a token hash or an emptied hash is ignored.
+      //   2. Only while the form panel is the one on screen. Repainting the form
+      //      underneath the recovery panel would leave the reader looking at one
+      //      thing and submitting another.
+      window.addEventListener('hashchange', function () {
+        var hash = window.location.hash;
+        var next = hash === '#sign-up' ? 'signup' : hash === '#forgot' ? 'forgot' : null;
+        if (!next) return;
+        if (el('auth-form-panel').hidden) return;
+        mode = next;
+        setMode(next);
+      });
 
       // ---- breached-password gate ------------------------------------------
       //

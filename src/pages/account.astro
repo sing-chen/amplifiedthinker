@@ -108,6 +108,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           deletion, already stays put for the same reason.
         -->
         <p class="auth-status" id="acct-notice" role="status" aria-live="polite"></p>
+
+        <!--
+          The standing answer to "what do you actually have on me?", parked next
+          to the delete button rather than only in the footer. Someone who has
+          come here to check on their account is the one person most likely to
+          want it, and the footer is a long way past the fold on this page.
+        -->
+        <p class="auth-hint">
+          Everything held about you, and who processes it, is set out in
+          <a href={`${base}/privacy.html`}>privacy &amp; cookies</a>.
+        </p>
       </div>
 
       <!--

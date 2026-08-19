@@ -152,6 +152,14 @@
     var nav = global.AmplifiedNav;
     var href = nav && nav.root ? nav.root('sign-in/') : '/sign-in/';
 
+    // The second half of the same argument. This notice fires at the moment a
+    // save did not happen, which is the most persuasive moment there is — and
+    // also the moment someone is most entitled to ask what an account would
+    // actually cost them. Sending them straight to the form answers only the
+    // first question. `root()` again, because ten pages sit at three depths and
+    // the Pages origin adds a subpath on top of that.
+    var whyHref = nav && nav.root ? nav.root('why-sign-up.html') : '/why-sign-up.html';
+
     // Reuses the resume banner's own classes, so it inherits that styling from
     // each page's stylesheet and adds no CSS to ten files. The two can never
     // collide: the banner only appears with restored progress, which a guest
@@ -170,7 +178,9 @@
         '<strong>Not being saved</strong>' +
         'Your place and your answers are only kept when you are signed in. ' +
         '<a href="' + href + '" style="color: var(--teal); text-decoration: underline;">' +
-        'Sign in</a> and they follow you to every device.' +
+        'Sign in</a> and they follow you to every device, or read ' +
+        '<a href="' + whyHref + '" style="color: var(--teal); text-decoration: underline;">' +
+        'what an account gets you</a> first.' +
       '</div>' +
       '<button class="resume-banner-btn dismiss" type="button" ' +
       'id="guestSaveNoticeDismiss">Dismiss</button>';
