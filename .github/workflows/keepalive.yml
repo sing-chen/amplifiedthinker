@@ -1,0 +1,53 @@
+# Keeps the production Supabase project from idling into a pause.
+#
+# WHY THIS EXISTS: Supabase pauses a free-tier project after roughly 7 days of
+# low activity, and a paused project answers nothing - sign-in fails, saved
+# progress will not load, and password resets stop. From Phase 5 this site
+# generates almost no Supabase traffic by design, because guests never touch it
+# at all. A quiet week is therefore an outage waiting to happen, on a site that
+# looks perfectly healthy from the outside.
+#
+# The script makes one real, anonymous read of a real table. Reasoning and the
+# refusal guard are in scripts/keepalive.mjs.
+#
+# ⚠️ GITHUB DISABLES SCHEDULED WORKFLOWS AFTER 60 DAYS OF REPOSITORY INACTIVITY,
+# and sends one email about it. That is precisely the situation this workflow
+# protects against - a quiet repo is a quiet database - so the safeguard is
+# disabled exactly when it is most needed. If the repo goes dormant for two
+# months, re-enable this from the Actions tab, or accept that the project will
+# pause and needs a manual Resume before anyone can sign in.
+#
+# ⚠️ This is a deliberate workaround of a free-tier limit, chosen over paying for
+# Pro. Revisit it if the site moves to a paid plan, where projects are never
+# auto-paused and this file can simply be deleted.
+
+name: Supabase keepalive
+
+on:
+  schedule:
+    # 06:14 UTC daily. Off the hour on purpose - GitHub queues cron jobs and
+    # delays them most at the top of the hour. The pause threshold is ~7 days,
+    # so a run being late, or occasionally skipped, costs nothing.
+    - cron: '14 6 * * *'
+  workflow_dispatch:
+
+# Read-only. This workflow needs nothing from the repository beyond its own
+# source, and the Supabase key it uses is public by design.
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # No `npm ci`. The script uses only node builtins and global fetch, so
+      # installing 201 packages daily to make one HTTP request would be the
+      # slowest and least reliable part of this job.
+      - name: Query the production project
+        run: node scripts/keepalive.mjs

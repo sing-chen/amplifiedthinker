@@ -1,8 +1,13 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1, 2, 3 and 4 live on both origins. Phase 5 (Auth) is next, and
-is the first phase visitors will notice ·
-**Last updated:** 2026-08-18
+**Status:** In progress — Phases 0, 1, 2, 3 and 4 live on both origins. **Phase 5 (Auth) is built and
+verified against the dev project, on `feat/auth`, uncommitted and not merged.** The remaining work is
+the Stage 3 checks and the live cutover ·
+**Last updated:** 2026-08-19
+
+⚠️ **The step-by-step runsheet for Phase 5 is not in this repo** — it is an artifact, *Phase 5
+Runsheet*, and it carries the click paths, who does each step, and the live-cutover order. This
+document holds the reasoning and the findings; that one holds the sequence.
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -33,7 +38,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 2 — Astro shell | ✅ **Done — live** | 🟡 Silent | 🔵 Visible | No | 0 |
 | 3 — Supabase schema + RLS | ✅ **Done — live** | ⚪ None | ⚪ None | No | 0 |
 | 4 — Email | ✅ **Done — live** | ⚪ None | ⚪ None | No | 3 |
-| 5 — Auth + progress sync | ☐ Not started | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
+| 5 — Auth + progress sync | 🔨 **Built, verified on dev, not merged** | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
 | 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
 | 7 — Admin portal + banner | ☐ Not started | ⚪ None | 🟢 **New** | No | 6 |
 | 8 — Blog | ☐ Not started | 🟢 **New** | 🟢 New | **Yes** | 7 |
@@ -956,16 +961,576 @@ one browser on one device — actually goes away.
 |---|---|
 | Build `auth.js` and `supabase-client.js`; vendor `supabase.min.js` | Client foundation. Vendoring matches the existing `fuse.min.js` convention so static pages work without a bundler. |
 | Add sign-in UI to `nav.js` | One edit puts auth state on all 16 pages, because the nav is injected from a single source. |
-| Switch `progress.js` to Supabase for signed-in users | The actual feature. Guests keep working exactly as before. |
-| Build the one-time localStorage import | Prompts before merging existing progress, then clears the keys. Disposable code — mark it for deletion in a few months. |
+| Switch `progress.js` to Supabase for signed-in users | The actual feature. ⚠️ Guests do **not** keep working as before — see "Guests lose progress entirely" below. |
+| ~~Build the one-time localStorage import~~ | **Dropped 2026-08-18, after being built and passing its tests.** Old keys are left inert instead. Reasoning below — read it before rebuilding this. |
 | Keep theme in localStorage; sync to profile as a convenience | A DB round-trip before first paint would flash the wrong theme on every page load. **No migration needed** — `profiles.theme` already exists, added in Phase 3 precisely so this phase would not need one. |
-| Split into dev and prod Supabase projects | Real user data now exists. This is the moment that split earns its cost — not before. The existing project (`spehmrgmcdenqdftkyrt`) stays as prod; the new one is dev. |
-| **Decide how open signup is protected, before re-enabling it** | **Signup is currently switched off** in Supabase → Authentication (2026-08-18), because Phase 4 finished testing and nothing user-facing needs it until this phase. Turning it back on is a Phase 5 decision with a cost attached — see below. |
-| **Delete `src/pages/auth-test.astro`** | **Carried forward from Phase 3**, and recorded here rather than only in that phase's log, because this is the list someone doing Phase 5 will actually read. It is a scaffold, and once `auth.js` and the real sign-in UI exist it is a second, diverging implementation of client setup. **Mine it before deleting it:** it holds working patterns for session handling, `onAuthStateChange`, the signup-trigger check, and RLS assertions that both admin and non-admin paths were verified against. |
+| Split into dev and prod Supabase projects | Real user data now exists. This is the moment that split earns its cost — not before. The existing project (`spehmrgmcdenqdftkyrt`) stays as prod; the new one is dev. **✅ Decided: split first, before any client code writes a row, and dev gets its own Resend key.** Runbook in [../supabase/README.md](../supabase/README.md). |
+| **Decide how open signup is protected, before re-enabling it** | **Signup is currently switched off** in Supabase → Authentication (2026-08-18), because Phase 4 finished testing and nothing user-facing needs it until this phase. Turning it back on is a Phase 5 decision with a cost attached — see below. **✅ Decided: Cloudflare Turnstile, on the sign-in surface only.** |
+| **Delete `src/pages/auth-test.astro`** | **Carried forward from Phase 3**, and recorded here rather than only in that phase's log, because this is the list someone doing Phase 5 will actually read. It is a scaffold, and once `auth.js` and the real sign-in UI exist it is a second, diverging implementation of client setup. **Mine it before deleting it:** it holds working patterns for session handling, `onAuthStateChange`, the signup-trigger check, and RLS assertions that both admin and non-admin paths were verified against. **Mining done** — `selfUrl()` and the session handling are in `auth.js`. Deletion is still outstanding. |
 
-**Done when:** a user with existing local progress signs in, accepts the import, opens a second
-device, and sees the same state. **Test both directions** — the failure mode here is silent
-truncation, not an error.
+**Six activities were added on 2026-08-19 that the plan above never named.** None was scope creep for
+its own sake — the first was needed to stop maintaining test accounts by hand, and each one made the
+next visible. Full accounts are in the progress log below.
+
+| Added activity | Why it was not in the plan |
+|---|---|
+| **Account deletion**, password-gated, via `SECURITY DEFINER` | Written to clear test accounts from the site rather than the SQL editor. Brings two of the phase's three migrations. |
+| **A required first name**, form and `not null` | The nav greeting and both emails need something to address. Backfilled in **two** places — templates read `raw_user_meta_data`, the site reads `profiles`. |
+| **The two auth email templates** | Phase 4 shipped working mail; nothing had styled it. ⚠️ Configuration, not code — per project, and invisible when missing on one. |
+| ⚠️ **Two silent link defects fixed** | A reset link signed you in without showing the password form; a spent confirmation link did the same. Both looked like success. |
+| **Current password required to change it**, and other devices signed out | Was on the backlog. Building the delete control put a gated action beside an ungated one, and the ungated one protected more. |
+| **Breached-password refusal** (`public/pwned.js`) | Supabase's own version needs the Pro plan. Same corpus, done in the browser. |
+
+**Done when:** a signed-in user works through a plan on one device, opens a second device, and
+resumes from the same place. **Test both directions** — the failure mode here is silent truncation,
+not an error.
+
+*(Originally: "signs in, accepts the import, opens a second device". The import was dropped, so the
+criterion no longer mentions it — the multi-device round trip is the feature and always was.)*
+
+### Three decisions taken before any client code, 2026-08-18
+
+The phase opened with three things the plan named but did not settle. Each was resolved first,
+because each decides what the code has to contain.
+
+**1. Signup protection: Cloudflare Turnstile — and it needs no server, which was the real
+question.** The worry was that native captcha support might require an endpoint, which on a
+static origin would have forced the Pages retirement into the middle of this phase. It does not:
+GoTrue verifies the token itself, the dashboard holds the secret, the client passes
+`options: { captchaToken }`, and signup, sign-in and password reset are all covered. **So the
+Pages retirement stays unscheduled and this phase does not touch it** — the scheduling question
+was asked and came back "no need", which is the cheapest possible answer.
+
+Turnstile over hCaptcha on user impact first and vendor count second: managed mode is usually
+non-interactive with no image puzzles, where hCaptcha's free tier serves them routinely and needs
+a cookie-based accessibility workaround; and Cloudflare already runs the zone, so no eighth vendor.
+
+**The widget loads on the sign-in surface only, never from `nav.js`.** In the nav it would add a
+`challenges.cloudflare.com` request to all 16 pages for every guest. Scoped this way a network
+blocking that host costs account creation and nothing else — which is not hypothetical here.
+
+**One project holds one captcha secret**, and Turnstile hostnames take no wildcards, so covering
+previews from a single widget would mean listing `vercel.app` — a public suffix, authorising every
+site on it to mint tokens for our sitekey. That is a second and independent argument for the split
+below, arriving from a direction nobody was looking in.
+
+**2. The dev/prod split: first, and dev gets its own Resend key.** Before any client code writes a
+row, because the phase's whole dev loop needs somewhere that is not the production database — and
+because a Vercel rollback restores code, never database state.
+
+Only the schema is free to reproduce, replayed from the two migration files. The allowlist, SMTP,
+the rate limit, the signup toggle, the `is_admin` bootstrap and the Turnstile secret are all
+dashboard work with nothing behind them. The cheaper option — no SMTP in dev, `mailer_autoconfirm`
+on — was weighed and declined: most of the build happens before real signups exist, and after
+launch the dev work needing mail is close to none, so paying once is worth exercising the real flow.
+
+⚠️ **The price is a coupling to watch: both projects now draw on one Resend allowance of 100/day,
+and exhausting it stops production password resets.** If it ever binds, the answer is
+`mailer_autoconfirm` on dev — dev needs accounts, not mail.
+
+The allowlist **moves** rather than being copied: localhost and the preview wildcard belong to dev
+now, and leaving them on prod would let a laptop drive the production database through a redirect
+that still resolves.
+
+**3. The merge rule: last-write-wins for sync, union for the one-time import.** The done-when names
+silent truncation without saying what happens when both sides hold progress for the same skill.
+
+For ordinary multi-device use the rule is a **whole-row snapshot, last write wins** — because every
+device fetches the row on load and resumes from it, so device 2 continues device 1 and `visited`
+accumulates naturally with no special handling. Sequence and timing decide it, and nothing is lost
+because no device ever writes state it did not first read.
+
+⚠️ **Guarded by an `updated_at` precondition.** A tab left open for two days holds a stale snapshot
+and will happily write it over a newer one on the next save. The guard is what makes "snapshot"
+mean the snapshot rather than whichever HTTP request landed last.
+
+**The exception is the single write not derived from remote: the one-time import.** That progress
+accrued while signed out, so it has no place in the sequence at all — there is no timestamp putting
+it before or after anything. Applied as a snapshot it overwrites a real account; discarded it is
+the truncation. So the import alone merges as a union: `visited` unions, `quizSelected` merges per
+question with remote winning a genuine conflict, `quizRevealed` ORs, `habitOpen`/`cardsOpen` union,
+`started_at` earliest, `completed_at` earliest non-null, and nothing is ever deleted. It runs once,
+and with guest progress removed the collision can never be created again — so the code really is
+disposable, as the plan assumed.
+
+> **Superseded 2026-08-18.** The import was built to this design, passed its tests, and was then
+> deleted — see "The one-time import was built, tested, and dropped" below. The rules above are kept
+> because they are correct and because anyone tempted to rebuild it should start from them rather
+> than from scratch. Nothing in the shipped code implements them.
+
+**Two things about the quiz that reading the code changed.** `quizSelected` *looks* unmergeable,
+because `quizOrder` shuffles each question — merging an answer from a differently-shuffled device
+would appear to turn a correct answer wrong, silently. It is safe: `applyQuizOrder` only sets CSS
+`order`, the DOM sequence never changes, and both `quizSelected` and `kcAnswers` index into the DOM.
+The value means the same thing on every device.
+
+`quizOrder` itself is the opposite. It must be taken **whole per question, never blended
+element-wise** — a blend of two permutations is not a permutation, so two options land on one
+visual slot and one disappears from the page. Neither of these is visible from the data model; both
+came from reading `plan.html`.
+
+**Order of operations matters more than the rule.** Read local, read remote, merge, upsert, **read
+back and verify**, and only then clear the keys. Clearing on an unconfirmed write is where silent
+truncation actually comes from — not from choosing the wrong side of a merge.
+
+### The day lost to a wrong SMTP port, 2026-08-18
+
+Worth recording in full while it is fresh, because the failure mode is the most misleading this
+project has produced and the reasoning error is one anybody would repeat.
+
+**Symptom:** every attempt to create an account failed with
+`captcha protection: request disallowed (timeout-or-duplicate)`.
+
+**Actual cause:** the dev project's SMTP port was `585`, not `587`. Nothing listens there, so the
+confirmation mail hung until the gateway gave up at 35 seconds and the whole signup rolled back.
+
+**Why it read as a captcha problem.** The error names the captcha, names a specific captcha failure
+mode, and is entirely accurate about what Cloudflare reported — the token genuinely had been
+redeemed once already. Nothing about it points at mail.
+
+**Why the investigation went wrong, which is the part worth keeping.** A table was built of which
+endpoints accepted a token and which did not:
+
+| | Creates a user? | Sends an email? | Captcha |
+|---|---|---|---|
+| Sign-in | no | no | ✅ |
+| Password reset, unknown address | no | no | ✅ |
+| Magic link, `create_user: false` | no | no | ✅ |
+| Magic link, `create_user: true` | **yes** | **yes** | ❌ |
+| Signup | **yes** | **yes** | ❌ |
+
+**Two columns partition those rows identically, and only one was tested.** "Creates a user" was
+picked, and it led to a coherent, well-evidenced, wrong conclusion: that Supabase double-verifies
+the token on account creation. hCaptcha was evaluated as a second provider, magic-link signup was
+designed as a workaround, and a Vercel server endpoint with `service_role` was proposed — all to
+route around a defect that did not exist.
+
+**What would have caught it:**
+
+1. **Timing.** Passing calls returned in ~300ms, failing ones in ~35s. A captcha rejection does not
+   take 35 seconds. The clock was never looked at, and it was the whole answer.
+2. **Testing the alternative reading** of the table rather than the first one that fitted.
+3. **The provider's own send log.** `resend.com/emails` empty means nothing ever left Supabase.
+
+**The general form, and it has a precedent here.** Phase 4 finding 9 recorded a check going red for
+a reason unrelated to what it watched; finding 12 recorded one going green for a reason unrelated to
+what it claimed. This is the third variant: **a subsystem failing and reporting itself accurately in
+the vocabulary of a different subsystem.** Every measurement taken was correct. The interpretation
+put on the set was not, and no amount of further measurement of the *same* kind would have corrected
+it — only asking what else the pattern could mean.
+
+**Cost:** most of a day, an hCaptcha account that has to be deleted, a leaked hCaptcha secret to
+rotate, and a throwaway probe page. **Recovered in full:** Turnstile works exactly as designed,
+signup included, so the phase's original plan stands untouched — no server endpoint, no early
+`service_role`, no second captcha vendor, no invite-only launch.
+
+Operational detail and a diagnosis procedure are in
+[../supabase/README.md](../supabase/README.md), under the SMTP runbook.
+
+### supabase-js retries silently, and it made a failure test report success, 2026-08-18
+
+Found while testing the one-time import, which was dropped shortly afterwards. **The finding outlives
+it** — it applies to every failure test written against Supabase from here on, including
+`progress.js`'s own write path.
+
+**Symptom.** A test that was meant to fail reported success. With DevTools set to Offline, the
+operation completed. A deterministic replacement — reject the read-back, keep everything else working
+— *also* reported success, and correctly went on to do the irreversible step.
+
+**Cause.** supabase-js 2.112.3 retries REST requests, on by default, and nothing says so:
+
+```
+retryEnabled = e.retry ?? true          // opt out, not opt in
+f = ['GET','HEAD','OPTIONS']            // only these methods
+d = [520, 503]                          // ...and only these statuses
+u = e => Math.min(1000 * 2**e, 30000)   // backoff: 1s, 2s, 4s
+```
+
+The injected read-back rejection was retried once, the retry succeeded, the row was genuinely
+confirmed, and clearing the keys was the *right* answer. The test was defeated, not the code.
+
+It also explains the offline run. Three retries at 1s + 2s + 4s is **about seven seconds of silence**
+with the panel reading "Adding…". Toggling the throttle back within that window lets the retry
+succeed and the import complete legitimately. The test procedure contained a race that no amount of
+care in the click order would have removed, because the thing being waited on was invisible.
+
+**The test that works.** Reject *every* GET once the POST has gone out. Retry cannot rescue what
+never succeeds:
+
+```
+calls: [GET, POST, GET, GET, GET, GET]     read-back plus its three retries
+ms:    7165                                 the backoff, made visible
+ok:    false
+keySurvived: true                           ← the property under test
+```
+
+**Two consequences that happen to favour the design, and are worth not breaking.**
+
+- **POST is never retried.** The import's write and progress.js's upsert get no silent second
+  chances, so a network failure at the irreversible step fails immediately and the device keeps its
+  keys. progress.js's own `pending`-and-reschedule is therefore the *only* retry on writes — do not
+  remove it on the assumption the library covers it.
+- **Reads are retried.** Robustness lands exactly on the import's read-back, which is the check
+  that should survive a blip rather than fail closed and re-offer.
+
+**The general form.** Phase 4 finding 9: a check going red for a reason unrelated to what it watched.
+Finding 12: one going green for a reason unrelated to what it claimed. The SMTP port: a subsystem
+failing in another subsystem's vocabulary. This is the fourth variant and the sharpest — **an
+invisible resilience layer that makes negative tests lie.** A passing failure-test is worth exactly
+as much scepticism as a failing success-test, and neither had been given any here.
+
+**Rule taken from it.** Any test that asserts a failure must first prove the failure actually
+happened — count the calls, measure the clock. "It reported an error" is not evidence that the thing
+you broke is the thing that broke.
+
+### The password reset link logged you in instead, 2026-08-19
+
+**Symptom.** Following a reset link from a real email landed on the **home page, signed in**, with no
+password form anywhere. Nothing errored. The only visible sign that anything had happened was the
+avatar appearing in the nav — which looks like a successful sign-in, because it is one.
+
+**The wrong suspect, and why it was worth ruling out first.** This is exactly the shape the redirect
+allowlist produces: an origin that is not on the list is not rejected, it is silently swapped for the
+project's Site URL. Dev's Site URL *is* `http://localhost:4321/` — the home page. The symptom and the
+known trap matched perfectly. `npm run verify:redirects` came back green on both projects in seconds,
+including `http://localhost:4321/sign-in/` on dev, which is the entire reason that script exists.
+**A cheap gate that rules out the plausible cause is worth as much as one that finds a real fault**;
+without it the next hour goes into the dashboard.
+
+**Cause — listener registration order, and it could never have gone the other way.**
+
+A recovery link genuinely establishes a session. It has to: `updateUser({ password })` is an
+authenticated call. So the page held a session plus a flag meaning "this is a reset, not a sign-in" —
+and the flag was set by a listener that could not win.
+
+- `auth.js` subscribes to `onAuthStateChange` inside its own `init()`.
+- `sign-in.astro` subscribed afterwards, in `start()`.
+- **supabase-js notifies subscribers in registration order.**
+
+So `settle()` ran first, every time, saw a session, found `recovering === false`, and executed
+`window.location.replace(HOME)`. The `PASSWORD_RECOVERY` handler then fired into a page that was
+already navigating away. Not a flaky race — a race with a fixed winner, which is why it reproduced
+on every attempt and looked like deliberate behaviour.
+
+**Fix.** Read the intent out of the URL fragment *synchronously*, next to the `linkError` block, and
+seed `recovering` from that instead of from an event:
+
+```js
+var arrivedForRecovery = (function () {
+  var hash = window.location.hash || '';
+  if (hash.indexOf('type=recovery') === -1) return false;
+  ...
+})();
+```
+
+Registering our listener earlier would only have narrowed the race. The answer is in the address bar
+before any listener exists, so the question does not have to be asked of the event stream at all.
+
+⚠️ **Unlike `linkError`, this must not clear the fragment.** The access and refresh tokens live in
+that same fragment and supabase-js has not read them yet.
+
+The `PASSWORD_RECOVERY` listener stays as a backstop, with a warning attached: **under the PKCE flow
+the token returns as `?code=` and there is no `type=recovery` to read**, at which point that listener
+becomes load-bearing again and brings its race back with it. This project runs the implicit flow only
+because no `flowType` is set in `supabase-client.js` — an unstated default is holding the fix up.
+
+**Known limitation, not yet addressed.** supabase-js strips the fragment once it has consumed the
+tokens, so **reloading the "Choose a new password" page loses the recovery intent** and bounces to
+home with the password unchanged. Same surprise, different route. The fix is a `sessionStorage` flag
+set when `arrivedForRecovery` is true and cleared when the password saves — survives a reload, not a
+new tab.
+
+**Two things worth carrying forward.**
+
+1. **This was security-relevant, not cosmetic.** A reset link functioned as a passwordless login and
+   left the old password working. No worse than what a reset link already grants, but it is not what
+   the email promises, and someone who suspected their account was compromised would have believed
+   they had changed it.
+2. **The test that catches it already existed and was not run.** `supabase/email-templates/README.md`
+   step 5 — *"Sign out, request a reset, and follow that link. `/sign-in/` should show Choose a new
+   password."* Written correctly, before the bug. ⚠️ The step that actually proves it is the one
+   *after*: **sign in with the OLD password and be refused.** Reaching the form is not evidence the
+   password changed.
+
+**The general form.** Phase 4's double-hash defect and this one are the same animal: *auth appears to
+work, and silently does not.* Both produce a plausible-looking page, no console output, no failed
+request. Both were found only by a human following a real emailed link. Neither was reachable by any
+automated check the repo had. **Every auth path in this phase must be walked by hand, from a real
+inbox, at least once — and the assertion must be about state that changed, not about what rendered.**
+
+### The same redirect then ate the dead-link panel, 2026-08-19
+
+Found within the hour, while working through the test scenarios written *for the entry above*. Same
+branch, second victim — which is the finding, not the bug.
+
+**Symptom.** Following a **spent signup confirmation link** — one already used minutes earlier — went
+straight to the home page, signed in. No "that link no longer works", no indication anything had been
+rejected. A dead link that appeared to succeed.
+
+**Cause.** The link genuinely failed. Supabase returned
+`#error=access_denied&error_code=otp_expired`, the synchronous `linkError` read caught it correctly,
+and `showLinkError()` un-hid the panel. Then `settle()` reached the next branch, found the session
+still live from having used the link the first time, and ran `window.location.replace(HOME)`. The
+panel existed for microseconds.
+
+**The state that makes it reachable is the ordinary one.** The usual reason a confirmation link is
+spent is that you just used it — so you are almost always still signed in when you click it again.
+The failing path is the common path; the passing one requires signing out first.
+
+**Fix.** Two parts:
+
+- `settle()` now treats a dead link as **outranking** the signed-in redirect, and shows nothing
+  underneath — the sign-in form would invite someone to re-request what they already have.
+- `showLinkError()` takes the session, because the copy has to change. *"Start again below and a
+  fresh link will be sent"* is wrong for someone already signed in. Signed in they get *"You are
+  already signed in, so there is nothing you need to do"* and a **Continue to the site** button.
+
+**⚠️ This variant was worse to ship than the one above.** A dead link that visibly does nothing
+teaches people the link is dead. A dead link that appears to work teaches them **expired links are
+fine** — so the next person to click one from an old thread, or a forwarded confirmation email, has
+no reason to think anything is off. A silent failure that trains the wrong belief is worse than a
+loud one.
+
+**The finding, which is about `settle()` rather than about links.**
+
+That one branch — *has a session → go home* — has now silently destroyed **two** states that existed
+to be read: the recovery form, and this panel. Both were added to the page after the redirect was
+written, and both were written as if the redirect would not fire. The rule for this page from here:
+
+> **Every state that must be READ has to be checked before the signed-in redirect.** The redirect is
+> the default, not a step in a sequence — anything that needs the visitor's attention must claim it
+> first, or it will be shown and destroyed in the same tick.
+
+Phase 7's banner editor and Phase 9's dashboards both add panels to authenticated surfaces. This is
+the trap they will hit.
+
+**And a testing note, since this was caught by a real run and not by mine.** The scenario had been
+written as *"let a confirmation link expire (or reuse one), follow it"* with **no starting state
+named**. Signed out it passes; signed in it fails. ⚠️ **An auth test scenario that does not state
+whether a session exists is testing whichever half the author happened to imagine.** Every scenario
+in this phase now says which.
+
+**Verified**, including the signed-in case — by fabricating a session in `localStorage` with a
+future `expires_at`, so `getSession()` resolves it without a network call. Worth keeping in the
+toolkit: it exercises signed-in branches with no account, no email, and no credentials in the repo.
+
+| State | Result |
+|---|---|
+| Link error, no session | dead-link panel **+ sign-in form**, "Start again below" |
+| Link error, session | dead-link panel only, "already signed in" copy, no redirect |
+| No link error, session | redirects to home — the control, unchanged |
+
+### The weaker gate was on the more valuable action, 2026-08-19
+
+Noticed while writing test scenarios, not while writing the feature — which is the point of writing
+them out.
+
+The account page ended up with two consequential controls side by side, and they asked for different
+things:
+
+| Action | Current password? |
+|---|---|
+| Delete your account | ✅ yes, plus a server-side `amr` recency check |
+| Change password | ❌ no — new password only |
+
+**The gate was on the wrong one.** Deleting destroys the data and ends the intruder's access along
+with it. Changing the password **keeps** the account, locks the owner out, and hands over the
+recovery route — whoever holds the mailbox holds everything, and a password change is what stops the
+real owner's mailbox from mattering. Three clicks from any unlocked signed-in tab.
+
+It also quietly undercut the emailed reset flow. That path proves control of an inbox; the signed-in
+path proved only that a tab was left open. **When two routes reach the same place, the security of
+the pair is the security of the weaker one** — building the strong one is wasted if the weak one is
+still open.
+
+**Fixed by reuse, not by building.** `auth.reauthenticate()` already existed for the deletion
+control, so this was a form field, a Turnstile widget and an ordering rule. ⚠️ The ordering rule is
+the whole thing: `updateUser({ password })` needs only a valid session, so re-authentication has to
+happen **first and fail closed**. Calling it afterwards would leave a check that runs after the
+change it was meant to prevent.
+
+**One refactor came with it.** `signInWithPassword` is captcha-protected and a Turnstile widget binds
+to a single container, so two panels need two widgets. The machinery was made a factory rather than
+copied: it carries three separate traps — single-use tokens, reset-before-execute, and the 30s stall
+— and a hand-copied second version drifts from the first at the earliest fix. The api.js script is
+still loaded once and shared; only the render is per-panel.
+
+**Two things this dragged into the light**, both now in `BACKLOG.md`:
+
+- **Changing the password does not sign out other devices.** Supabase leaves sibling refresh tokens
+  alive, so the action people take *because* someone else has access does not remove that access.
+- **Password history was considered and rejected** — NIST guidance moved against rotation and
+  history rules, they push people into predictable increments, and a history table is a second copy
+  of the most sensitive material in the system. **Checking against breached-password lists is the
+  version of that instinct which survives.**
+
+⚠️ **A copy trap worth generalising.** The deletion panel said the password was *"the only thing on
+the site that asks for it again"*. True when written, false the moment this shipped. **Copy that
+names how rare something is has a dependency on everything else that might join it**, and nothing
+will fail when it does.
+
+### Breached-password checking, built in the browser because the server version costs a plan, 2026-08-19
+
+Grew out of the question *"should we refuse a password the account has used before?"* — and the
+useful answer was to refuse a different set of passwords entirely.
+
+**Password history was considered and rejected.** Three reasons, and only the third is about this
+project: NIST guidance moved away from rotation and history rules; the rule reliably makes passwords
+*worse*, because people increment (`Summer2025!` → `Summer2026!`) and satisfy it with something
+guessable from the last one; and a history table is a second copy of the most sensitive material in
+the system, kept for an account's lifetime, to enforce a rule the standards dropped. ⚠️ The NIST
+citation is from memory — check it against the live document before relying on it.
+
+**The question that does have an answer** is not *"has this person used it before"* but *"is this
+password already on a list attackers hold"*. Supabase has exactly that setting — **and it is Pro plan
+and above**, confirmed against the docs. So it was built in the browser instead:
+[`public/pwned.js`](../public/pwned.js), same corpus, same k-anonymity range API.
+
+**⚠️ It is advisory, not enforced, and the reason that is acceptable here is about WHO it protects.**
+It runs in the page, so devtools defeats it. That would be disqualifying for a control defending the
+site against a hostile user — but this one defends a user against their own password choice, and
+nobody bypasses a control in order to attack themselves. The Supabase setting is still better,
+because it also stops a scripted client; `BACKLOG.md` carries the changeover.
+
+**It fails OPEN, and that is the opposite of the Turnstile decision on the same forms.** Network
+blocked, HTTP error, timeout, insecure context — all resolve `checked: false`, which means *the
+question was not answered*, never *the password is fine*. An ad blocker or corporate proxy must not
+be able to stop someone creating an account. Turnstile on the same submit fails **closed**, because
+it guards the site rather than the user. **Two checks, one form, opposite failure modes, both
+correct** — worth understanding before "fixing" either to match the other.
+
+**Three placement rules, each with a reason that is not obvious:**
+
+- **Never on sign-in.** Someone whose existing password turns out to be breached must be able to get
+  in, because signing in is how they reach the form that fixes it. Refusing them at the door locks
+  them out of the only remedy.
+- **Before re-authentication, on the account page.** The breach check needs no session and no
+  captcha token, so a password that is going to be refused is refused without spending a single-use
+  Turnstile token on it — and without making someone prove themselves only to be told to start over.
+- **After re-authentication would have been wrong for the *other* check.** `updateUser` needs only a
+  session, so the password proof has to run first and fail closed. Ordering carries meaning in both
+  directions on that one handler.
+
+**Verified end to end on dev**, real Supabase, real Turnstile, real HaveIBeenPwned:
+
+| | |
+|---|---|
+| `password123` at sign-up | refused. **One** outbound request, `range/CBFDA`. Zero `/auth/v1/signup` calls, no account, no email, no captcha token spent |
+| Strong password at sign-up | `range/48D15`, then the signup POST to the dev project with the right `redirect_to`. Account created, mail delivered, confirmed, signed in |
+| Sign-in with a breached password | works, as it must. Zero HaveIBeenPwned requests on that path |
+| Reset flow and change-password | both refuse a breached password |
+
+The two prefixes differing is the check responding to the password rather than answering from cache
+— worth asserting rather than assuming, since a cached pass would look identical in the UI.
+
+⚠️ **The privacy property was measured, not trusted.** `fetch` was intercepted and the real URL read
+back: `https://api.pwnedpasswords.com/range/CBFDA`, `credentials: omit`, `referrerPolicy:
+no-referrer`. The test asserts specifically that the *rest* of the hash does not appear in the URL.
+**Never replace this with an API that takes a whole password or a whole hash**, however much simpler
+it looks — that is the version of this feature that must not exist.
+
+**A method note.** The browser pane was not displayed, so the page was not compositing frames and
+synthetic mouse clicks silently did nothing — the first `computer` click reported success and
+changed no state. Driving the DOM directly worked. ⚠️ **A UI tool reporting that it clicked is not
+evidence that anything received the click**; assert on state afterwards, every time. Nothing about
+this change touches hit targets, so DOM-level driving proves what was needed here — but a change to
+layout or z-order would need real input.
+
+### `signOut()` defaults to signing out every device, 2026-08-19
+
+Found while implementing the opposite feature. Reading the docs for `signOut({ scope: 'others' })`
+turned up the default for the plain call, and the default is not the one anybody assumes.
+
+**In the vendored bundle:**
+
+```js
+async signOut(e={scope:`global`})
+```
+
+**So every sign-out on this site was a global sign-out.** Clicking *Sign out* on a work laptop ended
+the session on the user's phone as well. `public/auth.js` called `client.auth.signOut()` with no
+arguments, in the nav menu and on the account page, from the moment the control existed.
+
+**Why nobody would notice.** It is invisible unless you are signed in on two devices *and* happen to
+return to the second one afterwards, and even then it reads as an ordinary expired session rather
+than as something the site did. There is no error, no log line, and the action the user took did
+appear to work.
+
+**Fix.** Scope is now passed explicitly at every call site, and the wrapper defaults to `local`:
+
+| Caller | Scope | Why |
+|---|---|---|
+| Nav menu and account *Sign out* | `local` | Leaving a shared computer must not log you out of your own phone |
+| `updatePassword()` | `others` | The point of the feature — evict everyone else, keep the person doing it |
+| `deleteAccount()` | `global` | Every session for this account should die. Spelled out rather than inherited |
+
+⚠️ **The general form, and it is the third library-default trap in this phase.** `retry ?? true` on
+REST calls made a failure test report success. Turnstile tokens being single-use turned a spent token
+into what looked like a captcha fault. Now `scope: 'global'`. **A sensible-looking default is the
+hardest kind of bug to see, because nothing in the calling code is wrong** — the line reads exactly
+as intended and means something else. Rule taken from it: for any library call where a wrong default
+would be *silent*, pass the argument explicitly even when it matches the default, and say why.
+
+**And note what found it: reading the reference for a neighbouring option.** Not a test, not a
+symptom, not a review. Three of this phase's defects came out of reading documentation for something
+adjacent to the thing being built.
+
+### Guests lose progress entirely, not just the banner
+
+**Scope correction, 2026-08-18.** The plan says guests keep working exactly as today except for the
+resume banner. The intent is larger: **guest progress tracking is removed**, which is the reason to
+sign up. The banner is the visible symptom; quiz answers, accordion states and position also stop
+surviving a reload.
+
+⚠️ **The deploy that stops writing guest progress must not clear what is already stored.** Clearing
+eagerly would destroy saved progress with our own hand, to the people least likely to notice. So old
+`amplified_*` entries are left exactly where they are.
+
+**The break is clean in both directions: progress.js no longer READS localStorage either.** Decided
+2026-08-18, after the alternative had been built. Reading them would resurrect a position that can
+never advance again — the page offers to resume somewhere, then refuses to remember anything after
+it, which is a worse experience than a clean start and harder to explain. The old entries are inert:
+never read, never written, never deleted.
+
+#### The one-time import was built, tested, and dropped
+
+A `progress-import.js` merged the device's keys into the account on sign-in: union merge, quiz order
+and answer resolved as a pair per question, read-back verification before clearing, offered from a
+panel on `/sign-in/` and `/account/`. It worked. Every merge rule and the irreversible window were
+tested and passed.
+
+**It was deleted anyway, and the reasoning is worth keeping** because the same shape will recur:
+
+1. **The audience is nobody, and shrinking.** Only visitors who saved progress *before* this deploy
+   can ever have a key. Guests can no longer create one, so the population is fixed on the day of
+   the deploy and only goes down.
+2. **The prompt could not be got right.** It reappeared on every load of `/sign-in/` or `/account/`
+   while a key existed, because a mis-click must not be able to strand data permanently. Fixing the
+   nag needed a snooze key, which needed its own cleanup. Making it silent and automatic removed
+   the nag but left 250 lines of merge logic serving that same audience of nobody.
+3. **Passing tests are not a reason to ship.** The work was sound; the question is whether the thing
+   should exist. Those are separate, and sunk effort argues for neither.
+
+⚠️ **If you rebuild it, the quiz rules are already written down above and they are right.**
+`quizSelected` is a DOM index and is device-independent; `quizOrder` is purely visual and must be
+taken whole per question. Do not re-derive them.
+
+**A correction against my own working, because it is the instructive part.** Mid-build I decided
+`quizSelected` indexed *into* the permutation, concluded that resolving the two fields independently
+would point an answer at an option the person never chose, and rewrote the merge so each question
+took one side's pair whole. That was wrong — `applyQuizOrder` only sets CSS `order`, and
+`querySelectorAll` returns DOM order regardless, exactly as this document already recorded from the
+first reading of `plan.html`. The "fix" was also strictly worse: it discarded a device's answer
+whenever the account held an order for that question.
+
+The lesson is not about quizzes. **A conclusion already reached by reading the code, and written
+down, was overridden by a fresher-feeling re-derivation that never went back to the source.** The
+document was right and was not consulted. Nothing shipped, because the module was deleted for
+unrelated reasons — but the near-miss is the reason this paragraph exists.
+
+The consequence to own in the announcement: anyone with progress saved before the deploy starts from
+zero, and is never told the old position existed. That is a deliberate trade for a simpler codebase,
+not an oversight.
 
 ### Signup becomes publicly callable in this phase, and the page is not the surface
 
@@ -998,8 +1563,12 @@ guests **lose the resume banner** they get for free today. It is intentional —
 sign in — but existing regular visitors will feel it.
 
 Frame the announcement as "your progress now follows you everywhere, sign in to keep it" rather
-than letting people discover the banner silently vanished. The one-time import prompt softens it
-by offering a migration path at exactly the moment someone signs in.
+than letting people discover the banner silently vanished.
+
+⚠️ **There is no longer a migration path, so the announcement carries the whole of the softening.**
+The one-time import was dropped, which means a returning visitor loses the banner *and* whatever
+position it was offering, with nothing offering to claim it. Say that plainly. Do not imply anything
+is recoverable by signing in, because it is not.
 
 ---
 

@@ -33,18 +33,36 @@ The project has a written architecture and a phased plan. Read them rather than 
 public/          the 16 hand-written pages, shipped byte-for-byte untouched by Astro
                  index/about/future-skills/my-people/news/search .html, skills/**,
                  nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt, sitemap.xml
-src/pages/       new Astro surfaces (blog, admin, dashboard — mostly still to come)
+                 — plus the Phase 5 auth stack, all plain scripts loaded by <script>:
+                   supabase.min.js     vendored library, not a CDN link
+                   supabase-client.js  picks dev or prod BY HOSTNAME at runtime — no env vars
+                   auth.js             session state site-wide, and the nav auth control
+                   pwned.js            breach check; auth surfaces ONLY, not loaded by nav.js
+                   auth-pages.css      styling for /sign-in/ and /account/, same scoping rule
+src/pages/       new Astro surfaces. sign-in.astro and account.astro are live; blog, admin
+                 and dashboard still to come. auth-test.astro is a scaffold, delete in Phase 5
 src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages match old ones
 middleware.js    Vercel Edge Middleware, repo root. Serves social-preview meta tags to bots
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
                  the apply/verify runbook plus the dashboard settings SQL cannot reach
+                 email-templates/ — the two auth emails. CONFIGURATION, not code: nothing
+                 reads them, Supabase serves them from its dashboard, and they are committed
+                 because a rebuilt project has none of them
 scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls),
                  verify-email-dns.mjs (npm run verify:email) — the mail DNS gate, needs no credential
+                 verify-redirects.mjs (npm run verify:redirects) — the redirect allowlist, both
+                 projects, no email sent. Run it FIRST whenever an auth link lands in the wrong place
+                 keepalive.mjs — one read a day, or the free project pauses itself
 _originals/      full-resolution source images, gitignored — outside public/ on purpose
 .env             gitignored; shape in .env.example. Needed ONLY by npm run verify:rls.
                  There are deliberately no Supabase env vars in Vercel or pages.yml —
                  anything that must work on both origins decides at runtime instead
 ```
+
+**Two files scoped to the auth pages on purpose.** `pwned.js` and `auth-pages.css` are loaded by
+`/sign-in/` and `/account/` and nowhere else. `styles.css` and `nav.js` are already paid for by all
+16 pages; nothing else needs either of these, and adding them to the shared files would put weight
+on every page to serve two.
 
 **Two kinds of path that look alike.** A file you read or write needs `public/`; a URL inside a page
 never does, because `public/` is stripped when served. `public/nav.js` is the file; `../../nav.js` is
@@ -120,6 +138,12 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
 
 - **Branch per phase**, short names (`feat/…`) — Vercel builds the preview URL from the branch name.
   `main` stays deployable. Merge when the phase verifies.
+- **The database has the same two states as the code, and they move together.** Work happens on the
+  branch and in the **dev** Supabase project; the **prod** project stays as `main` needs it. A
+  migration reaches prod in the phase's go-live step, **immediately before the merge** — early enough
+  that no deployed code ever calls a function that is not there, late enough that it has been tested
+  first. Never after the merge, and never "straight after". Details in
+  [supabase/README.md](supabase/README.md).
 - **`main` is unprotected on purpose.** `deploy.bat` pushes straight to it, so requiring PRs would
   turn every content fix into one. Solo repo.
 - Ask before committing, pushing, or deploying.

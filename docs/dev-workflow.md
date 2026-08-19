@@ -159,9 +159,30 @@ only there, so omitting it means sign-in fails for the people with no fallback.
 
 ⚠️ **Phase 0's one blocked activity, now carried by Phase 3.** The values were settled here in
 advance precisely so they would not be invented under pressure later, and Phase 3 spent them
-unchanged. Applying them is still a dashboard action and still pending — see
+unchanged. Applying them is still a dashboard action — see
 [../supabase/README.md](../supabase/README.md), which holds the runbook and the reason each of the
 four lines exists.
+
+**Since Phase 5 the allowlist is split across the two projects**, and each must actively *refuse*
+what belongs to the other: dev owns `localhost` and the preview alias, prod owns the two live
+origins. Otherwise a laptop can drive the production database through a redirect that resolves.
+
+#### ⚠️ Prove it with `npm run verify:redirects`, and run it FIRST
+
+```bash
+npm run verify:redirects
+```
+
+Both projects, every origin, **no email sent** — `/auth/v1/verify` decides its redirect *before* it
+validates the token, so a deliberately invalid token still exercises the allowlist.
+
+**Run it before investigating any auth link that lands in the wrong place.** A misconfigured
+allowlist and an application bug produce the identical symptom — the visitor ends up on the home
+page — and this tells the two apart in seconds. On 2026-08-19 it came back green and sent the search
+straight at the page code, where the fault actually was.
+
+⚠️ **Every batch also probes an origin that must NOT be allowed.** If that one is honoured too, the
+probe is measuring nothing and the passes mean nothing.
 
 ### One Supabase project until Phase 5, two after
 
@@ -169,6 +190,19 @@ four lines exists.
 no real user data to protect, so one project is simpler and avoids schema-sync work on every
 phase. Split into dev and prod projects *at* Phase 5, when real progress data starts existing —
 not before. Paying that cost up front buys nothing.
+
+**Phase 5 decided the shape: the split happens first, before any client code writes a row**, and
+dev gets its own Resend key rather than running without mail. Prod stays `spehmrgmcdenqdftkyrt`.
+Nothing in the repo names either project — the hostname switch below picks one at runtime, and
+`.env` points one machine at dev. Full runbook, including the two Turnstile widgets, in
+[../supabase/README.md](../supabase/README.md).
+
+⚠️ **The allowlist moves rather than being copied.** Localhost and the preview wildcard belong to
+dev from that point on; leaving them on prod would let a laptop drive the production database
+through a redirect that still resolves.
+
+⚠️ **Both projects then share one Resend allowance of 100/day**, and exhausting it stops
+*production* password resets. It is the number to watch during the phase.
 
 ### How config varies per environment with no build step
 
