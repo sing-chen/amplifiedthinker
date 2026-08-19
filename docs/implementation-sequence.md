@@ -1475,6 +1475,53 @@ would be *silent*, pass the argument explicitly even when it matches the default
 symptom, not a review. Three of this phase's defects came out of reading documentation for something
 adjacent to the thing being built.
 
+### ⚠️ The agent's browser never composites, so nothing animated can be measured, 2026-08-19
+
+**Cost: several rounds of reporting correct CSS as broken.** Worth writing down because the failure
+is confident and consistent rather than obviously flaky, and it will recur on every future phase that
+touches a transition, an animation, or a screenshot.
+
+**The measurement.** In the pane the agent drives, `document.hidden === true` and
+`requestAnimationFrame` fires **0 times per second**. The page is a live DOM that is never painted.
+
+**What that breaks, and how it looks:**
+
+| | Symptom |
+|---|---|
+| **CSS transitions** | Start and never progress. Every transitioned property reads back **frozen at its start value**, indefinitely — `getAnimations()` showed 6 still "running" two seconds after a 0.2s transition. |
+| **Screenshots** | Time out: *"the Browser pane is not displayed, so the page is not compositing frames."* |
+| **Synthetic mouse clicks** | Report success and change nothing. |
+
+**Why it fooled the diagnosis for so long.** The frozen values are not obviously invalid — they are
+the *previous* state, so a dot that had just become `visited` reported the `active` styling it was
+transitioning away from. That reads as "the CSS is applying to the wrong element", which is a
+plausible bug with a plausible cause, and sent the investigation into specificity, duplicate rules,
+stale element references and `--var` resolution. All were fine.
+
+**What settled it, and should have been step one:** enumerating the CSS rules that actually matched
+the element, via `document.styleSheets` and `Element.matches(selectorText)`. That is static — it does
+not depend on rendering at all — and showed the correct single rule on each element immediately.
+
+**The rules taken from it:**
+
+> ⚠️ **Disable transitions before measuring anything that transitions.** Inject
+> `.thing { transition: none !important }`, then read. Otherwise `getComputedStyle` reports the
+> value the element is moving *away from*.
+>
+> ⚠️ **To ask "is this rule applying?", read the CSSOM, not computed style.** Matched-rule
+> enumeration is immune to compositing; computed style is not.
+>
+> ⚠️ **A visual check is not available in this environment.** Not "slower" — unavailable. Anything
+> whose correctness is about how it *looks* is a human's job, which is what CLAUDE.md already says
+> and this is the mechanical reason why.
+
+**This is the third measurement artifact of the phase, and they share a shape**: supabase-js retries
+made a failure test report success; `element.hidden` reported an element hidden while it rendered;
+now transitions report a state the element has left. **Every one produced an accurate reading of the
+wrong thing.** The instrument was working; it was answering a different question than the one being
+asked. The habit that catches all three is to ask what else the reading could mean before acting on
+the first interpretation that fits.
+
 ### ⚠️ The signed-in-with-history state is unreachable by any check in this repo, 2026-08-19
 
 **Three defects reached production and were found by a human using the site within the hour.** None
