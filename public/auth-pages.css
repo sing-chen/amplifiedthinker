@@ -29,6 +29,33 @@
 :root { --status-error-on: var(--white); }
 :root[data-theme="dark"] { --status-error-on: #0E1917; }
 
+/* ⚠️ `hidden` MUST WIN over any display rule in this file.
+ *
+ * The browser hides `[hidden]` with a UA rule of the lowest possible weight, so
+ * ANY author `display` declaration silently defeats it — `.auth-actions` sets
+ * `display: flex`, and every element carrying both stayed on screen with its
+ * `hidden` attribute set and honoured by every script that read it.
+ *
+ * Live on production 2026-08-19: the resend button appeared on the password-
+ * reset panel, where it is deliberately not offered, permanently disabled
+ * because the cooldown that enables it is only started when the button is
+ * meant to exist. It looked like a broken button rather than one that should
+ * not have been there.
+ *
+ * ⚠️ It also defeated the tests. Every check asserted `element.hidden === true`
+ * — the PROPERTY, which was correct throughout. Nothing asked the browser what
+ * it was actually painting. Assert on `getComputedStyle().display` for anything
+ * whose visibility matters.
+ *
+ * `!important` on purpose, and the one place in this file it is warranted:
+ * `hidden` means "this must not render", and no layout rule may outrank it.
+ * Scoped to the auth surfaces, so it cannot reach the other 14 pages.
+ *
+ * The two `[hidden]` rules further down are now redundant. Kept because they
+ * document intent at the element they belong to. */
+[class*="auth-"][hidden],
+.auth-wrap [hidden] { display: none !important; }
+
 .auth-wrap {
   max-width: 480px;
   margin: 0 auto;
