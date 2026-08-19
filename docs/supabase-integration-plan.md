@@ -101,7 +101,7 @@ These live in `public/` and follow the `nav.js` pattern — runtime-loaded, no b
 
 Vendor `supabase.min.js` into the repo alongside [fuse.min.js](../fuse.min.js) so the old static pages can use it without a bundler.
 
-`nav.js` gains the auth UI — sign-in button, avatar, dashboard link. Because it injects into all 16 pages from one source (`nav.js:380`), signed-in state appears site-wide from a single edit.
+`nav.js` gains the auth UI — sign-in button, avatar, dashboard link. Because it injects into every page from one source (`nav.js:380`), signed-in state appears site-wide from a single edit.
 
 ---
 

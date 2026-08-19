@@ -37,9 +37,16 @@ main                          ← always deployable, always what production runs
  ├─ feat/progress-module           (Phase 1)
  ├─ feat/astro-shell               (Phase 2)
  ├─ feat/supabase-schema           (Phase 3)
- ├─ feat/auth-progress-sync        (Phase 5)
+ ├─ feat/auth                      (Phase 5 — merged 947fb19)
+ ├─ feat/legal-pages               (privacy, terms, why-sign-up — 2026-08-19)
  └─ …
 ```
+
+⚠️ **`feat/legal-pages` is the first branch that is not a phase.** It is announcement-blocking work
+that no phase owned: Phase 5 made the site hold personal data, and the sign-up form asks for a name
+and an address with nothing saying what happens to either. The one-branch-per-phase rule is about
+merge boundaries, not about refusing to branch for anything else — the test is whether the work is
+independently verifiable, and this is.
 
 **Keep branch names short and slash-free where possible.** Vercel builds the preview URL from
 the branch name, converting `/` to `-`, so `feat/astro-shell` becomes `…-git-feat-astro-shell-…`.
@@ -258,6 +265,18 @@ without editing tracked code.
 ## GitHub
 
 ### The GitHub Pages origin — a supported second home, not a mirror to retire
+
+> ⚠️ **SUPERSEDED IN PART, 2026-08-18. The retirement decision reverses this section's conclusion,
+> not its content.** The NRD block described below **lifted on 2026-08-18**, 43 days after
+> registration, and the origin was never shared outside the owner's organisation — so the audience
+> that could only reach the site this way is now zero, and the origin is slated for retirement.
+> The decision, and what falls away with it, are in [../CLAUDE.md](../CLAUDE.md) and
+> [../BACKLOG.md](../BACKLOG.md).
+>
+> **What still holds:** the origin is live today, so **keep verifying both**. The capability table
+> below is still correct and still governs what can be built. What no longer holds is "it must stay
+> live" as a permanent constraint — treat "this cannot work on Pages" as a scheduling question, and
+> prefer designs that get simpler when the origin goes.
 
 `https://sing-chen.github.io/amplifiedthinker/` **is live and actively rebuilding from `main`.**
 Confirmed in Phase 0: it serves the full site and already carries the Phase 1 `progress.js`.

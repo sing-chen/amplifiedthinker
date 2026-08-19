@@ -1,8 +1,9 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1, 2, 3 and 4 live on both origins. **Phase 5 (Auth) is built and
-verified against the dev project, on `feat/auth`, uncommitted and not merged.** The remaining work is
-the Stage 3 checks and the live cutover ·
+**Status:** In progress — Phases 0, 1, 2, 3, 4 and **5 live on both origins**. Phase 5 merged as
+`947fb19`; seven post-release defects were found by hand the same day and all fixed. **What remains
+before the phase is closed is the announcement**, and the legal pages that had to exist before it —
+built on `feat/legal-pages` (2026-08-19), not yet merged ·
 **Last updated:** 2026-08-19
 
 ⚠️ **The step-by-step runsheet for Phase 5 is not in this repo** — it is an artifact, *Phase 5
@@ -960,7 +961,7 @@ one browser on one device — actually goes away.
 | Activity | What it does, and why |
 |---|---|
 | Build `auth.js` and `supabase-client.js`; vendor `supabase.min.js` | Client foundation. Vendoring matches the existing `fuse.min.js` convention so static pages work without a bundler. |
-| Add sign-in UI to `nav.js` | One edit puts auth state on all 16 pages, because the nav is injected from a single source. |
+| Add sign-in UI to `nav.js` | One edit puts auth state on every page, because the nav is injected from a single source. |
 | Switch `progress.js` to Supabase for signed-in users | The actual feature. ⚠️ Guests do **not** keep working as before — see "Guests lose progress entirely" below. |
 | ~~Build the one-time localStorage import~~ | **Dropped 2026-08-18, after being built and passing its tests.** Old keys are left inert instead. Reasoning below — read it before rebuilding this. |
 | Keep theme in localStorage; sync to profile as a convenience | A DB round-trip before first paint would flash the wrong theme on every page load. **No migration needed** — `profiles.theme` already exists, added in Phase 3 precisely so this phase would not need one. |
@@ -968,9 +969,9 @@ one browser on one device — actually goes away.
 | **Decide how open signup is protected, before re-enabling it** | **Signup is currently switched off** in Supabase → Authentication (2026-08-18), because Phase 4 finished testing and nothing user-facing needs it until this phase. Turning it back on is a Phase 5 decision with a cost attached — see below. **✅ Decided: Cloudflare Turnstile, on the sign-in surface only.** |
 | **Delete `src/pages/auth-test.astro`** | **Carried forward from Phase 3**, and recorded here rather than only in that phase's log, because this is the list someone doing Phase 5 will actually read. It is a scaffold, and once `auth.js` and the real sign-in UI exist it is a second, diverging implementation of client setup. **Mine it before deleting it:** it holds working patterns for session handling, `onAuthStateChange`, the signup-trigger check, and RLS assertions that both admin and non-admin paths were verified against. **Mining done** — `selfUrl()` and the session handling are in `auth.js`. Deletion is still outstanding. |
 
-**Six activities were added on 2026-08-19 that the plan above never named.** None was scope creep for
-its own sake — the first was needed to stop maintaining test accounts by hand, and each one made the
-next visible. Full accounts are in the progress log below.
+**Seven activities were added on 2026-08-19 that the plan above never named.** None was scope creep
+for its own sake — the first was needed to stop maintaining test accounts by hand, and each one made
+the next visible. Full accounts are in the progress log below.
 
 | Added activity | Why it was not in the plan |
 |---|---|
@@ -980,6 +981,7 @@ next visible. Full accounts are in the progress log below.
 | ⚠️ **Two silent link defects fixed** | A reset link signed you in without showing the password form; a spent confirmation link did the same. Both looked like success. |
 | **Current password required to change it**, and other devices signed out | Was on the backlog. Building the delete control put a gated action beside an ungated one, and the ungated one protected more. |
 | **Breached-password refusal** (`public/pwned.js`) | Supabase's own version needs the Pro plan. Same corpus, done in the browser. |
+| **The privacy, terms and why-sign-up pages** | ⚠️ **Announcement-blocking, and no phase owned them.** This is the first phase to hold personal data, and the sign-up form asks for a name and an address with nothing on the site saying what happens to either. Two backlog entries specified them; both turned out incomplete. |
 
 **Done when:** a signed-in user works through a plan on one device, opens a second device, and
 resumes from the same place. **Test both directions** — the failure mode here is silent truncation,
@@ -1006,7 +1008,7 @@ non-interactive with no image puzzles, where hCaptcha's free tier serves them ro
 a cookie-based accessibility workaround; and Cloudflare already runs the zone, so no eighth vendor.
 
 **The widget loads on the sign-in surface only, never from `nav.js`.** In the nav it would add a
-`challenges.cloudflare.com` request to all 16 pages for every guest. Scoped this way a network
+`challenges.cloudflare.com` request to all 19 pages for every guest. Scoped this way a network
 blocking that host costs account creation and nothing else — which is not hypothetical here.
 
 **One project holds one captcha secret**, and Turnstile hostnames take no wildcards, so covering
@@ -1651,6 +1653,105 @@ backstop rather than a defence, since it caps volume without distinguishing who 
 is chosen, it belongs in the same change that re-enables signup — retrofitting it means running open
 for however long the gap is.
 
+### The legal pages, and what a sibling site settled that this one could not, 2026-08-19
+
+Built on `feat/legal-pages`: `public/privacy.html`, `public/terms.html`, `public/why-sign-up.html`,
+hand-written in `public/` alongside the other 16. **Announcement-blocking**, and the reason is
+narrow: Phase 5 is the first time this site holds personal data, and the sign-up form asks for a
+name and an address with nothing on the site saying what happens to either.
+
+**Two backlog entries specified the work. Both were wrong in ways only writing the page exposed.**
+That is the finding worth keeping — not the pages themselves.
+
+#### The sibling site answered what this repo could not
+
+Promptly (`G:\My Drive\…\websites\promptly`, `dist/privacy/`, `dist/terms/`) is run by the same
+person under the same law, and its legal pages are considerably more rigorous than the backlog entry
+that specified ours. Reading it settled two facts that were about to become a blocking question —
+**Scots law and Scottish courts**, and the **UK GDPR / DPA 2018** framing — and surfaced four
+omissions that were not optional:
+
+| Missing | Why it mattered |
+|---|---|
+| **Server logs** | Providers keep IP, user-agent, timestamps and paths. The draft said guests leave no trace anywhere. ⚠️ **Wrong, and wrong in the direction that matters** — the reassuring direction. |
+| **An Article 6 legal basis table** | Contract can only be relied on where there *is* one, so it cannot cover anyone reading the site without an account. Those purposes run on legitimate interests and have to say so. |
+| **International transfers** | Accounts and mail in Ireland; hosting, DNS and the bot check global, including the US. Article 46 safeguards. |
+| **Rights, and the ICO** | Including the honest limit for guests: we cannot tell which log entries are theirs, and Article 11 does not require collecting more data in order to find out. |
+
+⚠️ **The lesson is about backlog entries, not about privacy law.** Both entries were written months
+of thinking ahead of the page and read as complete — one carried a full table of what was stored, the
+other a full cookie inventory. Neither was complete, and neither *looked* incomplete. **A checklist
+written before the work does not become the work.**
+
+#### Two things were checked rather than assumed, and both changed the page
+
+1. **There is no cookie banner, and the page argues it rather than asserting it.** PECR governs
+   storing *anything* on a device, not cookies specifically — so the question is never "is it a
+   cookie?" but "what is stored, and is it necessary?". Everything this site writes is either
+   strictly necessary or a setting the reader chose. **Vercel Web Analytics stores nothing on the
+   device at all**, which is why the regulations are not engaged by it: no cookie, no browser
+   storage, visitors told apart by a request hash discarded after 24 hours. The backlog flagged this
+   as the one to check rather than assume, and checking it is what turned an assertion into an
+   argument.
+2. ⚠️ **Google Fonts was absent from the inventory entirely.** All 19 pages pull two typefaces from
+   `fonts.googleapis.com`, disclosing the visitor's IP to Google on every page view, account or not.
+   **It is the one third party every visitor touches** — more reach than Supabase, Resend or
+   Turnstile — and it was in neither backlog entry. Named on the page rather than omitted;
+   self-hosting logged.
+
+**One promise had to be reconciled rather than repeated.** The sign-up form says the only mail is
+confirmation and reset. A privacy notice that changes materially has to reach account holders, and
+Promptly promises exactly that. Both pages now name that notice as the single exception and say it
+is not marketing, so the form's promise stays true instead of quietly becoming false.
+
+#### Two wiring patterns carried across, and one deliberately not
+
+✅ **Deep links into a form mode.** `/sign-in/#sign-up` and `/sign-in/#forgot` now open on the right
+form. Promptly's comment names the failure precisely: without it the deep links are **cosmetic** —
+every one lands on the sign-in form and the reader, who has already decided, has to find the mode
+themselves. We had that defect the moment the why-sign-up CTA existed.
+
+The hash seeds `mode`; `settle()` already calls `setMode(mode)` when it shows the form, and that one
+call is what keeps every `hidden`/`required` pair in step. ⚠️ **A `hashchange` listener was added on
+top, which Promptly does not have** — the seed fires only on load, so changing the hash on an open
+page left the form contradicting the address bar. Guarded to exact matches *and* to the form panel
+being the visible one, **because Supabase writes and clears that same hash during recovery**; a loose
+listener would repaint the form underneath the recovery panel. Verified that clearing the hash leaves
+the mode alone.
+
+✅ **Both audiences in one static file.** `why-sign-up.html` carries a guest half and a signed-in
+half and shows one. Promptly's reasoning is the load-bearing part: **a static page cannot tell a
+visitor with no account from one who is simply not signed in on this device.** Guest is the default
+in the markup, so the page still reads correctly if the script never runs.
+
+⚠️ **It costs a guest nothing, and that was verified rather than assumed.** `nav.js` loads the auth
+stack only on a peeked session or on `/sign-in/` and `/account/` (`nav.js:613`), so `supabase.min.js`
+is never fetched for the audience the page is written for. Confirmed in the network log.
+
+❌ **Not carried: Promptly puts no terms or privacy link on its sign-up form**, footer only. This site
+links both from the sign-up panel, because that is the moment the data is handed over and the account
+page arrives after the decision. No consent checkbox either — nothing there is optional processing,
+so a tickbox would be theatre in front of the one action the page exists for.
+
+#### The `[hidden]` trap caught the same way twice, and was seen coming the second time
+
+`.doc-cta` sets `display: flex`, which outranks the browser's own `[hidden]` rule — so the guest CTA
+would have stayed fully visible while `hidden` was set on it. **Identical to the resend button that
+shipped with its countdown painted over it.** A scoped `[hidden] { display: none !important }` was
+written *before* testing this time, and the test asserts computed `display`, not the property.
+
+⚠️ **One measurement was nearly chased as a bug.** `pageScrollsX` reported `true` on `terms.html`
+with `innerWidth: 0` — the browser pane reports a zero viewport when it is not displayed, so every
+width-derived reading is meaningless until `resize_window` forces one. Same root cause as the frozen
+transitions. **Check `innerWidth` before believing any layout measurement from that pane.**
+
+#### What was left open
+
+**No self-serve export.** Promptly satisfies the Article 20 portability right with a download button;
+this site promises a manual response within one month instead. Honest and lawful, but it is a
+standing obligation on a person rather than a feature — one query and one JSON file would retire it.
+Logged, and a natural fit with Phase 9, which is already building on the same table.
+
 ### Announcement planning
 
 This is the only place in the whole plan where existing behaviour gets *worse* for someone:
@@ -1664,6 +1765,16 @@ than letting people discover the banner silently vanished.
 The one-time import was dropped, which means a returning visitor loses the banner *and* whatever
 position it was offering, with nothing offering to claim it. Say that plainly. Do not imply anything
 is recoverable by signing in, because it is not.
+
+✅ **The argument no longer has to fit in the announcement, as of 2026-08-19.** `why-sign-up.html`
+now makes it in full — guest against account, in one table, opening with what a guest keeps rather
+than what they lose. Link to it rather than restating it, and let the announcement do the one thing
+the page cannot: acknowledge that something people had is gone.
+
+⚠️ **Do not announce before `feat/legal-pages` is merged.** The announcement drives people to a
+sign-up form that asks for a name and an email address; the pages saying what happens to both are on
+that branch. The order is the whole point — a dead privacy link on the sign-up form is worse than no
+link at all, and it appears exactly where someone is deciding whether to trust the site.
 
 ---
 

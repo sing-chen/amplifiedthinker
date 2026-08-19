@@ -30,9 +30,16 @@ The project has a written architecture and a phased plan. Read them rather than 
 ## Where things live
 
 ```
-public/          the 16 hand-written pages, shipped byte-for-byte untouched by Astro
+public/          the 19 hand-written pages, shipped byte-for-byte untouched by Astro
                  index/about/future-skills/my-people/news/search .html, skills/**,
                  nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt, sitemap.xml
+                 — plus three added 2026-08-19, hand-written for the same reasons the
+                   other 16 are: static content, no auth logic, identical on both origins
+                   privacy.html        UK GDPR / DPA 2018. ⚠️ Says what the site ACTUALLY
+                                       does — changing analytics, fonts, storage or any
+                                       processor means changing this page in the same commit
+                   terms.html          Scots law. Mirrors the sibling Promptly site
+                   why-sign-up.html    guest vs account. Carries BOTH halves and shows one
                  — plus the Phase 5 auth stack, all plain scripts loaded by <script>:
                    supabase.min.js     vendored library, not a CDN link
                    supabase-client.js  picks dev or prod BY HOSTNAME at runtime — no env vars
@@ -40,7 +47,9 @@ public/          the 16 hand-written pages, shipped byte-for-byte untouched by A
                    pwned.js            breach check; auth surfaces ONLY, not loaded by nav.js
                    auth-pages.css      styling for /sign-in/ and /account/, same scoping rule
 src/pages/       new Astro surfaces. sign-in.astro and account.astro are live; blog, admin
-                 and dashboard still to come. auth-test.astro is a scaffold, delete in Phase 5
+                 and dashboard still to come. Both scaffolds were deleted 2026-08-19 —
+                 auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is
+                 ever wanted back (auth-test holds RLS checks nothing has replaced)
 src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages match old ones
 middleware.js    Vercel Edge Middleware, repo root. Serves social-preview meta tags to bots
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
@@ -61,7 +70,7 @@ _originals/      full-resolution source images, gitignored — outside public/ o
 
 **Two files scoped to the auth pages on purpose.** `pwned.js` and `auth-pages.css` are loaded by
 `/sign-in/` and `/account/` and nowhere else. `styles.css` and `nav.js` are already paid for by all
-16 pages; nothing else needs either of these, and adding them to the shared files would put weight
+19 pages; nothing else needs either of these, and adding them to the shared files would put weight
 on every page to serve two.
 
 **Two kinds of path that look alike.** A file you read or write needs `public/`; a URL inside a page
@@ -128,6 +137,17 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
 - **`is_admin` is settable only where `auth.uid()` is null** — the dashboard SQL editor. A trigger
   rejects the account changing its own. Do not add `force row level security` to `profiles`: it
   would apply RLS to the table owner and close that same door.
+- **`[hidden]` is the weakest rule in the cascade, and it has cost two defects.** The browser's own
+  `[hidden] { display: none }` is a UA rule, so **any** author `display` beats it — `.auth-actions`
+  and `.doc-cta` both set `display: flex`, and both would render a `hidden` element in full. Any new
+  component that sets `display` **and** gets toggled needs an explicit override; `auth-pages.css` and
+  `why-sign-up.html` each carry one. ⚠️ **Assert computed `display`, never `element.hidden`** — the
+  property was correct in both defects, which is exactly why the tests passed.
+- **The privacy page is a description of the system, not boilerplate.** `public/privacy.html` names
+  every processor, every device-storage key, every outbound third-party request and the legal basis
+  for each. Adding analytics, a font host, a CDN, an embed, a storage key or a new table makes it
+  **wrong**, not merely out of date. Change it in the same commit. The sibling Promptly site makes
+  the same statements about the same person under the same law — check it before editing either.
 - **Structural changes orphan `.claude/commands/`.** Both `/add-news` and `/add-skill` reference
   concrete file paths. Phase 1 broke them by adding `progress.js`; Phase 2 broke them again by moving
   everything into `public/`. Check them after any move or new shared module.
