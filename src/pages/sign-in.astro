@@ -1,0 +1,908 @@
+---
+// The one auth surface: sign in, create an account, request a password reset,
+// and set a new one after following the emailed link.
+//
+// ⚠️ THE TURNSTILE WIDGET LIVES HERE AND NOWHERE ELSE. It is the only page that
+// loads challenges.cloudflare.com. In nav.js it would put a third-party request
+// on all 16 pages for every guest; scoped here, a network that blocks that host
+// costs account creation and nothing else — which matters on a site whose
+// audience has already been behind corporate filtering once.
+//
+// Every <script> carries is:inline. See BaseLayout.astro: bundled as a module,
+// nav.js's document.currentScript is null and every nav link breaks.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout
+  title="Sign in · Amplified Thinker"
+  description="Sign in to keep your learning progress across every device."
+  noindex={true}
+>
+  <link slot="head" rel="stylesheet" href={`${base}/auth-pages.css`} />
+  <!--
+    ⚠️ is:inline, like every script on this site. Bundled as a module it would
+    be deferred behind the Astro graph and its global would not exist when the
+    submit handler below looks for it — and the failure would be silent, since
+    every caller treats a missing AmplifiedPwned as "check unavailable".
+  -->
+  <script slot="head" is:inline src={`${base}/pwned.js`}></script>
+  <section class="auth-wrap">
+
+    <!--
+      ── A link that no longer works ────────────────────────────────
+      Sits ABOVE whichever panel is showing rather than replacing it, because
+      the useful next action is always on the form underneath. It is toggled on
+      its own and is not part of show().
+
+      ⚠️ Never names a lifetime. Confirmation links last 24 hours and reset
+      links one hour, and nothing in the fragment says which kind this was.
+    -->
+    <div class="auth-panel auth-panel-danger" id="auth-link-dead" hidden>
+      <h2 id="auth-link-dead-title">That link no longer works</h2>
+      <p class="auth-muted" id="auth-link-dead-why"></p>
+      <!--
+        Varies with whether there is a session. Signed out, the next action is
+        the form underneath. Signed in, there is no next action at all and
+        "start again below" would send someone to re-request something they
+        already have.
+      -->
+      <p class="auth-muted" id="auth-link-dead-next">
+        Nothing has gone wrong with your account. Start again below and a fresh
+        link will be sent.
+      </p>
+      <div class="auth-actions" id="auth-link-dead-actions" hidden>
+        <a class="auth-btn" href="../index.html">Continue to the site</a>
+      </div>
+    </div>
+
+    <div class="auth-panel" id="auth-loading">
+      <p class="auth-muted">Loading&hellip;</p>
+    </div>
+
+    <!-- ── Signed out ────────────────────────────────────────────── -->
+    <div class="auth-panel" id="auth-form-panel" hidden>
+      <h1 id="auth-heading">Sign in</h1>
+      <p class="auth-lede" id="auth-lede">
+        Your progress follows you to every device you sign in on.
+      </p>
+
+      <form id="auth-form" novalidate>
+        <!--
+          Sign-up only. Lands in raw_user_meta_data as `display_name`, which the
+          Phase 3 signup trigger already reads into profiles.display_name - so
+          this needs no migration. The 60-character cap matches the CHECK
+          constraint on that column; longer and the trigger's insert fails
+          AFTER the auth user has been created.
+        -->
+        <div id="auth-name-row" hidden>
+          <label for="auth-name">First name</label>
+          <input type="text" id="auth-name" autocomplete="given-name" maxlength="60"
+                 placeholder="What should we call you?" />
+          <p class="auth-hint">
+            So your account emails aren&rsquo;t addressed to nobody.
+          </p>
+        </div>
+
+        <label for="auth-email">Email</label>
+        <input type="email" id="auth-email" autocomplete="username" required
+               placeholder="you@example.com" />
+        <!--
+          Sits under the EMAIL field, not the name field, because that is what
+          it is a promise about. The negative half is the load-bearing half:
+          asking for a name and an address at sign-up reads as the first step of
+          a mailing list unless something says otherwise. Naming the two actual
+          emails makes the boundary checkable in a way "nothing else" never was.
+        -->
+        <p class="auth-hint" id="auth-email-promise" hidden>
+          Sign-up confirmation and password resets. Never a newsletter.
+        </p>
+
+        <div id="auth-password-row">
+          <label for="auth-password">Password</label>
+          <div class="auth-pw">
+            <input type="password" id="auth-password" autocomplete="current-password"
+                   required minlength="8" />
+            <button type="button" class="auth-pw-toggle" data-pw-for="auth-password"
+                    aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+          <p class="auth-hint" id="auth-password-hint" hidden>At least 8 characters.</p>
+        </div>
+
+        <div id="auth-turnstile" class="auth-turnstile"></div>
+        <p class="auth-hint auth-blocked" id="auth-turnstile-blocked" hidden>
+          The security check could not load. It is served by Cloudflare, and some
+          workplace networks block it. Signing in and creating an account both
+          need it &mdash; try a different network, or
+          <a href="mailto:singchen@amplifiedthinker.com">email me</a> and I will
+          sort it out directly.
+        </p>
+
+        <button type="submit" id="auth-submit">Sign in</button>
+      </form>
+
+      <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p>
+
+      <div class="auth-switch">
+        <button type="button" class="auth-link" id="auth-to-signup">Create an account</button>
+        <button type="button" class="auth-link" id="auth-to-signin" hidden>I already have an account</button>
+        <button type="button" class="auth-link" id="auth-to-forgot">Forgotten your password?</button>
+      </div>
+    </div>
+
+    <!-- ── Setting a new password, after an emailed link ─────────── -->
+    <div class="auth-panel" id="auth-recover-panel" hidden>
+      <h1>Choose a new password</h1>
+      <p class="auth-lede">You followed a reset link, so you can set a new password now.</p>
+      <form id="auth-recover-form" novalidate>
+        <label for="auth-new-password">New password</label>
+        <div class="auth-pw">
+          <input type="password" id="auth-new-password" autocomplete="new-password"
+                 required minlength="8" />
+          <button type="button" class="auth-pw-toggle" data-pw-for="auth-new-password"
+                  aria-pressed="false" aria-label="Show password">Show</button>
+        </div>
+        <p class="auth-hint">At least 8 characters.</p>
+        <button type="submit" id="auth-recover-submit">Save new password</button>
+      </form>
+      <p class="auth-status" id="auth-recover-status" role="status" aria-live="polite"></p>
+    </div>
+
+    <!--
+      ── Waiting on an email ────────────────────────────────────────
+      Signing up and asking for a reset both end here, and it REPLACES the form
+      rather than sitting under it. Leaving the email and password fields on
+      screen invites a second attempt, which the 60-second per-recipient
+      throttle then swallows silently - the second send looks identical to a
+      broken one. The only useful next action is in an inbox, so the panel says
+      that and offers nothing else.
+
+      The resend button below is the exception, added 2026-08-19 after four dead
+      links in one morning of testing. It starts on a countdown, which is what
+      makes it safe rather than the same trap with a button on it.
+    -->
+    <div class="auth-panel" id="auth-sent-panel" hidden>
+      <h1 id="auth-sent-heading">Check your email</h1>
+      <p class="auth-lede" id="auth-sent-message"></p>
+      <p class="auth-muted" id="auth-sent-address"></p>
+      <p class="auth-muted">
+        It can take a minute to arrive, and it is worth a look in spam.
+      </p>
+
+      <!--
+        ⚠️ The button starts ALREADY counting down, and that is the whole point
+        of having one. An email was just sent to get here, so a pressable button
+        guarantees the first press lands inside Supabase's 60-second
+        per-recipient throttle — where the send is silently swallowed and looks
+        identical to a failure. Counting down visibly says "not yet" instead of
+        letting someone discover it.
+
+        This is also why there was no resend button at all until 2026-08-19: the
+        objection was right, and the answer was the cooldown rather than
+        leaving people stuck.
+      -->
+      <div class="auth-actions" id="auth-resend-row" hidden>
+        <button type="button" class="auth-btn auth-btn-quiet" id="auth-resend" disabled>
+          Send it again
+        </button>
+      </div>
+      <p class="auth-status" id="auth-resend-status" role="status" aria-live="polite"></p>
+      <!--
+        Only shown for sign-up. Someone who leaves now is still a guest, and
+        guests no longer get progress saved at all - so browsing on before
+        confirming means the next twenty minutes of work is not kept. Better
+        said on the button than discovered afterwards.
+      -->
+      <p class="auth-muted" id="auth-sent-guest-note" hidden>
+        You can carry on looking around in the meantime, but until you confirm
+        and sign in you are still browsing as a guest &mdash; so nothing you do
+        will be saved yet.
+      </p>
+      <div class="auth-actions">
+        <a class="auth-btn auth-btn-quiet" href="../index.html" id="auth-sent-home">Back to the site</a>
+      </div>
+    </div>
+
+    <!--
+      No "you're signed in" panel. A successful sign-in goes straight to the
+      home page - the nav avatar is the confirmation, and a page whose only
+      content is "that worked" is a step to click through rather than an
+      answer. The one exception is the recovery flow below, which needs to show
+      that the password actually changed before it moves.
+    -->
+
+  </section>
+
+
+  <!--
+    Turnstile, explicit rendering. It must be explicit rather than automatic
+    because the sitekey is not known until supabase-client.js has decided which
+    project this origin talks to - dev and prod have different widgets, since a
+    Supabase project stores exactly one captcha secret.
+  -->
+  <script is:inline>
+    window.__turnstileReady = false;
+    window.onAmplifiedTurnstileLoad = function () {
+      window.__turnstileReady = true;
+      document.dispatchEvent(new CustomEvent('amplified:turnstile-ready'));
+    };
+  </script>
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onAmplifiedTurnstileLoad"
+    async defer is:inline></script>
+
+  <script is:inline>
+    (function () {
+      'use strict';
+
+      var el = function (id) { return document.getElementById(id); };
+
+      /* ---- a dead link, read BEFORE anything is awaited -------------------
+       *
+       * ⚠️ THIS MUST STAY AT THE TOP AND STAY SYNCHRONOUS.
+       *
+       * A spent or expired link comes back as
+       *   #error=access_denied&error_code=otp_expired&error_description=...
+       * in the URL FRAGMENT. Not a rejected promise, not an HTTP error — there
+       * is nothing to catch anywhere.
+       *
+       * supabase-js strips the fragment as part of its own async
+       * initialisation. Read it after the first await and it is already gone,
+       * at which point a dead link is indistinguishable from a working one that
+       * quietly did nothing. That is exactly what happened four times in
+       * testing on 2026-08-19 before this existed, with the page saying nothing
+       * on any of them.
+       */
+      var linkError = (function () {
+        var hash = window.location.hash || '';
+        // Only touch it when it is an error. A live link carries the tokens in
+        // this same fragment and stripping those would break the sign-in.
+        if (hash.indexOf('error') === -1) return null;
+
+        var params;
+        try { params = new URLSearchParams(hash.replace(/^#/, '')); }
+        catch (e) { return null; }
+
+        var code = params.get('error_code');
+        var kind = params.get('error');
+        if (!code && !kind) return null;
+
+        // Clear it so a reload does not re-accuse a link the person has since
+        // stopped using. history.replaceState leaves no entry behind.
+        try {
+          window.history.replaceState(null, '',
+            window.location.pathname + window.location.search);
+        } catch (e) {}
+
+        return { code: code, kind: kind, description: params.get('error_description') };
+      })();
+
+      /*
+       * Did this page load because someone followed a PASSWORD RESET link?
+       *
+       * ⚠️ THIS MUST ALSO STAY SYNCHRONOUS, AND FOR A SECOND REASON.
+       *
+       * Reason one is the same as above: supabase-js strips the fragment during
+       * its own async init, so this is unreadable after the first await.
+       *
+       * Reason two is a race, found on 2026-08-19 by clicking a real reset link.
+       * A recovery link DOES establish a session — it has to, since setting a
+       * new password requires being authenticated — so the generic "you have a
+       * session" path in settle() fires and sends the visitor to the home page.
+       * The PASSWORD_RECOVERY listener in start() was supposed to get there
+       * first and it cannot: auth.js subscribes during its own init(), before
+       * this page subscribes, and supabase-js notifies subscribers in
+       * registration order. So settle() ran first, every time, and the whole
+       * flow read as "the reset link just logs me in".
+       *
+       * Registering earlier would only make the race narrower. Reading the
+       * intent off the URL removes it: the answer is already in the address bar
+       * before any listener exists.
+       *
+       * ⚠️ Do NOT clear the fragment here, unlike linkError above. The tokens
+       * live in this same fragment and supabase-js has not read them yet.
+       */
+      var arrivedForRecovery = (function () {
+        var hash = window.location.hash || '';
+        if (hash.indexOf('type=recovery') === -1) return false;
+        try {
+          return new URLSearchParams(hash.replace(/^#/, '')).get('type') === 'recovery';
+        } catch (e) {
+          return false;
+        }
+      })();
+
+      /*
+       * ── Surviving a reload ────────────────────────────────────────────────
+       *
+       * The fragment above is readable EXACTLY ONCE. supabase-js strips it as
+       * soon as it has taken the tokens, so a reload of the "Choose a new
+       * password" page has no `type=recovery` left to find — while the session
+       * IS still there. settle() then takes the ordinary signed-in path and
+       * sends the visitor to the home page, password unchanged, with nothing
+       * on screen explaining where the form went.
+       *
+       * ⚠️ There is no way back from that page, which is why this is worth ten
+       * lines. The account page can change a password, but since 2026-08-19 it
+       * requires the CURRENT one — and not having it is why the person is
+       * resetting. So a stray reload costs them the whole round trip: request
+       * another email, wait, click again.
+       *
+       * sessionStorage rather than localStorage, deliberately. The flag has to
+       * outlive a reload and must NOT outlive the tab: a later, unrelated visit
+       * finding this set would be shown a password form it cannot explain.
+       */
+      var RECOVERY_KEY = 'amplified_pw_recovery';
+
+      // Belt as well as braces. sessionStorage already dies with the tab, but a
+      // tab left open for hours is normal and a recovery that old is not.
+      var RECOVERY_TTL_MS = 30 * 60 * 1000;
+
+      function markRecovering() {
+        try { window.sessionStorage.setItem(RECOVERY_KEY, String(Date.now())); } catch (e) {}
+      }
+
+      function clearRecovering() {
+        try { window.sessionStorage.removeItem(RECOVERY_KEY); } catch (e) {}
+      }
+
+      function recoveryFlagLive() {
+        var raw;
+        // Private modes and blocked storage both throw rather than return null.
+        try { raw = window.sessionStorage.getItem(RECOVERY_KEY); } catch (e) { return false; }
+        if (!raw) return false;
+
+        var at = parseInt(raw, 10);
+        if (!at || (Date.now() - at) > RECOVERY_TTL_MS) { clearRecovering(); return false; }
+        return true;
+      }
+
+      if (arrivedForRecovery) markRecovering();
+
+      function showLinkError(err, session) {
+        if (!err) return;
+
+        // ⚠️ GoTrue returns otp_expired for BOTH "already used" and "ran out of
+        // time" — the auth logs distinguish them, the fragment does not. So the
+        // copy has to cover both without guessing, and without naming a
+        // lifetime it cannot know.
+        var why = err.code === 'otp_expired'
+          ? 'Links can only be used once, and they do not last indefinitely. ' +
+            'This one had already been used, or it had run out — including if ' +
+            'you opened an older email when a newer one had been sent.'
+          : 'The link could not be accepted. It may have been altered in ' +
+            'transit, which some corporate mail filters do.';
+
+        el('auth-link-dead-why').textContent = why;
+
+        // Signed in already — which is the common way to arrive here, because
+        // the usual cause of a spent link is having successfully used it a
+        // moment ago. Telling that person to "start again below" would send
+        // them to re-request a confirmation they no longer need.
+        if (session) {
+          el('auth-link-dead-next').textContent =
+            'You are already signed in, so there is nothing you need to do. ' +
+            'The link had simply been used — most likely by you, just now.';
+          el('auth-link-dead-actions').hidden = false;
+        }
+
+        el('auth-link-dead').hidden = false;
+      }
+
+      // ---- reveal a password field ----------------------------------------
+      //
+      // A typo in a password field is invisible. On sign-up it is worse than
+      // invisible: the account is created with a password the person cannot
+      // reproduce, and the only way back is a reset email.
+      //
+      // Delegated on document rather than bound per button, so it needs no
+      // ordering against the auth stack (which nav.js appends with defer) and
+      // keeps working if a panel is re-rendered.
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest && e.target.closest('.auth-pw-toggle');
+        if (!btn) return;
+
+        var input = document.getElementById(btn.getAttribute('data-pw-for'));
+        if (!input) return;
+
+        var reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+        btn.textContent = reveal ? 'Hide' : 'Show';
+        btn.setAttribute('aria-pressed', reveal ? 'true' : 'false');
+        btn.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+
+        // Clicking the button takes focus off the field. Put it back, caret at
+        // the end, so someone mid-way through typing is not interrupted.
+        var pos = input.value.length;
+        input.focus();
+        try { input.setSelectionRange(pos, pos); } catch (err) {}
+      });
+
+
+      var panels = {
+        loading: el('auth-loading'),
+        form:    el('auth-form-panel'),
+        recover: el('auth-recover-panel'),
+        sent:    el('auth-sent-panel')
+      };
+
+      // Relative on purpose. This page is served from /sign-in/ on Vercel and
+      // from /amplifiedthinker/sign-in/ on GitHub Pages, and '../index.html'
+      // is correct under both. An absolute '/index.html' would land outside
+      // the site on the Pages origin.
+      var HOME = '../index.html';
+
+      var statusEl = el('auth-status');
+      var submitBtn = el('auth-submit');
+      var mode = 'signin';           // signin | signup | forgot
+      var captchaToken = null;
+      var widgetId = null;
+
+      function show(name) {
+        Object.keys(panels).forEach(function (k) {
+          panels[k].hidden = (k !== name);
+        });
+      }
+
+      function setStatus(text, kind) {
+        statusEl.textContent = text || '';
+        statusEl.className = 'auth-status' + (kind ? ' ' + kind : '');
+      }
+
+      /* ---- resending a confirmation --------------------------------------
+       *
+       * ⚠️ /auth/v1/resend is captcha-protected, confirmed from the auth logs
+       * on 2026-08-19: a call without a token comes back
+       * `400 captcha_failed — no captcha_token found`. It needs the same fresh
+       * Turnstile token as signup and sign-in.
+       */
+      var RESEND_COOLDOWN = 60;
+      var resendEmail = null;
+      var resendTimer = null;
+
+      function startCooldown(seconds) {
+        var left = seconds;
+        var btn = el('auth-resend');
+
+        function tick() {
+          if (left <= 0) {
+            btn.disabled = false;
+            btn.textContent = 'Send it again';
+            resendTimer = null;
+            return;
+          }
+          btn.disabled = true;
+          btn.textContent = 'Send it again in ' + left + 's';
+          left--;
+          resendTimer = setTimeout(tick, 1000);
+        }
+
+        if (resendTimer) clearTimeout(resendTimer);
+        tick();
+      }
+
+      el('auth-resend').addEventListener('click', function () {
+        var auth = window.AmplifiedAuth;
+        var out = el('auth-resend-status');
+        if (!auth || !resendEmail) return;
+
+        el('auth-resend').disabled = true;
+        out.textContent = 'Sending...';
+        out.className = 'auth-status';
+
+        freshToken().then(function (token) {
+          if (!token) {
+            out.textContent = 'The security check did not complete. Try again in a moment.';
+            out.className = 'auth-status bad';
+            el('auth-resend').disabled = false;
+            return null;
+          }
+          return auth.client().auth.resend({
+            type: 'signup',
+            email: resendEmail,
+            options: { emailRedirectTo: auth.selfUrl(), captchaToken: token }
+          });
+        }).then(function (r) {
+          if (!r) return;
+          if (r.error) {
+            out.textContent = r.error.message;
+            out.className = 'auth-status bad';
+            el('auth-resend').disabled = false;
+            return;
+          }
+          out.textContent = 'Sent. Use the newest email — older links stop working.';
+          out.className = 'auth-status good';
+          startCooldown(RESEND_COOLDOWN);
+        });
+      });
+
+      // Swaps the whole form out for "go and look in your inbox". `waiting` is
+      // then permanent for this page load: there is no session coming, so
+      // nothing else will move the panel on, and the form must not reappear.
+      var waiting = false;
+
+      // `offerResend` is false for a password reset: resend({type:'signup'})
+      // would be the wrong call, and someone who already has an account can
+      // simply ask for another reset from the form.
+      function showSent(heading, message, address, asGuest, offerResend, cooldown) {
+        waiting = true;
+        el('auth-sent-heading').textContent = heading;
+        el('auth-sent-message').textContent = message;
+        el('auth-sent-address').textContent = 'Sent to ' + address + '.';
+
+        resendEmail = offerResend ? address : null;
+        el('auth-resend-row').hidden = !offerResend;
+        el('auth-resend-status').textContent = '';
+        if (offerResend) startCooldown(cooldown);
+        // Only after sign-up. Someone resetting a password already has an
+        // account, so telling them they are a guest would just be wrong.
+        el('auth-sent-guest-note').hidden = !asGuest;
+        el('auth-sent-home').textContent = asGuest
+          ? 'Keep looking around as a guest'
+          : 'Back to the site';
+        setStatus('');
+        show('sent');
+      }
+
+      // ---- Turnstile ------------------------------------------------------
+
+      // ⚠️ A Turnstile token is single-use AND expires after about 5 minutes.
+      //
+      // Solving the challenge on page load looks tidy and is wrong: someone who
+      // takes their time over the form submits a token that has already aged
+      // out, and Supabase rejects it with
+      //
+      //     captcha protection: request disallowed (timeout-or-duplicate)
+      //
+      // which reads like a broken captcha rather than a stale one. Found by
+      // clicking Create account on a page that had been open a while.
+      //
+      // So the widget is rendered with `execution: 'execute'` - it does nothing
+      // until asked - and a fresh token is fetched at the moment of submit.
+      // That also removes the duplicate half of the same error, because every
+      // attempt gets its own token.
+      function renderTurnstile() {
+        if (!window.turnstile || widgetId !== null) return;
+        var cfg = window.AmplifiedSupabase && window.AmplifiedSupabase.config();
+        if (!cfg || /_PENDING$/.test(cfg.turnstileSiteKey)) return;
+
+        widgetId = window.turnstile.render('#auth-turnstile', {
+          sitekey: cfg.turnstileSiteKey,
+          theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
+          // Show nothing unless a challenge is actually required. Managed mode
+          // resolves silently for most visitors, but Turnstile still reserves a
+          // 73px box for a widget it never draws - measured, and it left a
+          // visible hole between the password field and the button.
+          appearance: 'interaction-only',
+          execution: 'execute',
+          callback: function (token) { deliver(token); },
+          'expired-callback': function () { deliver(null); },
+          'timeout-callback': function () { deliver(null); },
+          'error-callback': function () { deliver(null); }
+        });
+      }
+
+      var pending = null;
+      var hasSolved = false;
+
+      function deliver(token) {
+        captchaToken = token;
+        if (token) hasSolved = true;
+        if (pending) { var f = pending; pending = null; f(token); }
+        window.__lastCaptchaToken = token;   // diagnostics only
+      }
+
+      // Resolves with a token seconds old, or null if the challenge could not
+      // be completed. Never rejects: the caller shows a message either way.
+      //
+      // ⚠️ RESET ONLY AFTER A PREVIOUS SOLVE. Calling turnstile.reset() on a
+      // widget that has never executed leaves it in a state where the next
+      // execute() yields a token Cloudflare then rejects as
+      // `timeout-or-duplicate` - which reads as "your captcha is broken" and
+      // sent me looking at token lifetimes for an hour. reset() is for
+      // re-arming a spent widget, not for initialising a fresh one.
+      function freshToken() {
+        return new Promise(function (resolve) {
+          if (!window.turnstile || widgetId === null) { resolve(null); return; }
+
+          pending = resolve;
+          try {
+            if (hasSolved) window.turnstile.reset(widgetId);
+            window.turnstile.execute(widgetId);
+          } catch (e) { deliver(null); return; }
+
+          // If an interactive challenge is shown, the visitor may simply not
+          // finish it. Give up rather than leaving the button disabled forever.
+          setTimeout(function () { if (pending) deliver(null); }, 30000);
+        });
+      }
+
+      document.addEventListener('amplified:turnstile-ready', renderTurnstile);
+
+      // If the script never arrives, say so plainly rather than leaving a
+      // button that silently refuses. Corporate networks do block this host.
+      setTimeout(function () {
+        if (!window.__turnstileReady) el('auth-turnstile-blocked').hidden = false;
+      }, 8000);
+
+      // ---- mode -----------------------------------------------------------
+
+      function setMode(next) {
+        mode = next;
+        setStatus('');
+        var isForgot = next === 'forgot';
+        var isSignup = next === 'signup';
+
+        el('auth-heading').textContent =
+          isForgot ? 'Reset your password' : isSignup ? 'Create an account' : 'Sign in';
+        el('auth-lede').textContent =
+          isForgot ? 'We will email you a link to set a new one.'
+                   : 'Your progress follows you to every device you sign in on.';
+        submitBtn.textContent =
+          isForgot ? 'Send the reset link' : isSignup ? 'Create account' : 'Sign in';
+
+        el('auth-name-row').hidden = !isSignup;
+        el('auth-name').required = isSignup;
+
+        // Sign-up only. On sign-in the person already has an account and knows
+        // what it sends; on the reset form the only email in question is the
+        // one they just asked for.
+        el('auth-email-promise').hidden = !isSignup;
+
+        el('auth-password-row').hidden = isForgot;
+        el('auth-password').required = !isForgot;
+        el('auth-password').autocomplete = isSignup ? 'new-password' : 'current-password';
+        el('auth-password-hint').hidden = !isSignup;
+
+        el('auth-to-signup').hidden = isSignup;
+        el('auth-to-signin').hidden = !isSignup && !isForgot;
+        el('auth-to-forgot').hidden = isForgot;
+      }
+
+      el('auth-to-signup').addEventListener('click', function () { setMode('signup'); });
+      el('auth-to-signin').addEventListener('click', function () { setMode('signin'); });
+      el('auth-to-forgot').addEventListener('click', function () { setMode('forgot'); });
+
+      // ---- breached-password gate ------------------------------------------
+      //
+      // Runs only where a password is CHOSEN — sign-up, and the new password
+      // after a reset. Never on sign-in: someone whose existing password turns
+      // out to be on a list needs to get in so they can change it, and refusing
+      // them at the door would lock them out of the only fix.
+      //
+      // Resolves null to proceed, or a message to show and stop. See
+      // public/pwned.js for why it fails open.
+      function breachedMessage(password) {
+        var p = window.AmplifiedPwned;
+        if (!p) return Promise.resolve(null);
+        return p.check(password).then(function (r) {
+          return r.breached ? p.message(r) : null;
+        });
+      }
+
+      // ---- submit ---------------------------------------------------------
+
+      el('auth-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var auth = window.AmplifiedAuth;
+        if (!auth) { setStatus('Still loading - try again in a moment.', 'bad'); return; }
+
+        var email = el('auth-email').value.trim();
+        var password = el('auth-password').value;
+        var name = el('auth-name').value.trim();
+
+        if (mode === 'signup' && !name) {
+          setStatus('Enter a first name, so your emails are not addressed to nobody.', 'bad');
+          return;
+        }
+        if (!email) { setStatus('Enter your email address.', 'bad'); return; }
+        if (mode !== 'forgot' && password.length < 8) {
+          setStatus('Passwords are at least 8 characters.', 'bad'); return;
+        }
+        submitBtn.disabled = true;
+        setStatus('Working...');
+
+        // `handled` rather than an early return, because both steps below
+        // resolve to null on failure and the chain cannot otherwise tell "the
+        // password was refused" from "no captcha token" — it would print the
+        // Cloudflare message over the breach explanation.
+        var handled = false;
+
+        (mode === 'signup' ? breachedMessage(password) : Promise.resolve(null))
+        .then(function (refusal) {
+          if (refusal) {
+            handled = true;
+            submitBtn.disabled = false;
+            setStatus(refusal, 'bad');
+            return null;
+          }
+          return freshToken();
+        }).then(function (token) {
+          if (handled) return null;
+          if (!token) {
+            submitBtn.disabled = false;
+            setStatus(
+              'The security check did not complete. Try again — if it keeps ' +
+              'failing, your network may be blocking Cloudflare.', 'bad');
+            return null;
+          }
+
+          return mode === 'forgot' ? auth.resetPassword(email, token)
+               : mode === 'signup' ? auth.signUp(email, password, token, name)
+               :                     auth.signIn(email, password, token);
+        }).then(function (r) {
+          if (!r) return;
+          submitBtn.disabled = false;
+
+          if (r.error) {
+            // ⚠️ Not a failure retrying can fix, and the action it calls for —
+            // send that link again — is not otherwise on screen. Swap the form
+            // for the same panel signup uses, with no cooldown: whatever was
+            // sent was sent long enough ago that the throttle has cleared.
+            var code = r.error.code || r.error.error_code;
+            if (code === 'email_not_confirmed' ||
+                /not confirmed/i.test(r.error.message || '')) {
+              showSent('Confirm your email first',
+                       'This account exists but has not been confirmed yet. ' +
+                       'The link was sent when you signed up.',
+                       email, true, true, 0);
+              return;
+            }
+            setStatus(r.error.message, 'bad');
+            return;
+          }
+
+          if (mode === 'forgot') {
+            showSent('Check your email',
+                     'We have sent a link for setting a new password.',
+                     email, false, false, 0);
+          } else if (mode === 'signup') {
+            // Only when there is no session. If email confirmation is ever
+            // switched off, signUp returns one and the account is already
+            // usable - telling that person to check their inbox would be a
+            // lie, and onAuthChange is about to send them home anyway.
+            if (r.data && r.data.session) return;
+            showSent('Account created',
+                     'Confirm it from the email we have just sent, then sign in.',
+                     email, true, true, RESEND_COOLDOWN);
+          }
+          // Signing in needs no message: onAuthChange redirects to the home page.
+        }, function (err) {
+          submitBtn.disabled = false;
+          setStatus('Something went wrong: ' + err.message, 'bad');
+        });
+      });
+
+      // ---- setting a new password -----------------------------------------
+
+      // Seeded from the address bar, or from the flag that survives a reload
+      // once the address bar has been emptied. Never from an event — see the
+      // comment on arrivedForRecovery for why the event arrives too late.
+      var recovering = arrivedForRecovery || recoveryFlagLive();
+
+      el('auth-recover-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var auth = window.AmplifiedAuth;
+        var pw = el('auth-new-password').value;
+        var out = el('auth-recover-status');
+
+        if (pw.length < 8) {
+          out.textContent = 'Passwords are at least 8 characters.';
+          out.className = 'auth-status bad';
+          return;
+        }
+
+        el('auth-recover-submit').disabled = true;
+        out.textContent = 'Checking...';
+        out.className = 'auth-status';
+
+        breachedMessage(pw).then(function (refusal) {
+          if (refusal) {
+            el('auth-recover-submit').disabled = false;
+            out.textContent = refusal;
+            out.className = 'auth-status bad';
+            return null;
+          }
+          return auth.updatePassword(pw);
+        }).then(function (r) {
+          if (!r) return;
+          el('auth-recover-submit').disabled = false;
+          if (r.error) {
+            out.textContent = r.error.message;
+            out.className = 'auth-status bad';
+            return;
+          }
+          recovering = false;
+          clearRecovering();
+          // Other devices matter MORE here than on the account page. Someone
+          // arriving through a reset link is disproportionately someone who
+          // thinks another person has their password.
+          out.textContent = r.othersSignedOut
+            ? 'Password updated, and other devices signed out. Taking you back to the site...'
+            : 'Password updated. Taking you back to the site...';
+          out.className = 'auth-status good';
+          // The one place a pause is right. Redirecting instantly would take
+          // the confirmation away before it could be read, on the one action
+          // where someone genuinely needs to know it worked.
+          setTimeout(function () { window.location.replace(HOME); }, 1400);
+        });
+      });
+
+      // ---- lifecycle -------------------------------------------------------
+
+      function settle(session) {
+        // The notice is independent of show() and outlives the panel swap: the
+        // explanation still applies whichever form ends up underneath it.
+        showLinkError(linkError, session);
+
+        // ⚠️ Gated on the session, and that gate is what makes the flag safe to
+        // persist at all. Setting a new password REQUIRES being authenticated,
+        // so without a session the recovery panel is a form that cannot work.
+        // Signing out is also the clearest possible signal that whatever the
+        // flag was for is over — so it is dropped rather than carried.
+        if (recovering) {
+          if (session) { show('recover'); return; }
+          recovering = false;
+          clearRecovering();
+        }
+        if (waiting) return;          // showing "check your email" — leave it
+
+        // ⚠️ A dead link OUTRANKS the redirect, and this is the second time the
+        // signed-in redirect below has quietly eaten something that needed to
+        // be read. Found 2026-08-19, following a spent confirmation link while
+        // still signed in from having used it: the panel was un-hidden and then
+        // destroyed microseconds later by the navigation. The visible result was
+        // a dead link that silently worked, which is the worst of both — it
+        // teaches people that expired links are fine.
+        //
+        // Nothing is shown underneath, because there is nothing to offer: the
+        // form would invite someone to re-request what they already have.
+        if (linkError && session) { show('none'); return; }
+
+        if (session) {
+          // Straight to the home page. `replace` rather than `assign`, so Back
+          // does not return here only to bounce forward again — this page has
+          // nothing to offer someone who is already signed in.
+          //
+          // This also covers arriving with a session already: following the
+          // confirmation link from a signup email, or simply opening /sign-in/
+          // while signed in.
+          window.location.replace(HOME);
+        } else {
+          show('form');
+          setMode(mode);
+          renderTurnstile();
+        }
+      }
+
+      function start() {
+        var auth = window.AmplifiedAuth;
+        if (!auth) { setTimeout(start, 60); return; }
+
+        // A backstop, no longer the mechanism. PASSWORD_RECOVERY does arrive
+        // when supabase-js has consumed a reset link, but it arrives too late
+        // to be relied on — see arrivedForRecovery, which decides this from the
+        // URL before any listener exists. Kept because it costs two lines and
+        // covers a shape the fragment cannot: should this project ever move to
+        // the PKCE flow, the token comes back as ?code= and there is no
+        // type=recovery to read.
+        //
+        // ⚠️ If that move ever happens, this becomes load-bearing again and the
+        // race it lost comes back with it.
+        var client = auth.client();
+        if (client) {
+          client.auth.onAuthStateChange(function (event) {
+            if (event === 'PASSWORD_RECOVERY') { recovering = true; show('recover'); }
+          });
+        }
+
+        auth.onAuthChange(settle);
+      }
+
+      start();
+    })();
+  </script>
+</BaseLayout>

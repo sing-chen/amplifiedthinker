@@ -1,0 +1,608 @@
+---
+// Account settings: who you are signed in as, change your password, sign out.
+//
+// Small on purpose. It exists now because nav.js's dropdown links here, and a
+// dead link on launch day is worse than a thin page. It is where the dashboard
+// (Phase 9) and saved items (Phase 6) will hang off later.
+//
+// Turnstile is loaded here, but ONLY when the delete panel is opened. Deleting
+// re-checks the password, that goes through sign-in, and Supabase's bot
+// protection covers sign-in - so the widget is unavoidable for that one action.
+// A visit that never opens the panel fetches nothing from Cloudflare. Changing
+// a password is not one of the protected endpoints and needs no widget.
+//
+// Every <script> carries is:inline. See BaseLayout.astro.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout
+  title="Account · Amplified Thinker"
+  description="Your Amplified Thinker account."
+  noindex={true}
+>
+  <link slot="head" rel="stylesheet" href={`${base}/auth-pages.css`} />
+  <!-- is:inline for the same reason as every other script here — see pwned.js. -->
+  <script slot="head" is:inline src={`${base}/pwned.js`}></script>
+
+  <section class="auth-wrap auth-wrap-wide">
+
+    <div class="auth-panel" id="acct-loading">
+      <p class="auth-muted">Loading&hellip;</p>
+    </div>
+
+    <div class="auth-panel" id="acct-signed-out" hidden>
+      <h1>Account</h1>
+      <p class="auth-lede">You need to be signed in to see this.</p>
+      <div class="auth-actions">
+        <a class="auth-btn" href="../sign-in/">Sign in</a>
+      </div>
+    </div>
+
+    <!--
+      Shown after a successful deletion, and it exists to stop the panel above
+      appearing instead. Deleting signs the user out, the sign-out fires
+      onAuthChange(null), and without this the page would answer "you need to be
+      signed in" - which reads as having been logged out by mistake rather than
+      as the account being gone, at the one moment that distinction matters.
+    -->
+    <div class="auth-panel" id="acct-deleted" hidden>
+      <h1>Your account has been deleted</h1>
+      <p class="auth-lede">
+        It is gone, along with everything saved against it. There is no copy.
+      </p>
+      <p class="auth-muted">
+        You are welcome to keep reading &mdash; everything on the site stays open
+        without an account. Progress just will not be saved.
+      </p>
+      <div class="auth-actions">
+        <a class="auth-btn" href="../index.html">Continue as a guest</a>
+        <a class="auth-btn auth-btn-quiet" href="../sign-in/">Create a new account</a>
+      </div>
+    </div>
+
+    <div id="acct-main" hidden>
+      <div class="auth-panel">
+        <h1 id="acct-greeting">Account</h1>
+        <p class="auth-lede">Your account details</p>
+        <dl>
+          <div class="auth-field-row">
+            <dt>Email</dt>
+            <dd id="acct-email"></dd>
+          </div>
+          <div class="auth-field-row">
+            <dt>Member since</dt>
+            <dd id="acct-since"></dd>
+          </div>
+        </dl>
+        <!--
+          Disclosures, not modals. A hand-rolled modal in an inline script means
+          owning a focus trap, scroll lock, Escape handling, backdrop clicks and
+          focus return - five things to get right, in a page with no dialog
+          component, for two forms that are not urgent. A disclosure needs
+          aria-expanded and somewhere to put the focus.
+        -->
+        <div class="auth-actions">
+          <button type="button" class="auth-btn auth-btn-quiet" id="acct-signout">Sign out</button>
+          <button type="button" class="auth-btn auth-btn-quiet" id="acct-password-toggle"
+                  aria-expanded="false" aria-controls="acct-password-section">Change password</button>
+          <button type="button" class="auth-btn auth-btn-danger-quiet" id="acct-delete-toggle"
+                  aria-expanded="false" aria-controls="acct-delete-section">Delete your account</button>
+        </div>
+      </div>
+
+      <!--
+        Changing the password.
+
+        ⚠️ The CURRENT password is required, and it was not until 2026-08-19.
+        Before that this form took a new password alone, which meant a signed-in
+        tab left open was enough to take an account over — and the gate here was
+        weaker than the one on deletion two panels down, despite protecting the
+        more valuable outcome. Deleting destroys the data and ends the intruder's
+        access with it; changing the password KEEPS the account, locks the owner
+        out, and hands over the recovery route. Whoever holds the mailbox holds
+        the account, and this form is what stands between a borrowed session and
+        the mailbox stopping to matter.
+
+        It is also what makes the emailed reset flow worth anything. That path
+        proves control of the inbox; a signed-in path with no check proves only
+        that a tab was left open, and the weaker of two routes to the same place
+        is the one that gets used.
+      -->
+      <div class="auth-panel" id="acct-password-section" hidden>
+        <h2>Change your password</h2>
+
+        <label for="acct-current-password">Your current password</label>
+        <div class="auth-pw">
+          <input type="password" id="acct-current-password"
+                 autocomplete="current-password" />
+          <button type="button" class="auth-pw-toggle" data-pw-for="acct-current-password"
+                  aria-pressed="false" aria-label="Show password">Show</button>
+        </div>
+        <!--
+          No minlength on this field, matching the deletion panel: this is not
+          where a password is chosen, and an account created under an older
+          minimum must still be able to prove itself.
+        -->
+        <p class="auth-hint">
+          Asked for because this is the change that could lock you out of your
+          own account.
+        </p>
+
+        <form id="acct-password-form" novalidate>
+          <label for="acct-new-password">New password</label>
+          <div class="auth-pw">
+            <input type="password" id="acct-new-password" autocomplete="new-password"
+                   required minlength="8" />
+            <button type="button" class="auth-pw-toggle" data-pw-for="acct-new-password"
+                    aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+          <p class="auth-hint">At least 8 characters, and not the one you have now.</p>
+
+          <div id="acct-password-turnstile" class="auth-turnstile"></div>
+
+          <button type="submit" id="acct-password-submit">Save new password</button>
+        </form>
+        <p class="auth-status" id="acct-password-status" role="status" aria-live="polite"></p>
+      </div>
+
+      <!-- The "Your progress" panel was removed on 2026-08-19. Its explanatory
+           copy moves to the "why sign up" page (see BACKLOG.md), where it is an
+           argument rather than a statement of the obvious to someone who has
+           already signed up. Phase 9's dashboard is where a real view of saved
+           progress belongs; the row count that lived here went with the panel.
+           -->
+
+      <!--
+        Deletion. Kept last, behind a disclosure, and gated on the password.
+
+        ⚠️ The password field here is the PRODUCT half of the control and not
+        the control itself. Anyone holding an access token can call the RPC
+        directly and skip this panel entirely, which is why the database checks
+        the sign-in recency itself - see migration 20260819120000. If that check
+        is ever removed, this field becomes decoration.
+      -->
+      <div class="auth-panel auth-panel-danger" id="acct-delete-section" hidden>
+        <h2>Delete your account</h2>
+        <p class="auth-muted">
+          This removes your account and everything saved against it &mdash; your
+          progress through every primer and plan, and your saved items. It
+          happens immediately and it cannot be undone. We keep no copy.
+        </p>
+
+        <!--
+          The password, not a typed-out email address.
+
+          Typing your own address back is the familiar pattern and it only ever
+          proved deliberateness - anyone at an unlocked browser can read it off
+          the panel above and copy it. The password proves the same thing AND
+          proves who is asking, in one field instead of two. Two confirmation
+          fields also teach people to hurry through both.
+        -->
+        <div id="acct-delete-confirm">
+          <!--
+            This used to say "the only thing on the site that asks for it
+            again". It stopped being true on 2026-08-19, when changing the
+            password started asking too. Copy that names how rare something is
+            dates the moment anything else joins it.
+          -->
+          <p class="auth-muted">
+            Enter your password to confirm. Nothing here can be undone, so this
+            is one of two places that asks you to prove it is you.
+          </p>
+          <label for="acct-delete-password">Your password</label>
+          <div class="auth-pw">
+            <input type="password" id="acct-delete-password"
+                   autocomplete="current-password" />
+            <button type="button" class="auth-pw-toggle" data-pw-for="acct-delete-password"
+                    aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+
+          <div id="acct-delete-turnstile" class="auth-turnstile"></div>
+
+          <div class="auth-actions">
+            <button type="button" class="auth-btn auth-btn-danger" id="acct-delete-go" disabled>
+              Permanently delete
+            </button>
+            <button type="button" class="auth-btn auth-btn-quiet" id="acct-delete-cancel">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <p class="auth-status" id="acct-delete-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+
+  </section>
+
+  <script is:inline>
+    (function () {
+      'use strict';
+
+      var el = function (id) { return document.getElementById(id); };
+
+      // ---- reveal a password field ----------------------------------------
+      //
+      // A typo in a password field is invisible. On sign-up it is worse than
+      // invisible: the account is created with a password the person cannot
+      // reproduce, and the only way back is a reset email.
+      //
+      // Delegated on document rather than bound per button, so it needs no
+      // ordering against the auth stack (which nav.js appends with defer) and
+      // keeps working if a panel is re-rendered.
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest && e.target.closest('.auth-pw-toggle');
+        if (!btn) return;
+
+        var input = document.getElementById(btn.getAttribute('data-pw-for'));
+        if (!input) return;
+
+        var reveal = input.type === 'password';
+        input.type = reveal ? 'text' : 'password';
+        btn.textContent = reveal ? 'Hide' : 'Show';
+        btn.setAttribute('aria-pressed', reveal ? 'true' : 'false');
+        btn.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+
+        // Clicking the button takes focus off the field. Put it back, caret at
+        // the end, so someone mid-way through typing is not interrupted.
+        var pos = input.value.length;
+        input.focus();
+        try { input.setSelectionRange(pos, pos); } catch (err) {}
+      });
+
+
+      // Resolves null to proceed, or a message to show and stop. Only ever
+      // called with a password being CHOSEN, never one being proved — see the
+      // note in sign-in.astro and public/pwned.js.
+      function breachedMessage(password) {
+        var p = window.AmplifiedPwned;
+        if (!p) return Promise.resolve(null);
+        return p.check(password).then(function (r) {
+          return r.breached ? p.message(r) : null;
+        });
+      }
+
+      // Terminal state. Once the account is deleted nothing may move the page
+      // off this panel — including the sign-out that deletion itself triggers.
+      var deleted = false;
+
+      function show(which) {
+        if (deleted) which = 'deleted';
+        el('acct-loading').hidden = which !== 'loading';
+        el('acct-signed-out').hidden = which !== 'out';
+        el('acct-deleted').hidden = which !== 'deleted';
+        el('acct-main').hidden = which !== 'in';
+      }
+
+      function formatDate(iso) {
+        try {
+          return new Date(iso).toLocaleDateString(undefined, {
+            year: 'numeric', month: 'long', day: 'numeric'
+          });
+        } catch (e) { return '—'; }
+      }
+
+      el('acct-password-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var auth = window.AmplifiedAuth;
+        var out = el('acct-password-status');
+        var current = el('acct-current-password').value;
+        var pw = el('acct-new-password').value;
+
+        function bad(message) {
+          out.textContent = message;
+          out.className = 'auth-status bad';
+          el('acct-password-submit').disabled = false;
+        }
+
+        if (!current) { bad('Enter your current password.'); return; }
+        if (pw.length < 8) { bad('Passwords are at least 8 characters.'); return; }
+
+        // Checked here rather than left to Supabase, which rejects it with
+        // "New password should be different from the old password." — accurate,
+        // and phrased as though the user did something wrong rather than
+        // nothing at all.
+        if (pw === current) { bad('That is the password you already have. Choose a different one.'); return; }
+
+        el('acct-password-submit').disabled = true;
+        out.textContent = 'Checking your password...';
+        out.className = 'auth-status';
+
+        var handled = false;
+
+        // The breach check runs BEFORE re-authentication, deliberately. It
+        // needs no session and no captcha token, so a password that is going to
+        // be refused should be refused without spending a single-use Turnstile
+        // token on it — and without the user having proved themselves only to
+        // be told to start again.
+        //
+        // ⚠️ It is not a substitute for the re-auth below. See public/pwned.js:
+        // this check is advisory and bypassable, that one is the control.
+        breachedMessage(pw).then(function (refusal) {
+          if (refusal) { handled = true; bad(refusal); return null; }
+
+          // ⚠️ Re-authenticate FIRST, and let it fail closed. `updatePassword`
+          // only needs a valid session, so calling it before this check would
+          // make the check decorative — the change would already have happened.
+          return passwordCaptcha.fresh();
+        }).then(function (token) {
+          if (handled) return null;
+          if (!token) {
+            bad('The security check did not complete. Try again — if it keeps ' +
+                'failing, your network may be blocking Cloudflare.');
+            return null;
+          }
+          return auth.reauthenticate(current, token);
+        }).then(function (r) {
+          if (!r) return;
+
+          // Deliberately not "wrong password", matching the deletion panel. The
+          // reason a sign-in failed is not something to spell out, even to
+          // someone already signed in — the person reading it may not be the
+          // account holder, which is the entire point of asking.
+          if (r.error) { bad('That did not work. Check the password and try again.'); return; }
+
+          out.textContent = 'Saving...';
+          return auth.updatePassword(pw).then(function (u) {
+            if (u.error) { bad(u.error.message); return; }
+
+            el('acct-password-submit').disabled = false;
+            el('acct-current-password').value = '';
+            el('acct-new-password').value = '';
+
+            // ⚠️ Two messages, because the second half can fail on its own and
+            // the page must not claim it happened. Saying "other devices have
+            // been signed out" when they have not is worse than saying nothing
+            // — it is the sentence someone acts on when they think an account
+            // has been taken.
+            out.textContent = u.othersSignedOut
+              ? 'Password updated, and any other devices have been signed out.'
+              : 'Password updated. Other devices could not be signed out just ' +
+                'now — sign out and back in on this device to try again.';
+            out.className = 'auth-status good';
+          });
+        }, function (err) {
+          bad('Something went wrong: ' + (err && err.message ? err.message : 'unknown error'));
+        });
+      });
+
+      el('acct-signout').addEventListener('click', function () {
+        window.AmplifiedAuth.signOut();
+      });
+
+      // ---- the two disclosures ---------------------------------------------
+      //
+      // One open at a time. Both reveal something consequential, and two open
+      // panels below a row of three buttons stops reading as "here is the thing
+      // you just asked for".
+      var SECTIONS = {
+        'acct-password-toggle': 'acct-password-section',
+        'acct-delete-toggle': 'acct-delete-section'
+      };
+
+      function closeSection(toggleId) {
+        el(SECTIONS[toggleId]).hidden = true;
+        el(toggleId).setAttribute('aria-expanded', 'false');
+      }
+
+      function openSection(toggleId) {
+        Object.keys(SECTIONS).forEach(function (id) {
+          if (id !== toggleId) closeSection(id);
+        });
+        el(SECTIONS[toggleId]).hidden = false;
+        el(toggleId).setAttribute('aria-expanded', 'true');
+
+        // Focus the first field rather than the panel. A disclosure that
+        // reveals a form and leaves focus on the button makes a keyboard user
+        // tab through the whole row again to reach it.
+        var field = el(SECTIONS[toggleId]).querySelector('input');
+        if (field) field.focus();
+      }
+
+      Object.keys(SECTIONS).forEach(function (id) {
+        el(id).addEventListener('click', function () {
+          if (el(id).getAttribute('aria-expanded') === 'true') closeSection(id);
+          else openSection(id);
+        });
+      });
+
+      // ---- Turnstile, one widget per panel ---------------------------------
+      //
+      // Both consequential actions here re-authenticate, and
+      // `signInWithPassword` is captcha-protected — so both need a token. A
+      // widget is bound to one container element, so they cannot share one.
+      //
+      // ⚠️ Built as a factory rather than duplicated. This code has three
+      // separate traps in it (single-use tokens, the reset-before-execute rule,
+      // and the 30s stall) and a second hand-copied version would drift from
+      // this one at the first fix.
+      //
+      // The api.js SCRIPT is still loaded once and shared; only the render is
+      // per-panel. window.onAcctTurnstileLoad fires once, so every widget
+      // registered before it lands is rendered by the same callback, and any
+      // registered afterwards renders immediately.
+
+      var turnstileReady = false;
+      var turnstileWidgets = [];
+
+      // Loaded on demand, not with the page. The account page is signed-in only
+      // and low traffic, but a request to challenges.cloudflare.com on every
+      // visit buys nothing when the widget is needed by panels that most visits
+      // never open.
+      function loadTurnstile() {
+        if (window.__acctTurnstileLoading) return;
+        window.__acctTurnstileLoading = true;
+
+        window.onAcctTurnstileLoad = function () {
+          turnstileReady = true;
+          turnstileWidgets.forEach(function (w) { w.render(); });
+        };
+        var s = document.createElement('script');
+        s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js' +
+                '?render=explicit&onload=onAcctTurnstileLoad';
+        s.async = true;
+        s.defer = true;
+        document.head.appendChild(s);
+      }
+
+      function makeTurnstile(selector) {
+        var id = null;
+        var pending = null;
+        var solved = false;
+
+        function deliver(token) {
+          if (token) solved = true;
+          if (pending) { var fn = pending; pending = null; fn(token); }
+        }
+
+        function render() {
+          if (id !== null || !window.turnstile) return;
+
+          var cfg = window.AmplifiedSupabase && window.AmplifiedSupabase.config();
+          if (!cfg || !cfg.turnstileSiteKey) return;
+
+          id = window.turnstile.render(selector, {
+            sitekey: cfg.turnstileSiteKey,
+            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
+            appearance: 'interaction-only',
+            execution: 'execute',
+            callback: deliver,
+            'expired-callback': function () { deliver(null); },
+            'timeout-callback': function () { deliver(null); },
+            'error-callback': function () { deliver(null); }
+          });
+        }
+
+        // ⚠️ Tokens are single-use. Reusing one gives `timeout-or-duplicate`,
+        // which reads as a captcha fault rather than as a spent token — the
+        // exact confusion that cost a day earlier in this phase. Reset before
+        // every execute once one has already been solved.
+        function fresh() {
+          return new Promise(function (resolve) {
+            if (!window.turnstile || id === null) { resolve(null); return; }
+            pending = resolve;
+            try {
+              if (solved) window.turnstile.reset(id);
+              window.turnstile.execute(id);
+            } catch (e) { pending = null; resolve(null); return; }
+            setTimeout(function () {
+              if (pending) { pending = null; resolve(null); }
+            }, 30000);
+          });
+        }
+
+        var w = { render: render, fresh: fresh };
+        turnstileWidgets.push(w);
+        return w;
+      }
+
+      var passwordCaptcha = makeTurnstile('#acct-password-turnstile');
+      var deleteCaptcha = makeTurnstile('#acct-delete-turnstile');
+
+      // Fetched when a panel opens, not when the page loads. Either panel
+      // triggers the shared script; whichever opens second finds it already
+      // there and renders on the spot.
+      function armCaptcha(toggleId) {
+        el(toggleId).addEventListener('click', function () {
+          if (el(toggleId).getAttribute('aria-expanded') !== 'true') return;
+          loadTurnstile();
+          if (turnstileReady) turnstileWidgets.forEach(function (w) { w.render(); });
+        });
+      }
+      armCaptcha('acct-password-toggle');
+      armCaptcha('acct-delete-toggle');
+
+      // ---- deleting the account -------------------------------------------
+      //
+      // Three things have to line up before the button does anything: the
+      // password, a Turnstile token, and a database function that checks the
+      // sign-in was recent. Only the last of those is a control — the first two
+      // are how the caller gets a session the database will accept.
+
+      el('acct-delete-cancel').addEventListener('click', function () {
+        el('acct-delete-password').value = '';
+        el('acct-delete-go').disabled = true;
+        el('acct-delete-status').textContent = '';
+        closeSection('acct-delete-toggle');
+        el('acct-delete-toggle').focus();
+      });
+
+      // Enabled on any input at all. There is no length rule here on purpose:
+      // this is not where a password is chosen, and an account created under an
+      // older minimum must still be able to prove itself.
+      el('acct-delete-password').addEventListener('input', function () {
+        el('acct-delete-go').disabled = el('acct-delete-password').value.length === 0;
+      });
+
+      function endBusy(message, kind) {
+        el('acct-delete-go').disabled = false;
+        el('acct-delete-cancel').disabled = false;
+        var out = el('acct-delete-status');
+        out.textContent = message;
+        out.className = 'auth-status' + (kind ? ' ' + kind : '');
+      }
+
+      el('acct-delete-go').addEventListener('click', function () {
+        var auth = window.AmplifiedAuth;
+        var out = el('acct-delete-status');
+        var password = el('acct-delete-password').value;
+
+        el('acct-delete-go').disabled = true;
+        el('acct-delete-cancel').disabled = true;
+        out.textContent = 'Checking your password...';
+        out.className = 'auth-status';
+
+        deleteCaptcha.fresh().then(function (token) {
+          if (!token) {
+            endBusy('The security check did not complete. Try again — if it keeps ' +
+                    'failing, your network may be blocking Cloudflare.', 'bad');
+            return null;
+          }
+          return auth.reauthenticate(password, token);
+        }).then(function (r) {
+          if (!r) return;
+
+          // Deliberately not "wrong password". The reason a sign-in failed is
+          // not something to spell out, even to someone already signed in.
+          if (r.error) { endBusy('That did not work. Check the password and try again.', 'bad'); return; }
+
+          out.textContent = 'Deleting...';
+          return auth.deleteAccount().then(function (d) {
+            if (d.error) { endBusy(d.error.message, 'bad'); return; }
+
+            // No redirect. The confirmation IS the destination — being bounced
+            // to the home page gives no acknowledgement that anything happened,
+            // and this is the one action on the site that cannot be checked
+            // afterwards by looking at the account.
+            deleted = true;
+            out.textContent = '';
+            show('deleted');
+            window.scrollTo(0, 0);
+          });
+        }, function (e) {
+          endBusy('Something went wrong: ' + (e && e.message ? e.message : 'unknown error'), 'bad');
+        });
+      });
+
+      function start() {
+        var auth = window.AmplifiedAuth;
+        if (!auth) { setTimeout(start, 60); return; }
+
+        auth.onAuthChange(function (session) {
+          if (!session) { show('out'); return; }
+          var name = auth.displayName();
+          el('acct-greeting').textContent = name ? 'Hi ' + name : 'Account';
+          el('acct-email').textContent = session.user.email;
+          el('acct-since').textContent = formatDate(session.user.created_at);
+
+          show('in');
+        });
+      }
+
+      start();
+    })();
+  </script>
+</BaseLayout>
