@@ -543,35 +543,63 @@ tracked in `docs/`, not here:
 Log new infrastructure *ideas* here; anything already committed to that plan belongs in the docs
 above, so status lives in one place.
 
-### Bump `actions/deploy-pages` off deprecated Node 20
-**Status:** Idea · Not started · Noticed 2026-08-17 during Phase 3
-**Relates to:** [.github/workflows/pages.yml](.github/workflows/pages.yml)
+### Bump the GitHub Actions off deprecated Node 20 — **both** workflows
+**Status:** Idea · Not started · Noticed 2026-08-17 during Phase 3 · **Widened 2026-08-19**
+**Relates to:** [.github/workflows/pages.yml](.github/workflows/pages.yml),
+[.github/workflows/keepalive.yml](.github/workflows/keepalive.yml)
 
-The Pages workflow emits this on every run:
+Both workflows emit this. Pages names one action; the keep-alive names two:
 
 > Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on
-> Node.js 24: `actions/deploy-pages@v4`
+> Node.js 24: `actions/checkout@v4`, `actions/setup-node@v4`
 
-**Nothing is broken.** GitHub is force-running it on Node 24, so it works today. This is about the
-version pin ageing out, not a current fault.
+**Nothing is broken.** GitHub force-runs them on Node 24, so both work today. This is a pin ageing
+out, not a current fault. The deprecation was announced 2025-09-19 and is still only a warning.
 
-**Why it was worth tracking:** this workflow is the only thing publishing
-`sing-chen.github.io/amplifiedthinker`, which was a *load-bearing* production origin — some corporate
-networks blocked the custom domain under newly-registered-domain policies, and those users had no
-other route in. A silent deprecation becoming a hard failure there would have taken down an audience
-segment with no fallback, surfacing as a red X in an inbox rather than as a broken page anyone would
-notice.
+⚠️ **Two different things are called "Node 20" here, and only one of them is this entry.**
 
-⚠️ **Largely overtaken by events, as of 2026-08-18.** That origin is now slated for retirement (see
-the entry below), and this item **dies with the workflow** — if the retirement happens first, there
-is nothing left to bump. Worth doing only if the workflow is still running when the pin actually
-breaks, and the urgency is gone either way: an origin with no audience failing to publish is not an
-incident.
+| | What it is | Affected? |
+|---|---|---|
+| The action's **own runtime** — `runs: using: node20` inside `checkout@v4`, `setup-node@v4`, `deploy-pages@v4` | What the annotation is about. Fixed only by bumping the action version. | ✅ **This entry** |
+| `with: node-version: '20'` in `keepalive.yml` | The Node that runs **our** script. Nothing to do with the warning. | ❌ Separate, below |
 
-Action: bump to `actions/deploy-pages@v5` when it exists, or whichever version targets a supported
-runtime. Check `actions/checkout`, `actions/setup-node`, `actions/configure-pages` and
-`actions/upload-pages-artifact` in the same pass — the warning names only the action that tripped it,
-not everything on the same runtime.
+**Action:** bump to `@v5` of each — `checkout`, `setup-node`, `deploy-pages`, `configure-pages`,
+`upload-pages-artifact` — or whichever version targets a supported runtime. ⚠️ **Do all of them in
+one pass:** the annotation names only the actions that tripped it, not everything sharing the
+runtime, so fixing the named ones just reveals the next.
+
+**⚠️ The 2026-08-18 note that this "dies with the workflow" is now only half true.** That reasoning
+was about `pages.yml`, which goes when the GitHub origin is retired. **`keepalive.yml` is not going
+anywhere** — it exists because the free Supabase tier pauses an idle project, so it outlives the
+Pages origin and lasts until the project moves to a paid plan. Treat the two workflows separately
+from here.
+
+**Why `pages.yml` was worth tracking at all:** it is the only thing publishing
+`sing-chen.github.io/amplifiedthinker`, which *was* a load-bearing origin — corporate networks
+blocked the custom domain under newly-registered-domain policies and those users had no other route
+in. That block lifted, the audience is now zero, and the urgency with it: an origin nobody uses
+failing to publish is not an incident.
+
+**The keep-alive is the opposite case.** It is not user-facing at all, and its failure is silent —
+the job goes red in an inbox, the database pauses a week later, and the first anyone knows is that
+**sign-in stops working on the live site**. Low urgency, but the consequence is larger than the one
+this entry was originally written about.
+
+### Align `node-version` across the two workflows
+**Status:** Idea · Not started · Noticed 2026-08-19 during Phase 5
+**Relates to:** [.github/workflows/keepalive.yml](.github/workflows/keepalive.yml),
+[.github/workflows/pages.yml](.github/workflows/pages.yml)
+
+`keepalive.yml` pins `node-version: '20'`; `pages.yml` uses `22`. ⚠️ **This is not what the
+deprecation annotation above is about** — this is the Node that runs *our* code, and the two
+workflows simply disagree for no reason anyone recorded.
+
+**Nothing is at risk today.** `scripts/keepalive.mjs` uses only node builtins and global `fetch`,
+both of which have been stable since Node 18. But Node 20 reached end of life in 2026, so it is a
+pin that will eventually stop being offered by the runner.
+
+Bump `keepalive.yml` to `22` to match. One line, and it removes a difference that otherwise invites
+the question of whether it was deliberate.
 
 **Related, and separately worth knowing:** the same workflow run failed at `actions/deploy-pages@v4`
 with a `503` and a `429`, which was a transient GitHub Pages outage rather than anything in this
