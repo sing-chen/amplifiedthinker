@@ -1023,6 +1023,55 @@ tracked in `docs/`, not here:
 Log new infrastructure *ideas* here; anything already committed to that plan belongs in the docs
 above, so status lives in one place.
 
+### A build stamp, so "is the deploy live?" is answerable by script
+**Status:** Idea · **Raised 2026-08-20**, after a push where the question could not be answered
+**Relates to:** [scripts/verify-published.mjs](scripts/verify-published.mjs),
+[.github/workflows/pages.yml](.github/workflows/pages.yml), [astro.config.mjs](astro.config.mjs)
+
+Write the commit SHA into a small generated file at build time — `/build.json` or a `<meta>` in
+`BaseLayout` — so any origin can be asked *which commit am I built from?* and answer.
+
+**The gap this fills is narrow and real.** `npm run verify:published` already fingerprints every
+served file on both origins, but it is a **differential** check: it hashes the origins against each
+other across time and needs a before-run and an after-run bracketing a change. It answers "did the
+served bytes change?", not "is production built from the commit I just pushed?".
+
+⚠️ **Those come apart in exactly the case that prompted this.** A commit touching only `BACKLOG.md`,
+a doc, or anything else outside `public/` produces **byte-identical output whether the build
+succeeded or failed** — and a failed Vercel build leaves the previous deployment serving. Hashes
+match, the site is healthy, and nothing anywhere distinguishes "deployed" from "quietly still
+running last week's build". On 2026-08-20 this was checked by hand and came back unanswerable: the
+Pages run was green via the Actions API, and the Vercel side could only be confirmed as *up*.
+
+**The two origins need different plumbing**, which is the only fiddly part:
+
+| Origin | Where the SHA comes from |
+|---|---|
+| Vercel | `VERCEL_GIT_COMMIT_SHA`, injected into the build environment |
+| GitHub Pages | `GITHUB_SHA`, already available to `pages.yml` |
+
+⚠️ **The file must be generated, never committed.** A checked-in `build.json` goes stale the moment
+anything else is pushed, and then it does not merely fail to help — it *lies*, which is worse than
+having no stamp at all. Generate it into the build output and gitignore it.
+
+**A second reason it earns its place:** the runbook already carries a note that Pages lagged Vercel
+by about two minutes and served the old copy on a first check. That was diagnosed by hand as an
+Actions build still finishing rather than a failure. A stamp turns that judgement call into a
+comparison — both origins report a SHA, and "Pages is two commits behind" is a fact rather than an
+inference from content that happens to differ.
+
+**Notes so nobody has to re-derive them:**
+- **No privacy implication.** Nothing on a page needs to fetch it — it is read by a script over
+  HTTP, the same way `verify:published` reads everything else. Even if a page did fetch it, it is
+  same-origin, so `privacy.html` is unaffected either way. Recorded because "adding a file the site
+  serves" reads like it should trigger the privacy rule, and here it does not.
+- **No disclosure concern.** The repository is public, so the SHA is public already.
+- **It sidesteps the line-endings trap entirely.** Generated JSON is compared as a value, not as
+  bytes against a working tree — the reason `verify:published` deliberately never compares against
+  the tree does not apply.
+- **Retiring the Pages origin halves the value but does not remove it.** The Vercel half is the half
+  that cannot currently be checked at all without the dashboard.
+
 ### Bump the GitHub Actions off deprecated Node 20 — **both** workflows
 **Status:** Idea · Not started · Noticed 2026-08-17 during Phase 3 · **Widened 2026-08-19**
 **Relates to:** [.github/workflows/pages.yml](.github/workflows/pages.yml),
