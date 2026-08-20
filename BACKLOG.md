@@ -1354,7 +1354,45 @@ the first thing to check when the alias stops working and nothing was changed.
 
 ## Accessibility / Performance
 
-*Nothing logged yet.*
+### ⚠️ Primer slides scroll inside themselves, with nothing to say so
+**Status:** Defect · **Pre-existing, found 2026-08-20** while measuring space for the completion
+control — not caused by it · **Relates to:** the five `public/skills/*/primer.html`
+
+`.stage` is `overflow: hidden` and `.slide` is `position:absolute; inset:0; overflow-y:auto`. So a
+slide whose content exceeds the stage **scrolls within its own panel** — and because the stage
+hides its own overflow, **there is no page scrollbar to signal it**. Content simply stops, with no
+affordance, on a surface whose whole visual language says "this is one screenful".
+
+⚠️ **It is not only a small-window problem, which is the part that makes it worth logging.** Some
+slides overflow at any realistic desktop height, because their content is genuinely taller than the
+stage. Sampled, not exhaustive:
+
+| Primer | Viewport | Slides overflowing | Worst |
+|---|---|---|---|
+| analytical-thinking | 720px | **9 of 10** | 96px |
+| creative-thinking | 800px | 5 of 10 | 80px |
+| creative-thinking | **1000px** | **3 of 10** | **80px** |
+
+The 1000px row is the interesting one: three slides overflow by the same amount they do at 800px,
+so height is not what is failing them. At a 1000px viewport the stage measures 904px and the slide
+carries 152px of vertical padding, leaving ~752px — and those slides hold more than that.
+
+**Why it has gone unnoticed.** Everything still *works*: the deck advances, the nav dots fill, the
+counter is right. A reader who never suspects there is more below simply reads less than was
+written, and no measurement anyone currently runs would report it.
+
+**Not decided, and worth deciding rather than defaulting:**
+
+- Trim the offending slides so the deck's own promise — one screenful per slide — holds. Most
+  faithful to the format, most editorial work.
+- Let the stage grow and the page scroll instead of the panel, so at least the browser's own
+  scrollbar tells the truth. Changes the deck's feel.
+- Keep the internal scroll but give it an affordance — a fade, or a chevron. Cheapest, and the
+  least honest of the three, since it dresses the symptom.
+
+⚠️ **Whatever is chosen, measure before and after with the slide's own numbers**
+(`scrollHeight - clientHeight` per `.slide`), not by looking — the failure mode here is precisely
+that it is invisible to a reader who is not looking for it.
 
 ---
 
