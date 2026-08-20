@@ -211,8 +211,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           to the tag; do not re-wrap these lines to fit a column width.
         -->
         <p class="auth-hint" id="auth-legal" hidden>
-          Creating an account means you accept the <a href={`${base}/terms.html`}>terms of use</a>.
-          What is stored and who handles it is set out in <a href={`${base}/privacy.html`}>privacy &amp; cookies</a>.
+          Creating an account means you accept the <a href={`${base}/terms.html`} data-doc="Terms of use">terms of use</a>.
+          What is stored and who handles it is set out in <a href={`${base}/privacy.html`} data-doc="Privacy &amp; cookies">privacy &amp; cookies</a>.
         </p>
 
         <!--
@@ -244,9 +244,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <li>You can <strong>delete your account yourself, immediately</strong>, and no copy is kept.</li>
           </ul>
           <p class="auth-summary-foot">
-            Fuller answers: <a href={`${base}/privacy.html#s3`}>what is collected</a>,
-            <a href={`${base}/privacy.html#s8`}>what email you get</a>,
-            <a href={`${base}/privacy.html#s12`}>your rights</a>.
+            Fuller answers: <a href={`${base}/privacy.html#s3`} data-doc="Privacy &amp; cookies">what is collected</a>,
+            <a href={`${base}/privacy.html#s8`} data-doc="Privacy &amp; cookies">what email you get</a>,
+            <a href={`${base}/privacy.html#s12`} data-doc="Privacy &amp; cookies">your rights</a>.
           </p>
         </details>
       </form>
@@ -369,6 +369,42 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       answer. The one exception is the recovery flow below, which needs to show
       that the password actually changed before it moves.
     -->
+
+    <!--
+      ── Reading the documents without leaving the form ──────────────────
+      Sending someone to privacy.html mid-signup loses the form: they read,
+      press Back, and find the fields empty and the captcha token spent. This
+      keeps the form exactly where it was.
+
+      ⚠️ A NATIVE <dialog>, WHICH IS THE WHOLE REASON THIS IS ACCEPTABLE HERE.
+      account.astro argues against modals — "a focus trap, scroll lock, Escape
+      handling, backdrop clicks and focus return; five things to get right". A
+      hand-rolled modal still owes all five. `showModal()` gives four of them
+      free: focus is trapped, the background goes inert, Escape closes, and
+      focus returns to whatever opened it. Only the backdrop click is ours.
+
+      ⚠️ AN IFRAME, NOT A COPY OF THE TEXT. A second copy of a privacy notice is
+      a second thing to keep true, and the copy people actually read at the
+      moment of signing up would be the one that silently went stale. This is
+      the real page, same-origin, so it cannot drift — and `?embed=1` tells it
+      to drop its own nav and footer.
+
+      Progressive enhancement: the links keep real href attributes and the
+      handler only intercepts where <dialog> is supported. No script, an old
+      browser, or a failed load, and it is an ordinary link to a real page.
+    -->
+    <dialog class="auth-doc-modal" id="auth-doc-modal">
+      <div class="auth-doc-head">
+        <h2 id="auth-doc-title">Terms of use</h2>
+        <div class="auth-doc-actions">
+          <a id="auth-doc-tab" href="#" target="_blank" rel="noopener noreferrer">Open in a new tab</a>
+          <button type="button" id="auth-doc-close" aria-label="Close">Close</button>
+        </div>
+      </div>
+      <!-- `src` is set on open, so a form that never opens it never fetches a
+           3,200-word page. -->
+      <iframe id="auth-doc-frame" title="Document" src="about:blank"></iframe>
+    </dialog>
 
   </section>
 
@@ -868,6 +904,101 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         // it would stay, leaving its margin behind as a gap with nothing in it.
         el('auth-why-line').hidden = isForgot;
       }
+
+      // ---- reading terms and privacy without leaving the form --------------
+      //
+      // Bound once on the panel rather than per link, so the summary's own
+      // links and anything added to it later are covered without re-binding.
+      (function () {
+        var modal = el('auth-doc-modal');
+
+        // The feature test that decides whether to intercept at all. Where it
+        // fails, every one of these stays an ordinary link to a real page —
+        // which is why the hrefs are real and not '#'.
+        if (!modal || typeof modal.showModal !== 'function') return;
+
+        var frame = el('auth-doc-frame');
+        var titleEl = el('auth-doc-title');
+        var tabLink = el('auth-doc-tab');
+        var pendingHash = '';
+
+        // Belt and braces for the "#s8" links: the fragment in `src` should
+        // land the reader on that section, and this repeats the scroll after
+        // load, once the layout it is scrolling through actually exists. Same
+        // origin, so the frame's own document is reachable.
+        //
+        // ⚠️ NOT VERIFIED, AND HONESTLY LABELLED AS SUCH. Scrolling is inert in
+        // the agent's browser — `window.scrollTo` moves nothing, top-level or
+        // in a frame — so neither the native fragment scroll nor this handler
+        // could be measured. The same non-compositing pane also freezes
+        // transitions, reports `innerWidth: 0` and refuses screenshots. If a
+        // human finds these links landing at the top of the document rather
+        // than on the section, THIS is the code to look at first — and the
+        // native fragment may be doing the job on its own, in which case this
+        // handler is redundant rather than wrong.
+        frame.addEventListener('load', function () {
+          if (!pendingHash) return;
+          var target = pendingHash;
+          pendingHash = '';
+          try {
+            var doc = frame.contentDocument;
+            var node = doc && doc.querySelector(target);
+            if (node) node.scrollIntoView();
+          } catch (e) {
+            // Cross-origin, or the frame was cleared mid-load. The reader gets
+            // the top of the right document, which is a degraded landing rather
+            // than a broken one.
+          }
+        });
+
+        function open(href, label) {
+          titleEl.innerHTML = label || 'Document';
+          tabLink.href = href;
+
+          // ⚠️ `embed=1` BEFORE any #fragment, or it lands inside the fragment
+          // and the page never sees it — the modal would then show the full
+          // page complete with nav and footer, which looks like a bug in the
+          // modal rather than a malformed URL.
+          var hash = '';
+          var url = href;
+          var i = href.indexOf('#');
+          if (i > -1) { hash = href.slice(i); url = href.slice(0, i); }
+          pendingHash = hash;
+          frame.src = url + (url.indexOf('?') > -1 ? '&' : '?') + 'embed=1' + hash;
+
+          modal.showModal();
+        }
+
+        document.querySelector('.auth-wrap').addEventListener('click', function (e) {
+          var link = e.target.closest ? e.target.closest('a[data-doc]') : null;
+          if (!link) return;
+
+          // Leave the modifier-click conventions alone: ctrl/cmd/shift/middle
+          // click means "open this somewhere else", and hijacking that is the
+          // most reliable way to make a link feel broken.
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+          e.preventDefault();
+          open(link.getAttribute('href'), link.getAttribute('data-doc'));
+        });
+
+        function close() {
+          modal.close();
+          // Drop the page rather than leave it loaded behind a closed dialog.
+          frame.src = 'about:blank';
+        }
+
+        el('auth-doc-close').addEventListener('click', close);
+
+        // The one thing showModal() does not give us. The dialog element fills
+        // the viewport including its backdrop, so a click whose target IS the
+        // dialog — rather than anything inside it — landed on the backdrop.
+        modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+
+        // Escape is handled by the dialog itself; this only clears the iframe
+        // afterwards so the next open starts fresh.
+        modal.addEventListener('close', function () { frame.src = 'about:blank'; });
+      })();
 
       el('auth-to-signup').addEventListener('click', function () { setMode('signup'); });
       el('auth-to-signin').addEventListener('click', function () { setMode('signin'); });

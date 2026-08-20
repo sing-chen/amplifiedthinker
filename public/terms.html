@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>/* Embed mode: set before first paint so the nav and footer never flash
+   into view inside the sign-up modal. See sign-in.astro. */
+if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("data-embed","");</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Terms of Use · Amplified Thinker</title>
 <meta name="description" content="The agreement between you and Amplified Thinker: free to read, free to use in your own work with credit, provided as it is by one person, and yours to leave whenever you like.">
@@ -114,6 +117,18 @@
   [data-theme="dark"] .doc-list li{color:var(--fg-1)}
   [data-theme="dark"] .doc-note{color:var(--fg-2)}
   [data-theme="dark"] .doc-divider{background:var(--line)}
+
+  /* ── EMBED MODE ──
+     Set by the one-line script in <head> when this page is opened inside the
+     sign-up modal on /sign-in/. The page is iframed rather than copied, so a
+     reader mid-signup gets the real document and it can never drift from this
+     file — but the site chrome would be a second nav and a second footer
+     inside a 760px box, so it comes off. */
+  [data-embed] #site-nav,
+  [data-embed] footer,
+  [data-embed] .skip-link{display:none !important}
+  [data-embed] .doc-page{padding-top:28px;padding-bottom:40px}
+  [data-embed] body{min-height:0}
 </style>
 </head>
 <body>

@@ -200,6 +200,11 @@
    because everything else about the hint — size, colour — is still wanted. */
 #auth-legal { margin: var(--space-4) 0 0; }
 
+/* A standalone note rather than a hint about the field above it. Cancels
+   `.auth-hint`'s tuck-under margin, which otherwise pulls it against whatever
+   precedes it and makes two separate statements read as one wrapped one. */
+.auth-note { margin: var(--space-5) 0 0; }
+
 /* The "what does an account get me?" line, directly under the lede. The lede
    carries the panel's bottom margin, so this only needs to close the gap to it
    and then restore separation before the first field. */
@@ -263,6 +268,60 @@
 @media (prefers-reduced-motion: reduce) {
   .auth-chevron { transition: none; }
 }
+
+/* ── Document modal ────────────────────────────────────────────────────────
+   A native <dialog>. `showModal()` supplies the focus trap, the inert
+   background, Escape-to-close and focus return; the CSS here only has to make
+   it look like the site. */
+.auth-doc-modal {
+  width: min(760px, calc(100vw - 2rem));
+  height: min(80vh, 900px);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  color: var(--fg-1);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .28);
+  overflow: hidden;
+}
+.auth-doc-modal::backdrop { background: rgba(12, 20, 18, .55); }
+
+/* Grid rather than flex, so the iframe takes exactly the space the header
+   leaves. With flex the iframe's default intrinsic height fights `1fr` and it
+   overflows the dialog by the height of the header. */
+.auth-doc-modal { display: none; }
+.auth-doc-modal[open] { display: grid; grid-template-rows: auto 1fr; }
+
+.auth-doc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-sunken);
+}
+.auth-doc-head h2 { font-size: var(--fs-label); font-weight: 600; color: var(--fg-heading); margin: 0; }
+
+.auth-doc-actions { display: flex; align-items: center; gap: var(--space-4); }
+.auth-doc-actions a { font-size: 12px; color: var(--fg-brand); }
+.auth-doc-actions button {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--fg-1);
+  cursor: pointer;
+}
+.auth-doc-actions button:hover { background: var(--bg-surface); }
+.auth-doc-actions button:focus-visible,
+.auth-doc-actions a:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 2px; }
+
+.auth-doc-modal iframe { width: 100%; height: 100%; border: 0; display: block; }
 .auth-blocked { color: var(--status-error-text); margin-top: var(--space-2); }
 .auth-blocked a { color: var(--status-error-text); }
 

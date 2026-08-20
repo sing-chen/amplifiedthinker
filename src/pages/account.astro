@@ -59,7 +59,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       </p>
       <div class="auth-actions">
         <a class="auth-btn" href="../index.html">Continue as a guest</a>
-        <a class="auth-btn auth-btn-quiet" href="../sign-in/">Create a new account</a>
+        <!-- `#sign-up`, because the button says create. Without it the reader
+             lands on the sign-in form and has to find "Create an account" at
+             the foot of the panel — an extra click, immediately after having
+             deleted the last one. -->
+        <a class="auth-btn auth-btn-quiet" href="../sign-in/#sign-up">Create a new account</a>
       </div>
     </div>
 
@@ -143,9 +147,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           come here to check on their account is the one person most likely to
           want it, and the footer is a long way past the fold on this page.
         -->
-        <p class="auth-hint">
-          Everything held about you, and who processes it, is set out in
-          <a href={`${base}/privacy.html`}>privacy &amp; cookies</a>.
+        <!--
+          ⚠️ THE SPACE BEFORE <a> STAYS ON THE SAME LINE AS THE TAG. Astro's HTML
+          compressor collapses a newline-plus-indent between a text node and an
+          element to NOTHING, so breaking the line before the link shipped
+          "set out in<a>privacy &amp; cookies</a>". Same bug as sign-in.astro's
+          terms line. Do not re-wrap this to fit a column width.
+
+          Its own class, not a bare .auth-hint: that class carries
+          `margin-top: -12px` to tuck a hint under the field it describes, which
+          dragged this up against the checkbox hint above and made a separate
+          statement read as a continuation of it.
+        -->
+        <p class="auth-hint auth-note">
+          Everything held about you, and who processes it, is set out in <a href={`${base}/privacy.html`}>privacy &amp; cookies</a>.
         </p>
       </div>
 
