@@ -576,6 +576,7 @@ or it is not worth having.
 | **Card description** | Gives way to date and section name **only on artefacts that have been started**. A not-started card keeps the guest text, because at that point it is still the useful thing to say |
 | **Completed header** | Soft tint + filled icon tile + a check beside the name |
 | **Coming soon** | Unchanged — already inert and visibly so |
+| **Top of the Library** | A guest prompt or a summary strip, depending who is looking — see below |
 
 ⚠️ **The completed state must read as settled, not as loud.** The card that deserves the eye is the one
 *in progress*, because it is the one with something to do. An inverted or high-contrast completed
@@ -588,6 +589,39 @@ wrong.
 and has **no chevron, no body, no click handler and no `tabindex`**. Checked directly on 2026-08-20.
 Because availability is already encoded structurally, the `.sstatus` badge is free to carry the
 personal state on available cards without losing the other axis. ⚠️ Do not re-solve this.
+
+#### The top of the Library is the one slot worth filling for BOTH audiences
+Raised 2026-08-20, out of the argument about whether to show a completion control to guests.
+
+The Library section opens with an eyebrow, `Browse by skill`, and the category tabs — and then
+goes straight into the cards. That gap is the only place on the page where a guest and an account
+holder should see genuinely different things, and it is currently empty for both.
+
+⚠️ **The guest half is the interesting one, and it is the exact inverse of the completion-control
+decision.** A guest gets no control at the end of a plan because they have no stored progress, so
+an account rescues nothing they just read — the ask is worthless precisely where it looks most
+natural. At the **top of the Library** the opposite holds: they are at the start, everything ahead
+of them could be saved, and the offer is true for the first time. Same reasoning, opposite answer,
+because the position in the journey is what decides it.
+
+| Who | What goes here |
+|---|---|
+| Guest | One quiet line — the honest, early version of the ask, in the one place it is actually true |
+| Signed in | The summary strip: counts, and a resume shortcut into the skill in flight |
+
+**This is Option D returning, and the reversal is deliberate.** D was rejected as a *replacement*
+for per-card personalisation, which was right — counts alone cannot say *which* skill is where. As
+an *addition* above cards that are already personal it answers a different question: "where am I
+overall", before a single card is read.
+
+Two things to weigh before it is scheduled:
+
+- ⚠️ **It would be the third ask a guest meets** — the nav sign-in control, the "not being saved"
+  notice on a skill page, and this. One quiet line, never a banner, or it tips from honest into
+  nagging. The existing notice is the model: it earns its place by firing at the moment something
+  was actually lost.
+- **It overlaps the dashboard**, which is fine if it is a shortcut rather than a stats dump. If it
+  starts growing figures the dashboard also shows, it has become the wrong component.
 
 #### Motion
 - **Nothing animates on load or on scroll.** Rings and bars render at their real values from the first
