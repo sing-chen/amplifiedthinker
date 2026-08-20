@@ -399,6 +399,239 @@ and misleading as an achievement number — which is the strongest argument for 
 completion CTA carrying the real meaning, and the percentage being presented as "how far through",
 not "how much you have learned".
 
+#### ✅ Schema audit, 2026-08-20 — Phase 9 needs no migration
+Asked directly whether a learning tracker needs DB work first. It does not. The Phase 3 migration
+already carries the whole model, and it is applied on both projects:
+
+- `skill_progress` keyed `(user_id, skill_slug, content_type)` — `visited` as the numerator,
+  `state->>'total'` as the denominator, `started_at`/`completed_at` for the completion view.
+- RLS and grants are done — `skill_progress_own` (`for all`, `user_id = auth.uid()`) plus explicit
+  `select, insert, update, delete` to `authenticated`. Same for `user_news` and `notes`, so a saved
+  items panel needs no migration either.
+
+⚠️ **This means the "new table lands with no grants" trap does not apply to Phase 9** — that trap
+bites the phase that adds a table, and this one adds none. Do not go looking for a missing `grant`
+when something returns no rows; look at the query.
+
+Four things the audit turned up that are **not** schema work, and one that is a real limit:
+
+1. **`completed_at` is still written by nobody.** [public/progress.js](public/progress.js) says so in
+   a comment, and an upsert that omits the column leaves it alone. This is the CTA above — pure UI,
+   no migration.
+2. **The denominator lives in jsonb, not a column.** A percentage reads `state->>'total'`. Fine for
+   per-user queries at this scale; a generated column would only earn its keep if the dashboard ever
+   aggregates across users, which leaderboards being deferred means it does not.
+3. ⚠️ **Skills have no DB rows, so the database cannot say what a user has *not* started.** A
+   `skill_progress` row springs into existence only when someone opens the page. Every surface needs
+   all five skills accounted for *including the untouched ones*, and the DB answers only for rows
+   that exist. The same applies to `notes` with `target_type='skill'`, which is why `target_id` is
+   text holding a slug rather than a uuid. **Resolved 2026-08-20 — see "Where the catalogue lives"
+   below**, which splits derived facts from editorial ones rather than putting either in a table now.
+4. **Leaderboards, if they are ever undeferred, need a `security definer` function** — not a widened
+   policy. `profiles_select_own` is read-own-only and the migration comment already commits to this.
+
+⚠️ **[docs/dashboard-design-brief.md](docs/dashboard-design-brief.md) §3 is out of step with this**
+and should be reconciled before a direction is chosen from it. It states a plan is complete "when all
+14 sections are visited" (critical-thinking has 15) and that primer slide counts are "not yet
+documented" (every save has recorded `total` per row since 2026-08-18) — the same underlying error
+twice, assuming a uniform count. It also predates every decision in the two sections below, so treat
+this file as the current record and the brief as the framing that produced it.
+
+#### ⚠️ Coverage is being inflated today, and the nav rail is doing it
+Found 2026-08-20 while designing the metric. **This is a live defect in shipped code, not a future
+concern** — it is corrupting the `visited` sets being written right now.
+
+A section becomes active when its top crosses 120px (`updateNav()` in each plan). With
+`scroll-behavior: smooth`, **clicking section 12 from section 2 scrolls through everything between**,
+so sections 3–11 each cross the line and each get marked visited. One click, up to ten sections.
+
+The code already half-knows. The reset path carries a comment that a smooth scroll "fires
+`updateNav()` at every section boundary on the way up, which re-marks everything as visited" — it was
+guarded *there* and nowhere else, so the same behaviour on an ordinary rail jump was never addressed.
+
+**The fix is to mark on settle, not on crossing:** a section counts when it is active *and* scrolling
+has stopped for ~350ms. This deliberately does not try to measure reading time; it answers the much
+easier question of whether you stopped or went past.
+
+⚠️ **A fixed threshold in seconds is the wrong shape and was rejected.** Short sections are active for
+proportionally less time at the same scroll speed, so a seconds-based rule penalises exactly the
+sections that are quickest to read honestly — it measures length, not attention. Settling treats every
+section identically regardless of height, and fails safe: it under-counts someone who never quite
+stops, and under-claiming is the right direction to be wrong in.
+
+Two details for whoever builds it. **Gate only `visited`** — the active cursor and `position` must keep
+updating immediately, or the resume point and nav highlight change behaviour. And the reset path sets
+`lastActiveId` before scrolling to the top specifically to prevent a re-mark; a settle timer has to be
+cancelled there too or it fires after the reset and re-adds the first section.
+
+**Primers need none of this.** Slides advance on a click, so there is no pass-through to guard against.
+⚠️ This means `visited` will mean *stopped on* for a plan and *advanced to* for a primer — a real
+divergence, recorded here so it is a decision rather than a surprise.
+
+**Do this before any percentage goes on screen.** Otherwise the first thing the feature does is publish
+a number that is already wrong.
+
+#### ✅ Explore Further does not count toward completion — decided 2026-08-20
+It is the last section on all five plans (14 of 14, or 15 of 15 on critical-thinking), labelled
+**"Explore Further"**. It is reference material presented as an additional resource, so it is not part
+of the learning and **comes out of the denominator**. Plans become 13, and critical-thinking 14.
+
+This was half-anticipated: the completion decision above was written with the note that inferring
+completion from coverage would leave someone who worked through the plan but skipped Resources
+"permanently at 93%". Explicit completion solves the *requirement*. It does not solve the *display* —
+somebody marking a plan complete at 13 of 14 would carry a `Complete` badge beside a ring reading 93%,
+which reads as a bug whether or not it is one.
+
+⚠️ **Exclude it from the denominator, not from `visited`.** The naive implementation stops recording
+the section and throws away any knowledge of whether the reading list is ever opened, for no gain —
+the denominator is a separate calculation. Record all 14; divide by 13.
+
+✅ **It also disposes of a risk that was open until this decision.** A section can only be marked once
+its top passes the active line, so if the *last* section never gets there, nobody can ever reach 14 of
+14 — silently, with nothing failing. Excluding Explore Further makes Summary the last counted section,
+which is comfortably scrolled past. The problem stops existing rather than being solved.
+
+**Declare optionality in the markup** — one `data-optional` attribute on the Explore Further nav link,
+on five pages. Optionality is a judgement and cannot be counted out of the HTML, but one attribute
+converts it into a derived fact that lives beside the thing it describes, moves with the content, and
+is visible in review. Consistent with `progress.js`'s rule that each page owns its own DOM-to-shape
+mapping.
+
+**Open question, deliberately left open:** the **5-Day Habit Builder** (section 11) represents a week
+of practice and scrolls past in two seconds, so it is where coverage diverges most from reality. It
+stays counted — someone genuinely doing the five days deserves the credit, and people typically read
+all five days at once to see the shape of the journey rather than stopping at day one. Recorded because
+it is the same question about a different section, and should be a decision rather than a default.
+
+#### Where the catalogue lives — derived vs editorial, decided 2026-08-20
+To render `0 of 13` for a skill nobody has opened, the page needs every plan and primer length. Counted
+from the pages on 2026-08-20:
+
+| Skill | Primer slides | Plan sections | Plan denominator |
+|---|---|---|---|
+| Analytical Thinking | 10 | 14 | 13 |
+| Creative Thinking | 10 | 14 | 13 |
+| **Critical Thinking** | **9** | **15** | **14** |
+| Strategic Synthesis | 10 | 14 | 13 |
+| Systems Thinking | 10 | 14 | 13 |
+
+**A `skills` table in Supabase was proposed and split rather than accepted.** The counts do not belong
+in it: a row saying "14" does not *make* it 14 — the nav rail does — so the row is an assertion about
+some HTML that can silently disagree with it, and the disagreement would then live in a database rather
+than in the repo where `git diff` and review would show it. It also splits something atomic: adding a
+skill is one commit today, and binding it to a data change in two Supabase projects introduces a stale
+row reporting a wrong denominator with nothing failing — a new breakage class for a number that only
+ever changes when the code changes. `/add-skill` has already drifted once by acquiring an unwritten
+manual step; this would be another, and it cannot be automated until an admin UI exists.
+
+| Field | Kind | Belongs in |
+|---|---|---|
+| Slide and section counts, section names and order | Derived — facts about the page | A generated file, checked against the pages |
+| Which sections count toward progress | A judgement, made derivable by `data-optional` | Same generated file |
+| Display name, category, ordering, status, summary copy | Editorial — decisions | A `skills` table, once there is a UI to edit it |
+
+**Near term:** generate the counts rather than declare them, and pair it with a check in the shape the
+repo already trusts for `verify:redirects` and `verify:email`, so a content edit that outgrows the
+catalogue fails loudly instead of quietly reporting "14 of 15" as complete.
+
+**Later:** the editorial half is a good fit for a table and is consistent with news, updates and
+announcements all having moved the same way — but its natural home is *alongside* the admin UI, since a
+table nobody can edit without the SQL console is harder to maintain than the markup it replaced. Even
+then the counts stay derived. ⚠️ And the editorial move is a real migration, not a lift: the skills
+page's markup is currently the source of truth for all nine cards, each with a bespoke inline SVG icon
+and its own copy.
+
+### Personalised progress on the Future Skills page — design settled, not built
+**Status:** Designed · **Natural home: Phase 9, ahead of the dashboard** · Decided 2026-08-20
+**Relates to:** [public/future-skills.html](public/future-skills.html), [public/nav.js](public/nav.js),
+[public/progress.js](public/progress.js), the five plan and primer pages,
+[docs/dashboard-design-brief.md](docs/dashboard-design-brief.md)
+
+Show a signed-in visitor their own primer and plan progress **on the page where they choose what to
+learn next**, in addition to the dashboard. A guest sees today's page; an account holder sees a
+personalised one.
+
+**It is far cheaper than it looks, and this is the load-bearing fact.** `nav.js` already injects
+`supabase.min.js`, `supabase-client.js` and `auth.js` into *every page on the site*, gated on
+`peekSession()` — so guests load nothing extra and a signed-in visitor has already paid on every page
+to render the nav avatar. The marginal cost is one module, some CSS, and **one query returning at most
+ten rows**. No migration, no new device-storage key, no server, and it works on both origins.
+
+`peekSession()` also answers signed-in/out *synchronously* before any network request, which is what
+lets the page reserve space at first paint. ⚠️ **That is deliberately instead of caching progress in
+`localStorage`** — reintroducing device-local snapshots was rejected outright, and it would also mean
+a new storage key and therefore a `privacy.html` change.
+
+**Everything is gated on a session.** The guest page stays exactly as it ships today: no empty slots,
+no greyed-out meters, no "sign in to see this" repeated down nine cards. The personal layer is additive
+or it is not worth having.
+
+#### The design, as decided
+
+| | Decision |
+|---|---|
+| **Collapsed header** | Two donut rings per available skill, primer and plan, kept separate — never averaged |
+| **Plan ring** | Whole-number percentage inside the ring. `0%` on an empty track for not started; a check, not `100%`, for complete |
+| **Expanded body** | Definition, prose and thumbnail unchanged. The two launch cards gain state, date and a resume point |
+| **Card description** | Gives way to date and section name **only on artefacts that have been started**. A not-started card keeps the guest text, because at that point it is still the useful thing to say |
+| **Completed header** | Soft tint + filled icon tile + a check beside the name |
+| **Coming soon** | Unchanged — already inert and visibly so |
+
+⚠️ **The completed state must read as settled, not as loud.** The card that deserves the eye is the one
+*in progress*, because it is the one with something to do. An inverted or high-contrast completed
+header was mocked up and rejected on exactly this: the eye lands on the finished skill every time, and
+the page starts celebrating the past instead of pointing at the next step. The test for any future
+change is a completed card sitting directly above an in-progress one — if the finished one wins, it is
+wrong.
+
+✅ **Available vs coming soon needed no work.** A `.cs` card already carries a zero-width status rail
+and has **no chevron, no body, no click handler and no `tabindex`**. Checked directly on 2026-08-20.
+Because availability is already encoded structurally, the `.sstatus` badge is free to carry the
+personal state on available cards without losing the other axis. ⚠️ Do not re-solve this.
+
+#### Motion
+- **Nothing animates on load or on scroll.** Rings and bars render at their real values from the first
+  paint. The skill list sits well below the fold, so a load-triggered animation finishes before anyone
+  scrolls to it — a nice animation nobody sees is a slow page load with extra steps.
+- **Expanding a card is the only trigger.**
+- Rings sweep over **1350ms** with the figure counting up; a **reduced-scale pulse overlaps the last
+  200ms** as the landing. Bars sweep over **1200ms**. ~1.6s of motion per expand.
+- ⚠️ **Overlapped, not sequenced.** The sweep ends on an ease-out that decelerates into its target; a
+  pulse starting *after* it finishes re-accelerates from a standstill, so the eye reads two gestures
+  with two endings. Starting the pulse at ~85% makes it the landing rather than an appendix.
+- The counting figure should be **eased over the same duration**, not read back from the live
+  `stroke-dashoffset` each frame. Reading it back guarantees the number and arc cannot drift, but costs
+  a forced style read per ring per frame — fine for a prototype, wrong at nine cards and eighteen rings.
+- Reduced motion is **not optional**: `future-skills.html` already carries a `prefers-reduced-motion`
+  block, and joining it means rendering at the final value *instantly*, never a faster sweep.
+
+⚠️ **Three transition traps, all hit while prototyping this**, and all of them produce a wrong picture
+rather than an obvious failure:
+1. The remove-class / read `offsetWidth` / re-add trick **does not restart a transitioned property** —
+   removing the class does not snap the value back, it *transitions* back, so at the moment you re-add
+   it the value is still at the old target and nothing happens. The transition has to be suppressed
+   while the value is reset, then re-enabled before the target is re-applied, with a style read after
+   each step.
+2. **Scope the suppression per group.** One shared "no transitions" class let a bar reset collapse a
+   ring transition already in flight, which looked exactly like the ring animation never firing.
+3. **Restarting a transition twice inside one frame leaves it stuck at its start value** — an empty
+   ring beside a figure reading 46%. A fast double-click on the chevron is enough. Kick the animation
+   off on the next frame and collapse repeat requests into one.
+
+#### What has to happen first
+1. **The completion control** on the ten skill pages. Nothing can show three states until
+   `completed_at` is written by something.
+2. **Settle-based coverage** — see the ⚠️ defect note under "Completion tracking" above. This is a fix,
+   not a polish, and it must land before any percentage ships.
+3. **`data-optional` on Explore Further**, five pages.
+4. **The generated catalogue and its check.**
+
+⚠️ **One rule to settle before this and the dashboard are both built:** they must agree on what the
+words mean, including the fact that `visited` will mean *stopped on* for a plan and *advanced to* for a
+primer. If "In progress" has a floor on one surface and not the other, the same account reads as two
+different states depending on which page it is looking at. That logic belongs in one module both
+import, written once.
+
 ### Custom learning items — the first thing an account holds that the user made
 **Status:** Idea · **Needs its own discovery before any build** · Raised 2026-08-20
 **Relates to:** [supabase/migrations/20260817120000_initial_schema.sql](supabase/migrations/20260817120000_initial_schema.sql),
