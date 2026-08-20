@@ -24,7 +24,8 @@ prevent.
 
 | # | Stage | Owner | Status | Notes from the person who did it |
 |---|---|---|---|---|
-| 1 | Cloudflare inbound routes | Human | ☐ Not started | |
+| 0 | Confirm the starting state | Human | ✅ Done | 2026-08-20, `npm run verify:email` → **21/21, 1 warning**. The warning is the DMARC `rua` pointing at `dmarc_rua@onsecureserver.net`, which is stage 6's job and is expected here. No deviation from the state table below |
+| 1 | Cloudflare inbound routes | Human | ✅ Done | 2026-08-20. Catch-all was already **Drop + Disabled** with one rule only (`singchen@`), so `noreply@` has no inbound route and the "replies bounce" claim in `supabase/README.md` is **correct** — the trap this stage checks for is not live, and nothing needed changing. `contact@` and `dmarc@` added, both Active, 3 rules total, `singchen@` untouched. **Both test messages delivered.** The header goes *Syncing* after a save; tests were run once it returned to *Enabled* |
 | 2 | Resend API key | Human | ☐ Not started | |
 | 3 | Gmail send-as for `contact@` | Human | ☐ Not started | |
 | 4 | Retire the `singchen@` send-as | Human + Claude | ☐ Not started | |
@@ -81,8 +82,14 @@ conflating them is the easiest mistake in this document.
 
 **Tick as you go**
 
-- [ ] `npm run verify:email` run — **21/21**, and the DMARC third-party warning still present
-- [ ] Any deviation from the state table above recorded in the handoff table
+- [x] `npm run verify:email` run — **21/21**, and the DMARC third-party warning still present
+- [x] Any deviation from the state table above recorded in the handoff table
+
+**Observed 2026-08-20:** 21/21 passed, 1 warning. Cloudflare authoritative on
+`marvin`/`susan.ns.cloudflare.com`, all three inbound MX present, exactly one apex SPF record using
+**2 of 10** lookups, Resend's bounce MX and `resend._domainkey` (218 chars) live, both Brevo
+selectors still resolving, `p=quarantine` with `aspf=r`, and the apex still in Vercel space
+(`216.198.79.1`, `64.29.17.1`). The single warning is the `rua` address — stage 6.
 
 ---
 
@@ -91,7 +98,9 @@ conflating them is the easiest mistake in this document.
 **Cloudflare dashboard → `amplifiedthinker.com` → Email** (the left-nav item has been labelled both
 *Email* and *Email Routing* across redesigns; same place) **→ Routing rules.**
 
-Under **Custom addresses → Create address**, add two:
+Custom addresses are created from the blue **+ Create routing rule** button on the *Routing rules*
+tab — not from a separate "custom addresses" screen, whatever this runbook said before 2026-08-20.
+Add two:
 
 | Custom address | Action | Destination |
 |---|---|---|
@@ -102,6 +111,10 @@ The destination is already a **verified** destination address, so neither of the
 Cloudflare verification email. If one asks you to verify, you have typed the Gmail address wrong.
 
 **Leave `singchen` exactly as it is.** Do not delete, disable or re-target it.
+
+⚠️ **The page header flips from *Enabled* to *Syncing* as soon as a rule is saved.** Wait for it to
+return to *Enabled* before testing. A message sent during the sync window can bounce, and the bounce
+reads as an unknown-recipient error — indistinguishable from a typo in the address you just created.
 
 ⚠️ **Check the catch-all rule while you are on this screen, and record what it says in the handoff
 table.** If catch-all is enabled and set to *Send to*, then `noreply@` already has an inbox —
@@ -132,14 +145,17 @@ Cloudflare work, and treat "the gate passed" as saying nothing whatsoever about 
 
 **Tick as you go**
 
-- [ ] Inbox skimmed for other `@amplifiedthinker.com` recipients before touching catch-all
-- [ ] Custom address `contact` → `singfenchen@gmail.com` created
-- [ ] Custom address `dmarc` → `singfenchen@gmail.com` created
-- [ ] `singchen` route left in place, untouched
-- [ ] Catch-all checked, set to disabled or Drop, and **recorded in the handoff table**
+- [x] ~~Inbox skimmed for other `@amplifiedthinker.com` recipients before touching catch-all~~ —
+      **not applicable**: catch-all was already off, so nothing was arriving at an unlisted address
+      and nothing needed touching
+- [x] Custom address `contact` → `singfenchen@gmail.com` created — Active
+- [x] Custom address `dmarc` → `singfenchen@gmail.com` created — Active
+- [x] `singchen` route left in place, untouched — still Active, 3 rules total
+- [x] Catch-all checked, set to disabled or Drop, and **recorded in the handoff table**
+      — **2026-08-20: already Drop *and* Disabled. No change made**
 - [ ] No DNS records were edited in this stage
-- [ ] Test message to `contact@` arrived in Gmail
-- [ ] Test message to `dmarc@` arrived in Gmail
+- [x] Test message to `contact@` arrived in Gmail — 2026-08-20
+- [x] Test message to `dmarc@` arrived in Gmail — 2026-08-20
 
 **Rollback:** delete the two custom addresses. Nothing else depends on them yet.
 
