@@ -99,12 +99,25 @@ mail is a stated design decision rather than an accident. It should be **disable
 **Drop**. If it is not, that is a pre-existing defect found by this runbook, not something stage 1
 caused; fix it here and note it.
 
+⚠️ **Turning catch-all off is itself a behaviour change.** Every address on the domain that is not
+in the custom list stops being delivered and starts bouncing. That is the intended end state, but
+if catch-all has been on since July then something may have been arriving through it that nobody
+listed — a vendor signup at `billing@`, say. Skim the Gmail inbox for `@amplifiedthinker.com`
+recipients other than `singchen@` and `noreply@` before switching it off, and add any survivors as
+custom addresses in the table above.
+
 **No DNS record changes.** The apex MX records already carry every address on the domain. If you
 find yourself editing DNS in this stage, stop — you are in the wrong place.
 
 **Verify:** send a message from any outside account to `contact@amplifiedthinker.com` and to
 `dmarc@amplifiedthinker.com`. Both should land in the Gmail inbox within seconds. Inbound is now
 done and nothing about outbound has changed yet.
+
+⚠️ **This stage is the one piece of the system no gate can watch, permanently.** Routing rules live
+in Cloudflare's application, not in DNS, so `npm run verify:email` cannot see them — it will keep
+printing green with every custom address deleted. Meanwhile the privacy page asserts that `contact@`
+is a monitored address. The only check that exists is sending a message to it, so send one after any
+Cloudflare work, and treat "the gate passed" as saying nothing whatsoever about inbound.
 
 **Rollback:** delete the two custom addresses. Nothing else depends on them yet.
 
@@ -134,6 +147,14 @@ consumer.
 - **Resend's acceptable-use policy on human correspondence.** It is built for application mail. A
   personal reply relay is an unusual use and has never been confirmed as permitted. Read the AUP
   once, now, rather than after an account action.
+
+  **If it does not permit this, the runbook forks and you should stop here rather than improvise.**
+  Stages 1, 5 and 6 still stand on their own — `contact@` can be a receive-only address, with replies
+  going out from Gmail's own identity, which is worse but not broken. The outbound half then needs a
+  relay that is not Resend: keeping Brevo (cancels stage 7, and re-inherits the 90-day key expiry) or
+  Google Workspace on the domain (paid, and makes Gmail authoritative for the mailbox rather than a
+  forwarding destination) are the two realistic answers. Both are decisions, not steps; bring the
+  finding back rather than picking one mid-stage.
 - **The free allowance is 100/day and is now shared three ways** — Supabase auth mail, and your own
   outbound replies. A heavy test loop on auth can exhaust the day and your correspondence stops with
   it, looking like an SMTP fault.
@@ -221,6 +242,19 @@ it. [../scripts/verify-email-dns.mjs](../scripts/verify-email-dns.mjs) heads tha
 *"Brevo (Gmail 'Send mail as' alias only, since the Resend switch)"* and its comments explain at
 length that the records are load-bearing for an alias that no longer exists. Reword the heading and
 the comment to *retained pending teardown, unused since <date>*, leaving every assertion in place.
+
+**Two prose docs go stale at the same instant and must be amended in the same commit**, because the
+soak before stage 7 could run for weeks and both currently instruct a reader to keep Brevo for a
+reason that has just stopped being true:
+
+| File | What it says now |
+|---|---|
+| [../supabase/README.md](../supabase/README.md) | *"Brevo's DNS records must stay"* — Gmail still relays through them |
+| [../docs/recovery.md](recovery.md) | *"Brevo looks like a leftover and is not"* |
+
+Amend both to *unused since `<date>`, retained pending teardown*; they are **deleted** at stage 7,
+not now. The distinction matters: during the soak the records genuinely must stay, so the
+instruction is still right and only its justification is wrong.
 
 ⚠️ **This is a docs-truth edit, not a behaviour change, and it matters because the file's whole job
 is to stop someone deleting those records by mistake.** Once the stated reason is false, the next

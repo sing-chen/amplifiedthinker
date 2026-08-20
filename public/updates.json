@@ -1,26 +1,30 @@
 [
-  {
-    "date": "2026-08-13",
-    "html": "<a href=\"future-skills.html#s-strategic\">Strategic Synthesis &amp; Decision-Making</a> added as a new Future Skill, with a primer and full learning plan."
-  },
-  {
-    "date": "2026-07-21",
-    "html": "Dark Mode added — toggle light/dark appearance from the nav"
-  },
-  {
-    "date": "2026-07-17",
-    "html": "<a href=\"future-skills.html#s-systems\">Systems Thinking</a> added as a new Future Skill, with a primer and full learning plan. Announcement banner added to the homepage for surfacing time-sensitive updates."
-  },
-  {
-    "date": "2026-07-10",
-    "html": "<a href=\"search.html\">Search</a> now indexes individual News stories, not just the News page, and supports extended search with a range of search term operators."
-  },
-  {
-    "date": "2026-07-08",
-    "html": "<a href=\"news.html\">News</a> section added — a curated, dated feed of workforce and skills stories."
-  },
-  {
-    "date": "2026-07-06",
-    "html": "Site launched."
-  }
+    {
+        "date": "2026-08-20",
+        "html": "Accounts arrived: sign in to keep your place across devices. New <a href=\"privacy.html\">privacy &amp; cookies</a> and <a href=\"terms.html\">terms of use</a> pages set out exactly what is stored and why, and <a href=\"why-sign-up.html\">why sign up</a> compares an account with browsing as a guest. Account holders can now opt in to hear when new skills or features land."
+    },
+    {
+        "date": "2026-08-13",
+        "html": "<a href=\"future-skills.html#s-strategic\">Strategic Synthesis &amp; Decision-Making</a> added as a new Future Skill, with a primer and full learning plan."
+    },
+    {
+        "date": "2026-07-21",
+        "html": "Dark Mode added — toggle light/dark appearance from the nav"
+    },
+    {
+        "date": "2026-07-17",
+        "html": "<a href=\"future-skills.html#s-systems\">Systems Thinking</a> added as a new Future Skill, with a primer and full learning plan. Announcement banner added to the homepage for surfacing time-sensitive updates."
+    },
+    {
+        "date": "2026-07-10",
+        "html": "<a href=\"search.html\">Search</a> now indexes individual News stories, not just the News page, and supports extended search with a range of search term operators."
+    },
+    {
+        "date": "2026-07-08",
+        "html": "<a href=\"news.html\">News</a> section added — a curated, dated feed of workforce and skills stories."
+    },
+    {
+        "date": "2026-07-06",
+        "html": "Site launched."
+    }
 ]
