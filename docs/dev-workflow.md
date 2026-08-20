@@ -626,6 +626,40 @@ location until moved.
 
 ---
 
+### ⚠️ TLS interception breaks every `verify:*` script, and it looks like a code fault
+
+**Symptom**, on a network you have not used before — typically a corporate one:
+
+```
+[TypeError: fetch failed] { [cause]: Error: unable to verify the first certificate
+  code: 'UNABLE_TO_VERIFY_LEAF_SIGNATURE' }
+```
+
+**Cause: Node ships its own CA bundle and ignores the Windows trust store.** A proxy,
+VPN or antivirus doing HTTPS inspection presents a certificate signed by a root Windows
+trusts and Node does not. Nothing is wrong with the script, the credentials, or the
+thing being checked — the same command passes from a different network on the same
+machine, with the same Node version, minutes apart. First hit on 2026-08-20, on
+`verify:schema`, immediately after a migration had been applied *successfully*; the
+crash read as "the migration failed" and it had not.
+
+**Fix — trust what Windows already trusts:**
+
+```bash
+node --use-system-ca scripts/verify-schema-columns.mjs
+```
+
+or `$env:NODE_OPTIONS = "--use-system-ca"` for the session. Needs Node ≥ 22.15, which
+is why the flag is **not** baked into the npm scripts: an older Node rejects the unknown
+flag before running a line, trading a clear failure for an obscure one.
+
+⚠️ **Never `NODE_TLS_REJECT_UNAUTHORIZED=0`.** It disables certificate verification for
+the whole process — on scripts whose entire purpose is to make a trustworthy statement
+about a remote database. It would make the symptom disappear and the guarantee with it.
+
+**Affects all four**: `verify:rls`, `verify:email`, `verify:redirects`, `verify:schema`.
+Only `verify:schema` catches it and prints this advice; the others still fail raw.
+
 ## Day to day
 
 Starting a phase:

@@ -71,10 +71,60 @@ if (/^sb_secret_/.test(key) || /service_role/.test(key)) {
   process.exit(2);
 }
 
+// ---------------------------------------------------------------------------
+// TLS interception, which is an environment problem wearing a code problem's
+// clothes.
+//
+// Node ships its OWN CA bundle and ignores the Windows trust store. A corporate
+// proxy, VPN or AV doing HTTPS inspection presents a certificate signed by a
+// root that Windows trusts and Node does not, so every fetch here dies with
+// UNABLE_TO_VERIFY_LEAF_SIGNATURE — as an unhandled rejection and a stack
+// trace, which reads as "the script is broken" rather than "you are on a
+// different network than last time".
+//
+// ⚠️ THE FIX IS NEVER NODE_TLS_REJECT_UNAUTHORIZED=0. That disables
+// certificate checking for the whole process, on a script whose entire job is
+// to make a trustworthy statement about a remote database. `--use-system-ca`
+// tells Node to trust what Windows already trusts, which is the actual intent.
+//
+// Not added to the npm script by default: the flag needs Node >= 22.15, and an
+// older Node fails on the unknown flag before it runs a line — trading a clear
+// error for an obscure one.
+function tlsAdvice(err) {
+  const code = err?.cause?.code || err?.code || '';
+  if (!/CERT|SELF_SIGNED|UNABLE_TO_VERIFY|LEAF_SIGNATURE/i.test(code)) return null;
+  return [
+    '',
+    `TLS could not be verified (${code}).`,
+    '',
+    'Something is inspecting HTTPS between you and Supabase — a corporate proxy,',
+    'VPN or antivirus. Its root CA is trusted by Windows; Node uses its own bundle',
+    'and does not see it. Re-run trusting the system store:',
+    '',
+    '  node --use-system-ca scripts/verify-schema-columns.mjs',
+    '',
+    'or for the whole session:',
+    '',
+    '  $env:NODE_OPTIONS = "--use-system-ca"',
+    '',
+    'The same applies to verify:rls, verify:email and verify:redirects.',
+    'Do NOT set NODE_TLS_REJECT_UNAUTHORIZED=0 — it switches off the check these',
+    'scripts exist to make.',
+    '',
+  ].join('\n');
+}
+
 async function probe({ table, column }) {
-  const res = await fetch(`${url}/rest/v1/${table}?select=${column}&limit=1`, {
-    headers: { apikey: key, Authorization: `Bearer ${key}` },
-  });
+  let res;
+  try {
+    res = await fetch(`${url}/rest/v1/${table}?select=${column}&limit=1`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    });
+  } catch (err) {
+    const advice = tlsAdvice(err);
+    if (advice) { console.error(advice); process.exit(2); }
+    return { ok: false, note: `network error: ${err?.cause?.code || err.message}` };
+  }
   const body = await res.text();
 
   if (res.status === 200) return { ok: true, note: 'exists, and readable by anon' };
