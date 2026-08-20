@@ -922,33 +922,92 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         var tabLink = el('auth-doc-tab');
         var pendingHash = '';
 
-        // Belt and braces for the "#s8" links: the fragment in `src` should
-        // land the reader on that section, and this repeats the scroll after
-        // load, once the layout it is scrolling through actually exists. Same
-        // origin, so the frame's own document is reachable.
+        // ── THE MODAL IS A READER, NOT A BROWSER ────────────────────────────
         //
-        // ⚠️ NOT VERIFIED, AND HONESTLY LABELLED AS SUCH. Scrolling is inert in
-        // the agent's browser — `window.scrollTo` moves nothing, top-level or
-        // in a frame — so neither the native fragment scroll nor this handler
-        // could be measured. The same non-compositing pane also freezes
-        // transitions, reports `innerWidth: 0` and refuses screenshots. If a
-        // human finds these links landing at the top of the document rather
-        // than on the section, THIS is the code to look at first — and the
-        // native fragment may be doing the job on its own, in which case this
-        // handler is redundant rather than wrong.
+        // ⚠️ WITHOUT THIS RULE THE MODAL NESTS INSIDE ITSELF. privacy.html links
+        // to why-sign-up.html and to /sign-in/, so a reader could reach the
+        // sign-up form INSIDE the modal, click "terms of use" there, and open a
+        // second modal within the first — and again, and again. Every layer
+        // holds a live copy of the form, only one of which is the one they were
+        // filling in.
+        //
+        // The fix is to decide what this surface IS rather than to special-case
+        // the loop. It shows the legal documents and nothing else, so every link
+        // inside it resolves to one of four outcomes:
+        //
+        //   1. A fragment on the same page  -> let it scroll. This is the
+        //      16-entry contents list, and it is the main way the page is read.
+        //   2. The OTHER legal document     -> swap it into this modal. The two
+        //      cross-reference each other constantly and belong to one task.
+        //   3. mailto:, tel:                -> let it through; nothing navigates.
+        //   4. Anything else                -> new tab, and close the modal.
+        //      The form behind it survives, which was the whole point.
+        //
+        // Recursion is then impossible by construction: the frame can only ever
+        // hold privacy.html or terms.html, and /sign-in/ can never load inside
+        // it. That is a stronger guarantee than a depth counter, and it needs no
+        // state to maintain.
+        var DOCS = ['privacy.html', 'terms.html'];
+
+        function docLabel(path) {
+          return path.indexOf('terms.html') > -1 ? 'Terms of use' : 'Privacy &amp; cookies';
+        }
+
         frame.addEventListener('load', function () {
-          if (!pendingHash) return;
-          var target = pendingHash;
-          pendingHash = '';
-          try {
-            var doc = frame.contentDocument;
-            var node = doc && doc.querySelector(target);
+          var doc;
+          try { doc = frame.contentDocument; } catch (e) { return; }
+          if (!doc) return;
+
+          // Belt and braces for the "#s8" links. The fragment in `src` should
+          // land the reader on that section; this repeats it after load, once
+          // the layout being scrolled through exists.
+          //
+          // ⚠️ UNVERIFIED, and labelled as such. Scrolling is inert in the
+          // agent's browser — `window.scrollTo` moves nothing, top level or in
+          // a frame — so neither the native fragment nor this could be
+          // measured. If a human finds these landing at the top of the document
+          // instead of on the section, this is the first thing to look at; the
+          // native fragment may be doing the job alone, making this redundant
+          // rather than wrong.
+          if (pendingHash) {
+            var target = pendingHash;
+            pendingHash = '';
+            var node = doc.querySelector(target);
             if (node) node.scrollIntoView();
-          } catch (e) {
-            // Cross-origin, or the frame was cleared mid-load. The reader gets
-            // the top of the right document, which is a degraded landing rather
-            // than a broken one.
           }
+
+          // Re-attached on every load, because outcome 2 causes another one.
+          doc.addEventListener('click', function (e) {
+            var link = e.target.closest ? e.target.closest('a[href]') : null;
+            if (!link) return;
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+            var raw = link.getAttribute('href') || '';
+
+            // 1. Same-page fragment — the contents list. Leave it entirely.
+            if (raw.charAt(0) === '#') return;
+
+            // 3. Nothing navigates, so nothing to manage.
+            if (/^(mailto:|tel:)/i.test(raw)) return;
+
+            // `link.href` is absolute and already resolved against the frame's
+            // own base, which is what makes the relative hrefs on these pages
+            // work here at all.
+            var abs = link.href;
+            var sameOrigin = abs.indexOf(window.location.origin) === 0;
+
+            // 2. The sibling document — swap it in rather than leaving.
+            if (sameOrigin && DOCS.some(function (d) { return abs.indexOf(d) > -1; })) {
+              e.preventDefault();
+              open(abs, docLabel(abs));
+              return;
+            }
+
+            // 4. Everything else leaves, and the modal goes with it.
+            e.preventDefault();
+            window.open(abs, '_blank', 'noopener');
+            close();
+          });
         });
 
         function open(href, label) {
@@ -989,6 +1048,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }
 
         el('auth-doc-close').addEventListener('click', close);
+
+        // "Open in a new tab" closes this one. The link keeps target="_blank"
+        // and does its own work; all this adds is dismissing a modal the reader
+        // has just finished with — leaving it up would mean coming back to the
+        // form and finding the document still covering it.
+        //
+        // Not preventDefault'd: the browser opens the tab, and closing after
+        // that keeps middle-click and the context menu behaving normally.
+        el('auth-doc-tab').addEventListener('click', function () { close(); });
 
         // The one thing showModal() does not give us. The dialog element fills
         // the viewport including its backdrop, so a click whose target IS the
