@@ -359,6 +359,85 @@ and misleading as an achievement number — which is the strongest argument for 
 completion CTA carrying the real meaning, and the percentage being presented as "how far through",
 not "how much you have learned".
 
+### Custom learning items — the first thing an account holds that the user made
+**Status:** Idea · **Needs its own discovery before any build** · Raised 2026-08-20
+**Relates to:** [supabase/migrations/20260817120000_initial_schema.sql](supabase/migrations/20260817120000_initial_schema.sql),
+[public/progress.js](public/progress.js), [public/privacy.html](public/privacy.html),
+[public/terms.html](public/terms.html), [public/why-sign-up.html](public/why-sign-up.html)
+
+Let a signed-in user add their own learning — a YouTube video, a TED talk, a book, an online course —
+as a link with a title, and move it through **start · pause · clear/restart · complete**.
+
+**Why it is the strongest item on this list, and it is not the feature itself.** Everything an account
+currently offers is *the site remembering what the site gave you*: resume position, quiz answers,
+favourited stories. This is the first thing where the account holds something **the user made**. That
+changes the argument on [why-sign-up.html](public/why-sign-up.html) from convenience to ownership,
+and it gives someone a reason to come back that does not depend on them still working through the
+five skills.
+
+**The data model is most of the way there already.** `skill_progress` is keyed
+`(user_id, skill_slug, content_type)` with `position`, `visited[]`, `state`, `started_at`,
+`completed_at` — and the four verbs above map onto `started_at` / `completed_at` / delete, two of
+which **no code writes yet**. Discovery is mostly about whether a custom item is a row in that table
+with a user-owned identifier or a sibling table, not about inventing a shape.
+
+**Three things that will bite, surfaced now so discovery does not meet them cold:**
+
+1. ⚠️ **This makes the privacy page real work, not a paragraph.** User-submitted URLs are
+   user-generated content — a class of stored personal data
+   [public/privacy.html](public/privacy.html) does not currently describe at all. That page names
+   every processor, every storage key and the legal basis for each, so this is a new section, and
+   `terms.html` needs an acceptable-use line to match. Sibling Promptly check applies as ever.
+
+2. ⚠️ **Do not fetch the link.** "Paste a URL and we pull the title and thumbnail" needs a server —
+   so it is Vercel-only, which deepens exactly the Pages dependency the project is trying to shed —
+   *and* it turns the site into something making outbound requests on a user's behalf, which is
+   another privacy-page change and a small SSRF surface. A title the user types loses almost none of
+   the value and removes the whole problem.
+
+3. **"Progress" through a book is not a percentage.** A video has a natural 0–100%; a book does not,
+   and a course has its own tracker already. The honest version is the state machine the idea
+   describes — not started / in progress / done — plus an optional free-text "where I am". Cheaper to
+   build, and it is what the four verbs already say.
+
+**What this must not become.** No streaks, points or badges on custom items. Streaks punish precisely
+the audience this site is for — working people learning in the gaps — and would make an account feel
+like an obligation rather than a record. The account copy's *"Not a score, and nothing anyone else can
+see"* is the constraint, and the plan already defers leaderboards for the same reason.
+
+### Personalisation that needs no new storage at all
+**Status:** Idea · **Natural home: Phase 9 (Dashboards)** · Raised 2026-08-20
+**Relates to:** [public/progress.js](public/progress.js), `skill_progress`,
+[docs/why-sign-up-account-copy.md](docs/why-sign-up-account-copy.md)
+
+Two things with the best value-per-build ratio on this list, because both are pure derivation from
+rows already being written:
+
+**A next-thing-to-do surface.** Given `visited[]` and `position` across the five skills, the site can
+already say *"you left Analytical Thinking at section 6"* without one new column. It is Phase 9's
+dashboard with a stronger framing — a dashboard shows you a picture, a next step tells you what to
+do — and it is the thing that makes a returning visit feel addressed to that person.
+
+**A stated goal.** One field: which skill you are working on, or by when. Small, and it is what turns
+the dashboard from a report into something with a subject. ⚠️ On its own it is decoration — a
+commitment device with nothing behind it — so it only earns its place paired with the next-step
+surface above.
+
+**Notes are the cheap probe for the bigger idea.** The `notes` table is already in the schema for
+Phase 6 as a news/skill annotation. *"What I thought while reading this"* is user-made content — the
+same category as custom learning items above, at a fraction of the build, with no privacy surface
+beyond what Phase 6 already commits to. If the question is whether people value an account for
+holding **their** stuff, this answers it before the larger feature is built.
+
+⚠️ **The account copy still has one claim with no live source.**
+[docs/why-sign-up-account-copy.md](docs/why-sign-up-account-copy.md) flags *"which ones you've
+finished"* as resting on `completed_at`, which nothing writes. Note that the draft's own footnote
+says completion is *"`visited` covering all 14 sections"* — the completion-tracking entry above
+supersedes that: completion is **explicit, a control the user presses**, confirmed 2026-08-18.
+Whichever way it lands, until something writes that column the headline benefit of an account reads
+as *resume*, which sounds like a convenience. *"You've finished three of five"* is the same data and
+an entirely different sentence.
+
 ### A larger quiz bank per skill, with an optional extra round
 **Status:** Idea · Not started · Raised 2026-08-18
 **Relates to:** `public/skills/*/plan.html`, a new table
