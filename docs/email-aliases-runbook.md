@@ -29,8 +29,8 @@ prevent.
 | 2 | Resend API key | Human | ✅ Done | 2026-08-20. **AUP checked and the fork was not taken** — personal one-to-one correspondence is not prohibited; the permitted use is *replies to inbound mail*, and cold outreach from this alias would be a real violation. Key `Gmail send-as` created, Sending access, restricted to `amplifiedthinker.com`, stored. Three keys now share **one 100/day account allowance** |
 | 3 | Gmail send-as for `contact@` | Human | ✅ Done | 2026-08-20. Relaying through Resend, *Treat as an alias* checked, **set as the account default**. Delivered message measured: `spf=pass` aligned, `dkim=pass header.s=resend`, `dmarc=pass` under `p=QUARANTINE`, `From:` clean with no "via". Delivered to a non-Google mailbox too. **Passes on both mechanisms — stronger than `singchen@` ever was through Brevo** |
 | 4 | Move the `singchen@` send-as off Brevo | Human + Claude | ✅ Done | 2026-08-20. **Scope changed mid-stage: repointed, not deleted** — `singchen@` stays as a personal outbound identity, and retiring the vendor never required retiring the address. Both send-as entries now relay through `smtp.resend.com` on one key; *Treat as an alias* fixed on `singchen@`, which had been *"Not an alias"*; `contact@` remains default. Delivered test measured identical to `contact@`. **Brevo now relays nothing for anybody.** Gate comment, `supabase/README.md` and `recovery.md` all amended from *must stay* to *retained pending teardown*. `verify:email` still 21/21 |
-| 5 | Swap the site over | Claude | ☐ Not started | |
-| 6 | Repoint DMARC reports | Human | ☐ Not started | |
+| 5 | Swap the site over | Claude | ✅ Done | 2026-08-20, `4d28458`, live on both origins. 13 lines, 6 files, all `?subject=` values preserved. Resend's row in the privacy processor table widened to cover contact replies. Supabase templates pasted by hand. ⚠️ **Two pre-existing Astro collapsed-space defects found and fixed while verifying** — instances 3 and 4 of a trap a grep cannot detect. Promptly sibling **⊘ skipped by decision**, pre-launch, but still wrong at its launch |
+| 6 | Repoint DMARC reports | Human | ✅ Done | 2026-08-20. `rua` now `dmarc@amplifiedthinker.com`; `p=quarantine`, `adkim=r`, `aspf=r` untouched. Gate reads **20/20, no warnings** — ⚠️ **the count drops from 21 because the warning was itself a result entry.** This file predicted "21/21 with the warning gone", which cannot happen; corrected here and in stage 7, whose target is now **16/16**. First aggregate report expected within ~24h |
 | 7 | Brevo teardown **and account closure** | Human + Claude | ☐ Not started | **After a soak — see the stage.** Three parts now: 7a safe record deletions, 7b the apex SPF edit alone, 7c close the account last |
 
 **Statuses:** ☐ Not started · ◐ In progress · ✅ Done · ⊘ Skipped (say why)
@@ -526,13 +526,18 @@ Grep is not verification here; a correct `href` with broken markup around it sti
 - [x] privacy.html — the "monitored address" claim is true of `contact@` as deployed (stage 1)
 - [x] privacy.html — Resend processor row widened: *"Delivers the two account emails, and carries
       replies we send from the contact address"*, audience *"Account holders; anyone who emails us"*
-- [ ] Promptly sibling site checked for the same statements — ⚠️ **no local checkout exists**, so
-      this cannot be done from this repo. Human step
+- [x] ~~Promptly sibling site checked for the same statements~~ — **⊘ skipped 2026-08-20, by
+      decision.** No local checkout exists, and the site is pre-launch with no users but its owner,
+      so the two notices disagreeing costs nothing today. ⚠️ **It will still be wrong when Promptly
+      launches** — check it as part of that launch, not as part of this runbook
 - [x] `npm run build` passes
-- [ ] Both templates pasted into Supabase **prod** → Auth → Emails → Templates
-- [ ] Templates pasted into **dev** too, or dev noted as stale
-- [ ] Deployed, and a `mailto:` clicked on `/privacy/`, `/terms/`, `/about/`, `/sign-in/`
-- [ ] Checked on **both origins**, not just Vercel
+- [x] Both templates pasted into Supabase **prod** → Auth → Emails → Templates — 2026-08-20
+- [x] Templates pasted into **dev** too, or dev noted as stale
+- [x] Deployed, and every `mailto:` checked on `/privacy/`, `/terms/`, `/about/`, `/sign-in/`
+- [x] Checked on **both origins**, not just Vercel — 2026-08-20, `4d28458`. Zero occurrences of the
+      old address on either; 11 links with subjects intact; both collapsed-space defects confirmed
+      gone from production. ⚠️ **Pages lagged Vercel by ~2 minutes** and served the old copy on a
+      first check — that is the Actions build finishing, not a failure. Re-check rather than debug
 
 **Rollback:** revert the commit; redeploy. The email templates need pasting back by hand — git does
 not reach them.
@@ -559,15 +564,22 @@ gate asserts the relaxed one.
 Today your only alignment-failure alarm points at a third party at GoDaddy, left over from before
 the zone moved to Cloudflare. Nobody here reads it, so a broken selector would go unreported.
 
-**Verify:** `npm run verify:email` — still 21/21, and the *"DMARC aggregate reports go to a third
-party"* warning is **gone**. Reports are daily XML from each receiver; expect the first within about
+**Verify:** `npm run verify:email` — **20/20, no warnings**.
+
+⚠️ **The count DROPS from 21 to 20, and that is the pass.** This runbook said "still 21/21 with the
+warning gone", which is impossible: the warning is itself an entry in the results array, so clearing
+it removes one. Corrected 2026-08-20 after the edit produced 20/20 and the drop looked like a lost
+assertion. **Every count in this file downstream of here is one lower than it was**, which is
+exactly the confusion stage 7 warns about — with the twist that here a *decrease* is the success
+signal. Reports are daily XML from each receiver; expect the first within about
 24 hours, and expect it to be unreadable by eye. Its value is that it arrives at all.
 
 **Tick as you go**
 
 - [ ] `_dmarc` TXT edited **in place**, `rua` address changed and nothing else
 - [ ] `p=quarantine`, `adkim=r` and **`aspf=r`** all still present, unaltered
-- [ ] `npm run verify:email` — **21/21**, and the third-party warning is **gone**
+- [x] `npm run verify:email` — **20/20, no warnings** (not 21/21 — see above). Confirmed 2026-08-20,
+      `rua=mailto:dmarc@amplifiedthinker.com`, with `p=quarantine` and `aspf=r` unaltered
 - [ ] First aggregate report arrived at `dmarc@` (allow ~24 hours; it will be unreadable XML)
 
 **Rollback:** the previous value is in the block above, and in
@@ -648,13 +660,14 @@ anyone's data but the owner's.
 
 **Then, Claude:** delete the four Brevo `record(...)` assertions and the section heading from
 [../scripts/verify-email-dns.mjs](../scripts/verify-email-dns.mjs), along with `BREVO_SPF_INCLUDE`
-and `BREVO_SELECTORS`. The gate goes **21 → 17**. Update
+and `BREVO_SELECTORS`. The gate goes **20 → 16** — four assertions removed from the post-stage-6
+baseline of 20, *not* from the 21 this file assumed before the DMARC warning cleared. Update
 [email-dns-baseline.md](email-dns-baseline.md) with a *what stage 7 removed* block in the same shape
 as its existing *What Phase 4 changed* section, and correct the four-systems table down to three.
 Update [../supabase/README.md](../supabase/README.md) and [../docs/recovery.md](recovery.md), both of
 which currently instruct a reader that Brevo must stay.
 
-⚠️ **Run the gate before and after and compare the counts deliberately.** 17/17 is the pass; 17
+⚠️ **Run the gate before and after and compare the counts deliberately.** 16/16 is the pass; 16
 assertions with one silently absent is what a wrong deletion looks like, and both print green.
 
 **Then close the loop in [../BACKLOG.md](../BACKLOG.md):** candidate 1 of the vendor-consolidation
@@ -668,14 +681,18 @@ inactivity"* is no longer a live risk — it is resolved by removal. Vendors: **
 - [ ] 7a — `brevo-code` TXT deleted
 - [ ] 7a — `brevo1._domainkey` CNAME deleted
 - [ ] 7a — `brevo2._domainkey` CNAME deleted
-- [ ] 7a — **`cf2024-1._domainkey` left alone** (it is Cloudflare's, and inbound depends on it)
+- [ ] 7a — **`cf2024-1._domainkey` left alone** (it is Cloudflare's, and inbound depends on it).
+      Observed 2026-08-20: it carries a **padlock** in the dashboard, like the three inbound MX
+      rows — Cloudflare manages it, so it resists casual deletion. Better protected than this
+      runbook assumed, but do not treat the padlock as a reason to stop being careful
 - [ ] 7b — apex SPF `include:spf.brevo.com` removed, **as its own separate change**
 - [ ] 7c — Brevo account inspected for anything else (lists, domains, history) before closing
 - [ ] 7c — the SMTP key created 2026-07-06 deleted
 - [ ] 7c — **Brevo account closed** — last, after 7a and 7b
 - [ ] 7c — confirmed no `privacy.html` change is needed (Brevo was never named there)
 - [ ] Claude: four `record(...)` assertions, `BREVO_SPF_INCLUDE` and `BREVO_SELECTORS` removed
-- [ ] `npm run verify:email` — **17/17**, and the count was compared deliberately against 21
+- [ ] `npm run verify:email` — **16/16**, and the count was compared deliberately against the
+      post-stage-6 baseline of **20**, not against the 21 that predates the DMARC fix
 - [ ] Claude: [email-dns-baseline.md](email-dns-baseline.md) updated, four-systems table now three
 - [ ] Claude: [../supabase/README.md](../supabase/README.md) and [recovery.md](recovery.md) Brevo
       instructions deleted
