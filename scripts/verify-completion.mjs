@@ -60,6 +60,18 @@ loadDotEnv();
 
 const URL_BASE = (process.env.SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
 const ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.PUBLIC_SUPABASE_ANON_KEY || '';
+// ⚠️ A TOKEN, NOT A PASSWORD, IS THE PRIMARY PATH — and captcha is why.
+// The dev project enforces Turnstile on its auth endpoints, so a scripted
+// password sign-in is rejected with "no captcha_token found" no matter how
+// correct the credentials are. There is no honest way around that from a
+// script: the captcha exists precisely to prove a browser was involved.
+//
+// So do not fight it. This gate needs an authenticated SESSION, and never
+// needed a password to get one. Sign in normally in a browser and hand it the
+// resulting access token. That is better on every axis: it sidesteps captcha,
+// it is short-lived rather than permanent, and no password goes near a shell
+// history or an environment variable.
+const TOKEN = process.env.TEST_ACCESS_TOKEN || '';
 const EMAIL = process.env.TEST_EMAIL || '';
 const PASSWORD = process.env.TEST_PASSWORD || '';
 
@@ -71,13 +83,29 @@ if (!URL_BASE || !ANON_KEY) {
   process.exit(2);
 }
 
-if (!EMAIL || !PASSWORD) {
-  console.error(
-    'Missing TEST_EMAIL / TEST_PASSWORD.\n\n' +
-      'This gate signs in, so it needs an account on the DEV project. Pass them\n' +
-      'for the one run rather than storing them:\n\n' +
-      '  TEST_EMAIL=you@example.com TEST_PASSWORD=… npm run verify:completion\n'
-  );
+if (!TOKEN && !(EMAIL && PASSWORD)) {
+  console.error([
+    'Missing TEST_ACCESS_TOKEN.',
+    '',
+    'This gate runs as a real signed-in user, so it needs that user\'s session.',
+    'The dev project enforces a captcha on sign-in, so a scripted email and',
+    'password cannot satisfy it - only a browser can.',
+    '',
+    '  1. Sign in at http://localhost:4321/sign-in/   (localhost = the dev project)',
+    '  2. In the browser console, run:',
+    '       AmplifiedAuth.session().access_token',
+    '  3. Copy the value, then:',
+    '',
+    '     PowerShell',
+    '       $env:TEST_ACCESS_TOKEN = "eyJ..."',
+    '       npm run verify:completion',
+    '       Remove-Item Env:TEST_ACCESS_TOKEN',
+    '',
+    '     bash / zsh',
+    '       TEST_ACCESS_TOKEN=eyJ... npm run verify:completion',
+    '',
+    'The token lasts about an hour. On a 401, fetch a fresh one.',
+  ].join('\n'));
   process.exit(2);
 }
 
@@ -130,7 +158,33 @@ function record(ok, label, detail) {
 
 const anonHeaders = { apikey: ANON_KEY, 'Content-Type': 'application/json' };
 
+// The `sub` claim is the user id. This decodes without verifying, which is
+// correct here: the token is ours, the server verifies it on every request
+// below, and a forged one would simply fail those.
+function userIdFromToken(jwt) {
+  try {
+    const parts = jwt.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+    return payload.sub || null;
+  } catch {
+    return null;
+  }
+}
+
 async function signIn() {
+  if (TOKEN) {
+    const id = userIdFromToken(TOKEN);
+    if (!id) {
+      console.error('\nTEST_ACCESS_TOKEN is not a readable JWT. Copy the whole value.');
+      return null;
+    }
+    return { token: TOKEN, userId: id };
+  }
+
+  // Fallback, kept because it costs nothing and a project with no captcha can
+  // still use it. On the dev project it will fail - and it says why, rather
+  // than leaving the reader to conclude their password is wrong.
   const res = await fetch(`${URL_BASE}/auth/v1/token?grant_type=password`, {
     method: 'POST',
     headers: anonHeaders,
@@ -138,17 +192,32 @@ async function signIn() {
   });
   const body = await res.json().catch(() => null);
   if (!res.ok || !body || !body.access_token) {
-    console.error(
-      `\nSign-in failed (HTTP ${res.status}): ${body?.error_description || body?.msg || 'no token'}\n` +
-        'The account must exist on the dev project and be confirmed - dev has\n' +
-        'mailer_autoconfirm false, so a fresh signup needs its email clicking first.'
-    );
-    process.exit(2);
+    const why = body?.error_description || body?.msg || 'no token';
+    console.error(`\nSign-in failed (HTTP ${res.status}): ${why}`);
+    if (/captcha/i.test(why)) {
+      console.error([
+        '',
+        'That is the project\'s captcha, not your credentials. A scripted sign-in',
+        'cannot satisfy one - that is what it is for. Use TEST_ACCESS_TOKEN: run',
+        'this gate with nothing set and it prints the three steps.',
+      ].join('\n'));
+    }
+    return null;
   }
   return { token: body.access_token, userId: body.user?.id };
 }
 
-const { token, userId } = await signIn();
+const session = await signIn();
+if (!session) {
+  // ⚠️ NOT process.exit(). Calling it while a fetch is still settling crashed
+  // Node on Windows with an assertion in src/win/async.c - a libuv handle being
+  // closed twice. Setting exitCode and returning lets the loop drain first.
+  process.exitCode = 2;
+} else {
+  await run(session);
+}
+
+async function run({ token, userId }) {
 const auth = { ...anonHeaders, Authorization: `Bearer ${token}` };
 
 const ROW = `${URL_BASE}/rest/v1/skill_progress`;
@@ -329,14 +398,16 @@ await fetch(`${ROW}?skill_slug=eq.${PROBE_SLUG}-forged&content_type=eq.${PROBE_K
 const failed = results.filter((r) => !r.ok);
 console.log(`\n${results.length - failed.length}/${results.length} passed.`);
 
-if (failed.length) {
-  console.log('\nFailures:');
+  if (failed.length) {
+    console.log('\nFailures:');
   for (const f of failed) console.log(`  - ${f.label}: ${f.detail}`);
   console.log(
     '\nIf either "survives" assertion failed, the completion control as written in\n' +
       'public/progress.js destroys data. Do not ship it.'
   );
-  process.exit(1);
-}
+  process.exitCode = 1;
+    return;
+  }
 
-console.log('Green: completion writes are surgical, and starting over keeps the record.');
+  console.log('Green: completion writes are surgical, and starting over keeps the record.');
+}
