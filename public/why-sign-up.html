@@ -55,14 +55,48 @@
   .doc-claim p + p{font-size:15px;font-weight:400;color:rgba(255,255,255,.65);margin-top:10px}
 
   /* ── COMPARISON TABLE ──
-     Scrolls inside its own container rather than widening the page. */
+     Scrolls inside its own container rather than widening the page.
+
+     ⚠️ NO RULE BETWEEN ROWS, which puts the whole weight of "which row am I
+     on" onto vertical rhythm. With ten rows and three columns that is a real
+     risk, so two things compensate and both are load-bearing: generous row
+     padding, and a row-hover tint that follows the pointer across all three
+     cells. Do not trim the padding to save space — the lines are already gone,
+     and it is the only thing left holding a row together. */
   .doc-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .doc-table{width:100%;min-width:420px;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:15px}
-  .doc-table th,.doc-table td{text-align:left;padding:13px 14px;border-bottom:1px solid rgba(172,196,182,.35);vertical-align:top}
-  .doc-table thead th{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
+  .doc-table th,.doc-table td{text-align:left;padding:12px 14px;vertical-align:middle}
+  .doc-table thead th{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-brand);border-bottom:2px solid rgba(172,196,182,.45);padding-bottom:10px}
   .doc-table tbody th{font-weight:400;color:var(--navy);width:46%}
   .doc-table td{text-align:center;color:var(--text-muted);width:27%}
-  .doc-table tbody tr:last-child th,.doc-table tbody tr:last-child td{border-bottom:none}
+  .doc-table tbody tr{transition:background .12s}
+  .doc-table tbody tr:hover{background:rgba(172,196,182,.14)}
+  .doc-table tbody tr:first-child th,.doc-table tbody tr:first-child td{padding-top:14px}
+
+  /* ── THE TABLE'S DISCLOSURE ──
+     A real <details>, not a button and a height animation. It needs no script,
+     it survives the script failing, it is keyboard- and screen-reader-correct
+     for free, and Ctrl+F opens it in browsers that support find-in-page
+     expansion. The account page uses aria-expanded instead because those
+     panels carry forms whose fields must be excluded from the tab order while
+     collapsed — this is a table, so none of that applies.
+
+     ⚠️ CLOSED BY DEFAULT IS A DELIBERATE TRADE. The prose above already makes
+     the argument in full; the table is the evidence for a reader who wants to
+     check it line by line. If it should open by default instead, that is the
+     single word `open` on the <details> tag and nothing else. */
+  .doc-disclosure{border:1px solid rgba(172,196,182,.45);border-radius:var(--radius-lg);overflow:hidden}
+  .doc-disclosure summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;color:var(--fg-heading);transition:background .12s}
+  .doc-disclosure summary::-webkit-details-marker{display:none}
+  .doc-disclosure summary:hover{background:rgba(172,196,182,.14)}
+  .doc-disclosure summary:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
+  .doc-chevron{width:16px;height:16px;flex-shrink:0;stroke:var(--fg-brand);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s}
+  .doc-disclosure[open] .doc-chevron{transform:rotate(90deg)}
+  .doc-summary-hint{font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:var(--text-muted);margin-left:auto}
+  .doc-disclosure-body{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px}
+  @media(prefers-reduced-motion:reduce){
+    .doc-chevron,.doc-disclosure summary,.doc-table tbody tr{transition:none}
+  }
   .yes,.no,.soon{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
   .yes{color:var(--deep-teal)}
   .no{color:var(--warm-gray)}
@@ -126,7 +160,15 @@
     .doc-page{padding:48px 20px 72px}
     .doc-title{font-size:28px}
     .doc-claim{padding:22px 22px}
+    .doc-disclosure summary{padding:14px 16px}
+    .doc-disclosure-body{padding:0 16px 16px}
     footer{padding:24px 20px}
+  }
+  /* The row count is supplementary. Kept on wide screens where it sits on the
+     same line for free; dropped where it would wrap the summary onto three
+     lines and push `margin-left:auto` somewhere that reads as a mistake. */
+  @media(max-width:520px){
+    .doc-summary-hint{display:none}
   }
 
   /* ── DARK MODE ──
@@ -136,7 +178,12 @@
      which is an exact match for a single fg/line token. */
   [data-theme="dark"] .doc-body > p{color:var(--fg-1)}
   [data-theme="dark"] .doc-lede{color:var(--fg-2)}
-  [data-theme="dark"] .doc-table th,[data-theme="dark"] .doc-table td{border-bottom-color:var(--line)}
+  [data-theme="dark"] .doc-table thead th{border-bottom-color:var(--line)}
+  [data-theme="dark"] .doc-table tbody tr:hover{background:rgba(255,255,255,.05)}
+  [data-theme="dark"] .doc-disclosure{border-color:var(--line)}
+  [data-theme="dark"] .doc-disclosure summary{color:var(--fg-heading)}
+  [data-theme="dark"] .doc-disclosure summary:hover{background:rgba(255,255,255,.05)}
+  [data-theme="dark"] .doc-summary-hint{color:var(--fg-2)}
   [data-theme="dark"] .doc-table tbody th{color:var(--fg-1)}
   [data-theme="dark"] .doc-table td{color:var(--fg-2)}
   [data-theme="dark"] .yes{color:var(--fg-brand)}
@@ -196,6 +243,14 @@
     </ul>
 
     <p>These are <strong>marked <span class="soon">Soon</span> in the table below rather than counted as reasons to sign up today.</strong> They are being built on top of the same record an account is already keeping, which is why signing up now means having something to look at when they land.</p>
+
+    <details class="doc-disclosure">
+      <summary>
+        <svg class="doc-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        Compare guest and account, line by line
+        <span class="doc-summary-hint">10 rows</span>
+      </summary>
+      <div class="doc-disclosure-body">
 
     <div class="doc-table-wrap">
       <table class="doc-table">
@@ -261,7 +316,10 @@
       </table>
     </div>
 
-    <p class="doc-note"><span class="soon">Soon</span> means the groundwork is in place and the feature is not. It is on the table so you can see where this is going, not so it counts as a reason to sign up today.</p>
+        <p class="doc-note"><span class="soon">Soon</span> means the groundwork is in place and the feature is not. It is on the table so you can see where this is going, not so it counts as a reason to sign up today.</p>
+
+      </div>
+    </details>
 
     <div class="doc-divider"></div>
 
@@ -276,7 +334,7 @@
     <h2 class="doc-h2">What an account does not mean</h2>
 
     <ul class="doc-list">
-      <li><strong>Occasional email, and you choose whether to get it.</strong> Two messages are triggered by you and always sent: a confirmation when you sign up, and a link when you ask to reset your password. Beyond those, an account can also tell you when something is actually new — a skill added to the library, or a feature like the learning tracker going live. That is <strong>opt-in when you sign up, changeable afterwards, and every one of those messages carries an unsubscribe link</strong>. It is occasional and it is about this site; there is no digest, no drip sequence, and nothing sent on someone else's behalf. Turning it off never affects the two you asked for.</li>
+      <li><strong>Occasional email, and you choose whether to get it.</strong> Two messages are triggered by you and always sent: a confirmation when you sign up, and a link when you ask to reset your password. Beyond those, an account can also tell you when something is actually new — a skill added to the library, or a feature like the learning tracker going live. That is <strong>a tickbox on the sign-up form, unticked until you tick it</strong>, and every one of those messages carries an unsubscribe link. It is occasional and it is about this site; there is no digest, no drip sequence, and nothing sent on someone else's behalf. Turning it off never affects the two you asked for<span id="why-updates-live" hidden> — and if you already have an account, it is the first setting on <a href="account/">your account page</a></span>.</li>
       <li><strong>No advertising, and nothing sold or shared.</strong> Your email address and your progress are used to run your account and for nothing else.</li>
       <li><strong>No tracking you around the web.</strong> The site carries no advertising or social pixels of any kind.</li>
       <li><strong>Not a commitment.</strong> You can delete your account yourself from the account page, at any time, without asking anyone. It happens immediately and no copy is kept.</li>
@@ -353,8 +411,12 @@
   'use strict';
 
   function apply(signedIn) {
+    // ⚠️ `why-updates-live` runs the same way round as the "-in" pair: it names
+    // a control that only exists once there is an account, so pointing a guest
+    // at it would be pointing them at a page they cannot open.
     [['why-lede-out', !signedIn], ['why-lede-in', signedIn],
-     ['why-cta-out', !signedIn], ['why-cta-in', signedIn]]
+     ['why-cta-out', !signedIn], ['why-cta-in', signedIn],
+     ['why-updates-live', signedIn]]
       .forEach(function (pair) {
         var el = document.getElementById(pair[0]);
         if (el) el.hidden = !pair[1];
