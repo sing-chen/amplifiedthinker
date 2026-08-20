@@ -37,16 +37,20 @@ main                          ← always deployable, always what production runs
  ├─ feat/progress-module           (Phase 1)
  ├─ feat/astro-shell               (Phase 2)
  ├─ feat/supabase-schema           (Phase 3)
- ├─ feat/auth                      (Phase 5 — merged 947fb19)
- ├─ feat/legal-pages               (privacy, terms, why-sign-up — 2026-08-19)
+ ├─ feat/auth                      (Phase 5 — fast-forwarded to main at tip 947fb19)
+ ├─ feat/legal-pages               (privacy, terms, why-sign-up — fast-forwarded at tip 38809fa, 2026-08-20)
  └─ …
 ```
 
-⚠️ **`feat/legal-pages` is the first branch that is not a phase.** It is announcement-blocking work
-that no phase owned: Phase 5 made the site hold personal data, and the sign-up form asks for a name
-and an address with nothing saying what happens to either. The one-branch-per-phase rule is about
-merge boundaries, not about refusing to branch for anything else — the test is whether the work is
-independently verifiable, and this is.
+⚠️ **`feat/legal-pages` is the first branch that is not a phase.** *(Merged 2026-08-20.)* It was
+announcement-blocking work that no phase owned: Phase 5 made the site hold personal data, and the
+sign-up form asks for a name and an address with nothing saying what happens to either. The
+one-branch-per-phase rule is about merge boundaries, not about refusing to branch for anything else —
+the test is whether the work is independently verifiable, and this is.
+
+⚠️ **Both branches merged fast-forward, so neither has a merge commit.** "Merged as X" throughout
+these docs means X was the branch *tip*, not a merge — `git log --merges` shows Phases 0, 2, 3 and 4
+and stops. Don't read that gap as Phase 5 being unmerged.
 
 **Keep branch names short and slash-free where possible.** Vercel builds the preview URL from
 the branch name, converting `/` to `-`, so `feat/astro-shell` becomes `…-git-feat-astro-shell-…`.

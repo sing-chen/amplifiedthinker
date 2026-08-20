@@ -2,6 +2,13 @@
 
 Ideas and future enhancements. Not prioritised — review periodically and promote to active work when ready.
 
+⚠️ **"Sequence it with the launch announcement" no longer names anything.** Three closed entries below
+use that phrase as a scheduling anchor, written when Phase 5 was expected to end with one. It did not:
+on 2026-08-20 the announcement resolved to a What's New entry, a homepage banner item, and the guest
+notice `progress.js` already shows. The phrase is kept where it appears because it records what the
+thinking was at the time — read it as "at Phase 5 go-live", which has now happened. Reasoning is under
+"Announcement planning" in [docs/implementation-sequence.md](docs/implementation-sequence.md).
+
 ---
 
 ## Enhancements

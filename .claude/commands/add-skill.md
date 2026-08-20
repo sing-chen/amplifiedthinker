@@ -173,6 +173,30 @@ Note the video-thumbnail.png referenced here won't exist yet (per Step 4's build
 
 After editing, validate the file is still well-formed JSON before moving on (a trailing comma or missed brace here breaks site search entirely, not just this skill's entry).
 
+**5d. Announce the skill in both places, in one sitting**
+
+A new skill gets **two** entries, and they are the same fact written twice:
+
+- [updates.json](public/updates.json) — the permanent What's New list. Prepend an object with `date`
+  (`YYYY-MM-DD`) and `html`, following the shape of the existing skill entries: a link to
+  `future-skills.html#s-[slug]` wrapping the skill name, then "added as a new Future Skill, with a
+  primer and full learning plan."
+- The `ANNOUNCEMENTS` array in [index.html](public/index.html) — the homepage banner. Add an item at
+  the **top** with `type: 'skill'`, the same `date`, a one-line `text` (the skill name in `<b>`, then
+  an em-dash and what it lets you do), `linkHref: 'future-skills.html#s-[slug]'` and
+  `linkLabel: 'Explore it'`.
+
+⚠️ **The two dates must match, and nothing checks that they do.** Dark Mode was dated 23 July in the
+banner and 21 July in updates.json for a month. The banner's expiry is what hid it — a `skill` item
+renders for 21 days and then vanishes, while the What's New list is permanent, so by the time the two
+could be compared only one was still on screen. **Write both entries in the same sitting and take the
+date from the commit, not from memory.**
+
+Keep the banner `text` short. It is a single 24px line with `text-overflow: ellipsis`, so anything
+long is silently truncated rather than wrapped — compare against the existing items, which fit.
+
+Validate `updates.json` is still well-formed JSON before moving on.
+
 **5e. Generate the video-thumbnail image prompt**
 
 Give the user a ready-to-run image-generation prompt for `public/skills/[slug]/video-thumbnail.png`, in the same `@Create image` format used for every prior skill. Keep every brand token below identical, word-for-word, across skills — only the visual metaphor and the two text placeholders change. Do NOT invent new colors, change the palette's hex values, or alter the text/layout instructions; brand consistency across thumbnails matters more than novelty here.
@@ -215,6 +239,7 @@ feat: add [Skill Name] primer and learning plan
 - public/skills/[slug]/plan.html: 14-section learning plan with [key structural notes]
 - public/nav.js, public/future-skills.html: register and activate the [Skill Name] card
 - public/search-index.json: add primer/plan entries so the skill surfaces in site search
+- public/updates.json, public/index.html: What's New entry and homepage banner item, same date
 ```
 
 Don't commit or deploy unprompted — ask first, per standard practice on this site.

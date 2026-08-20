@@ -3,10 +3,14 @@
 **Status:** In progress — Phases 0, 1, 2, 3, 4 and **5 live on both origins**. Phase 5 merged as
 `947fb19`; seven post-release defects were found by hand the same day and all fixed.
 
-**`feat/legal-pages` is built, tested and pushed, and not merged.** It carries the three legal pages,
-the sign-up consent checkbox and account toggle, the document modal, and migration
-`20260820070000_profiles_wants_updates` — **applied to dev, not to prod**. Remaining, in order:
-apply the migration to prod, merge, then the announcement.
+**`feat/legal-pages` is merged and live on both origins.** It carried the three legal pages, the
+sign-up consent checkbox and account toggle, the document modal, and migration
+`20260820070000_profiles_wants_updates`, applied to prod before the merge. A same-day audit of the
+privacy and terms pages against the system they describe found and fixed six more issues (`e671790`).
+
+**Phase 5 is complete.** The last open item was the announcement, and it resolved on 2026-08-20 to
+*there is no announcement* — a What's New entry, a homepage banner item (`c27d53d`), and the guest
+notice `progress.js` was already showing. See "Announcement planning" under Phase 5 for why.
 
 ⚠️ **No update email may be sent yet**, whatever the consent column says: the unsubscribe route and
 any multi-recipient sender are unbuilt. See BACKLOG.md ·
@@ -45,7 +49,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 2 — Astro shell | ✅ **Done — live** | 🟡 Silent | 🔵 Visible | No | 0 |
 | 3 — Supabase schema + RLS | ✅ **Done — live** | ⚪ None | ⚪ None | No | 0 |
 | 4 — Email | ✅ **Done — live** | ⚪ None | ⚪ None | No | 3 |
-| 5 — Auth + progress sync | 🔨 **Built, verified on dev, not merged** | 🟢 **New** + 🔵 regression | 🟢 New | **Yes — the big one** | 1, 3, 4 |
+| 5 — Auth + progress sync | ✅ **Done — live** | 🟢 **New** + 🔵 regression | 🟢 New | ✅ Banner + What's New, **no announcement** | 1, 3, 4 |
 | 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
 | 7 — Admin portal + banner | ☐ Not started | ⚪ None | 🟢 **New** | No | 6 |
 | 8 — Blog | ☐ Not started | 🟢 **New** | 🟢 New | **Yes** | 7 |
@@ -957,9 +961,10 @@ now aligning.
 
 ---
 
-## Phase 5 — Auth and progress sync
+## Phase 5 — Auth and progress sync ✅ DONE
 
-**Impact:** 🟢 New + 🔵 one regression (visitor) · 🟢 New (admin) — **the announcement that needs most thought.**
+**Impact:** 🟢 New + 🔵 one regression (visitor) · 🟢 New (admin) — **the announcement that needed
+most thought, and turned out not to be needed.** Resolved 2026-08-20; see "Announcement planning".
 
 **Why this is the payoff phase:** it is the point where the original problem — progress trapped in
 one browser on one device — actually goes away.
@@ -1883,7 +1888,71 @@ guarantee than a depth counter and needs no state.
 project rather than a recurring surprise: automated checks here confirm structure and state, and say
 nothing about what is painted.
 
-### Announcement planning
+#### A date was wrong for a month, and the expiry is what hid it
+
+Adding the accounts banner item on 2026-08-20 surfaced an unrelated defect: Dark Mode was dated
+**23 July** in `index.html`'s `ANNOUNCEMENTS` and **21 July** in `updates.json`. `a137d18`, the
+site-level toggle, says 21 — so the banner was the wrong copy, and had been since it was written.
+
+**The date is one fact stored in two files with nothing checking they agree**, which is ordinary
+duplication. What makes it worth recording is the *reason it survived*: an item is only rendered
+while it is inside `EXPIRY_DAYS`, so a wrong date is visible for a fortnight and then disappears —
+and the What's New list it disagrees with is permanent. By the time anyone could compare the two,
+only one of them was still on screen. **The expiry did not cause the error; it made the error
+unfalsifiable.**
+
+⚠️ **Generalises to anything with a display window.** A short-lived surface cannot be audited against
+a long-lived one after the fact, so the check has to happen at write time or not at all. The note now
+sitting above `ANNOUNCEMENTS` says to write the pair in one sitting and to take the date from the
+commit rather than from memory.
+
+Both remaining pairs were checked at the same time and match: Systems Thinking (17 Jul), Strategic
+Synthesis (13 Aug).
+
+**A related gap, found while checking and fixed in the same sitting:**
+[`.claude/commands/add-skill.md`](../.claude/commands/add-skill.md) never mentioned `updates.json` or
+the banner at all, yet both live skills have entries in both — done by hand each time, unrecorded.
+That is not what caused this defect (Dark Mode is a feature and never went through `add-skill`), but
+it is the same shape, and it is the one place a *skill* would repeat it. Now step 5d. This is the
+third time `.claude/commands/` has drifted from the site; see the standing trap in `CLAUDE.md`.
+
+### Announcement planning — resolved 2026-08-20, and the answer was that there is no announcement
+
+Kept in full below because the reasoning is what produced the answer, and because the *shape* of the
+answer is reusable: the thing this section was planning for turned out to be already built, in three
+places, none of which was an announcement.
+
+**What shipped instead**, and it is the whole of it:
+
+| | |
+|---|---|
+| A What's New entry | `updates.json`, 2026-08-20. Says accounts exist, links all three pages |
+| A banner item | `index.html`, `expiryDays: 35`, links `why-sign-up.html` |
+| The guest notice | `progress.js` `showGuestNotice()` — already live since the Phase 5 merge |
+
+**The regression argument dissolved on inspection.** Everything below is right that guests losing the
+resume banner is the one place existing behaviour gets worse, and right that it needs saying. What it
+assumes is that an *announcement* is the thing that says it. But `progress.js` already tells a guest,
+at the moment they do something that would have been saved, that it was not — which beats any
+announcement, because it reaches the person while they care rather than when we happen to publish.
+An announcement reaches whoever visits the homepage that fortnight; the notice reaches exactly the
+people who would have felt the loss, at the moment of loss.
+
+⚠️ **The generalisation worth keeping: "we must tell people" is not the same as "we must publish a
+notice."** In-product, at the moment of consequence, usually wins. Check what the code already says
+before writing prose to say it.
+
+**On release notes, considered and declined.** The change is big enough to want more than a headline,
+which is what makes the question tempting. But the depth already exists as `why-sign-up.html` — that
+page *is* this change's release notes, written as something a reader wants rather than a version log.
+A release-notes format would be a third surface repeating it, maintained forever, read by nobody, and
+competing with the page that does the job better. The one real asymmetry — the 2026-08-20 What's New
+entry runs four sentences where every other entry runs one — is not a defect. Four things genuinely
+shipped together, and splitting them into four same-dated entries would read worse.
+
+---
+
+Original planning, preserved:
 
 This is the only place in the whole plan where existing behaviour gets *worse* for someone:
 guests **lose the resume banner** they get for free today. It is intentional — it is the reason to
@@ -1905,7 +1974,8 @@ the page cannot: acknowledge that something people had is gone.
 ⚠️ **Do not announce before `feat/legal-pages` is merged.** The announcement drives people to a
 sign-up form that asks for a name and an email address; the pages saying what happens to both are on
 that branch. The order is the whole point — a dead privacy link on the sign-up form is worse than no
-link at all, and it appears exactly where someone is deciding whether to trust the site.
+link at all, and it appears exactly where someone is deciding whether to trust the site. *(Satisfied:
+merged as `947fb19` on 2026-08-20, before either the banner item or the What's New entry shipped.)*
 
 ---
 
@@ -1921,7 +1991,7 @@ URL problem to be solved while the data set is small, known, and fully under you
 | Migrate 21 date groups / 69 stories, generating slugs | Populates `legacy_id` so every existing shared link stays resolvable. |
 | Build `/news` and `/news/:slug`, server-rendered | Real HTML for crawlers. No user-agent sniffing — serving different content to Googlebot than to users is cloaking. |
 | Add the 301 redirect endpoint for legacy URLs | Old links keep working forever and consolidate SEO value onto the new URL. |
-| Switch the banner's news source to the DB | **Forced by this phase** — `news.json` no longer exists, so `index.html:380` must change. Visitors should see no difference. |
+| Switch the banner's news source to the DB | **Forced by this phase** — `news.json` no longer exists, so the `fetch('news.json')` in `index.html`'s `newsItemsHTML()` must change. Visitors should see no difference. |
 | Add favourite, pin, and notes for signed-in users | First personalisation feature on real content. |
 | Retire `middleware.js` | Its only job was faking meta tags for social scrapers. Real server rendering makes it redundant — retire rather than port. |
 | Move `search-index.json` to `/api/search-index.json` | Kills a hand-maintained file that drifts, and removes one of the six manual add-skill touchpoints. |
@@ -1944,7 +2014,7 @@ migration, rather than against a schema that only exists in theory.
 | `/admin` shell gated by `is_admin()` | Entry point. Access enforced in RLS, not by hiding buttons — a non-admin who finds the page still cannot write. |
 | Blog post and category CRUD | The core reason the database exists. |
 | News management: edit, reorder, archive | Replaces the `add-news` skill. Archive rather than delete, so shared links never die. |
-| Banner CRUD over the `announcements` table | Moves the hardcoded array at `index.html:310` into the DB. Deliberately like-for-like — visitors see an identical banner. |
+| Banner CRUD over the `announcements` table | Moves the hardcoded `ANNOUNCEMENTS` array in `index.html` into the DB. Deliberately like-for-like — visitors see an identical banner. ⚠️ The table needs `expiry_days` **nullable per row**, not just a type default: an item can override it (accounts got 35). And moving this to the DB does **not** retire the date-drift trap — `updates.json` stays a file, so the pair still has to be written together. |
 | Site config: What's New, skill card states | Removes the remaining hand-edited JSON and HTML toggles. |
 
 **Done when:** a signed-in non-admin attempting a direct write to `blog_posts` from the browser

@@ -188,16 +188,31 @@ For site management: reorder and delete freely, nothing breaks. For readers: sha
 
 The rotating banner on the home page draws from two sources today, and both become DB-backed:
 
-- A hardcoded `ANNOUNCEMENTS` array at `index.html:310` — editable only by editing that file and deploying.
-- The three most recent news stories under 14 days old, from `fetch('news.json')` at `index.html:380`.
+- A hardcoded `ANNOUNCEMENTS` array in `index.html` — editable only by editing that file and deploying.
+- The three most recent news stories under 14 days old, from the `fetch('news.json')` in `newsItemsHTML()`.
+
+*(Named by symbol rather than line number on purpose: the earlier line references in this section all
+rotted the first time the array was edited, on 2026-08-20.)*
 
 The goal is that banner content becomes a DB edit served on the next page load: no commit, no push, no deploy.
 
-**Expiry becomes explicit.** Today it's implicit and type-based — `EXPIRY_DAYS = { feature: 14, skill: 21 }` at `index.html:332` — so items silently drop out. Replace this with `starts_at` / `expires_at` columns, defaulted per type in the admin form. Same automatic cleanup, but items can be scheduled ahead and the disappearance date is visible rather than inferred.
+**Expiry becomes explicit.** Today it's implicit and type-based — `EXPIRY_DAYS = { feature: 14, skill: 21 }` — so items silently drop out. Replace this with `starts_at` / `expires_at` columns, defaulted per type in the admin form. Same automatic cleanup, but items can be scheduled ahead and the disappearance date is visible rather than inferred.
 
-**Icons stay in code.** Each `type` maps to an inline SVG at `index.html:334`. Adding items of existing types is pure DB work, as intended; inventing a new category still needs a code change to add its icon. Keep it that way — SVG markup is presentation, not content, and a DB field means hand-editing SVG in a textarea.
+⚠️ **The per-type default is not sufficient on its own.** An item can already override it — `expiryDays`
+on the item beats `EXPIRY_DAYS[type]`, added 2026-08-20 because accounts needed 35 days where the
+`feature` default gives 14. The type says what *kind* of thing it is; how long it stays interesting is
+a property of the individual item. So `expires_at` must be per-row settable in the admin form, with the
+type only seeding the initial value.
 
-**`text_html` is trusted HTML.** It is inserted unescaped at `index.html:366` — that's how `<b>` bolding works — while everything else in that function is escaped. Acceptable because writes are admin-only under RLS, but the admin form should present it as an HTML field rather than a plain text input.
+⚠️ **Moving the banner to the DB does not retire the date-drift trap, and could deepen it.** The
+`announce_date` here is the same fact as the matching `site_updates.update_date`, and the two tables
+land in different phases — this one in 7, `site_updates` alongside it. Until both are DB-backed the pair
+straddles a file and a table, which is *worse* than two files. Either move them together or have the
+admin form for one offer to create the other. Background: `CLAUDE.md`, the short-lived-surface trap.
+
+**Icons stay in code.** Each `type` maps to an inline SVG in `CATEGORY_ICONS`. Adding items of existing types is pure DB work, as intended; inventing a new category still needs a code change to add its icon. Keep it that way — SVG markup is presentation, not content, and a DB field means hand-editing SVG in a textarea.
+
+**`text_html` is trusted HTML.** It is inserted unescaped in `itemHTML()` — that's how `<b>` bolding works — while everything else in that function is escaped. Acceptable because writes are admin-only under RLS, but the admin form should present it as an HTML field rather than a plain text input.
 
 **Rendering stays client-side.** `index.html` remains a static file in `public/` and the banner already renders from a fetch, so only the URL changes. Banner content is supplementary rather than primary, so client-side rendering costs nothing in SEO terms here — unlike the blog, where it would.
 
@@ -248,7 +263,7 @@ visitor experience diverge sharply here — most of the admin portal is invisibl
 | 2 — Astro shell | 🟡 Silent | 🔵 Visible *(dev workflow changes)* | No |
 | 3 — Supabase schema + RLS | ⚪ None | ⚪ None | No |
 | 4 — Email | ⚪ None | ⚪ None | No |
-| 5 — Auth + progress sync | 🟢 **New** + 🔵 one regression | 🟢 New | **Yes — the big one** |
+| 5 — Auth + progress sync | 🟢 **New** + 🔵 one regression | 🟢 New | ✅ Banner + What's New — **no announcement**, resolved 2026-08-20 |
 | 6 — News into DB | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes — favourites/notes** |
 | 7 — Admin portal + banner | ⚪ None | 🟢 **New** | No |
 | 8 — Blog | 🟢 **New** | 🟢 New | **Yes** |
@@ -335,7 +350,7 @@ Migrate the 21 date groups / 69 stories from [news.json](../news.json), generati
 - **Visible:** story URLs change from `news.html?story=2026-08-14-0` to `/news/2026-08-14-<slug>`. Old links 301, so nothing breaks, but shared links look different from here on.
 - **New:** favourite, pin, and notes on stories — worth announcing in its own right.
 
-**Banner, first half.** The banner's news source must switch from `fetch('news.json')` (`index.html:380`) to the DB, because `news.json` no longer exists. Forced by this phase, not optional. Visitors should see no difference.
+**Banner, first half.** The banner's news source must switch from `fetch('news.json')` (in `newsItemsHTML()`) to the DB, because `news.json` no longer exists. Forced by this phase, not optional. Visitors should see no difference.
 
 `middleware.js` fetches `/news.json` and will break — but once news is genuinely server-rendered, its bot-sniffing shell has nothing left to do. Retire it rather than porting it.
 
@@ -347,7 +362,7 @@ Migrate the 21 date groups / 69 stories from [news.json](../news.json), generati
 
 `/admin` pages for blog CRUD, categories, news, and site config (What's New, skill card states). Access gated by `is_admin()` — enforced in RLS, not just hidden in the UI. A non-admin loading the page must still be unable to write.
 
-**Banner, second half.** The hardcoded `ANNOUNCEMENTS` array at `index.html:310` moves into the `announcements` table with an admin CRUD screen. Deliberately a like-for-like swap — visitors should see an identical banner. The entire gain is on the admin side: banner content becomes a DB edit served on the next page load, with no commit, no push, and no deploy. See "The announcement banner" under Data model for the expiry, icon, and trusted-HTML decisions.
+**Banner, second half.** The hardcoded `ANNOUNCEMENTS` array in `index.html` moves into the `announcements` table with an admin CRUD screen. Deliberately a like-for-like swap — visitors should see an identical banner. The entire gain is on the admin side: banner content becomes a DB edit served on the next page load, with no commit, no push, and no deploy. See "The announcement banner" under Data model for the expiry, icon, and trusted-HTML decisions.
 
 ### Phase 8 — Blog
 

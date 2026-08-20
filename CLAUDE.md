@@ -167,9 +167,20 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   ⚠️ **Anything that promises what the site will not do belongs in the same change as whatever makes
   it untrue**: the form hint, `privacy.html` §8, `terms.html` §2 and `why-sign-up.html` all move
   together. Grep for the promise, not just the feature.
+- **A short-lived surface cannot be audited against a long-lived one after the fact.** The homepage
+  banner (`ANNOUNCEMENTS` in `public/index.html`) and What's New (`public/updates.json`) state the
+  same dates twice, with nothing checking they agree — and the banner's `EXPIRY_DAYS` renders an item
+  for only 14–21 days. Dark Mode was dated 23 July in one and 21 July in the other for a month:
+  ⚠️ **the expiry did not cause the error, it made the error unfalsifiable**, because by the time
+  anyone could compare the two only the permanent one was still on screen. Write the pair in the same
+  sitting and take the date from the commit. `expiryDays` on an item overrides the type default.
 - **Structural changes orphan `.claude/commands/`.** Both `/add-news` and `/add-skill` reference
   concrete file paths. Phase 1 broke them by adding `progress.js`; Phase 2 broke them again by moving
-  everything into `public/`. Check them after any move or new shared module.
+  everything into `public/`. Check them after any move or new shared module. **Third instance,
+  2026-08-20, and a different kind:** `/add-skill` had never mentioned `updates.json` or the banner,
+  though every live skill has an entry in both — a step done by hand each time and written down
+  nowhere. ⚠️ **Drift is not only paths going stale; it is also steps that were never captured.** A
+  command that still runs cleanly can be missing half the job.
 
 ---
 
