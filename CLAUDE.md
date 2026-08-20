@@ -144,6 +144,12 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   `account.astro`. **Keep the space on the same line as the tag, and never re-wrap markup that ends
   in text before an element** to fit a column width. Only the `.astro` files compress; the
   hand-written pages in `public/` are served as authored.
+  **Third and fourth instances, 2026-08-20, both live on `sign-in.astro` and both found by reading
+  rendered output during unrelated work**: `try a different network, oremail me` and
+  `what is collected,what email you get,your rights`. ⚠️ **A grep cannot find these** — the `href` is
+  correct and the damage is in the text node beside it, so every source-level check passes. The
+  comma case is the nastier one: a list of links separated by `,\n<a` loses every separator at once,
+  and it reads as a typo rather than as a build artifact.
 - **On the auth pages, check specificity against `.auth-panel`'s element selectors before assuming a
   class wins.** `.auth-panel label { display: block }` is **(0,1,1)** and beats a bare
   `.auth-check-label` (0,1,0) — which stacked a checkbox above its own label. `.auth-panel label`

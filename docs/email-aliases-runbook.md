@@ -31,7 +31,7 @@ prevent.
 | 4 | Move the `singchen@` send-as off Brevo | Human + Claude | ✅ Done | 2026-08-20. **Scope changed mid-stage: repointed, not deleted** — `singchen@` stays as a personal outbound identity, and retiring the vendor never required retiring the address. Both send-as entries now relay through `smtp.resend.com` on one key; *Treat as an alias* fixed on `singchen@`, which had been *"Not an alias"*; `contact@` remains default. Delivered test measured identical to `contact@`. **Brevo now relays nothing for anybody.** Gate comment, `supabase/README.md` and `recovery.md` all amended from *must stay* to *retained pending teardown*. `verify:email` still 21/21 |
 | 5 | Swap the site over | Claude | ☐ Not started | |
 | 6 | Repoint DMARC reports | Human | ☐ Not started | |
-| 7 | Brevo teardown | Human + Claude | ☐ Not started | **After a soak — see the stage** |
+| 7 | Brevo teardown **and account closure** | Human + Claude | ☐ Not started | **After a soak — see the stage.** Three parts now: 7a safe record deletions, 7b the apex SPF edit alone, 7c close the account last |
 
 **Statuses:** ☐ Not started · ◐ In progress · ✅ Done · ⊘ Skipped (say why)
 
@@ -495,6 +495,20 @@ live — Supabase serves them from its dashboard. **Paste both into Auth → Ema
 prod project** (and dev, if it is current) or the sent mail keeps advertising the old address while
 the site advertises the new one.
 
+⚠️ **Two live rendering defects were found while verifying this stage, both pre-existing and both in
+`sign-in.astro`.** Neither was caused by the address swap; both were caught by reading *rendered*
+text rather than source:
+
+```
+try a different network, oremail me and I will sort it out directly.
+Fuller answers: what is collected,what email you get,your rights.
+```
+
+That is the Astro newline-collapse trap from `CLAUDE.md`, which had already shipped twice. **A grep
+for the address passes on both of these**, because the `href` is perfectly correct and the damage is
+in the text node beside it. Fixed by moving the space onto the same line as the tag. This is the
+concrete case for the standing rule that automated checks are never sufficient for anything visual.
+
 **Verify:**
 
 ```bash
@@ -507,11 +521,14 @@ Grep is not verification here; a correct `href` with broken markup around it sti
 
 **Tick as you go**
 
-- [ ] 13 lines across 6 files swapped, every `?subject=` parameter preserved
-- [ ] privacy.html:223 — the "monitored address" claim is true of `contact@` as deployed
-- [ ] privacy.html:377 — Resend processor row widened to cover contact replies
-- [ ] Promptly sibling site checked for the same statements
-- [ ] `npm run build` passes
+- [x] 13 lines across 6 files swapped, every `?subject=` parameter preserved — 10 `mailto:` links
+      verified in a rendered browser, 7 distinct subjects intact, zero occurrences left
+- [x] privacy.html — the "monitored address" claim is true of `contact@` as deployed (stage 1)
+- [x] privacy.html — Resend processor row widened: *"Delivers the two account emails, and carries
+      replies we send from the contact address"*, audience *"Account holders; anyone who emails us"*
+- [ ] Promptly sibling site checked for the same statements — ⚠️ **no local checkout exists**, so
+      this cannot be done from this repo. Human step
+- [x] `npm run build` passes
 - [ ] Both templates pasted into Supabase **prod** → Auth → Emails → Templates
 - [ ] Templates pasted into **dev** too, or dev noted as stale
 - [ ] Deployed, and a `mailto:` clicked on `/privacy/`, `/terms/`, `/about/`, `/sign-in/`
@@ -610,6 +627,25 @@ authorisation with it. Do it alone, so a mail failure afterwards has exactly one
 `include` still authorises Brevo to send as your domain. Removing an authorisation you no longer
 rely on is the point; the lookup is incidental.
 
+**7c — close the Brevo account. Last, and deliberately last.**
+
+| Step | |
+|---|---|
+| 1 | Check nothing else lives in the account — contact lists, a second sending domain, campaign history. Its only documented job was the alias, but "documented" is not "verified", and after closure you cannot look |
+| 2 | Delete the SMTP key created 2026-07-06 |
+| 3 | Close the account |
+
+⚠️ **Closure comes after 7a and 7b, not before.** While the account exists, an unexpected
+dependency announces itself as a *send failure you can fix by re-enabling something*. Once it is
+closed, the same dependency becomes a broken thing with a vendor you no longer have. The records go
+first because they are the reversible half.
+
+⚠️ **This needs no privacy-page change, and that is worth stating rather than assuming.** Brevo
+never appears in `privacy.html` — correctly, because it only ever relayed the owner's own outbound
+mail and processed no visitor data. Removing a processor normally *does* mean editing that page in
+the same commit; this one is the exception, and the reason is that it was never a processor of
+anyone's data but the owner's.
+
 **Then, Claude:** delete the four Brevo `record(...)` assertions and the section heading from
 [../scripts/verify-email-dns.mjs](../scripts/verify-email-dns.mjs), along with `BREVO_SPF_INCLUDE`
 and `BREVO_SELECTORS`. The gate goes **21 → 17**. Update
@@ -634,6 +670,10 @@ inactivity"* is no longer a live risk — it is resolved by removal. Vendors: **
 - [ ] 7a — `brevo2._domainkey` CNAME deleted
 - [ ] 7a — **`cf2024-1._domainkey` left alone** (it is Cloudflare's, and inbound depends on it)
 - [ ] 7b — apex SPF `include:spf.brevo.com` removed, **as its own separate change**
+- [ ] 7c — Brevo account inspected for anything else (lists, domains, history) before closing
+- [ ] 7c — the SMTP key created 2026-07-06 deleted
+- [ ] 7c — **Brevo account closed** — last, after 7a and 7b
+- [ ] 7c — confirmed no `privacy.html` change is needed (Brevo was never named there)
 - [ ] Claude: four `record(...)` assertions, `BREVO_SPF_INCLUDE` and `BREVO_SELECTORS` removed
 - [ ] `npm run verify:email` — **17/17**, and the count was compared deliberately against 21
 - [ ] Claude: [email-dns-baseline.md](email-dns-baseline.md) updated, four-systems table now three
