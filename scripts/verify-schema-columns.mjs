@@ -22,10 +22,31 @@
 // ⚠️ Never give this the service_role key. It would still pass, and it would
 // stop telling you anything about the grants at the same time.
 //
-// It reads the same .env as verify:rls, so it points at whichever project that
-// file names — dev, unless someone has deliberately repointed it. The project
-// ref is printed on every run, because "I applied it to the other project" is
-// the failure this is most likely to be run in the middle of.
+// ---------------------------------------------------------------------------
+// WHERE THE CREDENTIALS COME FROM, AND WHY NOT .env
+// ---------------------------------------------------------------------------
+//
+// From `public/supabase-client.js`, by RUNNING it — twice, with a fake hostname
+// each time — and asking it for its own config. Not from .env, and not from a
+// second copy of the URLs pasted into this file.
+//
+// Three reasons, and the third is the one that matters:
+//
+//   1. .env names ONE project. Checking prod would mean editing it, which is
+//      how you end up verifying dev twice and believing you checked both.
+//   2. The URL and publishable key are public by design — they ship in the
+//      browser on every page — so there is no secret to protect here.
+//   3. ⚠️ It verifies the project the DEPLOYED CODE WILL ACTUALLY TALK TO,
+//      including the hostname mapping. A pasted URL would still pass if
+//      `environment()` were changed to send production traffic somewhere else.
+//      That mapping is the exact thing supabase-client.js warns is a bug
+//      waiting to happen, so it is worth exercising rather than assuming.
+
+const HOSTS = [
+  { label: 'prod', host: 'amplifiedthinker.com', note: 'what amplifiedthinker.com uses' },
+  { label: 'prod', host: 'sing-chen.github.io', note: 'what the Pages origin uses' },
+  { label: 'dev',  host: 'localhost',           note: 'what localhost and previews use' },
+];
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -42,33 +63,18 @@ const EXPECTED = [
   { table: 'profiles', column: 'updates_consent_at', since: '20260820070000_profiles_wants_updates' },
 ];
 
-function readEnv() {
-  const fromProcess = {
-    url: process.env.PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL,
-    key: process.env.PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY,
+const clientSrc = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');
+
+// Runs the real file against a stub `window`. It only touches `location` and
+// `console`, and returns null rather than throwing when it cannot build a
+// client — so nothing here needs a browser.
+function configFor(hostname) {
+  const stub = {
+    location: { hostname, protocol: 'https:' },
+    console: { warn() {} },
   };
-  if (fromProcess.url && fromProcess.key) return fromProcess;
-
-  let text = '';
-  try { text = readFileSync(join(ROOT, '.env'), 'utf8'); } catch { return fromProcess; }
-  const pick = (name) => (text.match(new RegExp(`^${name}=(.*)$`, 'm')) || [])[1]?.trim();
-  return {
-    url: fromProcess.url || pick('PUBLIC_SUPABASE_URL') || pick('SUPABASE_URL'),
-    key: fromProcess.key || pick('PUBLIC_SUPABASE_ANON_KEY') || pick('SUPABASE_ANON_KEY'),
-  };
-}
-
-const { url, key } = readEnv();
-
-if (!url || !key) {
-  console.error('Missing PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY. See .env.example.');
-  process.exit(2);
-}
-
-// The one input that would make every check pass while proving nothing.
-if (/^sb_secret_/.test(key) || /service_role/.test(key)) {
-  console.error('That is a privileged key. Use the publishable/anon key — see the note at the top of this file.');
-  process.exit(2);
+  new Function('window', clientSrc)(stub);
+  return stub.AmplifiedSupabase.config();
 }
 
 // ---------------------------------------------------------------------------
@@ -114,7 +120,7 @@ function tlsAdvice(err) {
   ].join('\n');
 }
 
-async function probe({ table, column }) {
+async function probe({ table, column }, url, key) {
   let res;
   try {
     res = await fetch(`${url}/rest/v1/${table}?select=${column}&limit=1`, {
@@ -133,20 +139,58 @@ async function probe({ table, column }) {
   return { ok: false, note: `unexpected ${res.status}: ${body.slice(0, 120)}` };
 }
 
-const ref = (url.match(/https:\/\/([^.]+)\./) || [])[1] || url;
-console.log(`\nProject: ${ref}\n`);
+// One check per distinct project, but reported per hostname, so the output
+// answers "is the site I am about to deploy going to find these columns?"
+// rather than "does some project have them".
+const seen = new Map();
+const results = [];
 
-let failed = 0;
-for (const spec of EXPECTED) {
-  const r = await probe(spec);
-  if (!r.ok) failed++;
-  const mark = r.ok ? 'ok  ' : 'FAIL';
-  console.log(`${mark} ${spec.table}.${spec.column.padEnd(20)} ${r.note}${r.ok ? '' : `  (added by ${spec.since})`}`);
+for (const entry of HOSTS) {
+  const cfg = configFor(entry.host);
+
+  if (/^sb_secret_/.test(cfg.key) || /service_role/.test(cfg.key)) {
+    console.error(`\n${entry.host} resolves to a privileged key. Stopping — see the note at the top of this file.\n`);
+    process.exit(2);
+  }
+
+  const ref = (cfg.url.match(/https:\/\/([^.]+)\./) || [])[1] || cfg.url;
+
+  if (!seen.has(ref)) {
+    const rows = [];
+    for (const spec of EXPECTED) rows.push([spec, await probe(spec, cfg.url, cfg.key)]);
+    seen.set(ref, rows);
+  }
+  results.push({ ...entry, ref, rows: seen.get(ref) });
 }
 
+let anyMissing = false;
+let prodMissing = false;
+
+for (const r of results) {
+  const missing = r.rows.filter(([, res]) => !res.ok);
+  if (missing.length) {
+    anyMissing = true;
+    if (r.label === 'prod') prodMissing = true;
+  }
+
+  console.log(`\n${r.host}  ->  ${r.ref}  (${r.label}, ${r.note})`);
+  for (const [spec, res] of r.rows) {
+    console.log(`  ${res.ok ? 'ok  ' : 'FAIL'} ${spec.table}.${spec.column.padEnd(20)} ${res.ok ? res.note : `MISSING — added by ${spec.since}`}`);
+  }
+}
+
+// ⚠️ The merge gate is about PROD, not about "everything passed". Dev is
+// allowed to be ahead — that is the normal state while a phase is in progress.
+// Prod being behind is the one that breaks a deploy, because the moment `main`
+// carries code naming a column, prod has to already have it.
 console.log(
-  failed
-    ? `\n${failed} column(s) missing — the migration that adds them has not been applied to ${ref}.\n`
-    : `\nAll ${EXPECTED.length} columns present on ${ref}.\n`
+  prodMissing
+    ? '\n❌ NOT SAFE TO MERGE — production is missing columns the code will name.\n' +
+      '   Apply the migration to prod first: schema leads code by one step.\n'
+    : anyMissing
+      ? '\n⚠️  Production has everything. A non-production project is behind, which is\n' +
+        '   normal mid-phase and does not block a merge.\n'
+      : '\n✅ Every project has every column. Safe to merge on this check.\n'
 );
-process.exit(failed ? 1 : 0);
+
+process.exit(prodMissing ? 1 : 0);
