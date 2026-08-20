@@ -199,6 +199,70 @@
    on top of each other. Reset explicitly rather than by dropping .auth-hint,
    because everything else about the hint — size, colour — is still wanted. */
 #auth-legal { margin: var(--space-4) 0 0; }
+
+/* The "what does an account get me?" line, directly under the lede. The lede
+   carries the panel's bottom margin, so this only needs to close the gap to it
+   and then restore separation before the first field. */
+.auth-why-line { margin: calc(var(--space-4) * -1) 0 var(--space-5); font-size: var(--fs-label); }
+.auth-why-line[hidden] { display: none; }
+
+/* ── The short version of terms and privacy ────────────────────────────────
+   A <details>, so it costs nothing when closed and needs no script.
+
+   ⚠️ `.auth-panel summary` would inherit nothing useful, but `.auth-panel
+   label`'s display:block problem is the reminder here: check specificity
+   against the panel's element selectors before assuming a class wins. */
+.auth-summary {
+  margin-top: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.auth-summary[hidden] { display: none; }
+
+.auth-summary summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--fg-heading);
+}
+.auth-summary summary::-webkit-details-marker { display: none; }
+.auth-summary summary:hover { background: var(--bg-sunken); }
+.auth-summary summary:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: -2px; }
+
+.auth-chevron {
+  width: 14px; height: 14px; flex-shrink: 0;
+  stroke: var(--fg-brand); stroke-width: 2.5; fill: none;
+  stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .18s;
+}
+.auth-summary[open] .auth-chevron { transform: rotate(90deg); }
+
+.auth-summary ul {
+  margin: 0;
+  padding: 0 var(--space-4) var(--space-3) calc(var(--space-4) + 18px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.auth-summary li { font-size: 13px; line-height: 1.55; color: var(--fg-1); }
+.auth-summary li::marker { color: var(--fg-brand); }
+
+.auth-summary-foot {
+  margin: 0;
+  padding: 0 var(--space-4) var(--space-3);
+  font-size: 12px;
+  color: var(--fg-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-chevron { transition: none; }
+}
 .auth-blocked { color: var(--status-error-text); margin-top: var(--space-2); }
 .auth-blocked a { color: var(--status-error-text); }
 

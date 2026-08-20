@@ -68,6 +68,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <p class="auth-lede" id="auth-lede">
         Your progress follows you to every device you sign in on.
       </p>
+      <!--
+        ⚠️ MOVED HERE FROM THE SWITCH ROW AT THE FOOT OF THE PANEL, 2026-08-20.
+        Down there it sat under "Forgotten your password?", which is where
+        someone looks when something has gone wrong — not while they are
+        deciding whether to start. The question it answers is prompted by the
+        lede directly above it, so it belongs against that.
+
+        Kept as a separate element rather than folded into the lede, because
+        setMode() rewrites the lede with textContent and a link inside it would
+        be destroyed on the first mode change.
+      -->
+      <p class="auth-why-line" id="auth-why-line">
+        <a class="auth-link" href={`${base}/why-sign-up.html`}>What does an account get me?</a>
+      </p>
 
       <form id="auth-form" novalidate>
         <!--
@@ -188,12 +202,53 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           to trust the site. If privacy.html or terms.html is ever renamed, this
           block moves with it.
         -->
+        <!--
+          ⚠️ THE SPACE BEFORE EACH <a> MUST STAY ON THE SAME LINE AS THE TAG.
+          Astro's HTML compressor collapses a newline-plus-indent between a text
+          node and an element to NOTHING, not to a single space, so breaking the
+          line before <a> shipped "accept the<a>terms of use</a>" — the words run
+          together, and it took a screenshot to notice. Keep the space adjacent
+          to the tag; do not re-wrap these lines to fit a column width.
+        -->
         <p class="auth-hint" id="auth-legal" hidden>
-          Creating an account means you accept the
-          <a href={`${base}/terms.html`}>terms of use</a>. What is stored and who
-          handles it is set out in
-          <a href={`${base}/privacy.html`}>privacy &amp; cookies</a>.
+          Creating an account means you accept the <a href={`${base}/terms.html`}>terms of use</a>.
+          What is stored and who handles it is set out in <a href={`${base}/privacy.html`}>privacy &amp; cookies</a>.
         </p>
+
+        <!--
+          ── The short version of both documents ─────────────────────────
+          Five points, because someone about to hand over a name and an address
+          deserves an answer they can actually finish reading. The two documents
+          are 3,200 and 1,250 words; nobody reads either at this moment, and
+          pretending otherwise is how "I agree" became meaningless.
+
+          ⚠️ EVERY BULLET IS A SUMMARY OF A REAL SECTION, NOT A REASSURANCE
+          WRITTEN TO SOUND GOOD. Each one is checkable against the page it
+          points at, and if one stops being true the fix is on both. The
+          section numbers are named so the check is one click, not a search.
+
+          A <details>, so it costs nothing when closed and needs no script.
+          Toggled with the legal line above: it summarises what you are agreeing
+          to, which is only a question on the sign-up form.
+        -->
+        <details class="auth-summary" id="auth-summary" hidden>
+          <summary>
+            <svg class="auth-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            The short version
+          </summary>
+          <ul>
+            <li>Everything on the site is free to read <strong>without an account</strong>. One only remembers where you got to.</li>
+            <li>We hold your <strong>first name, your email address, and your progress</strong>. That is the whole list.</li>
+            <li><strong>No cookies at all</strong>, no advertising, no tracking you across the web, and nothing sold or shared.</li>
+            <li>Two emails are always sent — <strong>confirmation and password reset</strong>. Anything else is the tickbox above.</li>
+            <li>You can <strong>delete your account yourself, immediately</strong>, and no copy is kept.</li>
+          </ul>
+          <p class="auth-summary-foot">
+            Fuller answers: <a href={`${base}/privacy.html#s3`}>what is collected</a>,
+            <a href={`${base}/privacy.html#s8`}>what email you get</a>,
+            <a href={`${base}/privacy.html#s12`}>your rights</a>.
+          </p>
+        </details>
       </form>
 
       <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p>
@@ -202,15 +257,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <button type="button" class="auth-link" id="auth-to-signup">Create an account</button>
         <button type="button" class="auth-link" id="auth-to-signin" hidden>I already have an account</button>
         <button type="button" class="auth-link" id="auth-to-forgot">Forgotten your password?</button>
-        <!--
-          An <a> among the buttons on purpose: this one leaves the page, and it
-          should behave like a link — middle-click, open in a new tab, and read
-          as a link to a screen reader. `.auth-link` sets no background, border
-          or padding, so it lands identically on either element, and
-          `.auth-link[hidden]` is the author rule that actually hides it (the
-          UA's [hidden] loses to any author `display`).
-        -->
-        <a class="auth-link" id="auth-why" href={`${base}/why-sign-up.html`}>What does an account get me?</a>
       </div>
     </div>
 
@@ -798,6 +844,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         // back into one they already agreed to.
         el('auth-legal').hidden = !isSignup;
 
+        // Summarises what you are agreeing to, so it is a question only on the
+        // sign-up form. Collapsed again on every mode change: left open, it
+        // would reappear expanded on a form where it no longer applies.
+        el('auth-summary').hidden = !isSignup;
+        if (!isSignup) el('auth-summary').open = false;
+
         el('auth-password-row').hidden = isForgot;
         el('auth-password').required = !isForgot;
         el('auth-password').autocomplete = isSignup ? 'new-password' : 'current-password';
@@ -810,7 +862,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         // Useful while deciding whether to create an account, and while looking
         // at the account you already have. Not while resetting a password —
         // that person is mid-task and has already decided.
-        el('auth-why').hidden = isForgot;
+        //
+        // ⚠️ The WRAPPER is toggled, not the link. The link carries `.auth-link`,
+        // whose `[hidden]` override would hide it correctly — but the <p> around
+        // it would stay, leaving its margin behind as a gap with nothing in it.
+        el('auth-why-line').hidden = isForgot;
       }
 
       el('auth-to-signup').addEventListener('click', function () { setMode('signup'); });
