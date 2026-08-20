@@ -310,7 +310,25 @@
 
   // Hand-curated announcements. `type` controls both the pill label and how
   // long the item stays in the banner — see EXPIRY_DAYS below.
+  //
+  // ⚠️ `date` is the same fact as the matching entry's date in `updates.json`,
+  // written out twice with nothing checking the two agree. Dark Mode was dated
+  // 23 July here and 21 July there for a month before anyone noticed, which is
+  // the expiry doing the hiding: an item is only visible for a fortnight, so a
+  // wrong date is unfalsifiable by the time anyone reads the list it disagrees
+  // with. Add the pair in one sitting, and take the date from the commit.
   var ANNOUNCEMENTS = [
+    {
+      type: 'feature',
+      date: '2026-08-20',
+      // `expiryDays` overrides EXPIRY_DAYS for this item alone. Accounts are a
+      // change to how the site works rather than another thing added to it, so
+      // it stays up long enough for an occasional reader to meet it once.
+      expiryDays: 35,
+      text: '<b>Accounts</b> have landed — sign in and your place and your answers follow you to every device.',
+      linkHref: 'why-sign-up.html',
+      linkLabel: 'Why sign up'
+    },
     {
       type: 'skill',
       date: '2026-08-13',
@@ -327,7 +345,7 @@
     },
     {
       type: 'feature',
-      date: '2026-07-23',
+      date: '2026-07-21',
       text: '<b>Dark Mode</b> has landed — toggle it anytime from the nav bar.'
     }
   ];
@@ -374,7 +392,7 @@
 
   function curatedItemsHTML() {
     return ANNOUNCEMENTS
-      .filter(function (a) { return daysSince(a.date) <= EXPIRY_DAYS[a.type]; })
+      .filter(function (a) { return daysSince(a.date) <= (a.expiryDays || EXPIRY_DAYS[a.type]); })
       .map(function (a) { return itemHTML(a.type, a.date, a.text, a.linkHref, a.linkLabel); })
       .join('');
   }
