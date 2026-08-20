@@ -35,7 +35,7 @@ const D = '[data-theme="dark"] #completionSlot ';
 const css = new Function('S', 'D', 'return (' + expr + ')')(S, D);
 
 // 2. Scope-rename only. Every other byte is what the browser is served.
-const scoped = [1, 2, 3, 4, 5, 6]
+const scoped = [1, 2, 3, 4, 5, 6, 7, 8]
   .map((n) => css.split('#completionSlot').join('#slot' + n))
   .join('\n');
 
@@ -87,15 +87,48 @@ const stagesB = [
   stage('dark', unset(6, ERR_NOTE), 'Dark &middot; write failed', ''),
 ].join('\n');
 
+// The primer variant, shown against the 560px card it has to sit beside.
+const primerNeighbour =
+  '<div class="next-step-card" style="max-width:560px">' +
+  '<p class="next-step-label">Ready to go deeper?</p>' +
+  '<p class="next-step-body">The Full Learning Plan covers first principles, mental models&hellip;</p>' +
+  '<span class="next-step-btn-outline">Open Full Learning Plan &rarr;</span>' +
+  '</div>';
+
+const compactUnset = (id) =>
+  `<div id="slot${id}"><div class="ac-box ac-compact">` +
+  `<p class="ac-head">Finished this primer?</p>` +
+  `<button class="ac-btn" type="button">I&rsquo;ve completed this</button>` +
+  `<p class="ac-note">Only you can see this, and you can undo it at any time.</p>` +
+  `</div></div>`;
+
+const compactDone = (id) =>
+  `<div id="slot${id}"><div class="ac-box ac-compact is-done">` +
+  `<p class="ac-head">${TICK}Completed 20 August</p>` +
+  `<button class="ac-undo" type="button">Mark as not complete</button>` +
+  `</div></div>`;
+
+const primerStage = (theme, body, label, note) =>
+  `<figure class="stage">` +
+  `<figcaption class="cap"><b>${label}</b>${note ? ' &middot; ' + note : ''}</figcaption>` +
+  `<div class="ground"${theme === 'dark' ? ' data-theme="dark"' : ''}>${body}${primerNeighbour}</div>` +
+  `</figure>`;
+
+const stagesC = [
+  primerStage('light', compactUnset(7), 'Primer &middot; not complete', '560px, matching its neighbour'),
+  primerStage('dark', compactDone(8), 'Primer &middot; complete', ''),
+].join('\n');
+
 const template = join(dirname(fileURLToPath(import.meta.url)), 'completion-specimen.template.html');
 const page = readFileSync(template, 'utf8')
   .replace('/*__SCOPED_CSS__*/', scoped)
   .replace('<!--__STAGES_A__-->', stagesA)
-  .replace('<!--__STAGES_B__-->', stagesB);
+  .replace('<!--__STAGES_B__-->', stagesB)
+  .replace('<!--__STAGES_C__-->', stagesC);
 
 // A leftover placeholder means a rename went one way and not the other, which
 // would otherwise ship a page with a visible /*__SCOPED_CSS__*/ in it.
-const leftover = /__SCOPED_CSS__|__STAGES_[AB]__/.test(page);
+const leftover = /__SCOPED_CSS__|__STAGES_[ABC]__/.test(page);
 if (leftover) {
   console.error('A placeholder was not substituted. The template and this script disagree.');
   process.exit(1);

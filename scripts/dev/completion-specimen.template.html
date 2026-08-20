@@ -81,7 +81,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--ui-line);
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
 /* ══ Below: the shipped stylesheet, verbatim except that #completionSlot is
-      renamed #slot1…#slot6 so several instances can coexist on one page.
+      renamed #slot1…#slotN so several instances can coexist on one page.
       Nothing else is altered. ══ */
 /*__SCOPED_CSS__*/
 </style>
@@ -91,7 +91,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--ui-line);
   <h1>The completion control, in place</h1>
   <p class="lede">Every rule below is the stylesheet <code>progress.js</code> injects,
   extracted from the source and reproduced byte-for-byte — the only change is renaming the
-  <code>#completionSlot</code> scope so six instances can sit on one page.</p>
+  <code>#completionSlot</code> scope so several instances can sit on one page.</p>
   <p class="sub">Each panel puts the control on the real section ground with its real
   neighbour, <code>.next-step-card</code>, underneath it. That pairing is the whole point:
   the first version was a pale sage tint, and it read as a washed-out copy of the card
@@ -116,6 +116,22 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--ui-line);
   Silently doing nothing is the one outcome that would make someone press it twice.</p>
   <div class="grid">
     <!--__STAGES_B__-->
+  </div>
+
+  <h2>The primer variant</h2>
+  <p class="sub">A plan section is a scrolling column; a primer slide is a fixed panel with its
+  own 560px card. The shared rule falls back to 780px there, because
+  <code>--content-max</code> is not declared on the primers — so without this the control would
+  render 220px wider than everything beside it.</p>
+  <div class="grid">
+    <!--__STAGES_C__-->
+  </div>
+  <div class="note">
+    <strong>Measured, so nobody re-derives it.</strong> The tighter padding saves about 10px in
+    situ, not the 80 the numbers suggest — at 560px the head and note wrap onto more lines and eat
+    most of what the padding gives back. And this is <em>not</em> justified by keeping a slide from
+    scrolling: at a 720px viewport, nine of the ten slides on an untouched primer already overflow,
+    by up to 96px. Slides scrolling at laptop heights is a pre-existing property of the decks.
   </div>
 
   <h2>Guests see nothing at all</h2>

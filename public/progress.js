@@ -241,6 +241,27 @@
     // otherwise the page carries a 40px gap explained by nothing.
     '#completionSlot:empty{display:none;margin:0}' +
 
+    /* ── the primer variant ───────────────────────────────────────────────
+       ⚠️ THE REASON IS WIDTH, not height. `--content-max` is NOT declared on
+       the primers, so the shared rule falls back to 780px — while the slide's
+       own `.next-step-card` is 560px. Left alone the control renders 220px
+       wider than everything beside it, on the one page type whose layout is
+       fixed enough to make that obvious.
+
+       The tighter padding is a smaller gain than it looks, and the measurement
+       is worth recording so nobody re-derives it: in situ the compact box saves
+       about 10px against the full one, because at 560px the head and note wrap
+       onto more lines and eat most of what the padding gives back.
+
+       And DO NOT justify this by "a slide should not scroll". At a 720px
+       viewport, nine of the ten slides on an untouched primer already overflow,
+       by up to 96px — measured on analytical-thinking before any anchor was
+       added. Slides scrolling at laptop heights is a pre-existing property of
+       the decks, not something this control introduces or fixes. */
+    S + '.ac-box.ac-compact{max-width:560px;padding:16px 20px}' +
+    S + '.ac-box.ac-compact .ac-btn{margin-top:12px;padding:8px 16px}' +
+    S + '.ac-box.ac-compact .ac-note{margin-top:8px}' +
+
     /* ── unset ── */
     S + '.ac-box{background:#FFFFFF;border:1px solid rgba(138,75,44,.22);' +
       'border-left:4px solid var(--terracotta,#8A4B2C);' +
@@ -357,7 +378,18 @@
       if (!slot) return;                      // page not fitted yet — do nothing
       injectCompletionCss(doc);
 
-      var noun = store.kind === 'primer' ? 'primer' : 'learning plan';
+      var isPrimer = store.kind === 'primer';
+
+      // A plan is worked through; a ten-minute deck is finished. "Worked all the
+      // way through this primer" overstates what it asks of someone, and the
+      // slide has no room for the longer line anyway.
+      var prompt = isPrimer
+        ? 'Finished this primer?'
+        : 'Worked all the way through this learning plan?';
+
+      // Narrower and tighter, so the last slide does not start scrolling.
+      var boxClass = isPrimer ? 'ac-box ac-compact' : 'ac-box';
+
       var busy = false;
 
       function render(msg, isErr) {
@@ -381,7 +413,7 @@
 
         if (done) {
           slot.innerHTML =
-            '<div class="ac-box is-done">' +
+            '<div class="' + boxClass + ' is-done">' +
               '<p class="ac-head">' + TICK + 'Completed ' +
                 escapeHtml(completionDate(done)) + '</p>' +
               '<button class="ac-undo" type="button" id="acUndo">' +
@@ -394,8 +426,8 @@
         }
 
         slot.innerHTML =
-          '<div class="ac-box">' +
-            '<p class="ac-head">Worked all the way through this ' + noun + '?</p>' +
+          '<div class="' + boxClass + '">' +
+            '<p class="ac-head">' + prompt + '</p>' +
             '<button class="ac-btn" type="button" id="acDone">' +
               'I’ve completed this</button>' +
             '<p class="ac-note' + (isErr ? ' ac-err' : '') + '">' +
