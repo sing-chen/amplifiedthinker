@@ -34,6 +34,12 @@ prevent.
 
 **Statuses:** ☐ Not started · ◐ In progress · ✅ Done · ⊘ Skipped (say why)
 
+**Two levels, on purpose.** The table above is the *stage* state and is what a handoff reads first.
+Inside each stage, a **Tick as you go** list carries the individual steps as `- [ ]` checkboxes —
+tick them in the file as you do them, so an interrupted stage says exactly where it stopped rather
+than only that it started. A stage is not ✅ in the table until every box under it is ticked or
+explicitly struck out.
+
 **The ordering is not cosmetic in two places.** Stage 1 must precede stage 3, because Gmail verifies
 an alias by emailing it and nothing arrives without a route. Stage 3 must precede stage 4, because
 until `contact@` provably sends, `singchen@` is the only working outbound identity there is.
@@ -72,6 +78,11 @@ address is published on two live origins right now, sits in the two Supabase ema
 has been handed out since July; a route costs nothing and silently dropping mail from someone who
 finally uses it is a worse outcome than any tidiness gained. These are two different dashboards and
 conflating them is the easiest mistake in this document.
+
+**Tick as you go**
+
+- [ ] `npm run verify:email` run — **21/21**, and the DMARC third-party warning still present
+- [ ] Any deviation from the state table above recorded in the handoff table
 
 ---
 
@@ -119,6 +130,17 @@ printing green with every custom address deleted. Meanwhile the privacy page ass
 is a monitored address. The only check that exists is sending a message to it, so send one after any
 Cloudflare work, and treat "the gate passed" as saying nothing whatsoever about inbound.
 
+**Tick as you go**
+
+- [ ] Inbox skimmed for other `@amplifiedthinker.com` recipients before touching catch-all
+- [ ] Custom address `contact` → `singfenchen@gmail.com` created
+- [ ] Custom address `dmarc` → `singfenchen@gmail.com` created
+- [ ] `singchen` route left in place, untouched
+- [ ] Catch-all checked, set to disabled or Drop, and **recorded in the handoff table**
+- [ ] No DNS records were edited in this stage
+- [ ] Test message to `contact@` arrived in Gmail
+- [ ] Test message to `dmarc@` arrived in Gmail
+
 **Rollback:** delete the two custom addresses. Nothing else depends on them yet.
 
 ---
@@ -160,6 +182,14 @@ consumer.
   it, looking like an SMTP fault.
 
 **Verify:** nothing to verify yet; the key is unused until stage 3.
+
+**Tick as you go**
+
+- [ ] Resend's acceptable-use policy read, and human correspondence is permitted
+      — **if not, stop here** and take the fork above rather than improvising
+- [ ] Key created: name `Gmail send-as`, **Sending access**, restricted to `amplifiedthinker.com`
+- [ ] Confirmed this is a **new** key, not Supabase's
+- [ ] Key stored in the password manager (it is shown once)
 
 **Rollback:** revoke the key.
 
@@ -222,6 +252,18 @@ the real signature down. Read the selector, not the verdict.
 send-as address. Recommended: yes, once verified — it makes forgetting to switch identity
 impossible rather than merely unlikely.
 
+**Tick as you go**
+
+- [ ] Send-as added, **Treat as an alias** checked
+- [ ] SMTP set to `smtp.resend.com` / `587` / `resend` / the stage 2 key / **TLS**
+- [ ] Confirmation code received and entered
+- [ ] Test sent to `singfenchen@gmail.com`, **Show original** read
+- [ ] `From:` is `contact@amplifiedthinker.com` with **no** "via" annotation
+- [ ] `smtp.mailfrom` is `…@send.amplifiedthinker.com`
+- [ ] `spf=pass` · `dkim=pass` with **`header.s=resend`** (not the amazonses signature) · `dmarc=pass`
+- [ ] Test sent to a non-Google mailbox and delivered
+- [ ] Default send-as address decided
+
 **Rollback:** delete the send-as entry. `singchen@` is untouched and still works; this stage adds an
 identity and removes none.
 
@@ -261,6 +303,15 @@ is to stop someone deleting those records by mistake.** Once the stated reason i
 reader either deletes them anyway or trusts a wrong explanation. Both are worse than an amber note.
 
 **Verify:** `npm run verify:email` still prints 21/21. Nothing about the zone changed.
+
+**Tick as you go**
+
+- [ ] Stage 3 verified **by a delivered message** before starting this stage
+- [ ] `singchen@` send-as row deleted in Gmail
+- [ ] Claude: gate heading and comment reworded to *retained pending teardown*
+- [ ] Claude: [../supabase/README.md](../supabase/README.md) amended
+- [ ] Claude: [recovery.md](recovery.md) amended
+- [ ] `npm run verify:email` still **21/21** — the zone did not change
 
 **Rollback:** re-create the send-as entry with the Brevo SMTP settings from
 [../supabase/README.md](../supabase/README.md) — host `smtp-relay.brevo.com`, port 587, the SMTP key
@@ -318,6 +369,18 @@ Then, after deploy: load `/privacy/`, `/terms/`, `/about/` and `/sign-in/` on **
 click a `mailto:` link on each page — confirming the address *and* that the subject line survived.
 Grep is not verification here; a correct `href` with broken markup around it still passes a grep.
 
+**Tick as you go**
+
+- [ ] 13 lines across 6 files swapped, every `?subject=` parameter preserved
+- [ ] privacy.html:223 — the "monitored address" claim is true of `contact@` as deployed
+- [ ] privacy.html:377 — Resend processor row widened to cover contact replies
+- [ ] Promptly sibling site checked for the same statements
+- [ ] `npm run build` passes
+- [ ] Both templates pasted into Supabase **prod** → Auth → Emails → Templates
+- [ ] Templates pasted into **dev** too, or dev noted as stale
+- [ ] Deployed, and a `mailto:` clicked on `/privacy/`, `/terms/`, `/about/`, `/sign-in/`
+- [ ] Checked on **both origins**, not just Vercel
+
 **Rollback:** revert the commit; redeploy. The email templates need pasting back by hand — git does
 not reach them.
 
@@ -346,6 +409,13 @@ the zone moved to Cloudflare. Nobody here reads it, so a broken selector would g
 **Verify:** `npm run verify:email` — still 21/21, and the *"DMARC aggregate reports go to a third
 party"* warning is **gone**. Reports are daily XML from each receiver; expect the first within about
 24 hours, and expect it to be unreadable by eye. Its value is that it arrives at all.
+
+**Tick as you go**
+
+- [ ] `_dmarc` TXT edited **in place**, `rua` address changed and nothing else
+- [ ] `p=quarantine`, `adkim=r` and **`aspf=r`** all still present, unaltered
+- [ ] `npm run verify:email` — **21/21**, and the third-party warning is **gone**
+- [ ] First aggregate report arrived at `dmarc@` (allow ~24 hours; it will be unreadable XML)
 
 **Rollback:** the previous value is in the block above, and in
 [email-dns-baseline.md](email-dns-baseline.md).
@@ -405,6 +475,23 @@ assertions with one silently absent is what a wrong deletion looks like, and bot
 **Then close the loop in [../BACKLOG.md](../BACKLOG.md):** candidate 1 of the vendor-consolidation
 entry is complete, and *"The Brevo SMTP key behind the Gmail alias expires after 90 days of
 inactivity"* is no longer a live risk — it is resolved by removal. Vendors: **7 → 6**.
+
+**Tick as you go**
+
+- [ ] At least a week has passed since stage 4, with `contact@` in normal use
+- [ ] `npm run verify:email` run **before** touching anything, count recorded
+- [ ] 7a — `brevo-code` TXT deleted
+- [ ] 7a — `brevo1._domainkey` CNAME deleted
+- [ ] 7a — `brevo2._domainkey` CNAME deleted
+- [ ] 7a — **`cf2024-1._domainkey` left alone** (it is Cloudflare's, and inbound depends on it)
+- [ ] 7b — apex SPF `include:spf.brevo.com` removed, **as its own separate change**
+- [ ] Claude: four `record(...)` assertions, `BREVO_SPF_INCLUDE` and `BREVO_SELECTORS` removed
+- [ ] `npm run verify:email` — **17/17**, and the count was compared deliberately against 21
+- [ ] Claude: [email-dns-baseline.md](email-dns-baseline.md) updated, four-systems table now three
+- [ ] Claude: [../supabase/README.md](../supabase/README.md) and [recovery.md](recovery.md) Brevo
+      instructions deleted
+- [ ] Claude: [../BACKLOG.md](../BACKLOG.md) — candidate 1 closed, 90-day key risk resolved,
+      vendors **7 → 6**
 
 **Rollback:** re-add the three records from the block above and restore the `include`. DKIM
 propagation is not instant; assume the alias is unusable for the length of a TTL.
