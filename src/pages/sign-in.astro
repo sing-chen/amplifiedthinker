@@ -96,8 +96,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           a mailing list unless something says otherwise. Naming the two actual
           emails makes the boundary checkable in a way "nothing else" never was.
         -->
+        <!--
+          ⚠️ THIS LINE WENT FROM TRUE TO FALSE ON 2026-08-20 and had to be
+          rewritten. It used to read "Sign-up confirmation and password resets.
+          Never a newsletter." — accurate right up until the account started
+          offering update email, at which point the reassurance became a lie
+          told at the exact moment someone is deciding whether to trust us.
+
+          The negative half is still the load-bearing half: asking for a name
+          and an address reads as the first step of a mailing list unless
+          something says otherwise. What changed is that the answer is now
+          "only if you tick the box" rather than "never".
+
+          ⚠️ Update this whenever what the account sends changes, and change
+          privacy.html §8 in the same commit.
+        -->
         <p class="auth-hint" id="auth-email-promise" hidden>
-          Sign-up confirmation and password resets. Never a newsletter.
+          Sign-up confirmation and password resets. Anything else is opt-in.
         </p>
 
         <div id="auth-password-row">

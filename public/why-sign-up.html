@@ -24,8 +24,13 @@
 <style>
   /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
 
-  /* ── PAGE WRAPPER ── */
-  .doc-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
+  /* ── PAGE WRAPPER ──
+     Wider than `--col` (680px), which the two legal pages keep. Those are
+     long prose read top to bottom, where a narrow measure is the right call.
+     This page is built around a comparison table with three columns and a
+     fourth state to signal, and 680px squeezed it. Still centred, and still
+     well inside a comfortable measure for the paragraphs around it. */
+  .doc-page{max-width:820px;margin:0 auto;padding:72px 40px 96px}
 
   /* ── MASTHEAD ── */
   .doc-eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
@@ -58,10 +63,24 @@
   .doc-table tbody th{font-weight:400;color:var(--navy);width:46%}
   .doc-table td{text-align:center;color:var(--text-muted);width:27%}
   .doc-table tbody tr:last-child th,.doc-table tbody tr:last-child td{border-bottom:none}
-  .yes,.no{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
+  .yes,.no,.soon{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
   .yes{color:var(--deep-teal)}
   .no{color:var(--warm-gray)}
-  .yes svg,.no svg{width:14px;height:14px;stroke-width:2.5;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .yes svg,.no svg,.soon svg{width:14px;height:14px;stroke-width:2.5;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* ── THE THIRD STATE ──
+     ⚠️ A DELIBERATELY DIFFERENT SHAPE, not a paler tick. Notes, the tracker and
+     saved news have tables waiting for them in the schema and nothing writing to
+     them yet, so a tick would be a promise the site cannot keep today — and this
+     page is the one place a reader is deciding whether to trust it.
+
+     A pill rather than an icon+label, because the eye reads the two icon columns
+     as a matched pair and would fold a third icon into them. */
+  .soon{background:rgba(234,217,200,.55);color:#7A4526;padding:3px 10px;border-radius:999px;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+
+  /* ── SECTION DIVIDERS ── */
+  .doc-divider{height:1px;background:rgba(172,196,182,.4);margin:10px 0 2px}
+
   .doc-note{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-muted);line-height:1.6}
 
   /* ── PLAIN LIST ── */
@@ -122,6 +141,8 @@
   [data-theme="dark"] .doc-table td{color:var(--fg-2)}
   [data-theme="dark"] .yes{color:var(--fg-brand)}
   [data-theme="dark"] .no{color:var(--fg-2)}
+  [data-theme="dark"] .soon{background:rgba(201,122,74,.22);color:#E8C9AE}
+  [data-theme="dark"] .doc-divider{background:var(--line)}
   [data-theme="dark"] .doc-note{color:var(--fg-2)}
   [data-theme="dark"] .doc-list li{color:var(--fg-1)}
   [data-theme="dark"] .doc-cta{border-top-color:var(--line)}
@@ -158,11 +179,23 @@
       <p>There is no paywall, no locked chapter, and no "sign up to continue". An account adds one thing, and takes nothing away.</p>
     </div>
 
+    <div class="doc-divider"></div>
+
     <h2 class="doc-h2">What an account adds</h2>
 
-    <p><strong>It remembers your place.</strong> Progress saves to your account automatically as you work through a primer or a plan, and follows you to any device you sign in on. Close the tab on a train, open your laptop that evening, and the Resume button picks up exactly where you stopped.</p>
+    <p><strong>It remembers where you got to.</strong> Every plan section you read and every primer slide you see is saved as you go, so you can close the tab mid-section and pick up in the same place — on your phone, on a work laptop, months later.</p>
 
-    <p>That is the whole of it. The comparison below is the honest version, not the sales version.</p>
+    <p>Signed out, none of this is kept. The site works fully as a guest — every page, every plan, all of it free to read — but nothing is written down, so each visit starts from the top.</p>
+
+    <p><strong>That record is also the foundation for what comes next</strong>, and it is worth being straight about which parts are built and which are not.</p>
+
+    <ul class="doc-list">
+      <li><strong>A learning tracker.</strong> One page showing how far through each of the five skills you are, which ones you have finished, and which you started and left. Not a score, and nothing anyone else can see — just an honest picture of what you have covered, so the next thing to do is obvious.</li>
+      <li><strong>Notes as you go.</strong> Capture a thought against a plan section while it is fresh, then read it back in place or alongside every other note for that plan. Yours to edit or delete at any time.</li>
+      <li><strong>The news worth keeping.</strong> Save a story, pin the ones that matter, and write a line about why — so it is still there when you need it.</li>
+    </ul>
+
+    <p>These are <strong>marked <span class="soon">Soon</span> in the table below rather than counted as reasons to sign up today.</strong> They are being built on top of the same record an account is already keeping, which is why signing up now means having something to look at when they land.</p>
 
     <div class="doc-table-wrap">
       <table class="doc-table">
@@ -200,6 +233,26 @@
             <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
           </tr>
           <tr>
+            <th scope="row">Notes on a plan section, kept and searchable</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="soon">Soon</span></td>
+          </tr>
+          <tr>
+            <th scope="row">A tracker showing how far you are through each skill</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="soon">Soon</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Saved news stories, with your own note against each</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="soon">Soon</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Told when new skills and features land</th>
+            <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>If you want it</span></td>
+          </tr>
+          <tr>
             <th scope="row">Email address required</th>
             <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
             <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
@@ -208,7 +261,9 @@
       </table>
     </div>
 
-    <p class="doc-note">Your theme choice is remembered on the device you set it on, whether or not you have an account. It never leaves that device for a guest.</p>
+    <p class="doc-note"><span class="soon">Soon</span> means the groundwork is in place and the feature is not. It is on the table so you can see where this is going, not so it counts as a reason to sign up today.</p>
+
+    <div class="doc-divider"></div>
 
     <h2 class="doc-h2">What browsing as a guest means</h2>
 
@@ -216,10 +271,12 @@
 
     <p>The trade is exactly the one in the table: a guest gets the entire library and no memory of it.</p>
 
+    <div class="doc-divider"></div>
+
     <h2 class="doc-h2">What an account does not mean</h2>
 
     <ul class="doc-list">
-      <li><strong>No newsletter.</strong> The only routine emails an account sends are a confirmation when you sign up and a link when you ask to reset your password — both triggered by you. There is nothing to unsubscribe from, because you were never subscribed. The one exception is a notice if the <a href="privacy.html">privacy policy</a> changes in a way that affects data you have already given us, which is not marketing either.</li>
+      <li><strong>Occasional email, and you choose whether to get it.</strong> Two messages are triggered by you and always sent: a confirmation when you sign up, and a link when you ask to reset your password. Beyond those, an account can also tell you when something is actually new — a skill added to the library, or a feature like the learning tracker going live. That is <strong>opt-in when you sign up, changeable afterwards, and every one of those messages carries an unsubscribe link</strong>. It is occasional and it is about this site; there is no digest, no drip sequence, and nothing sent on someone else's behalf. Turning it off never affects the two you asked for.</li>
       <li><strong>No advertising, and nothing sold or shared.</strong> Your email address and your progress are used to run your account and for nothing else.</li>
       <li><strong>No tracking you around the web.</strong> The site carries no advertising or social pixels of any kind.</li>
       <li><strong>Not a commitment.</strong> You can delete your account yourself from the account page, at any time, without asking anyone. It happens immediately and no copy is kept.</li>

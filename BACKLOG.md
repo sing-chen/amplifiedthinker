@@ -54,6 +54,39 @@ and the only email an account ever sends is a confirmation or a password reset.
 probably the nav. Sequence it with the launch announcement — the announcement and this page are
 making the same argument to the same people at the same moment.
 
+### ⚠️ Site-update email: the consent flag and the unsubscribe route do not exist yet
+**Status:** ⚠️ **Blocking — the pages describe this and the system cannot do it** · Raised 2026-08-20
+**Relates to:** [public/privacy.html](public/privacy.html) §4 and §8, [public/terms.html](public/terms.html) §2,
+[public/why-sign-up.html](public/why-sign-up.html), [src/pages/sign-in.astro](src/pages/sign-in.astro),
+[src/pages/account.astro](src/pages/account.astro), `supabase/migrations/`
+
+**On 2026-08-20 the account gained a promise it cannot keep yet.** The three pages now say an account
+can tell you when new skills and features land, that it is **opt-in at sign-up**, changeable on the
+account page, with an **unsubscribe link in every message**. None of those three things is built.
+
+⚠️ **This is safe only for as long as no such email is sent.** The moment one goes out, the pages
+become a description of something that did not happen — and under PECR reg 22 the send itself is
+unlawful without the consent they describe.
+
+**Four things, and the order matters:**
+
+| | |
+|---|---|
+| 1. A column to hold the answer | `profiles.wants_updates boolean not null default false`. ⚠️ **Default false, never true** — consent is opted into, never assumed, and a default of `true` would silently enrol every existing account. Needs its own `grant`; see the default-privileges trap in CLAUDE.md. |
+| 2. A checkbox on the sign-up form | Unticked by default, with its own wording — not buried in the terms line. ⚠️ **This reverses the earlier "no consent checkbox" reasoning, and correctly.** That reasoning was *"nothing there is optional processing"*. Update email **is** optional processing, so it is the one thing on that form that does need a tick. |
+| 3. A toggle on the account page | The withdrawal route the privacy page promises. Cheapest of the four and the one that makes the promise honest, since consent has to be as easy to withdraw as to give. |
+| 4. An unsubscribe link in the message itself | ⚠️ **THE TRAP, and it is already written up in Phase 4.** `List-Unsubscribe` was deliberately kept off the auth templates because *a user can otherwise unsubscribe from their own password reset and be suppressed silently*. Update email needs unsubscribe; auth email must never have it. **They must not share a Resend audience, a suppression list, or a template.** |
+
+**Sending it needs a mechanism that does not exist either.** There is no way to send to many
+recipients today — Supabase's templates are transactional and fire on auth events. That is a
+Phase 6-shaped problem (a server endpoint, or `pg_net`), and it shares the 100/day Resend allowance
+that password resets depend on. ⚠️ **A batch send that exhausts the allowance takes password resets
+down with it** — the reason `npm run verify:redirects` and the daily count watch exist.
+
+**Until all four land, the honest position is the one the pages already take:** the two account
+emails are always sent, updates are opt-in, and nobody has opted in yet because there is nothing to
+opt into. No message may be sent on the strength of a policy page alone.
+
 ### Self-hosting the two typefaces, and removing the Google Fonts request
 **Status:** Idea · Not started · Raised 2026-08-19 while writing the privacy page
 **Relates to:** all 16 pages in `public/`, [src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro),
