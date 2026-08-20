@@ -3245,6 +3245,12 @@ function resetAllProgress() {
   visited.clear();
   navLinks.forEach(link => link.classList.remove('visited'));
 
+  // ⚠️ A settle timer armed before the reset would fire ~350ms from now and put
+  // a section straight back into the set this function has just emptied. Same
+  // class of problem as the lastActiveId guard below, and cancelled for the
+  // same reason.
+  cancelSettle();
+
   store.clear();
 
   // Prevent the scrollTo below from re-triggering a save: updateNav() only
@@ -3434,6 +3440,59 @@ let   currentIdx   = 0;
 
 const sectionIds = Array.from(navLinks).map(l => l.dataset.section);
 
+// ── COVERAGE IS MARKED ON SETTLE, NOT ON CROSSING ──────────────────────────
+// ⚠️ Read this before "simplifying" it back.
+//
+// A section becomes ACTIVE the moment its top passes 120px. Marking it visited
+// right there is what a scroll handler naturally does, and it was wrong: with
+// `scroll-behavior: smooth`, one click in the nav rail scrolls THROUGH every
+// section in between, so jumping from 2 to 12 marked ten sections as read, and
+// a fast scroll to the bottom marked all of them. The reset path below already
+// guarded against its own instance of this; nothing guarded the ordinary case.
+//
+// So the cursor and the coverage set now move on different signals:
+//
+//   active / position / nav highlight   immediately, on crossing.  UNCHANGED.
+//   visited (the coverage set)          only once scrolling STOPS here.
+//
+// Every updateNav() call reschedules the timer, so it fires only when the calls
+// stop. This deliberately does not try to measure reading time — it answers the
+// much easier question of whether you stopped here or went past.
+//
+// ⚠️ NOT a fixed threshold in seconds, and that was considered. A short section
+// is active for proportionally less time at the same scroll speed, so a
+// seconds-based rule penalises exactly the sections that are quickest to read
+// honestly — it measures length, not attention. Settling treats every section
+// the same regardless of height, and fails safe: it under-counts someone who
+// never quite stops, and under-claiming is the right direction to be wrong in.
+//
+// The primers deliberately do NOT do this. Slides advance on a click, so there
+// is no pass-through to guard against — which means `visited` means "stopped
+// on" for a plan and "advanced to" for a primer. That divergence is intended.
+const SETTLE_MS = 350;
+let settleTimer     = null;
+let activeSectionId = null;
+
+function cancelSettle() {
+  if (settleTimer) {
+    clearTimeout(settleTimer);
+    settleTimer = null;
+  }
+}
+
+function scheduleSettle() {
+  cancelSettle();
+  settleTimer = setTimeout(function () {
+    settleTimer = null;
+    if (!activeSectionId || visited.has(activeSectionId)) return;
+    visited.add(activeSectionId);
+    // No DOM work needed: the current section renders as `active`, never as
+    // `visited` (see the toggle below), so the class only has to change once
+    // the reader leaves — and the next updateNav() does that anyway.
+    saveProgress();
+  }, SETTLE_MS);
+}
+
 function updateNav() {
   let activeId = null;
   sections.forEach(sec => {
@@ -3447,7 +3506,6 @@ function updateNav() {
     if (s === activeId) {
       link.classList.add('active');
       link.setAttribute('aria-current', 'true');
-      visited.add(s);
     }
     // toggle, not add/else-remove: both branches used to be guarded by
     // `s !== activeId`, so a link that became active kept a stale visited
@@ -3464,6 +3522,11 @@ function updateNav() {
     if (idx !== -1) currentIdx = idx;
     saveProgress();
   }
+  // Outside the `activeId !== lastActiveId` guard on purpose: scrolling WITHIN
+  // one long section must keep pushing the timer back, or it would settle
+  // mid-scroll.
+  activeSectionId = activeId;
+  scheduleSettle();
   updateButtons();
 }
 
