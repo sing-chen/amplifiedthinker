@@ -1,10 +1,16 @@
 # Implementation sequence
 
 **Status:** In progress — Phases 0, 1, 2, 3, 4 and **5 live on both origins**. Phase 5 merged as
-`947fb19`; seven post-release defects were found by hand the same day and all fixed. **What remains
-before the phase is closed is the announcement**, and the legal pages that had to exist before it —
-built on `feat/legal-pages` (2026-08-19), not yet merged ·
-**Last updated:** 2026-08-19
+`947fb19`; seven post-release defects were found by hand the same day and all fixed.
+
+**`feat/legal-pages` is built, tested and pushed, and not merged.** It carries the three legal pages,
+the sign-up consent checkbox and account toggle, the document modal, and migration
+`20260820070000_profiles_wants_updates` — **applied to dev, not to prod**. Remaining, in order:
+apply the migration to prod, merge, then the announcement.
+
+⚠️ **No update email may be sent yet**, whatever the consent column says: the unsubscribe route and
+any multi-recipient sender are unbuilt. See BACKLOG.md ·
+**Last updated:** 2026-08-20
 
 ⚠️ **The step-by-step runsheet for Phase 5 is not in this repo** — it is an artifact, *Phase 5
 Runsheet*, and it carries the click paths, who does each step, and the live-cutover order. This
@@ -969,7 +975,7 @@ one browser on one device — actually goes away.
 | **Decide how open signup is protected, before re-enabling it** | **Signup is currently switched off** in Supabase → Authentication (2026-08-18), because Phase 4 finished testing and nothing user-facing needs it until this phase. Turning it back on is a Phase 5 decision with a cost attached — see below. **✅ Decided: Cloudflare Turnstile, on the sign-in surface only.** |
 | **Delete `src/pages/auth-test.astro`** | **Carried forward from Phase 3**, and recorded here rather than only in that phase's log, because this is the list someone doing Phase 5 will actually read. It is a scaffold, and once `auth.js` and the real sign-in UI exist it is a second, diverging implementation of client setup. **Mine it before deleting it:** it holds working patterns for session handling, `onAuthStateChange`, the signup-trigger check, and RLS assertions that both admin and non-admin paths were verified against. **Mining done** — `selfUrl()` and the session handling are in `auth.js`. Deletion is still outstanding. |
 
-**Seven activities were added on 2026-08-19 that the plan above never named.** None was scope creep
+**Eight activities were added across 2026-08-19 and 20 that the plan above never named.** None was scope creep
 for its own sake — the first was needed to stop maintaining test accounts by hand, and each one made
 the next visible. Full accounts are in the progress log below.
 
@@ -982,6 +988,7 @@ the next visible. Full accounts are in the progress log below.
 | **Current password required to change it**, and other devices signed out | Was on the backlog. Building the delete control put a gated action beside an ungated one, and the ungated one protected more. |
 | **Breached-password refusal** (`public/pwned.js`) | Supabase's own version needs the Pro plan. Same corpus, done in the browser. |
 | **The privacy, terms and why-sign-up pages** | ⚠️ **Announcement-blocking, and no phase owned them.** This is the first phase to hold personal data, and the sign-up form asks for a name and an address with nothing on the site saying what happens to either. Two backlog entries specified them; both turned out incomplete. |
+| **Consent to site-update email** — a third migration, a checkbox and a toggle | ⚠️ **Nothing planned this either.** Offering to tell people when new skills land turns "no marketing" into direct marketing under PECR reg 22, which needs recorded, withdrawable consent. It also **reverses** the "no consent checkbox on the sign-up form" decision taken three commits earlier, and correctly — that argument was *"nothing here is optional processing"*, and this is. |
 
 **Done when:** a signed-in user works through a plan on one device, opens a second device, and
 resumes from the same place. **Test both directions** — the failure mode here is silent truncation,
@@ -1493,6 +1500,15 @@ touches a transition, an animation, or a screenshot.
 | **CSS transitions** | Start and never progress. Every transitioned property reads back **frozen at its start value**, indefinitely — `getAnimations()` showed 6 still "running" two seconds after a 0.2s transition. |
 | **Screenshots** | Time out: *"the Browser pane is not displayed, so the page is not compositing frames."* |
 | **Synthetic mouse clicks** | Report success and change nothing. |
+| **Viewport size** | `innerWidth` reads **0** until `resize_window` forces a size. Every width-derived measurement is meaningless until then — and they look like real numbers, not like zeros. Added 2026-08-20. |
+| **Scrolling** | **Inert.** `window.scrollTo(0, 400)` leaves `scrollY` at 0, top level *and* inside an iframe, on a document that is genuinely scrollable. `scrollIntoView()` likewise. Added 2026-08-20. |
+
+⚠️ **Two more surfaced on 2026-08-20 and both nearly produced a fix for a bug that did not exist.**
+`pageScrollsX` reported `true` on `terms.html` — with `innerWidth: 0`, so the page was being measured
+against a zero-width viewport. And the modal's `#s8` links appeared not to scroll to their section,
+which was written up, coded around, and only then tested properly: **scrolling does not work in the
+pane at all**, so the original reading was not evidence of anything. The code stayed in as belt and
+braces, labelled in the source as unverified rather than as a fix.
 
 **Why it fooled the diagnosis for so long.** The frozen values are not obviously invalid — they are
 the *previous* state, so a dot that had just become `visited` reported the `active` styling it was
@@ -1516,6 +1532,13 @@ not depend on rendering at all — and showed the correct single rule on each el
 > ⚠️ **A visual check is not available in this environment.** Not "slower" — unavailable. Anything
 > whose correctness is about how it *looks* is a human's job, which is what CLAUDE.md already says
 > and this is the mechanical reason why.
+>
+> ⚠️ **Check `innerWidth` before believing any layout measurement.** A zero viewport produces
+> plausible-looking numbers rather than obvious zeros. `resize_window` first, always.
+>
+> ⚠️ **Anything about paint, size or scroll needs a human.** Added 2026-08-20, after the fifth
+> instance. The three categories are now known; treat a reading in any of them as a prompt to ask
+> a person, not as a result.
 
 **This is the third measurement artifact of the phase, and they share a shape**: supabase-js retries
 made a failure test report success; `element.hidden` reported an element hidden while it rendered;
@@ -1751,6 +1774,114 @@ transitions. **Check `innerWidth` before believing any layout measurement from t
 this site promises a manual response within one month instead. Honest and lawful, but it is a
 standing obligation on a person rather than a feature — one query and one JSON file would retire it.
 Logged, and a natural fit with Phase 9, which is already building on the same table.
+
+### The account grew a promise, and the promise grew a schema, 2026-08-20
+
+Nine commits on `feat/legal-pages` after the pages themselves. The through-line is one decision:
+**the account now offers to tell people when new skills and features land.** Everything else followed
+from it, including a migration nobody planned.
+
+#### Saying it turned "no marketing" into direct marketing
+
+The pages had said the only mail was confirmation and reset. Offering update mail makes it **direct
+marketing by electronic mail under PECR reg 22**, which needs consent — and Article 7(1) requires the
+controller to be able to *demonstrate* it. So the copy change could not ship alone:
+
+| Changed | |
+|---|---|
+| `privacy.html` §4 | A consent row (Article 6(1)(a)), and a **separate legal-obligation row** for policy-change notices — those are not marketing and must not be switchable off with the rest |
+| `privacy.html` §8 | Rewritten into three kinds of mail: always-sent, opt-in, and the policy notice |
+| `terms.html` §2 | The same, under *Your account* |
+| The sign-up hint | ⚠️ Said **"Never a newsletter."** True when written, false the moment this shipped |
+
+⚠️ **That hint is the finding worth keeping.** It was accurate, load-bearing, and became a lie —
+a reassurance shown at the exact moment someone decides whether to trust the site. **Copy that states
+a limit is a claim about the system, and it rots the same way a comment does.** It now reads
+*"Anything else is opt-in"*, and carries a note to change `privacy.html` §8 in the same commit.
+
+#### The migration nobody planned: `20260820070000_profiles_wants_updates`
+
+`wants_updates boolean not null default false`, plus `updates_consent_at`.
+
+- ⚠️ **`default false` is the point of the column, not a detail of it.** `true` would silently enrol
+  every existing account at migration time — the exact thing consent exists to prevent, done
+  invisibly and in bulk.
+- **The timestamp is stamped by a trigger, never by the client.** A consent record the data subject
+  can set themselves is not evidence of anything.
+- **`handle_new_user()` reads the metadata key as TEXT and compares to `'true'`.** `::boolean` would
+  raise on malformed input, and that trigger runs `after insert on auth.users` — any exception rolls
+  back the auth user, so a bad key would make signup fail with an opaque *"Database error saving new
+  user"*. Same reasoning the display_name migration gives. **Failing closed is also correct for
+  consent specifically: if we cannot tell what was ticked, we did not get consent.**
+- ✅ **No new grant, and that is worth stating because the documented trap is the opposite case.**
+  `grant select, update on public.profiles` is table-level and already covers columns added later. A
+  new *table* lands with no grants and looks like a broken policy; a new *column* does not.
+
+**The checkbox reverses an argument made three commits earlier, and correctly.** The terms links were
+added with a comment saying no consent checkbox belonged on that form, because *"nothing here is
+optional processing"*. That was right. Update mail **is** optional processing, so it is the one thing
+on the form that does need a tick — unticked, separate from the terms line (bundling it would make
+consent a condition of the service, which Article 7(4) forbids), and reset on every mode change.
+
+**The toggle is deliberately not inside a disclosure**, unlike change-password and delete. Article
+7(3): withdrawing must be as easy as giving. Someone who came to stop the email should not have to
+work out which heading hides the control.
+
+⚠️ **Still unsendable, and the pages say so.** The unsubscribe link and any multi-recipient mechanism
+do not exist. The Phase 4 constraint is the sharp one: `List-Unsubscribe` is deliberately absent from
+the auth templates, because a reader could otherwise unsubscribe from their own password reset and be
+suppressed silently. **Update mail needs it and auth mail must never have it, so they cannot share a
+Resend audience, a suppression list, or a template.**
+
+#### `verify:schema` — proving a migration landed with the anon key alone
+
+`npm run verify:schema`. PostgREST parses the `select` list **before** checking privileges, so the
+two failures are distinguishable from outside: `400 does not exist` versus `401 42501 permission
+denied`. **The 401 is a pass** — `profiles` grants SELECT to `authenticated` only, so that is exactly
+what an anonymous caller should get. It checks *existence* and treats "you may not look at this" as
+proof there is something to look at.
+
+⚠️ **It then crashed on a network that intercepts TLS**, immediately after a migration had applied
+*successfully* — and the stack trace read as "the migration failed". Node ships its own CA bundle and
+ignores the Windows trust store, so a corporate proxy's root is trusted by Windows and not by Node.
+The fix is `--use-system-ca`, **never `NODE_TLS_REJECT_UNAUTHORIZED=0`**, which would remove the
+symptom and the guarantee together on a script whose whole job is to make a trustworthy statement.
+Written up in [dev-workflow.md](dev-workflow.md); it affects all four `verify:*` scripts.
+
+#### The modal, and why it does not contradict the rule against modals
+
+Leaving the form mid-signup to read a 3,200-word notice means coming back to empty fields and a spent
+captcha token. Terms and privacy now open in a **native `<dialog>`**.
+
+`account.astro` argues against modals — *"a focus trap, scroll lock, Escape handling, backdrop clicks
+and focus return; five things to get right"*. **`showModal()` supplies four of the five.** Only the
+backdrop click is hand-written. The argument was against *hand-rolled* modals and still stands.
+
+⚠️ **An iframe, not a copy of the text.** A second copy of a privacy notice is a second thing to keep
+true — and the copy people actually read while signing up would be the one that silently went stale.
+`?embed=1` tells the real page to drop its own nav and footer, and **the param goes before any
+fragment** or it lands inside it and the page never sees it.
+
+**Then it nested inside itself.** `privacy.html` links to `/sign-in/`, so a reader could reach the
+sign-up form *inside* the modal and open a second modal within the first, each layer holding a live
+copy of the form. ✅ **Fixed by deciding what the surface is rather than special-casing the loop:** it
+is a reader, not a browser. Fragments scroll; the sibling document swaps in; `mailto:` passes through;
+**everything else opens a new tab and closes the modal.** Recursion is then impossible *by
+construction* — the frame can only ever hold `privacy.html` or `terms.html` — which is a stronger
+guarantee than a depth counter and needs no state.
+
+#### Three defects found by looking, and a fourth found by looking harder
+
+| | |
+|---|---|
+| Checkbox stacked above its label | `.auth-panel label { display: block }` is **(0,1,1)**; `.auth-check-label` was (0,1,0) and lost. **Third cascade collision on these pages** |
+| Terms line rendered on top of the button | `.auth-hint` carries `margin-top: -12px` to tuck under a *field*. This is the one hint that follows a *button* |
+| `the<a>terms of use</a>` | ⚠️ **Astro's HTML compressor collapses a newline between text and an element to nothing, not to a space.** Shipped twice, looked fine in source both times |
+| `#s8` links "not scrolling" | Not a defect. **Scrolling is inert in the agent's browser**, so the reading meant nothing — see the compositing finding above |
+
+**All four were found by a human looking at a screenshot.** That is now the settled property of this
+project rather than a recurring surprise: automated checks here confirm structure and state, and say
+nothing about what is painted.
 
 ### Announcement planning
 

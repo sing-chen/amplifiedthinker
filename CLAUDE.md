@@ -21,6 +21,7 @@ The project has a written architecture and a phased plan. Read them rather than 
 | [docs/recovery.md](docs/recovery.md) | Rebuilding a working state on new hardware. A copy lives in the Drive backup folder, since that is where it is needed |
 | [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, the redirect allowlist, and the email SMTP runbook |
 | [docs/email-dns-baseline.md](docs/email-dns-baseline.md) | The DNS zone as it stood before Phase 4 touched it. Cloudflare keeps no history, so this is the only restore reference there is |
+| [docs/email-aliases-runbook.md](docs/email-aliases-runbook.md) | Moving the contact route to `contact@`, adding `dmarc@`, retiring Brevo. Staged, with a handoff table that **is** the state — update it in the same sitting as the work |
 | [BACKLOG.md](BACKLOG.md) | Unscheduled ideas |
 
 `docs/` is excluded from the Vercel deploy but the repo is **public** — these are public documents.
@@ -137,6 +138,18 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
 - **`is_admin` is settable only where `auth.uid()` is null** — the dashboard SQL editor. A trigger
   rejects the account changing its own. Do not add `force row level security` to `profiles`: it
   would apply RLS to the table owner and close that same door.
+- **Astro collapses a newline between text and a tag to NOTHING, not to a space.** Breaking a line
+  before `<a>` for readability ships `accept the<a>terms of use</a>` — the words run together on the
+  live page and look perfectly fine in source. It has shipped twice, on `sign-in.astro` and
+  `account.astro`. **Keep the space on the same line as the tag, and never re-wrap markup that ends
+  in text before an element** to fit a column width. Only the `.astro` files compress; the
+  hand-written pages in `public/` are served as authored.
+- **On the auth pages, check specificity against `.auth-panel`'s element selectors before assuming a
+  class wins.** `.auth-panel label { display: block }` is **(0,1,1)** and beats a bare
+  `.auth-check-label` (0,1,0) — which stacked a checkbox above its own label. `.auth-panel label`
+  also sets `font-weight: 600` and a bottom margin, so anything that is *not* a field label has to
+  reset both. Same file, `.auth-hint` carries `margin-top: -12px` to tuck a hint under the input it
+  describes: reusing it anywhere that does not follow an input drags it onto whatever is above.
 - **`[hidden]` is the weakest rule in the cascade, and it has cost two defects.** The browser's own
   `[hidden] { display: none }` is a UA rule, so **any** author `display` beats it — `.auth-actions`
   and `.doc-cta` both set `display: flex`, and both would render a `hidden` element in full. Any new
@@ -148,6 +161,12 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   for each. Adding analytics, a font host, a CDN, an embed, a storage key or a new table makes it
   **wrong**, not merely out of date. Change it in the same commit. The sibling Promptly site makes
   the same statements about the same person under the same law — check it before editing either.
+- **Copy that states a limit is a claim about the system, and it rots like a comment.** The sign-up
+  form said *"Never a newsletter."* — accurate when written, false the day the account started
+  offering update email, and shown at the exact moment someone decides whether to trust the site.
+  ⚠️ **Anything that promises what the site will not do belongs in the same change as whatever makes
+  it untrue**: the form hint, `privacy.html` §8, `terms.html` §2 and `why-sign-up.html` all move
+  together. Grep for the promise, not just the feature.
 - **Structural changes orphan `.claude/commands/`.** Both `/add-news` and `/add-skill` reference
   concrete file paths. Phase 1 broke them by adding `progress.js`; Phase 2 broke them again by moving
   everything into `public/`. Check them after any move or new shared module.
