@@ -269,16 +269,20 @@ The Transactional → Settings page offers no switch for any of them on the free
 strip them either — it exposes no custom-header control. Confirmed as a product limitation rather
 than a missed setting.
 
-⚠️ **Brevo's DNS records must stay.** Gmail's *Send mail as* for `singchen@amplifiedthinker.com`
-still relays through `smtp-relay.brevo.com` on port 587, authenticating with the SMTP key created
-2026-07-06 and signing with the `brevo1`/`brevo2` selectors. That dependency is invisible from both
-the Resend and Supabase dashboards. Deleting the records or that key as migration leftovers breaks
-a working alias, and the failure surfaces as "my email stopped working" with nothing pointing at
-the cause. `npm run verify:email` keeps asserting them under a heading that says so.
+⚠️ **Brevo's DNS records are retained pending teardown, and nothing depends on them — since
+2026-08-20.** This paragraph used to say they *must stay*, which was true while Gmail's *Send mail
+as* for `singchen@amplifiedthinker.com` relayed through `smtp-relay.brevo.com` and signed with the
+`brevo1`/`brevo2` selectors. That alias was repointed at `smtp.resend.com`, so both send-as
+identities — `contact@` and `singchen@` — now go through Resend, and nothing signs with the Brevo
+selectors any more.
 
-⚠️ **That Brevo key expires after 90 consecutive days of inactivity**, whatever its stated expiry —
-and the alias is low-traffic. The symptom is an SMTP *authentication* failure, indistinguishable
-from a wrong password. Tracked in [../BACKLOG.md](../BACKLOG.md).
+The records stay until stage 7 of [../docs/email-aliases-runbook.md](../docs/email-aliases-runbook.md),
+which removes them after a soak. `npm run verify:email` still asserts them, under a heading that now
+says *unused, retained pending teardown* rather than implying a live dependency.
+
+⚠️ **The 90-day inactivity expiry on that Brevo key no longer matters**, because nothing
+authenticates with it. It was a live risk while one low-traffic alias depended on it; the repoint
+resolved it by removal. Tracked in [../BACKLOG.md](../BACKLOG.md), to be closed at stage 7.
 
 #### How to confirm it actually works
 

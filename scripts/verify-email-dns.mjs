@@ -33,7 +33,12 @@ const RESOLVERS = ['1.1.1.1', '8.8.8.8'];
 //   Cloudflare Email Routing owns inbound: the MX records and the SPF include.
 //   Resend owns auth mail: everything under send.<domain>, plus one DKIM
 //     selector at the apex.
-//   Brevo owns the Gmail "Send mail as" alias, and nothing else any more.
+//   Brevo owns NOTHING as of 2026-08-20. It carried auth mail for four hours on
+//     2026-08-17, then the Gmail "Send mail as" alias until that alias was
+//     repointed at Resend. Its records are still asserted below, and still must
+//     not be deleted yet - but the reason is now "scheduled teardown has not
+//     happened", not "something depends on them". See stage 7 of
+//     docs/email-aliases-runbook.md.
 //   Vercel owns the website: the apex A records and the www CNAME.
 //
 // Four systems, one zone, and exactly one record shared between them - the apex
@@ -284,7 +289,7 @@ if (resendRecordsFound === 0) {
   }
 }
 
-console.log('\nOutbound - Brevo (Gmail "Send mail as" alias only, since the Resend switch)');
+console.log('\nOutbound - Brevo (UNUSED since 2026-08-20; retained pending teardown)');
 
 record(
   apexTxt.some((t) => /^brevo-code:/i.test(t)),
@@ -292,11 +297,15 @@ record(
   apexTxt.find((t) => /^brevo-code:/i.test(t))
 );
 
-// These carried the auth mail before the Resend switch, and still carry the
-// Gmail "Send mail as" alias, which relays through Brevo's SMTP. Kept asserted
-// for that reason alone - deleting them because "we moved to Resend" would break
-// a working alias whose dependency on this zone is invisible from the Resend
-// dashboard. Measured while Brevo was carrying auth mail: dkim=pass
+// These carried auth mail before the Resend switch, then the Gmail "Send mail
+// as" alias until 2026-08-20, when that alias was repointed at Resend too.
+// NOTHING signs with these selectors any more.
+//
+// They are still asserted because the teardown is scheduled, not done - stage 7
+// of docs/email-aliases-runbook.md, after a soak. Until then a green line here
+// means "the record we intend to delete is still present", which is a weaker
+// claim than it was and is stated so nobody reads it as proof of a dependency.
+// Measured while Brevo was carrying auth mail: dkim=pass
 // header.i=@amplifiedthinker.com header.s=brevo2, DMARC passing on DKIM alone.
 for (const sel of BREVO_SELECTORS) {
   const { cname, txt } = dkim[sel];

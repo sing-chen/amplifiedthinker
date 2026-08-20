@@ -26,9 +26,9 @@ prevent.
 |---|---|---|---|---|
 | 0 | Confirm the starting state | Human | ✅ Done | 2026-08-20, `npm run verify:email` → **21/21, 1 warning**. The warning is the DMARC `rua` pointing at `dmarc_rua@onsecureserver.net`, which is stage 6's job and is expected here. No deviation from the state table below |
 | 1 | Cloudflare inbound routes | Human | ✅ Done | 2026-08-20. Catch-all was already **Drop + Disabled** with one rule only (`singchen@`), so `noreply@` has no inbound route and the "replies bounce" claim in `supabase/README.md` is **correct** — the trap this stage checks for is not live, and nothing needed changing. `contact@` and `dmarc@` added, both Active, 3 rules total, `singchen@` untouched. **Both test messages delivered.** The header goes *Syncing* after a save; tests were run once it returned to *Enabled* |
-| 2 | Resend API key | Human | ☐ Not started | |
-| 3 | Gmail send-as for `contact@` | Human | ☐ Not started | |
-| 4 | Retire the `singchen@` send-as | Human + Claude | ☐ Not started | |
+| 2 | Resend API key | Human | ✅ Done | 2026-08-20. **AUP checked and the fork was not taken** — personal one-to-one correspondence is not prohibited; the permitted use is *replies to inbound mail*, and cold outreach from this alias would be a real violation. Key `Gmail send-as` created, Sending access, restricted to `amplifiedthinker.com`, stored. Three keys now share **one 100/day account allowance** |
+| 3 | Gmail send-as for `contact@` | Human | ✅ Done | 2026-08-20. Relaying through Resend, *Treat as an alias* checked, **set as the account default**. Delivered message measured: `spf=pass` aligned, `dkim=pass header.s=resend`, `dmarc=pass` under `p=QUARANTINE`, `From:` clean with no "via". Delivered to a non-Google mailbox too. **Passes on both mechanisms — stronger than `singchen@` ever was through Brevo** |
+| 4 | Move the `singchen@` send-as off Brevo | Human + Claude | ✅ Done | 2026-08-20. **Scope changed mid-stage: repointed, not deleted** — `singchen@` stays as a personal outbound identity, and retiring the vendor never required retiring the address. Both send-as entries now relay through `smtp.resend.com` on one key; *Treat as an alias* fixed on `singchen@`, which had been *"Not an alias"*; `contact@` remains default. Delivered test measured identical to `contact@`. **Brevo now relays nothing for anybody.** Gate comment, `supabase/README.md` and `recovery.md` all amended from *must stay* to *retained pending teardown*. `verify:email` still 21/21 |
 | 5 | Swap the site over | Claude | ☐ Not started | |
 | 6 | Repoint DMARC reports | Human | ☐ Not started | |
 | 7 | Brevo teardown | Human + Claude | ☐ Not started | **After a soak — see the stage** |
@@ -182,9 +182,22 @@ consumer.
 **Two things to have checked before relying on this**, both carried over from
 [../BACKLOG.md](../BACKLOG.md) and neither resolved by doing the work:
 
-- **Resend's acceptable-use policy on human correspondence.** It is built for application mail. A
-  personal reply relay is an unusual use and has never been confirmed as permitted. Read the AUP
-  once, now, rather than after an account action.
+- **Resend's acceptable-use policy on human correspondence — checked 2026-08-20, and it is fine.**
+  The [AUP](https://resend.com/legal/acceptable-use) is a prohibition list: spamming, phishing,
+  illegal activity, restricted industries, low quality, malicious content, harassment, interference.
+  It draws **no distinction** between transactional, marketing and personal mail, and says nothing
+  about SMTP relays, personal mailboxes or third-party clients. Personal one-to-one correspondence
+  is not prohibited.
+
+  ⚠️ **The one clause to keep in view is *"all mail must be sent to recipients who have explicitly
+  opted in"*.** This alias satisfies it in the only way that matters — it replies to people who
+  wrote to `contact@` first, which is the strongest form of solicited mail there is. **Cold outreach
+  from this alias would be a genuine violation.** The permitted use is replies, not sending.
+
+  ⚠️ **The risk that remains is blast radius, not permission.** This key and Supabase's auth key
+  live in the **same Resend account**, so any enforcement action lands on the account and takes
+  password resets down with it. That is a reason to keep this alias's sending boring — replies to
+  inbound mail, nothing bulk, no lists — and a second reason `whatsnew@` is not in this runbook.
 
   **If it does not permit this, the runbook forks and you should stop here rather than improvise.**
   Stages 1, 5 and 6 still stand on their own — `contact@` can be a receive-only address, with replies
@@ -193,19 +206,24 @@ consumer.
   Google Workspace on the domain (paid, and makes Gmail authoritative for the mailbox rather than a
   forwarding destination) are the two realistic answers. Both are decisions, not steps; bring the
   finding back rather than picking one mid-stage.
-- **The free allowance is 100/day and is now shared three ways** — Supabase auth mail, and your own
-  outbound replies. A heavy test loop on auth can exhaust the day and your correspondence stops with
-  it, looking like an SMTP fault.
+- **The free allowance is 100/day and is now shared by three keys** — `Supabase Auth` (prod),
+  `Supabase Dev`, and `Gmail send-as`. A heavy test loop against dev can exhaust the day, after which
+  real password resets **and** your own correspondence both stop, each looking like an SMTP fault in
+  its own right. ⚠️ **The allowance is per account, not per key**, so restricting or rotating one key
+  does nothing to protect the others from it.
 
 **Verify:** nothing to verify yet; the key is unused until stage 3.
 
 **Tick as you go**
 
-- [ ] Resend's acceptable-use policy read, and human correspondence is permitted
-      — **if not, stop here** and take the fork above rather than improvising
-- [ ] Key created: name `Gmail send-as`, **Sending access**, restricted to `amplifiedthinker.com`
-- [ ] Confirmed this is a **new** key, not Supabase's
-- [ ] Key stored in the password manager (it is shown once)
+- [x] Resend's acceptable-use policy read, and human correspondence is permitted
+      — **2026-08-20: not prohibited. Proceeding.** The fork below was not taken
+- [x] Key created: name `Gmail send-as`, **Sending access**, restricted to `amplifiedthinker.com`
+      — 2026-08-20. ⚠️ The API keys list shows no domain column, so the restriction cannot be
+      confirmed from that screen; open the key itself to check it
+- [x] Confirmed this is a **new** key, not Supabase's — 2026-08-20, `Gmail send-as` created
+      alongside the existing `Supabase Auth` and `Supabase Dev`, three distinct keys
+- [x] Key stored in the password manager (it is shown once) — 2026-08-20
 
 **Rollback:** revoke the key.
 
@@ -220,9 +238,38 @@ address.** This opens a **popup window**; if nothing appears, it was blocked.
 
 | Field | Value |
 |---|---|
-| Name | `Sing Chen` |
+| Name | `Sing Chen - Amplified Thinker` |
 | Email address | `contact@amplifiedthinker.com` |
 | Treat as an alias | **✅ checked** |
+
+**The display name is a decision, not a formality — settled 2026-08-20.** It is unauthenticated:
+SPF, DKIM and DMARC all act on the address and the domain and never on the name, so it changes
+freely and needs no re-verification. Three things shaped the choice:
+
+| Ruled out | Why |
+|---|---|
+| `Amplified Thinker` | Collides with the **Supabase sender name on `noreply@`**. A human reply and an automated password reset would look identical in the inbox, and the address is the part nobody reads |
+| `Amplified Thinker` (again) | Undercuts copy that is deliberately personal — *"It reaches a person, not a ticket queue"* (`privacy.html` §14), *"answered by the person who wrote them"* (`terms.html`). Same class of drift as the *"Never a newsletter"* problem |
+| `Sing Chen @ Amplified Thinker` | Works, but `@` is an RFC 5322 *special* needing quoting, **and a display name containing `@` is the classic spoofing shape** that some corporate gateways score. No gain over a hyphen, and this site's audience is specifically people behind corporate filters |
+
+⚠️ **Commas, `@` and parentheses are all specials and all require quoting**; Gmail adds it silently,
+so the trap is invisible until some other client renders it badly. `-` and `|` are valid atom
+characters and need no quoting at all, which is why the chosen name uses a hyphen.
+
+**Three senders, three visibly different names — and that is the rule, not an accident.** Asked on
+2026-08-20 whether `singchen@` should also become *Sing Chen - Amplified Thinker*, the answer was
+no, for the same reason `contact@` is not called *Amplified Thinker*:
+
+| Address | Display name | Purpose |
+|---|---|---|
+| `contact@` | `Sing Chen - Amplified Thinker` | The site's published address |
+| `singchen@` | `Sing Chen` | Personal correspondence, where site branding reads oddly |
+| `noreply@` | `Amplified Thinker` | Machine mail |
+
+⚠️ **The display name is the only part a recipient reliably sees.** Two identities sharing one name
+are indistinguishable in a thread, in a Sent folder and in someone else's inbox — the address, which
+is the only thing separating them, is the part nobody reads. If two senders do not need different
+names, that is evidence they did not need to be two senders.
 
 *Treat as an alias* checked means replies to mail sent to `contact@` go back out **as** `contact@`.
 Unchecked is the "sending on behalf of another person" case and is not what this is. Next Step.
@@ -259,6 +306,13 @@ alias:
 | DKIM | `pass`, `header.s=resend` |
 | DMARC | `pass` |
 
+⚠️ **Gmail threads the sent copy with the delivered one, and *Show original* on the wrong one proves
+nothing.** The sent copy begins `MIME-Version:` and has no `Received:`, `Authentication-Results:` or
+`DKIM-Signature:` at all — those are added by the *receiving* server, so a copy that never reached
+one cannot carry them. It still shows a correct `From:`, which is what makes it convincing. Open the
+inbox copy specifically — `in:inbox subject:"..."` — and confirm the dump starts `Delivered-To:`
+before reading anything else. Hit on 2026-08-20.
+
 ⚠️ **Two DKIM signatures will appear and only one of them counts.** The second is
 `d=amazonses.com`, Amazon signing its own outbound. It passes, it is not yours, and it cannot align
 with `header.from` — so a raw source will still show `dkim=pass` after a broken selector has taken
@@ -270,30 +324,86 @@ impossible rather than merely unlikely.
 
 **Tick as you go**
 
-- [ ] Send-as added, **Treat as an alias** checked
-- [ ] SMTP set to `smtp.resend.com` / `587` / `resend` / the stage 2 key / **TLS**
-- [ ] Confirmation code received and entered
-- [ ] Test sent to `singfenchen@gmail.com`, **Show original** read
-- [ ] `From:` is `contact@amplifiedthinker.com` with **no** "via" annotation
-- [ ] `smtp.mailfrom` is `…@send.amplifiedthinker.com`
-- [ ] `spf=pass` · `dkim=pass` with **`header.s=resend`** (not the amazonses signature) · `dmarc=pass`
-- [ ] Test sent to a non-Google mailbox and delivered
-- [ ] Default send-as address decided
+- [x] Send-as added, **Treat as an alias** checked — 2026-08-20, confirmed via *edit info*
+- [x] SMTP set to `smtp.resend.com` / `587` / `resend` / the stage 2 key / **TLS**
+      — proven by delivery: the message left `a3-28.smtp-out.eu-west-1.amazonses.com`, not Google
+- [x] Confirmation code received and entered — 2026-08-20, via the link rather than the code.
+      ⚠️ The message carries **two** near-identical URLs: `/mail/f-` confirms, `/mail/g-` **cancels**
+- [x] Test sent to `singfenchen@gmail.com`, **Show original** read — 2026-08-20
+- [x] `From:` is `contact@amplifiedthinker.com` with **no** "via" annotation
+- [x] `smtp.mailfrom` is `…@send.amplifiedthinker.com`
+- [x] `spf=pass` · `dkim=pass` with **`header.s=resend`** (not the amazonses signature) · `dmarc=pass`
+- [x] Test sent to a non-Google mailbox and delivered — 2026-08-20
+- [x] Default send-as address decided — `contact@` **is now the default**. ⚠️ Mail composed from
+      this account therefore leaves as `contact@` unless the identity is changed by hand, which is
+      the intended behaviour but is a change to every outbound message, not only site correspondence
+
+**Measured on the delivered message, 2026-08-20:**
+
+| | |
+|---|---|
+| `From:` | `Sing Chen <contact@amplifiedthinker.com>` — no "via" |
+| Sent by | `a3-28.smtp-out.eu-west-1.amazonses.com`, Message-ID rewritten to `…@eu-west-1.amazonses.com` |
+| `smtp.mailfrom` | `…@send.amplifiedthinker.com` |
+| SPF | `pass`, and **aligned** under `aspf=r` |
+| DKIM | `pass`, `header.i=@amplifiedthinker.com`, **`header.s=resend`** |
+| DKIM (second) | `pass`, `d=amazonses.com` — Amazon's own, cannot align, does not count |
+| DMARC | `pass`, `p=QUARANTINE`, `header.from=amplifiedthinker.com` |
+
+⚠️ **This alias is strictly more robust than the one it replaces.** DMARC passes here on **both**
+mechanisms independently; `singchen@` through Brevo passed on **DKIM alone**, because Brevo bounced
+from its own domain and SPF was never evaluated against this one. Stage 4 therefore removes a weaker
+identity than the one it leaves behind — the opposite of the usual migration risk.
 
 **Rollback:** delete the send-as entry. `singchen@` is untouched and still works; this stage adds an
 identity and removes none.
 
 ---
 
-## Stage 4 — Retire the `singchen@` send-as · Owner: Human, then Claude
+## Stage 4 — Move the `singchen@` send-as off Brevo · Owner: Human, then Claude
 
-**Only after stage 3 has been verified by a delivered message.** Deleting the working identity
-before the new one is proven leaves you with no outbound alias at all.
+**Revised 2026-08-20.** This stage originally *deleted* the `singchen@` send-as. It now **repoints**
+it at Resend instead. The address stops being a published contact route at stage 5, but it stays
+useful as a personal outbound identity — correspondence where `contact@` would read oddly — and
+keeping it costs one settings change rather than a new key, a new record or a new verification.
 
-**Gmail → Accounts and Import → "Send mail as:" → the `singchen@amplifiedthinker.com` row → delete.**
+⚠️ **Brevo is retired either way, which is the point.** Nothing about stage 7 changes: once this
+entry relays through Resend, Brevo's SMTP key and its four DNS records are doing nothing for anybody.
+Retiring the *vendor* never required retiring the *address*, and conflating the two is what made
+deletion look necessary.
 
-That is the entire human step. Brevo now relays nothing for anybody. Its DNS records are still
-published and the gate still passes 21/21 — because records resolving is all it can measure.
+**Only after stage 3 has been verified by a delivered message.** That is what makes this safe: the
+Resend path is already proven on `contact@`, so if the repoint misbehaves the fallback is to delete
+this entry rather than to debug it.
+
+**Gmail → Settings → Accounts and Import → "Send mail as:" → the `singchen@amplifiedthinker.com`
+row → edit info.** Step through to the SMTP screen and replace the Brevo block:
+
+| Field | Was | Becomes |
+|---|---|---|
+| SMTP Server | `smtp-relay.brevo.com` | `smtp.resend.com` |
+| Port | `587` | `587` |
+| Username | the Brevo login | `resend` |
+| Password | the Brevo SMTP key | the **same** `Gmail send-as` key from stage 2 |
+| Secured connection | TLS | TLS |
+
+**No re-verification.** Gmail verifies an *address*, and this one was verified in 2026; changing the
+relay underneath it does not re-open that. Expect no confirmation email, and treat one arriving as a
+sign the address field was edited by mistake.
+
+⚠️ **One key for two identities is deliberate here, and it is not the trap stage 2 warned about.**
+That warning was about sharing a credential between *Supabase* and Gmail, where rotating for one
+silently breaks the other and the failure is a dead password-reset flow. Both send-as entries live
+in the same Gmail account and fail together, visibly, for one person. A third key would add
+rotation surface for no isolation gain.
+
+**While you are in there: the entry reads "Not an alias."** It was created with *Treat as an alias*
+unchecked, so Gmail will not auto-select it when replying to mail addressed to `singchen@`. Check
+the box unless there is a reason not to — `contact@` is configured the other way, and having the two
+behave differently is a surprise waiting to happen.
+
+Brevo now relays nothing for anybody. Its DNS records are still published and the gate still passes
+21/21 — because records resolving is all it can measure.
 
 **Then, Claude:** the gate's Brevo section is now saying something untrue with a green tick beside
 it. [../scripts/verify-email-dns.mjs](../scripts/verify-email-dns.mjs) heads that block
@@ -323,17 +433,27 @@ reader either deletes them anyway or trusts a wrong explanation. Both are worse 
 **Tick as you go**
 
 - [ ] Stage 3 verified **by a delivered message** before starting this stage
-- [ ] `singchen@` send-as row deleted in Gmail
-- [ ] Claude: gate heading and comment reworded to *retained pending teardown*
-- [ ] Claude: [../supabase/README.md](../supabase/README.md) amended
-- [ ] Claude: [recovery.md](recovery.md) amended
-- [ ] `npm run verify:email` still **21/21** — the zone did not change
+- [x] `singchen@` send-as repointed to `smtp.resend.com` / `587` / `resend` / the stage 2 key / TLS
+      — 2026-08-20, both rows now read *Mail is sent through: smtp.resend.com*
+- [x] No confirmation email arrived (correct — the address was already verified)
+- [x] *Treat as an alias* now checked, matching `contact@` — the "Not an alias." line is gone
+- [x] `contact@` still the default send-as, unchanged — confirmed 2026-08-20
+- [x] **Test sent from `singchen@` and delivered**, `Show original` read:
+      `smtp.mailfrom` on `send.amplifiedthinker.com`, `dkim=pass header.s=resend`, `dmarc=pass`,
+      out via `a3-9.smtp-out.eu-west-1.amazonses.com`. Identical authentication to `contact@`
+- [x] Claude: gate heading and comment reworded to *retained pending teardown*
+- [x] Claude: [../supabase/README.md](../supabase/README.md) amended
+- [x] Claude: [recovery.md](recovery.md) amended
+- [x] `npm run verify:email` still **21/21, 1 warning** — the zone did not change
 
-**Rollback:** re-create the send-as entry with the Brevo SMTP settings from
-[../supabase/README.md](../supabase/README.md) — host `smtp-relay.brevo.com`, port 587, the SMTP key
-created 2026-07-06. ⚠️ **That key may already be dead**: Brevo expires a key after 90 consecutive
-days without a send, and the alias has been quiet. Treat this rollback as *probably* available
-rather than guaranteed, which is another reason not to reach stage 4 before stage 3 passes.
+**Rollback:** two routes, and the second is the real one.
+
+1. Restore the Brevo SMTP block — `smtp-relay.brevo.com`, port 587, the SMTP key created
+   2026-07-06. ⚠️ **That key may already be dead**: Brevo expires a key after 90 consecutive days
+   without a send, and this alias has been quiet. Treat it as *probably* available, not guaranteed.
+2. **Delete the entry.** `contact@` carries everything the site needs, so losing `singchen@` as an
+   outbound identity is an inconvenience rather than an outage. This is why the repoint is low
+   risk: the fallback does not depend on Brevo being reachable at all.
 
 ---
 
@@ -461,6 +581,19 @@ of the same family and it is Cloudflare's — Email Routing signs the mail it *f
 Deleting it breaks inbound, which is the one thing on this domain that has worked continuously since
 July.
 
+**That is now measured rather than asserted.** Gmail's send-as verification message, forwarded
+through `contact@` on 2026-08-20, arrived carrying:
+
+```
+dkim=pass header.i=@amplifiedthinker.com header.s=cf2024-1 header.b=dB8LC8EV
+Return-Path: <SRS0=kh8A=ng=google.com=gmail-noreply@amplifiedthinker.com>
+```
+
+Cloudflare signs each forwarded message **as this domain** with that selector, and SRS-rewrites the
+Return-Path into it so SPF survives the hop. Delete the record and every forwarded message loses a
+passing DKIM signature bearing your own domain — on mail you did not send and cannot inspect,
+under `p=quarantine`.
+
 **7b — the dangerous edit, separately.** The apex `TXT`:
 
 ```
@@ -526,5 +659,8 @@ more row in stage 1 is how it would get built wrong.
 **Nothing touches `noreply@` or the Supabase SMTP settings.** Auth mail works, was verified by
 delivery on all three send types, and has no reason to be in this change.
 
-**`singchen@` keeps its inbound route forever.** It is not a loose end left untied; it is the tied
-end.
+**`singchen@` is not being retired at all — only demoted.** It keeps its inbound route permanently,
+and from stage 4 it keeps a working outbound identity too, relaying through Resend like everything
+else. What it loses is its place *on the site*: stage 5 removes it from every published page, so it
+stops being the address strangers are told to use. It is not a loose end left untied; it is the
+tied end.

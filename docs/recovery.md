@@ -197,11 +197,15 @@ with the provider, and no script here can restore them:
 | Resend | **Supabase auth email** — from Phase 4 onward | Domain `amplifiedthinker.com`, region eu-west-1, Return-Path on `send`. API keys are shown once; a replacement is created and pasted into Supabase Auth → SMTP, nothing else uses it |
 | Brevo | **The Gmail "Send mail as" alias only** — it carried auth mail for four hours on 2026-08-17 and no longer does | Account "Amplified Thinker". The key created 2026-07-06 is what Gmail authenticates with; its value is not recoverable, and replacing it means updating Gmail → Settings → Accounts and Import |
 
-⚠️ **Brevo looks like a leftover and is not.** Auth mail moved to Resend, but `singchen@amplifiedthinker.com`
-still sends through `smtp-relay.brevo.com` and signs with the `brevo1`/`brevo2` DKIM records on the
-Cloudflare zone. Neither the Resend nor the Supabase dashboard shows that dependency. Cancelling the
-Brevo account, or deleting those DNS records, breaks the alias — and the symptom is "my email
-stopped working" with nothing pointing at the cause.
+⚠️ **Brevo is a leftover as of 2026-08-20, and nothing depends on it.** This paragraph previously
+said the opposite, correctly at the time: `singchen@amplifiedthinker.com` relayed through
+`smtp-relay.brevo.com` and signed with the `brevo1`/`brevo2` DKIM records. That alias was repointed
+at Resend, so **both** send-as identities now use `smtp.resend.com` and nothing signs with the Brevo
+selectors.
+
+The records and the account are **retained pending teardown**, which is stage 7 of
+[email-aliases-runbook.md](email-aliases-runbook.md), scheduled after a soak. A rebuild before that
+teardown does not need Brevo at all — skip it and continue.
 
 ⚠️ **DNS records are not backed up by anything.** Cloudflare keeps no history, so the only copy
 of the zone as it stood before Phase 4 is [email-dns-baseline.md](email-dns-baseline.md).
