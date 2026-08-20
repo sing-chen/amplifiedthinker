@@ -91,12 +91,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
                placeholder="you@example.com" />
         <!--
           Sits under the EMAIL field, not the name field, because that is what
-          it is a promise about. The negative half is the load-bearing half:
-          asking for a name and an address at sign-up reads as the first step of
-          a mailing list unless something says otherwise. Naming the two actual
-          emails makes the boundary checkable in a way "nothing else" never was.
-        -->
-        <!--
+          it is a promise about.
+
           ⚠️ THIS LINE WENT FROM TRUE TO FALSE ON 2026-08-20 and had to be
           rewritten. It used to read "Sign-up confirmation and password resets.
           Never a newsletter." — accurate right up until the account started
@@ -124,6 +120,43 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
                     aria-pressed="false" aria-label="Show password">Show</button>
           </div>
           <p class="auth-hint" id="auth-password-hint" hidden>At least 8 characters.</p>
+        </div>
+
+        <!--
+          ── Consent to site-update email ────────────────────────────────
+          ⚠️ THE ONE TICKBOX ON THIS FORM, AND IT REVERSES AN EARLIER ARGUMENT
+          ON PURPOSE. The terms and privacy links below the button carry a
+          comment saying no consent checkbox belongs here, because "nothing here
+          is optional processing". That was right, and this is the exception it
+          implies: update email IS optional processing, so it is the one thing
+          that genuinely needs an affirmative act.
+
+          Four properties, none of them cosmetic — this is what makes the
+          consent valid under Article 7 and PECR reg 22:
+
+            1. UNTICKED, and never pre-ticked. A pre-ticked box is not consent.
+               There is no `checked` attribute here and none may be added.
+            2. Separate from the terms line. Bundling consent into "by signing
+               up you agree…" makes it a condition of the service, which is
+               exactly what Article 7(4) says it must not be.
+            3. Specific about what arrives, so the reader knows what they are
+               agreeing to rather than agreeing to "updates".
+            4. Refusable at no cost — the account works identically either way,
+               and the hint says so.
+
+          It is INSIDE the form but outside `auth-name-row`, and toggled by
+          setMode() like the other sign-up-only fields. On the sign-in and reset
+          forms there is nothing to consent to.
+        -->
+        <div class="auth-check" id="auth-updates-row" hidden>
+          <label class="auth-check-label" for="auth-updates">
+            <input type="checkbox" id="auth-updates" />
+            <span>Email me when new skills or features are added</span>
+          </label>
+          <p class="auth-hint auth-check-hint">
+            Occasional, about this site only, and you can stop it at any time
+            from your account. Leaving it unticked changes nothing else.
+          </p>
         </div>
 
         <div id="auth-turnstile" class="auth-turnstile"></div>
@@ -752,6 +785,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         // one they just asked for.
         el('auth-email-promise').hidden = !isSignup;
 
+        // Sign-up only, and reset to unticked whenever the form changes mode.
+        // ⚠️ The reset is the load-bearing half: without it, ticking the box,
+        // switching to sign-in and back would leave it ticked from a decision
+        // taken about a different form state. Consent has to be the answer to
+        // the question actually on screen.
+        el('auth-updates-row').hidden = !isSignup;
+        if (!isSignup) el('auth-updates').checked = false;
+
         // Same reasoning, and the same toggle: the terms and privacy links are
         // for the person deciding to create an account, not for someone signing
         // back into one they already agreed to.
@@ -826,6 +867,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         var email = el('auth-email').value.trim();
         var password = el('auth-password').value;
         var name = el('auth-name').value.trim();
+        // Read at submit rather than held in a variable, so what is sent is
+        // exactly what the box showed at the moment the button was pressed.
+        var wantsUpdates = el('auth-updates').checked;
 
         if (mode === 'signup' && !name) {
           setStatus('Enter a first name, so your emails are not addressed to nobody.', 'bad');
@@ -864,7 +908,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           }
 
           return mode === 'forgot' ? auth.resetPassword(email, token)
-               : mode === 'signup' ? auth.signUp(email, password, token, name)
+               : mode === 'signup' ? auth.signUp(email, password, token, name, wantsUpdates)
                :                     auth.signIn(email, password, token);
         }).then(function (r) {
           if (!r) return;

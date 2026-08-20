@@ -193,10 +193,19 @@
   //
   // It is also what makes the auth emails addressable: Supabase templates read
   // the same metadata as {{ .Data.display_name }}.
-  function signUp(email, password, captchaToken, displayName) {
+  // `wantsUpdates` is consent to site-update email, and it is sent as a real
+  // boolean ALWAYS — including when it is false.
+  //
+  // ⚠️ Do not "tidy" this into the `if (displayName)` shape above. Omitting the
+  // key when unticked and sending it when ticked would look equivalent, and is
+  // not: handle_new_user() stamps `updates_consent_at` on the key's PRESENCE,
+  // so an omitted key means "never asked" while `false` means "asked, and
+  // declined". A declined answer is a record worth keeping — it is the evidence
+  // that the box was not pre-ticked.
+  function signUp(email, password, captchaToken, displayName, wantsUpdates) {
     if (!client) return fail('Sign-up is unavailable on this page right now.');
 
-    var data = {};
+    var data = { wants_updates: Boolean(wantsUpdates) };
     if (displayName) data.display_name = String(displayName).slice(0, 60);
 
     return client.auth.signUp({
@@ -346,6 +355,53 @@
       .catch(function () { return false; });
   }
 
+  // ---- site-update email consent -----------------------------------------
+  //
+  // Read from and written to `profiles`, NOT to `raw_user_meta_data`. Sign-up
+  // uses the metadata route because there is no profile row yet at that point —
+  // handle_new_user() copies the answer across — but once the row exists,
+  // profiles is the single place that holds it. Writing both would give two
+  // stores that disagree the first time one write fails, and the trigger only
+  // reads metadata on INSERT, so a later metadata change would never arrive.
+  //
+  // ⚠️ Deliberately NOT cached, unlike isAdmin(). This value is one the reader
+  // just changed and expects to see reflected; a stale cache on a consent
+  // control is the kind of bug that has someone convinced they unsubscribed
+  // when they did not.
+
+  function getUpdatePreference() {
+    if (!client || !session) return Promise.resolve({ error: null, wantsUpdates: false });
+
+    return client
+      .from('profiles')
+      .select('wants_updates')
+      .eq('id', session.user.id)
+      .maybeSingle()
+      .then(function (r) {
+        if (r.error) return { error: r.error, wantsUpdates: false };
+        return { error: null, wantsUpdates: Boolean(r.data && r.data.wants_updates) };
+      })
+      .catch(function (e) {
+        return { error: { message: e && e.message ? e.message : 'Could not reach the server.' }, wantsUpdates: false };
+      });
+  }
+
+  // Only the boolean is sent. `updates_consent_at` is maintained by a database
+  // trigger, because a consent record the data subject can set themselves is
+  // not evidence of anything.
+  function setUpdatePreference(wantsUpdates) {
+    if (!client || !session) return Promise.resolve({ error: { message: 'You are not signed in.' } });
+
+    return client
+      .from('profiles')
+      .update({ wants_updates: Boolean(wantsUpdates) })
+      .eq('id', session.user.id)
+      .then(function (r) { return { error: r.error || null }; })
+      .catch(function (e) {
+        return { error: { message: e && e.message ? e.message : 'Could not reach the server.' } };
+      });
+  }
+
   // ---- lifecycle ---------------------------------------------------------
 
   function onAuthChange(fn) {
@@ -399,6 +455,8 @@
 
     onAuthChange: onAuthChange,
     isAdmin: isAdmin,
+    getUpdatePreference: getUpdatePreference,
+    setUpdatePreference: setUpdatePreference,
 
     signUp: signUp,
     signIn: signIn,

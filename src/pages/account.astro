@@ -110,6 +110,34 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <p class="auth-status" id="acct-notice" role="status" aria-live="polite"></p>
 
         <!--
+          ── Withdrawing or giving consent to site-update email ──────────
+          The route privacy.html §8 promises, and it has to be at least as easy
+          to use as the sign-up checkbox was — Article 7(3): withdrawing consent
+          must be as easy as giving it. So: same control, one click, no
+          confirmation step, and no "are you sure?".
+
+          ⚠️ NOT INSIDE A DISCLOSURE, unlike change-password and delete. Those
+          are collapsed because they are destructive and rarely wanted. This is
+          the opposite: someone arriving to stop the email must be able to see
+          the control without first working out which heading hides it. A
+          withdrawal route you have to hunt for is not as easy as the tickbox.
+
+          Starts `hidden` and is revealed once the current value is known.
+          Painting an unchecked box before the answer arrives would show every
+          subscriber, for a moment, that they are not subscribed.
+        -->
+        <div class="auth-check" id="acct-updates-row" hidden>
+          <label class="auth-check-label" for="acct-updates">
+            <input type="checkbox" id="acct-updates" />
+            <span>Email me when new skills or features are added</span>
+          </label>
+          <p class="auth-hint auth-check-hint" id="acct-updates-hint">
+            Occasional, about this site only. Turning this off never affects
+            your sign-in confirmation or a password reset.
+          </p>
+        </div>
+
+        <!--
           The standing answer to "what do you actually have on me?", parked next
           to the delete button rather than only in the footer. Someone who has
           come here to check on their account is the one person most likely to
@@ -650,8 +678,62 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           el('acct-since').textContent = formatDate(session.user.created_at);
 
           show('in');
+          loadUpdatePreference(auth);
         });
       }
+
+      // ---- site-update email preference ------------------------------------
+      //
+      // Reads the stored value, then reveals the control. Never the other way
+      // round: an unchecked box painted before the answer arrives tells every
+      // subscriber, briefly, that they are not subscribed — on the one control
+      // where being wrong about the current state is the whole failure mode.
+      //
+      // A read failure leaves the row hidden rather than showing a guess. The
+      // account still works; the reader simply does not get a control that
+      // might be lying, and the address in the privacy notice still reaches a
+      // person who can change it by hand.
+      function loadUpdatePreference(auth) {
+        if (!auth.getUpdatePreference) return;
+
+        auth.getUpdatePreference().then(function (r) {
+          if (r.error) return;
+          el('acct-updates').checked = r.wantsUpdates;
+          el('acct-updates-row').hidden = false;
+        });
+      }
+
+      // ⚠️ OPTIMISTIC, AND IT REVERTS ON FAILURE. The box moves the moment it
+      // is clicked because that is what a checkbox does, but if the write fails
+      // it is put back — a control left showing "off" against a row that still
+      // says "on" is a reader who believes they have unsubscribed and has not.
+      //
+      // Disabled while in flight so a fast double-click cannot queue two writes
+      // whose order decides the stored value.
+      el('acct-updates').addEventListener('change', function () {
+        var auth = window.AmplifiedAuth;
+        var box = el('acct-updates');
+        var wanted = box.checked;
+        var hint = el('acct-updates-hint');
+        var restore = hint.textContent;
+
+        if (!auth || !auth.setUpdatePreference) { box.checked = !wanted; return; }
+
+        box.disabled = true;
+        auth.setUpdatePreference(wanted).then(function (r) {
+          box.disabled = false;
+          if (r.error) {
+            box.checked = !wanted;
+            hint.textContent = 'That did not save. Check your connection and try again.';
+            setTimeout(function () { hint.textContent = restore; }, 6000);
+            return;
+          }
+          hint.textContent = wanted
+            ? 'Saved. You will hear when something new lands.'
+            : 'Saved. No update email will be sent.';
+          setTimeout(function () { hint.textContent = restore; }, 6000);
+        });
+      });
 
       start();
     })();

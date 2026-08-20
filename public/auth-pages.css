@@ -138,6 +138,47 @@
 .auth-pw-toggle:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 1px; }
 
 .auth-hint { font-size: 12px; color: var(--fg-2); margin: -12px 0 var(--space-4); }
+
+/* ── Consent checkbox ──────────────────────────────────────────────────────
+   Used by the sign-up form on /sign-in/ and the preference toggle on
+   /account/. One implementation because the two must look and behave
+   identically: someone who ticks a box at sign-up and later finds a different
+   looking control on their account has to work out whether it is the same
+   setting.
+
+   ⚠️ THE CHECKBOX ITSELF IS NOT RESTYLED, and that is deliberate. A custom
+   control here would mean owning the indeterminate state, the focus ring, the
+   forced-colors rendering and the platform's own "checked" affordance — on the
+   one control in the site whose entire job is to be an unambiguous record of
+   what someone chose. `accent-color` tints the native control and leaves all of
+   that alone. */
+.auth-check { margin: calc(var(--space-4) * -1) 0 var(--space-4); }
+
+.auth-check-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--fg-1);
+}
+
+.auth-check-label input[type="checkbox"] {
+  accent-color: var(--fg-brand);
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* The hint carries the negative margin that pulls other hints under their
+   field. Here the label directly above is not a field, so it would pull the
+   text into the label. */
+.auth-check-hint { margin: var(--space-2) 0 0 calc(16px + var(--space-3)); }
+
+.auth-check[hidden] { display: none; }
 .auth-blocked { color: var(--status-error-text); margin-top: var(--space-2); }
 .auth-blocked a { color: var(--status-error-text); }
 
