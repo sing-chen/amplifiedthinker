@@ -152,16 +152,28 @@
    one control in the site whose entire job is to be an unambiguous record of
    what someone chose. `accent-color` tints the native control and leaves all of
    that alone. */
-.auth-check { margin: calc(var(--space-4) * -1) 0 var(--space-4); }
+/* Sits after a field whose hint already carries `margin-bottom: space-4`, and
+   needs visible separation from it rather than none — this is a different
+   question being asked, not more detail about the password. */
+.auth-check { margin: var(--space-5) 0 var(--space-4); }
 
-.auth-check-label {
+/* ⚠️ `.auth-panel` IS PART OF THIS SELECTOR AND MUST STAY.
+   `.auth-panel label { display: block }` above is (0,1,1); a bare
+   `.auth-check-label` is (0,1,0) and LOSES, which stacks the box above its
+   text instead of beside it. Shipped that way once. The same rule is also why
+   font-weight and margin-bottom are reset here rather than left to inherit:
+   it sets 600 and a bottom margin for field labels, and a checkbox label is
+   not a field label. */
+.auth-panel .auth-check-label {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
   cursor: pointer;
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.5;
   color: var(--fg-1);
+  margin-bottom: 0;
 }
 
 .auth-check-label input[type="checkbox"] {
@@ -179,6 +191,14 @@
 .auth-check-hint { margin: var(--space-2) 0 0 calc(16px + var(--space-3)); }
 
 .auth-check[hidden] { display: none; }
+
+/* ⚠️ THE ONE HINT THAT SITS BELOW A BUTTON, NOT BELOW A FIELD.
+   `.auth-hint` carries `margin-top: -12px` to tuck a hint under the input it
+   describes. Applied to the terms-and-privacy line, which follows the submit
+   button, that -12px pulled the text UP ONTO the button and rendered the two
+   on top of each other. Reset explicitly rather than by dropping .auth-hint,
+   because everything else about the hint — size, colour — is still wanted. */
+#auth-legal { margin: var(--space-4) 0 0; }
 .auth-blocked { color: var(--status-error-text); margin-top: var(--space-2); }
 .auth-blocked a { color: var(--status-error-text); }
 
