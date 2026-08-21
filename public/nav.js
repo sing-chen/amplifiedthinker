@@ -576,10 +576,79 @@
   function returnParam() {
     try {
       if (pageNeedsAuth()) return '';
-      var here = window.location.pathname + window.location.search + window.location.hash;
+
+      /* ⚠️ A LEFTOVER MARKER IS NOT A REAL ANCHOR. `#at=1240` is ours, and it
+         can still be in the address bar — restoreScroll leaves it alone on the
+         skill pages, and anyone can type one. Treating it as the reader's own
+         anchor would carry a stale offset forward for ever, and on a skill page
+         it would smuggle a marker onto a page that deliberately has none.
+         Ours is discarded; a genuine anchor still wins over a fresh offset. */
+      var hash = window.location.hash || '';
+      if (/^#at=\d+$/.test(hash)) hash = '';
+
+      var here = window.location.pathname + window.location.search +
+                 (hash || scrollMark());
       if (!here || here.charAt(0) !== '/') return '';
       return '?next=' + encodeURIComponent(here);
     } catch (e) { return ''; }
+  }
+
+  /* How far down the page the reader was, as a synthetic fragment — `#at=1240`.
+     Carried inside `next`, so it needs no new URL parameter and no new device
+     storage: a hash is already part of what safeNext() validates on the way
+     back, and adding a sessionStorage key would mean changing privacy.html,
+     which names every key this site sets.
+
+     ⚠️ NOT ON THE SKILL PAGES. Plans and primers already restore position from
+     skill_progress and show the "Welcome back" banner, and that mechanism is
+     strictly better than a pixel offset — it knows which SECTION the reader was
+     in, not merely how far down. Two restores would race, and this session
+     already spent real time stopping that banner asking twice.
+
+     ⚠️ A REAL HASH ALWAYS WINS. If the page already has one, the reader
+     navigated to an anchor and that is a better description of where they are
+     than any offset. Hence the `||` above rather than appending both.
+
+     ⚠️ It is APPROXIMATE BY NATURE and that is accepted, not overlooked.
+     Signing in adds the summary strip and the rings on Future Skills, so the
+     content the offset was measured against moves down by roughly 60-80px. It
+     lands near, not exactly — which is still far better than the top. */
+  function scrollMark() {
+    if (activePage === 'skill') return '';
+    var y = Math.round(window.pageYOffset || document.documentElement.scrollTop || 0);
+    // Below this it is indistinguishable from the top and not worth the noise
+    // in the address bar.
+    if (!isFinite(y) || y < 80) return '';
+    return '#at=' + y;
+  }
+
+  /* The other half: land, scroll, and clean up after ourselves. */
+  function restoreScroll() {
+    try {
+      if (activePage === 'skill') return;
+      var m = /^#at=(\d+)$/.exec(window.location.hash || '');
+      if (!m) return;
+
+      var y = parseInt(m[1], 10);
+      if (!isFinite(y) || y <= 0) return;
+
+      // ⚠️ Strip the marker BEFORE scrolling, and with replaceState so it does
+      // not become a history entry. Left in place it would survive a reload,
+      // re-scrolling a reader who had deliberately gone back to the top, and it
+      // would be carried into anything they bookmarked or shared.
+      window.history.replaceState(
+        window.history.state,
+        '',
+        window.location.pathname + window.location.search
+      );
+
+      // Next frame: the personal layer paints after this and changes the
+      // document height, so scrolling immediately can clamp against a page that
+      // is still short. This does not chase the layout — one honest attempt.
+      window.requestAnimationFrame(function () {
+        window.scrollTo(0, y);
+      });
+    } catch (e) { /* a failed restore is not worth breaking the nav over */ }
   }
 
   // Paints the slot before any network request. auth.js re-renders the same
@@ -798,6 +867,10 @@
     // Last, and never before the nav exists: auth is additive to a nav that
     // must work identically without it.
     setupAuth();
+
+    // After setupAuth, so the auth stack is already being fetched — the scroll
+    // is restored while it loads rather than after it.
+    restoreScroll();
   }
 
   if (document.body) {

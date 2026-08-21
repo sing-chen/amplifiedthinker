@@ -56,6 +56,12 @@ const cases = [
   ['/future-skills.html', '/future-skills.html', 'ordinary page'],
   ['/skills/analytical-thinking/plan.html#summary', '/skills/analytical-thinking/plan.html#summary', 'path with hash'],
   ['/news.html?q=ai', '/news.html?q=ai', 'path with query'],
+  // The scroll marker rides inside `next` as a synthetic fragment. It must
+  // survive validation untouched, or the reader lands at the top of the page.
+  ['/future-skills.html#at=1240', '/future-skills.html#at=1240', 'scroll marker preserved'],
+  // Junk in the marker is harmless: nav.js only acts on /^#at=(\d+)$/, so this
+  // is carried through and then ignored rather than being executed.
+  ['/future-skills.html#at=<script>', '/future-skills.html#at=%3Cscript%3E', 'marker junk is inert'],
   [null, null, 'absent'],
   ['', null, 'empty'],
 
