@@ -193,6 +193,29 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   component that sets `display` **and** gets toggled needs an explicit override; `auth-pages.css` and
   `why-sign-up.html` each carry one. ⚠️ **Assert computed `display`, never `element.hidden`** — the
   property was correct in both defects, which is exactly why the tests passed.
+- ⚠️ **Test what the nav RENDERED, never the function that renders it.** Two defects in one
+  afternoon, 2026-08-21, both in the sign-in `?next=` work, both passing every check at the time:
+  1. `?next=` was wired into `nav.js`'s `paintAuthSlot` but not `auth.js`'s `renderNavAuth`. **Two
+     files paint that one control** — nav.js only pre-paints, and `auth.js` owns the slot from the
+     moment the stack loads. So it worked for a guest who had never signed in and for nobody else,
+     which is the audience least likely to report it. `auth.js` already warns about this drift eight
+     lines below the bug, where it takes the avatar letter from nav.js rather than deriving it twice.
+  2. The scroll marker was computed **when the nav painted** — page load, offset 0 — so it was always
+     absent by the time anyone scrolled and clicked. The `href` is an attribute frozen at paint;
+     `returnParam()` recomputes on every call.
+
+  **Both survived testing for the same reason: the function was called directly instead of the
+  rendered result being read.** `returnParam()` returned the right string every time while the
+  `href` never changed. So scroll, or change session state, **then read `el.getAttribute('href')`** —
+  a test that calls the function proves only that the function works, which was never in doubt. Same
+  category as the `[hidden]` entry above: assert the rendered outcome, not the input that should have
+  produced it.
+- **Anything derived from volatile state must be refreshed at ACTIVATION, not at paint.** Scroll
+  position, viewport, time — a nav control painted once at load carries whatever those were at load,
+  for ever. `refreshSignInHref` rebuilds the href on `mousedown`/`touchstart`/`keydown` in the
+  capture phase, ⚠️ **not on `click`**: middle-click and ctrl-click never fire one, and by `click`
+  the navigation is already committed. Delegated on `document`, so it survives both `auth.js`
+  repainting the slot and the primer bundle wiping the nav.
 - **A `<footer>` must carry `class="site-footer"` or it renders unstyled, and nothing fails.** The
   footer rules live once in `public/styles.css` (de-duplicated 2026-08-21 from ten copies). They are
   deliberately **not** a bare `footer` element selector, because `search.html`'s
