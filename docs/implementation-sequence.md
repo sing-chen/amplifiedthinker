@@ -234,11 +234,21 @@ stack for a session-less visitor only on an allowlist of paths — `/sign-in` an
 out" from "something broke". ⚠️ **Any new surface that renders a signed-out state has to be added
 to `pageNeedsAuth()`**, and there is a comment there saying so now.
 
-**Still unverified at merge, and only a human can close it:** that the sweep, the column growth and
-the count-up actually *play* on scroll, and that `/learning/` and the library agree for a real
-signed-in account. Everything structural about the animations was verified — classes attach,
-animation names and durations resolve, final values are correct even when the frame loop never runs
-— but nothing was ever seen moving.
+**Unverifiable at merge, and closed by hand the same day.** Two things could not be checked from
+here: that the sweep, the column growth and the count-up actually *play* on scroll, and that
+`/learning/` and the library agree for a real signed-in account. Everything structural about the
+animations was verified — classes attach, animation names and durations resolve, final values are
+correct even when the frame loop never runs — but nothing was ever seen moving.
+
+✅ **Both confirmed on production by the owner, 2026-08-21.** The scroll-triggered animations play
+as intended. And the completion rule was exercised on the shape that caused the original defect:
+Creative Thinking with **two** sections read, then marked complete — both surfaces went to a full
+ring and a tick together. That is the `done ? 100 : percent` rule agreeing across two pages on one
+row, which is the specific thing that was broken.
+
+⚠️ **It took a person pressing a button to close either of them**, and that is the standing cost of
+having no seeded account: the two highest-risk properties of this phase were, in the end, checked by
+eye. The fixture note above is not softened by this having gone well.
 
 ---
 
