@@ -1304,6 +1304,48 @@ the job goes red in an inbox, the database pauses a week later, and the first an
 **sign-in stops working on the live site**. Low urgency, but the consequence is larger than the one
 this entry was originally written about.
 
+### Prune the merged local branches — and decide the rule, not just this batch
+**Status:** Housekeeping · Not started · Raised 2026-08-21 after the catalogue merge
+**Relates to:** local git state only, plus two branches on `origin`
+
+Six local branches are merged into `main` and doing nothing. Verified with
+`git branch --merged main` on 2026-08-21, and **`git branch --no-merged main` returned empty**,
+so nothing unmerged is at risk in this batch:
+
+| Branch | On `origin`? |
+|---|---|
+| `feat/auth` | ⚠️ yes |
+| `feat/completion-control` | no |
+| `feat/legal-pages` | ⚠️ yes |
+| `feat/point-release` | no |
+| `feat/skills-catalogue` | no |
+| `fix/settle-coverage` | no |
+
+**The two halves are not the same decision.** `git branch -d` on a merged local branch is close to
+free — the commits are reachable from `main`, so nothing is lost and the branch can be recreated
+from any of them. Deleting `origin/feat/auth` and `origin/feat/legal-pages` is the less reversible
+half and worth doing deliberately, if at all.
+
+⚠️ **Use `-d`, never `-D`.** The capital form skips the merged check, which is the only thing
+standing between this task and deleting something that was not merged after all. `test/catalogue-gate`
+was removed with `-D` on 2026-08-21 **because it was deliberately broken and must never be merged** —
+that is the exception the rule exists for, not a precedent.
+
+**The more useful output is a rule.** This project is solo, branches per phase, and merges with
+`--no-ff` — so the merge commit is the durable record and a branch pointer adds nothing once it is
+in. The candidate rule is *delete the local branch in the same sitting as the merge*, which stops
+this list existing rather than periodically clearing it. Worth adopting into the working agreements
+in [CLAUDE.md](CLAUDE.md) if it holds up.
+
+⚠️ **`main` is not the only thing these pointers protect.** Vercel builds a preview per branch and
+names the URL from the branch, so a deleted branch takes its preview with it. Nothing links to those
+previews, and they are auth-walled anyway — recorded so it is a known consequence rather than a
+surprise the first time a bookmarked preview 404s.
+
+**Sequence it with any other one-pass housekeeping** — the footer CSS de-duplication and the
+`.resume-banner*` consolidation below are both "open every file once" jobs, and this one costs
+nothing to do alongside them.
+
 ### Align `node-version` across the two workflows
 **Status:** Idea · Not started · Noticed 2026-08-19 during Phase 5
 **Relates to:** [.github/workflows/keepalive.yml](.github/workflows/keepalive.yml),
