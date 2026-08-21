@@ -471,6 +471,40 @@ divergence, recorded here so it is a decision rather than a surprise.
 **Do this before any percentage goes on screen.** Otherwise the first thing the feature does is publish
 a number that is already wrong.
 
+#### ⚠️ `started_at` and `completed_at` come from different clocks — clamp any duration at zero
+Observed 2026-08-20 in the first real run of `npm run verify:completion`, against dev:
+
+```
+completed_at is set   2026-08-20T21:48:28.638
+started_at defaulted  2026-08-20T21:48:32.712
+```
+
+**Four seconds of completion before the start.** Both values landed in the same insert, and they
+disagree because they are generated in different places: `completed_at` is written by the client
+(`new Date().toISOString()` in `setComplete`), while `started_at` is the column's own
+`default now()` on the Postgres server. Any skew between a reader's device clock and Supabase's
+shows up as a gap, in either direction.
+
+**It only occurs in the case the upsert exists to handle** — pressing *I've completed this* before
+any scroll has created the row. A reader who works through a plan normally creates the row by
+scrolling, so `started_at` lands first and the ordering is natural. But when it does happen the row
+says somebody finished before they began.
+
+⚠️ **Whoever builds a "time to complete" figure will get a negative number, and it will look like
+their arithmetic.** It is not; it is two clocks.
+
+**Do not fix it in the database.** The obvious repairs are worse than the problem: sending
+`started_at` alongside the completion would reset it on every press, since the upsert merges; and
+moving `completed_at` to a server clock means an RPC or a trigger, which is a lot of machinery for
+a cosmetic ordering nicety.
+
+**Do this instead, wherever a duration is displayed:**
+
+- Clamp at zero. A negative interval renders as "same day" or "under a minute", never as a minus.
+- Never assume `completed_at >= started_at` when sorting or filtering.
+- Treat `updated_at` as the reliable server-side clock — it is set by the `set_updated_at` trigger
+  and never by a client.
+
 #### ✅ Explore Further does not count toward completion — decided 2026-08-20
 It is the last section on all five plans (14 of 14, or 15 of 15 on critical-thinking), labelled
 **"Explore Further"**. It is reference material presented as an additional resource, so it is not part
