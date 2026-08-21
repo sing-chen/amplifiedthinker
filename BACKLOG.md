@@ -1388,6 +1388,36 @@ the first thing to check when the alias stops working and nothing was changed.
 
 ## Accessibility / Performance
 
+### `.resume-banner-btn.dismiss` fails AA — 3.87:1 on its own banner
+**Status:** Defect · **Pre-existing, measured 2026-08-20** while building the start-over
+confirmation · **Relates to:** the ten `public/skills/*/{plan,primer}.html`
+
+The banner's quiet button renders its label at **50% white** on the charcoal panel, which
+composites to **3.87:1** at 12px — under the 4.5:1 AA threshold for normal text. It is the
+styling behind the **"Start over"** button that has shipped on all ten skill pages since the
+banner existed.
+
+**It has been worked around once, deliberately and narrowly.** The start-over confirmation reuses
+`.dismiss` for its *"Yes, start over"* button and lifts that one label inline to 7.4:1 — because
+inheriting a sub-AA colour for a **destructive confirmation** is where it stops being tolerable.
+⚠️ That inline colour is a patch on one button, not a fix: the original *"Start over"* button
+beside it is still at 3.87.
+
+**Why it needs its own job.** The rule lives in each page's own `<style>`, so correcting it means
+editing ten hand-written stylesheets — the exact shape of change this project keeps learning to do
+once rather than ten times. Options, none chosen:
+
+- Raise the label's alpha in all ten stylesheets. Smallest change, ten files.
+- Move `.resume-banner*` into `styles.css`, which all 19 pages already load, and delete the ten
+  copies. Bigger, but it is the version that cannot drift again.
+- Have `progress.js` inject a correction, as it already does for the completion control. Cheapest,
+  and the least honest — the stylesheet would still be wrong and something else would be quietly
+  compensating.
+
+⚠️ **Measure the composite, not the declared colour.** The failure is invisible in the source: the
+rule says `rgba(255,255,255,.5)`, which looks like a deliberate de-emphasis rather than a number
+below a threshold. It only shows up once composited against the banner it sits on.
+
 ### ⚠️ Primer slides scroll inside themselves, with nothing to say so
 **Status:** Defect · **Pre-existing, found 2026-08-20** while measuring space for the completion
 control — not caused by it · **Relates to:** the five `public/skills/*/primer.html`
