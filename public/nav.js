@@ -778,7 +778,12 @@
     depth: depth,
     peekSession: peekSession,
     initialFor: initialFor,
-    labelFor: labelFor
+    labelFor: labelFor,
+    // ⚠️ Exported because auth.js REPAINTS THIS SLOT and would otherwise build
+    // the sign-in link without it. Same rule as initialFor/labelFor above: the
+    // two files paint the same control, so anything about it is defined once
+    // here and read there.
+    returnParam: returnParam
   };
 
   /* ── Entry point ─────────────────────────────────────────────────────── */

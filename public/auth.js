@@ -105,8 +105,16 @@
     if (!ready) return;
 
     if (!session) {
+      /* ⚠️ `?next=` COMES FROM nav.js, and forgetting it here is what broke the
+         return-to-page feature on its first outing. THIS function owns the slot
+         from the moment the library loads, so nav.js's version of the link is
+         only ever the pre-paint — every link a signed-out reader actually
+         clicks after the stack has loaded is built right here.
+         Same rule as the avatar letter below: the two files paint one control,
+         so anything about it is defined once in nav.js and read from here. */
+      var next = n.returnParam ? n.returnParam() : '';
       slot.innerHTML =
-        '<a class="snav-auth-signin" href="' + n.root('sign-in/') + '">Sign in</a>';
+        '<a class="snav-auth-signin" href="' + n.root('sign-in/') + next + '">Sign in</a>';
       return;
     }
 
