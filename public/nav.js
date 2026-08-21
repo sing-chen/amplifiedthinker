@@ -536,8 +536,14 @@
 
   // The sign-in and account pages need the library whatever the session says:
   // one is how you get a session, the other is how you change it.
+  // Pages that must load the auth stack even for a visitor with no stored
+  // session, because they have something to say to a guest. Without this the
+  // stack never arrives, `window.AmplifiedAuth` never appears, and the page
+  // cannot tell "signed out" from "something broke" — /learning/ showed its
+  // read-failure panel to every guest until it was added here (2026-08-21).
+  // ⚠️ Any new surface that renders a signed-out state belongs in this list.
   function pageNeedsAuth() {
-    return /\/(sign-in|account)(\/|$)/i.test(pathname);
+    return /\/(sign-in|account|learning)(\/|$)/i.test(pathname);
   }
 
   function escapeHtml(s) {

@@ -370,11 +370,26 @@ Migrate the 21 date groups / 69 stories from [news.json](../news.json), generati
 
 Public blog index and posts, rendered from the DB on request so publishing is instant. Categories and most-recent ordering. Sitemap and search index pick posts up automatically from the Phase 6 endpoints.
 
-### Phase 9 — Dashboards
+### Phase 9 — Your learning
 
 **Impact:** 🟢 New (visitor) · ⚪ None (admin) — **announce.**
 
-Progress and completion visuals over `skill_progress`. A charting library, vendored or imported through Astro.
+Progress and completion visuals over `skill_progress`.
+
+**Built 2026-08-21, and three things about it differ from this plan.**
+
+- **It is `/learning/`, not `/dashboard/`, and it is called "Your learning".** "Dashboard" was the
+  working title; "Your progress" was rejected late because progress is meaningless without saying
+  *of what*, and the site will not stay five skills for ever. Reached from the avatar menu — no
+  top-nav entry, since it is signed-in only.
+- **No charting library.** Every chart is hand-written SVG and CSS over the same tokens as the rest
+  of the site: two arc rings, a stacked donut and five stacked columns. A vendored library would
+  have been more code shipped to every reader of one page, and none of these needed it.
+- ⚠️ **Three modules from the design were cut for lack of data, not effort** — sections read per
+  week, an activity heatmap, and self-rated confidence. `skill_progress` holds one `updated_at` per
+  row and no per-section timestamp, so no time series is derivable at all, and nothing anywhere
+  captures a confidence rating. Building any of them needs an events table first, and it starts
+  empty. See [dashboard-design-brief.md](dashboard-design-brief.md) §3.
 
 **Deferred:** leaderboards. The model supports them later — `profiles.display_name` plus a `security definer` function — but there's nothing meaningful to rank yet. The only scoreable artifact is a 5-question knowledge check with a visible answer-reveal button.
 

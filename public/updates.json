@@ -1,6 +1,10 @@
 [
     {
         "date": "2026-08-21",
+        "html": "<a href=\"learning/\">Your learning</a> is a new page showing how far you are through each skill, with the primer and the plan tracked separately, what you have finished, and what you have not opened yet. Find it in the menu under your avatar, or from the top of the <a href=\"future-skills.html#the-library\">Future Skills library</a>."
+    },
+    {
+        "date": "2026-08-21",
         "html": "Every primer and plan now ends with a control to mark it complete — nothing is inferred from how far you scrolled, so it only counts when you say so. Completed items show the date in the sidebar, and you can undo it whenever you like."
     },
     {

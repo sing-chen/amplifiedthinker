@@ -1,0 +1,227 @@
+---
+// Learning learning — how far the signed-in reader has got with each skill.
+//
+// Its own route rather than a tab inside /account/, decided 2026-08-21: it needs
+// a URL. why-sign-up.html sells this page, the avatar menu links to it, and a
+// tab inside another page can be neither linked to nor bookmarked. /account/ is
+// unchanged by this.
+//
+// Reached from the avatar dropdown in auth.js — NOT from the top nav. It is for
+// signed-in readers only, and a sixth nav item that does nothing for a guest is
+// worse than a menu entry that appears when it applies.
+//
+// All the logic is in public/learning.js, and all the styling in
+// public/learning.css. Both are loaded here and NOWHERE else, the same scoping
+// rule as auth-pages.css and pwned.js — see CLAUDE.md.
+//
+// ⚠️ Every <script> carries is:inline. See BaseLayout.astro.
+// ⚠️ Mind the newline trap: Astro collapses a newline between text and a tag to
+// NOTHING, not to a space. Keep the space on the same line as the tag, and
+// never re-wrap markup that ends in text before an element.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout
+  title="Your learning · Amplified Thinker"
+  description="How far you have got with each of the Future Skills."
+  noindex={true}
+>
+  <link slot="head" rel="stylesheet" href={`${base}/learning.css`} />
+
+  <div class="learn">
+
+    <!-- Loading. Sized like the real thing so nothing jumps when rows land. -->
+    <div id="learn-loading" class="learn-panel">
+      <div class="learn-head">
+        <p class="learn-eyebrow">Your learning progress</p>
+        <h1 class="learn-title">Where you are with your Future Skills learning</h1>
+      </div>
+      <div class="learn-skeleton" role="status" aria-live="polite" aria-label="Loading your progress"></div>
+    </div>
+
+    <!-- Signed out. Not a redirect: someone following a link from why-sign-up
+         deserves to be told what this is before being asked to sign in. -->
+    <div id="learn-signed-out" class="learn-panel" hidden>
+      <div class="learn-msg">
+        <h1>Your learning lives here</h1>
+        <p>
+          Sign in to see how far you have got with each skill — every section you read is saved to
+          your account and follows you between devices. <a href={`${base}/why-sign-up.html`}>Read what an
+          account gets you</a> if you would rather look first.
+        </p>
+        <div class="learn-actions">
+          <a class="learn-btn" href={`${base}/sign-in/`}>Sign in</a>
+          <a class="learn-btn quiet" href={`${base}/future-skills.html#the-library`}>Browse the skills</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Read failed. Deliberately NOT a page of zeros: "you have read nothing"
+         and "we could not find out" are different statements. -->
+    <div id="learn-error" class="learn-panel" hidden>
+      <div class="learn-msg">
+        <h1>Your learning did not load</h1>
+        <p>
+          Something went wrong reading your account, so nothing here would be accurate. Your progress
+          is safe — this page could not fetch it. Try again in a moment.
+        </p>
+        <div class="learn-actions">
+          <a class="learn-btn" href={`${base}/learning/`}>Try again</a>
+          <a class="learn-btn quiet" href={`${base}/future-skills.html#the-library`}>Browse the skills</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signed in, nothing opened yet. The first thing a new account sees. -->
+    <div id="learn-empty" class="learn-panel" hidden>
+      <div class="learn-msg">
+        <h1>Nothing to show yet — which is the right place to start</h1>
+        <p>
+          Open a primer or a plan and this page fills itself in. Primers take about ten minutes and
+          give you the shape of a skill; plans are the long version, and the one this page mostly
+          tracks.
+        </p>
+        <div class="learn-actions">
+          <a class="learn-btn" href={`${base}/future-skills.html#the-library`}>Pick a skill</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- The page proper. -->
+    <div id="learn-main" class="learn-panel" hidden>
+
+      <div class="learn-head">
+        <p class="learn-eyebrow">Your learning progress</p>
+        <h1 class="learn-title">Where you are with your Future Skills learning</h1>
+        <p class="learn-sub">
+          Primer and plan are tracked separately for each skill. Percentages count the teaching
+          sections of a plan, not the closing “Explore Further” link list.
+        </p>
+        <!-- The return half of a round trip: the library's summary strip links
+             here, and #the-library lands beside that very strip rather than at
+             the top of a long page. Keep the two in step — a one-way link
+             between two views of the same five skills is a dead end. -->
+        <p class="learn-back">
+          Everything here comes from the <a href={`${base}/future-skills.html#the-library`}>Future Skills library</a> — open a skill there to read its primer or plan.
+        </p>
+      </div>
+
+      <!-- id is load-bearing: the tiles sit outside every .learn-section, so
+           this is what learning.js hangs `.is-in` on to start the ring sweep
+           and the count-up. -->
+      <div class="learn-tiles" id="learn-tiles">
+        <div class="learn-card learn-tile">
+          <div class="learn-tile-label">Overall completion</div>
+          <div class="learn-tile-figure with-ring">
+            <!-- Filled by renderTiles(): the arc length has to be computed from
+                 the figure, so the markup cannot be static here. -->
+            <svg class="learn-tile-ring" id="learn-tile-ring" viewBox="0 0 40 40" role="img"></svg>
+            <div class="learn-tile-of" id="learn-read-of"></div>
+          </div>
+        </div>
+        <!-- Primers before plans, matching the order of the table columns below
+             and the order a reader meets them: the primer is the ten-minute
+             version, the plan is the long one. -->
+        <div class="learn-card learn-tile">
+          <div class="learn-tile-label">Primers finished</div>
+          <div class="learn-tile-figure">
+            <div class="learn-tile-big" id="learn-primers-done">—</div>
+            <div class="learn-tile-of">of five, every slide seen</div>
+          </div>
+        </div>
+        <div class="learn-card learn-tile">
+          <div class="learn-tile-label">Plans finished</div>
+          <div class="learn-tile-figure">
+            <div class="learn-tile-big" id="learn-plans-done">—</div>
+            <div class="learn-tile-of">of five, every section read</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="learn-section" id="learn-skills-section">
+        <div class="learn-collapse">
+          <div class="learn-collapse-head">
+            <h2 class="learn-h2">
+              <button type="button" class="learn-toggle" id="learn-skills-toggle"
+                      aria-expanded="true" aria-controls="learn-skills-body">
+                <span class="learn-toggle-text">
+                  <span>Your skills</span>
+                  <span class="learn-note">Primer and plan progress for each skill, tracked separately. Critical Thinking's plan runs a section longer than the rest.</span>
+                </span>
+                <svg class="learn-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+            </h2>
+          </div>
+          <div class="learn-collapse-body" id="learn-skills-body">
+            <div class="learn-table-wrap">
+              <table class="learn-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Skill</th>
+                    <th scope="col">Primer</th>
+                    <th scope="col">Plan</th>
+                  </tr>
+                </thead>
+                <tbody id="learn-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- The two charts sit side by side, the donut narrower than the bars.
+           The section wrapper keeps the hairline rule above the pair; each half
+           is its own card. ⚠️ The ids stay on the halves, not the wrapper —
+           learning.js reveals them independently, so the bars can still animate
+           on their own as they come into view. -->
+      <section class="learn-section">
+        <div class="learn-pair">
+
+          <div class="learn-card" id="learn-state-section">
+            <h2 class="learn-h2">Every section, by state</h2>
+            <p class="learn-note">
+              All <b id="learn-state-total">—</b> sections across your five plans, split by how far
+              each one has got.
+            </p>
+            <div class="learn-donut-row">
+              <svg class="learn-donut" id="learn-donut" viewBox="0 0 190 190" role="img"></svg>
+              <ul class="learn-key">
+                <li><span class="swatch read" aria-hidden="true"></span><span><b id="learn-key-read">0</b> read</span></li>
+                <li><span class="swatch doing" aria-hidden="true"></span><span><b id="learn-key-doing">0</b> in a started plan</span></li>
+                <li><span class="swatch idle" aria-hidden="true"></span><span><b id="learn-key-idle">0</b> not opened</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="learn-card" id="learn-bars-section">
+            <h2 class="learn-h2">Completion by skill</h2>
+            <p class="learn-note">
+              One column per skill, read from the bottom up. A started plan shows its unread sections
+              in amber; an unopened one stays empty.
+            </p>
+            <div class="learn-vbars" id="learn-bars"></div>
+            <ul class="learn-key learn-key-row">
+              <li><span class="swatch read" aria-hidden="true"></span><span>Read</span></li>
+              <li><span class="swatch doing" aria-hidden="true"></span><span>In progress</span></li>
+              <li><span class="swatch idle" aria-hidden="true"></span><span>Not opened</span></li>
+              <li class="learn-key-note" id="learn-bars-note"></li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ⚠️ skills-progress.js FIRST, and it is not optional. It owns what
+       "complete" means; learning.js only decides how to draw it. The Future
+       Skills library loads the same file, which is the whole point — the two
+       pages must not answer the same question differently. Both deferred, so
+       they execute in order; learning.js waits for the global regardless. -->
+  <script slot="head" is:inline src={`${base}/skills-progress.js`} defer></script>
+  <script slot="head" is:inline src={`${base}/learning.js`} defer></script>
+</BaseLayout>
