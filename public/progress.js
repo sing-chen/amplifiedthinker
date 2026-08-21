@@ -451,37 +451,35 @@
     doc.head.appendChild(s);
   }
 
-  // "12 August", or "12 August 2025" once the year stops being obvious. A bare
-  // year on something finished last week reads as clutter; omitting it on
-  // something finished two years ago reads as wrong.
+  // ⚠️ Not `toLocaleDateString`, and the reason is width rather than taste.
+  // `{ month: 'short' }` under en-GB returns "Sept" for September — four
+  // letters, where every other month gives three. A fixed table gives every
+  // month the same width; padding the day does the same at the other end.
   var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+  // ONE FORMAT, ALWAYS: DD Mmm YYYY. It renders in the rail pill, which has
+  // 212px to work with, and in the completion control at the foot of the page.
+  //
+  // ⚠️ It used to drop the year for dates in the current year, on the reasoning
+  // that a bare year reads as clutter on something finished last week. That was
+  // a trap, not a nicety: the long form only appeared once a completion was no
+  // longer from this year, so "Completed 30 September 2025" — 231px in a 212px
+  // rail — would have looked perfect for months and first overflowed in
+  // January, on a date nobody would connect to a layout change.
+  //
+  // One format cannot do that. Every date is the same shape and the same width,
+  // so what is measured today is what renders in any month of any year.
   function completionDate(iso) {
     try {
+      // ⚠️ The falsy check is not redundant with the isNaN below it.
+      // `new Date(null)` is the epoch, not an invalid date, so a null would
+      // render as "01 Jan 1970" — a plausible-looking date rather than an
+      // obvious failure. No caller passes one today; this is so none can.
+      if (!iso) return '';
+
       var d = new Date(iso);
       if (isNaN(d.getTime())) return '';
-
-      // ⚠️ THE FORMAT CHANGES WHEN THE YEAR APPEARS, and that is a width fix
-      // rather than a style preference. The rail pill has 212px of usable
-      // width; "Completed 30 September" measures 199 and fits, while
-      // "Completed 30 September 2025" measures 231 and does not.
-      //
-      // The nasty part is WHEN it would have broken: the year is only added
-      // once the completion is not from the current year, so this would have
-      // looked perfect until the first January after launch and then quietly
-      // overflowed the rail on old completions — on a date nobody would connect
-      // to a layout change.
-      if (d.getFullYear() === new Date().getFullYear()) {
-        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
-      }
-
-      // ⚠️ Built by hand rather than through toLocaleDateString.
-      // `{ month: 'short' }` under en-GB returns "Sept" for September — four
-      // letters, where every other month gives three — so the pill's width
-      // would depend on which month it happened to be. A fixed table gives a
-      // fixed width; padding the day to two digits does the same at the other
-      // end, and together they make this format effectively constant-width.
       var dd = d.getDate();
       return (dd < 10 ? '0' : '') + dd + ' ' +
              MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
