@@ -1,7 +1,12 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1, 2, 3, 4 and **5 live on both origins**. Phase 5 merged as
+**Status:** In progress — Phases 0, 1, 2, 3, 4, 5 and **9 live on both origins**. Phase 5 merged as
 `947fb19`; seven post-release defects were found by hand the same day and all fixed.
+
+**Phase 9 shipped out of order (`ef7c58c`, 2026-08-21).** It was scheduled last on the assumption
+that it needed data from 6, 7 and 8; it does not — Phase 5 alone produces everything it reads. It
+required no migration, which makes it the first phase since 3 where code and schema did not have
+to move together. 6, 7 and 8 are unaffected and still to come.
 
 **`feat/legal-pages` is merged and live on both origins.** It carried the three legal pages, the
 sign-up consent checkbox and account toggle, the document modal, and migration
@@ -53,7 +58,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
 | 7 — Admin portal + banner | ☐ Not started | ⚪ None | 🟢 **New** | No | 6 |
 | 8 — Blog | ☐ Not started | 🟢 **New** | 🟢 New | **Yes** | 7 |
-| 9 — Dashboards | ☐ Not started | 🟢 **New** | ⚪ None | **Yes** | 5 |
+| 9 — Your learning | ✅ **Done — live** | 🟢 **New** | ⚪ None | ✅ Banner + What's New | 5 (not 6–8) |
 
 **Phases 0–4 are entirely invisible to visitors** — roughly half the work, shippable to production
 without a single announcement. That is deliberate: it front-loads risk into changes nobody sees.
@@ -96,6 +101,146 @@ Full capability matrix in [dev-workflow.md](dev-workflow.md); staging and conseq
 ---
 
 ## Progress log
+
+### Phase 9 — done, merged, live on both origins (2026-08-21)
+
+Merged as `ef7c58c`, out of order: it was scheduled last because it visualises data that only
+exists once 5–8 have been running, but Phase 5 alone produces everything it needs. Nothing from
+6, 7 or 8 was required. `npm run verify:stamp` reports both origins on `ef7c58c`.
+
+**No migration.** The phase reads `skill_progress` and the generated catalogue and writes nothing,
+so prod needed nothing applied before or after the merge — the first phase since 3 where the
+database and the code did not have to move together.
+
+#### The finding worth reading: a second definition of "complete" contradicted the first inside a day
+
+`skills-progress.js` already existed, and its header says why: *"It owns no definitions. What 'in
+progress' means, what counts toward a denominator, and how a date is formatted all live in
+skills-progress.js so this page and **the dashboard** cannot disagree about the same account."*
+It named this page, before this page existed.
+
+It was not found, and the logic was written again. The two definitions then disagreed exactly as
+predicted, and the reader saw it before any check did:
+
+| | Future Skills library | The new page |
+|---|---|---|
+| Reads | `completed_at` | coverage of `state.visited` |
+| Creative Thinking | **COMPLETED** | **30%** primer, **8%** plan |
+
+Both were reading one row. The pages write `completed_at` when a reader presses the control at the
+end — which is *not* the same question as "has every section been visited", because a page can be
+finished without every section being individually registered. ⚠️ **Coverage is a floor, not a
+measure.** The library also renders a complete artefact as 100% regardless of coverage
+(`done ? 100 : percent`), and that rule had to be copied too, not just the source of truth.
+
+**Two things made this findable only by a human.** The page was verified against synthetic rows
+that happened to be self-consistent — coverage complete *and* `completed_at` set — so the fixture
+could not expose the disagreement. And the site had no check that two surfaces agree about one
+account; it still has none.
+
+**Worth carrying forward:** grep for an existing module before writing a definition, and treat a
+comment naming a surface that does not exist yet as a live instruction rather than a note. The
+cost here was small because the contradiction was loud. A subtler one — a percentage differing by
+three — would have shipped.
+
+#### A safety net that quietly deleted the feature it was protecting
+
+Scroll-triggered animation was built with `IntersectionObserver`. The observer never fires in the
+agent's browser (see the 2026-08-19 finding below — the pane never composites), which read as
+"broken", so a **3-second deadline** was added to reveal every section regardless of position.
+
+That is not a fallback for a scroll trigger, it is its removal. On a real page all three sections
+hit the deadline within three seconds of load, so everything below the fold animated unseen and
+scrolling revealed charts that had already finished. The feature was gone and only the net was left.
+
+⚠️ **A fallback that ignores the input a feature is keyed on cannot stand in for that feature.**
+The replacement is scroll-driven too: the observer stays primary, and a passive scroll/resize
+listener measures `getBoundingClientRect` against the viewport into the same idempotent `fire()`.
+
+**And the throttle had to stop being `requestAnimationFrame`** — the conventional choice, and
+wrong here. rAF does not run in a tab that is never composited and is paused outright in a
+backgrounded one, so an rAF-throttled reveal never fires there. First attempt animated *nothing*,
+including sections in plain view. It is a 100ms timer now; one `getBoundingClientRect` per waiting
+section does not need the frame clock.
+
+**The same reasoning applied to the count-up**, which must never leave a wrong number on screen:
+it writes the final value *first*, then animates over it, so a stalled frame loop leaves the truth
+rather than a legend reading 0 beside a ring showing 45%.
+
+#### The design assumed an event model the schema does not have
+
+The Claude Design bundle had eight modules. Four shipped; **three were cut for lack of data, not
+effort**, and one for lack of any source at all:
+
+| Cut | Needs |
+|---|---|
+| Sections read this week | a timestamp per section |
+| Sections read over time, with range buttons | the same |
+| Activity heatmap, "longest run of active days" | a row per active day |
+| Self-rated confidence, out of five | a rating control that stores — the plans' Self-Reflection captures nothing |
+
+`skill_progress` holds **one `updated_at` per row** and no per-section timestamp, so no time series
+is derivable at all. Building any of them means an events table first, and it starts empty.
+Recorded in [dashboard-design-brief.md](dashboard-design-brief.md) §3 so the next attempt does not
+re-derive it.
+
+#### Both the design and the brief stated a denominator that does not exist
+
+The design said "All 70 sections" and "14 sections each". `public/skills-catalogue.json` says the
+plans are **14, 14, 15, 14, 14**, and once the optional Explore Further is excluded, **13, 13, 14,
+13, 13 — 66, not 70**, and never uniform. The design brief written earlier in the same work
+repeated "14 sections" as fact; it was wrong too, and is now corrected.
+
+⚠️ **Both numbers on the page are computed at runtime**, including the legend that would otherwise
+read "14 sections each" and be false for four skills out of five. The catalogue exists precisely to
+stop a number being written down twice.
+
+#### Three copy dependencies fired at once, and one of them said so in advance
+
+Shipping this made three statements untrue, all of them claims about what an account does:
+
+- `terms.html` §1 — *"Creating an account adds one thing"*.
+- `why-sign-up.html` — the tracker sat under **Soon**, *"not counted as reasons to sign up today"*,
+  understating an account on the page where someone decides whether to trust the site.
+- `future-skills.html` — the guest note, *"An account just means you don't have to find your place
+  again"*, which **carried a comment instructing that it be changed in the commit that made it
+  untrue**. That worked: the note was found by grepping for the feature, and the instruction was
+  already there waiting.
+
+All three moved in the same commit. The `future-skills.html` comment was re-armed for notes and
+saved news, and `why-sign-up.html` gained one saying that when the last `Soon` row goes, the CSS,
+the legend and the paragraph introducing it go with it.
+
+`privacy.html` was checked and deliberately left alone: no new processor, storage key, outbound
+request or purpose, and §3 already describes this exact data.
+
+#### The name was wrong twice before it was right
+
+"Learning Dashboard" was the working title; "dashboard" is operational-monitoring register the site
+does not otherwise use. It was then built as **"Your progress"** — and that failed a question worth
+keeping: *progress at what?* The site will not stay five skills, and once a blog and saved news
+exist, "progress" has several plausible referents.
+
+Shipped as **"Your learning"** at `/learning/`, renamed before launch so no redirect was needed —
+files, CSS class prefix and keyframes included, because `dashboard.js` serving `/learning/` is
+legacy on day one. ⚠️ "Your progress" survives where it describes **the record** rather than the
+page — privacy §3, terms §8, the sign-in page — and those were deliberately not renamed.
+
+#### One defect the phase created in a file it barely touched
+
+`/learning/` showed its **read-failure panel to every signed-out visitor**. `nav.js` loads the auth
+stack for a session-less visitor only on an allowlist of paths — `/sign-in` and `/account` — so
+`AmplifiedAuth` never arrived, the six-second bound expired, and the page could not tell "signed
+out" from "something broke". ⚠️ **Any new surface that renders a signed-out state has to be added
+to `pageNeedsAuth()`**, and there is a comment there saying so now.
+
+**Still unverified at merge, and only a human can close it:** that the sweep, the column growth and
+the count-up actually *play* on scroll, and that `/learning/` and the library agree for a real
+signed-in account. Everything structural about the animations was verified — classes attach,
+animation names and durations resolve, final values are correct even when the frame loop never runs
+— but nothing was ever seen moving.
+
+---
 
 ### Phase 4 — done, merged, live on both origins (2026-08-18)
 
@@ -1595,6 +1740,18 @@ percentages are, by definition, features about data a returning user has accumul
 them lives in the region no check here can reach. Plan the seeded-account fixture before that phase,
 not during it.
 
+> **This came true on 2026-08-21, and the fixture had still not been built.** Phase 9 was verified
+> against hand-written rows instead — which were self-consistent, coverage complete *and*
+> `completed_at` set together, because that is the shape you write when you already believe the two
+> agree. A real account had the opposite shape: `completed_at` set with three slides of coverage.
+> The page reported **30%** for a skill the library called **COMPLETED**, and the owner found it by
+> looking, exactly as this entry said. See the Phase 9 log at the top.
+>
+> ⚠️ **The sharper version of the lesson: a fixture you author cannot disagree with you.** It
+> encodes the same assumption as the code under test, so the one class of bug it can never surface
+> is a wrong assumption — which is the class that reaches production. The seeded account is still
+> not built, and is now overdue rather than pending.
+
 **One thing that did work, and is worth keeping.** All three fixes were verified against
 **production itself** afterwards — fetching the served file and matching on the changed line, and
 `npm run verify:published -- after` for the fingerprint. Checking what an origin actually serves is
@@ -2048,17 +2205,30 @@ genuinely new content type rather than a migration of something that already exi
 
 ---
 
-## Phase 9 — Dashboards
+## Phase 9 — Your learning ✅ DONE
 
-**Impact:** 🟢 New (visitor) · ⚪ None (admin) — **announce.**
+**Impact:** 🟢 New (visitor) · ⚪ None (admin) · **Shipped 2026-08-21** as `ef7c58c` — outcome in
+the Progress log above.
 
-**Why last:** it visualises data that only exists once Phases 5 to 8 have been running long
-enough to produce any. Building it earlier would mean designing charts against empty tables.
+**"Why last" turned out to be wrong.** The reasoning was that it visualises data only produced once
+Phases 5 to 8 have been running, and that building it earlier means designing charts against empty
+tables. Half of that held: Phase 5 alone produces everything this page reads, and nothing from 6, 7
+or 8 was needed. What *was* true is the empty-table problem — it simply applies to a different set
+of charts than expected, and those were cut rather than faked. See the Progress log.
 
-| Activity | What it does, and why |
-|---|---|
-| Completion and progress views over `skill_progress` | Uses `started_at` and `completed_at`, which is why those columns exist from Phase 3. |
-| Saved items view | Favourites, pins, and notes in one place. |
+| Activity | What it does, and why | Outcome |
+|---|---|---|
+| Completion and progress views over `skill_progress` | The five skills, primer and plan tracked separately. | ✅ Built. ⚠️ Derives nothing itself — `skills-progress.js` owns every definition, after a second copy contradicted the library within a day. |
+| Charting library, vendored or via Astro | Was assumed necessary. | ❌ **Not used.** Hand-written SVG and CSS over the site's own tokens: two arc rings, a stacked donut, five stacked columns. None of them needed a library, and one would have shipped to every reader of one page. |
+| `started_at` / `completed_at` | Why those columns exist from Phase 3. | ✅ `completed_at` is now the authority for "complete". `started_at` is still written by nobody and is unused here. |
+| Saved items view — favourites, pins, notes | Favourites, pins and notes in one place. | ⏭ **Deferred to Phase 6/7.** Nothing writes `user_news` or `notes` yet, so the view would be three empty panels. `why-sign-up.html` still marks both `Soon`. |
+
+**Time-series and activity views are blocked on a schema change, not on effort.** `skill_progress`
+holds one `updated_at` per row and no per-section timestamp, so "read this week", any weekly trend
+and any activity heatmap are not derivable. They need an events table — one row per section first
+seen — and it starts empty on the day it ships. Self-rated confidence needs a control that does not
+exist on any plan page. All four are specified in
+[dashboard-design-brief.md](dashboard-design-brief.md) §3.
 
 **Deferred: leaderboards.** The schema supports them — `profiles.display_name` plus a
 `security definer` function — but there is nothing meaningful to rank yet. The only scoreable
