@@ -83,39 +83,18 @@ const {
 <link rel="stylesheet" href={asset('styles.css')}>
 
 <!--
-  ⚠️ FOOTER STYLING, and it belongs here rather than in styles.css.
+  ⚠️ FOOTER STYLING is no longer here. The rules moved to styles.css under
+  `.site-footer` (2026-08-21), which is why the <footer> below carries that
+  class — the shared block is deliberately NOT a bare `footer` element
+  selector, because search.html's `<footer class="search-footer">` is a
+  different band and must not be caught by it. Drop the class and this layout
+  reproduces the original defect exactly: markup with no styling, a bare list
+  of browser-default links with no dark band, and nothing that fails.
 
-  The footer markup below was copied from the hand-written pages; the CSS was
-  not, and nobody noticed until /account/ was looked at on production. The 16
-  hand-written pages each carry their own copy of these rules INLINE — styles.css
-  holds only tokens, the reset and the skip link. So every Astro page rendered a
-  bare list of browser-default links, left-aligned, with no dark band.
-
-  Why not simply move it into styles.css, which would de-duplicate all seven
-  copies: `footer { … }` is an ELEMENT selector, and search.html has a
-  `<footer class="search-footer">` with a different structure and its own rules.
-  A shared element selector would restyle a page nobody asked us to touch. That
-  de-duplication is a real cleanup, but it needs all 16 pages looked at in one
-  pass — logged in BACKLOG.md rather than done in passing here.
-
-  Values are copied verbatim from index.html so the two cannot drift apart
-  visually. Only the sticky-footer block below is new.
+  What stays below is only what the Astro pages add on top.
 -->
 <style is:inline>
-  footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
-  .fi{max-width:var(--page-max);margin:0 auto}
-  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
-  .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
-  .footer-nav a:hover{color:rgba(255,255,255,.85)}
-  .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
-  .footer-sep{color:rgba(255,255,255,.15);user-select:none}
-  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
-  .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
-  .fn a:hover{color:rgba(255,255,255,.85)}
-  .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
-  @media(max-width:700px){footer{padding-left:20px;padding-right:20px}}
+  @media(max-width:700px){.site-footer{padding-left:20px;padding-right:20px}}
 
   /* Hold the footer at the bottom of short pages.
      The hand-written pages never needed this — they all have enough content to
@@ -124,7 +103,7 @@ const {
      Safe with the fixed nav, which is out of flow and unaffected by this. */
   body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
   main{flex:1 0 auto}
-  footer{flex-shrink:0}
+  .site-footer{flex-shrink:0}
 </style>
 
 <slot name="head" />
@@ -136,7 +115,7 @@ const {
   <slot />
 </main>
 
-<footer>
+<footer class="site-footer">
   <div class="fi">
     <div class="footer-inner">
       <p class="footer-tagline">Built for a world that keeps changing.</p>

@@ -90,27 +90,16 @@
     .update-item{flex-direction:column;gap:2px}
   }
 
-  /* ── FOOTER ── */
-  footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
-  .fi{max-width:1100px;margin:0 auto}
-  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
-  .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
-  .footer-nav a:hover{color:rgba(255,255,255,.85)}
-  .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
-  .footer-sep{color:rgba(255,255,255,.15);user-select:none}
-  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
-  .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
-  .fn a:hover{color:rgba(255,255,255,.85)}
-  .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+  /* ── FOOTER ──
+     Rules live in styles.css under .site-footer. Only the responsive padding
+     is here, because the breakpoint is this page's own. */
 
   @media(max-width:640px){
     .about-page{padding:48px 20px 72px}
     .identity{flex-direction:column;gap:20px;align-items:center;text-align:center}
     .identity-quote{border-left:none;padding-left:0;border-top:2px solid var(--sage);padding-top:12px;margin-top:8px}
     .thesis{padding:22px 22px}
-    footer{padding:24px 20px}
+    .site-footer{padding:24px 20px}
   }
 
   /* ── DARK MODE ──
@@ -257,7 +246,7 @@
 </article>
 </main>
 
-<footer>
+<footer class="site-footer">
   <div class="fi">
     <div class="footer-inner">
       <p class="footer-tagline">Built for a world that keeps changing.</p>

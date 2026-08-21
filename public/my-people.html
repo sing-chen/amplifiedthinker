@@ -114,23 +114,12 @@
   .pwork-link:hover{background:rgba(172,196,182,.28)}
   .pwork-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
 
-  footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
-  .fi{max-width:var(--page-max);margin:0 auto}
-  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
-  .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
-  .footer-nav a:hover{color:rgba(255,255,255,.85)}
-  .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
-  .footer-sep{color:rgba(255,255,255,.15);user-select:none}
-  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
-  .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
-  .fn a:hover{color:rgba(255,255,255,.85)}
-  .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+  /* Footer rules live in styles.css under .site-footer. Only the responsive
+     padding is here, because the breakpoint is this page's own. */
 
   @media(max-width:600px){
     .hero,.people-section{padding-left:20px;padding-right:20px}
-    footer{padding-left:20px;padding-right:20px}
+    .site-footer{padding-left:20px;padding-right:20px}
     .modal-body{padding:22px 20px 26px}
   }
 
@@ -231,7 +220,7 @@
   <div class="modal" id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-name"></div>
 </div>
 
-<footer>
+<footer class="site-footer">
   <div class="fi">
     <div class="footer-inner">
       <p class="footer-tagline">Built for a world that keeps changing.</p>
