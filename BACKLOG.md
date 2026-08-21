@@ -592,8 +592,46 @@ then the counts stay derived. ⚠️ And the editorial move is a real migration,
 page's markup is currently the source of truth for all nine cards, each with a bespoke inline SVG icon
 and its own copy.
 
-### Personalised progress on the Future Skills page — design settled, not built
-**Status:** Designed · **Natural home: Phase 9, ahead of the dashboard** · Decided 2026-08-20
+### ~~Personalised progress on the Future Skills page~~
+**Status:** ✅ **Built 2026-08-21** · Designed 2026-08-20
+**Shipped as:** [public/skills-progress.js](public/skills-progress.js) (meaning),
+[public/future-skills-progress.js](public/future-skills-progress.js) (rendering),
+plus a bootstrap in [public/future-skills.html](public/future-skills.html)
+
+✅ **Built to the design below, with three deliberate departures**, each recorded where it belongs:
+the resume shortcut was removed from the summary strip, the `.sstatus` badge now carries the reader's
+state, and a completed ring holds its check back to land with the pulse.
+
+⚠️ **Five defects were found by looking, not by the checks.** Recorded because the pattern is the
+point — every one passed every automated assertion at the time:
+
+| | |
+|---|---|
+| The completion tick rendered as a **slash** | `.sring svg` is (0,2,0) and caught the check too, sizing it to 44px and rotating it −90°. Same shape as the `.auth-panel label` trap |
+| Text **invisible** on the plan launch card | Brand teal on `--deep-teal` composites to **1.0:1**. The first contrast pass sampled one card variant and the failure hid |
+| Signing out left everything on screen | ⚠️ **A disclosure bug.** The page is not reloaded, so one reader's progress stayed in front of whoever was at that browser next |
+| Cards stayed expanded after sign-out | The shape of somebody else's session, kept |
+| Every card grew a **second** set of rings | `onAuthChange` fires on token refresh too, so a long-open session repainted |
+
+⚠️ **Teardown does not reverse mutations after the fact** — every change registers its own exact
+restore as it is made, and sign-out runs them backwards. The launch-card description is **detached,
+not destroyed**, so the guest text returns to its exact position rather than being rebuilt from a
+copy that could drift. Reversing afterwards means a second place that has to remember what was
+replaced, and it rots the first time someone adds a mutation and forgets — which is the failure being
+fixed.
+
+⚠️ **The collapse-on-sign-out guard is load-bearing.** `teardown()` runs for ordinary guests too —
+the first null session on any page load is one — and the page opens a card from a `#s-…` deep link on
+`DOMContentLoaded`. Collapsing unconditionally would slam that card shut for a reader who never
+signed in.
+
+**Verified:** derivation against the real catalogue including stale ids and optional-only coverage;
+guest baseline byte-identical before and after a full sign-in/sign-out cycle; contrast on all 15
+elements in both themes; motion confirmed by eye, since this environment does not composite.
+
+Original entry follows.
+
+**Status when written:** Designed · **Natural home: Phase 9, ahead of the dashboard** · Decided 2026-08-20
 **Relates to:** [public/future-skills.html](public/future-skills.html), [public/nav.js](public/nav.js),
 [public/progress.js](public/progress.js), the five plan and primer pages,
 [docs/dashboard-design-brief.md](docs/dashboard-design-brief.md)
