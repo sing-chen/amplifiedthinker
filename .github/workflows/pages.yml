@@ -57,7 +57,8 @@ jobs:
           set -e
           for f in index.html about.html future-skills.html my-people.html news.html \
                    search.html nav.js progress.js styles.css news.json \
-                   skills/analytical-thinking/plan.html; do
+                   skills/analytical-thinking/plan.html \
+                   build.json; do
             test -f "dist/$f" || { echo "MISSING: dist/$f"; exit 1; }
           done
           echo "All expected files present in dist/"

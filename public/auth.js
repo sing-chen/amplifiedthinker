@@ -59,6 +59,15 @@
     var changedUser = (next && next.user && next.user.id) !== (session && session.user && session.user.id);
     session = next || null;
     if (changedUser) adminCache = null;
+
+    /* The authoritative answer to the question nav.js could only guess at.
+       Its peek reads localStorage, so an expired or revoked token peeks as
+       'in' and only resolves to 'out' here. Anything gated on data-session
+       must therefore tolerate being corrected after first paint. */
+    try {
+      document.documentElement.setAttribute('data-session', session ? 'in' : 'out');
+    } catch (e) { /* ignore */ }
+
     renderNavAuth();
     notify();
   }

@@ -209,6 +209,20 @@
   .slide-white  { background: var(--off-white); }
   .slide-teal   { background: #1B4A44; }
 
+  /* Clipping layer for the decorative circles.
+     ⚠️ Without it a circle with a negative `bottom` makes the slide
+     scrollable by exactly that offset -- .slide is overflow-y:auto, so
+     the browser scrolls to reveal decoration the stage already crops.
+     Measured 2026-08-21 as a constant +70/+40/+80 on slides 2/4/5 of
+     every deck, at every viewport height. inset:0 keeps the circles at
+     identical coordinates; overflow:hidden takes them out of the
+     scrollable overflow region. Purely a fix -- nothing moves. */
+  .slide-bg {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
   /* decorative circle */
   .bg-circle {
     position: absolute; border-radius: 50%;
@@ -822,8 +836,10 @@
 
   <!-- 01 · TITLE -->
   <div class="slide slide-sage active" data-index="0">
-    <div class="bg-circle" style="width:480px;height:480px;top:-120px;right:-100px;background:var(--teal);opacity:0.09;"></div>
-    <div class="bg-circle" style="width:180px;height:180px;bottom:100px;right:340px;background:var(--terracotta);opacity:0.07;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:480px;height:480px;top:-120px;right:-100px;background:var(--teal);opacity:0.09;"></div>
+      <div class="bg-circle" style="width:180px;height:180px;bottom:100px;right:340px;background:var(--terracotta);opacity:0.07;"></div>
+    </div>
     <div style="display:flex;align-items:flex-start;gap:28px;margin-bottom:24px;">
       <div class="accent-bar" style="margin-top:8px;"></div>
       <h1 class="h-display">Critical Thinking</h1>
@@ -863,7 +879,9 @@
 
   <!-- 02 · THE PROBLEM -->
   <div class="slide slide-white" data-index="1">
-    <div class="bg-circle" style="width:300px;height:300px;bottom:-70px;left:-70px;background:var(--teal);opacity:0.07;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:300px;height:300px;bottom:-70px;left:-70px;background:var(--teal);opacity:0.07;"></div>
+    </div>
     <span class="eyebrow">The Problem</span>
     <h2 class="h-title" style="max-width:680px;">Confidence isn't evidence. It just feels like it.</h2>
     <p class="t-body" style="max-width:680px;margin-bottom:24px;">Without Critical Thinking, a conclusion's presentation does the work its evidence should. A report that's well-organised, confidently worded, and arrives from a source that sounds authoritative gets treated as settled — regardless of what's actually underneath it. AI sharpens this, not because it's wrong more often than people are, but because it's fluent and certain-sounding by default, whether or not that certainty has been earned.</p>
@@ -874,7 +892,9 @@
 
   <!-- 03 · WHEN IT MATTERS -->
   <div class="slide slide-white" data-index="2">
-    <div class="bg-circle" style="width:240px;height:240px;top:-50px;right:-50px;background:var(--teal);opacity:0.07;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:240px;height:240px;top:-50px;right:-50px;background:var(--teal);opacity:0.07;"></div>
+    </div>
     <span class="eyebrow">When It Matters Most</span>
     <h2 class="h-title" style="max-width:620px;">Five moments where this skill makes the difference.</h2>
     <div class="num-list" style="max-width:760px;">
@@ -888,8 +908,10 @@
 
   <!-- 04 · THE OUTCOME (dark) -->
   <div class="slide slide-teal" data-index="3">
-    <div class="bg-circle" style="width:500px;height:500px;top:-140px;right:-140px;background:var(--teal);opacity:0.12;"></div>
-    <div class="bg-circle" style="width:240px;height:240px;bottom:-40px;left:60px;background:var(--amber);opacity:0.08;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:500px;height:500px;top:-140px;right:-140px;background:var(--teal);opacity:0.12;"></div>
+      <div class="bg-circle" style="width:240px;height:240px;bottom:-40px;left:60px;background:var(--amber);opacity:0.08;"></div>
+    </div>
     <span class="eyebrow eyebrow-lt">The Outcome It Enables</span>
     <h2 class="h-title h-lt" style="max-width:780px;">A clear judgment of what's sound, what's questionable, and what's still missing — before it gets acted on.</h2>
     <p class="t-body t-light" style="max-width:640px;margin-bottom:28px;">The ability to take any conclusion — your own, a colleague's, or an AI's — and test its evidence, its reasoning, and its bias before deciding whether to build on it.</p>
@@ -900,7 +922,9 @@
 
   <!-- 05 · WHAT IT IS -->
   <div class="slide slide-sage" data-index="4">
-    <div class="bg-circle" style="width:360px;height:360px;bottom:-80px;right:-80px;background:var(--teal);opacity:0.08;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:360px;height:360px;bottom:-80px;right:-80px;background:var(--teal);opacity:0.08;"></div>
+    </div>
     <span class="eyebrow">What It Is — And What It Isn't</span>
     <h2 class="h-title" style="max-width:700px;">Think of a fact-checker reviewing a finished article.</h2>
     <p class="t-body" style="max-width:700px;margin-bottom:28px;">They don't write the piece, and they don't rewrite it. They take it as given and test whether each claim holds — tracing assertions back to sources, checking whether the evidence supports what's being claimed, and flagging what's solid from what isn't. That's Critical Thinking, applied to a conclusion, an argument, or an AI-generated analysis, not just a news article.</p>
@@ -990,8 +1014,10 @@
 
   <!-- 09 · SUMMARY -->
   <div class="slide slide-sage" data-index="8">
-    <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
-    <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
+      <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
+    </div>
     <span class="eyebrow" style="margin-bottom:32px;">Quick-Recall Summary</span>
     <h2 class="sr-only">Quick-Recall Summary</h2>
     <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">

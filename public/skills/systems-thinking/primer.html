@@ -215,6 +215,20 @@
   .slide-teal   { background: #1B4A44; }
   .slide-cream  { background: #F2E0D4; }
 
+  /* Clipping layer for the decorative circles.
+     ⚠️ Without it a circle with a negative `bottom` makes the slide
+     scrollable by exactly that offset -- .slide is overflow-y:auto, so
+     the browser scrolls to reveal decoration the stage already crops.
+     Measured 2026-08-21 as a constant +70/+40/+80 on slides 2/4/5 of
+     every deck, at every viewport height. inset:0 keeps the circles at
+     identical coordinates; overflow:hidden takes them out of the
+     scrollable overflow region. Purely a fix -- nothing moves. */
+  .slide-bg {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
   /* decorative circle */
   .bg-circle {
     position: absolute; border-radius: 50%;
@@ -813,8 +827,10 @@
 
   <!-- 01 · TITLE -->
   <div class="slide slide-sage active" data-index="0">
-    <div class="bg-circle" style="width:480px;height:480px;top:-120px;right:-100px;background:var(--teal);opacity:0.09;"></div>
-    <div class="bg-circle" style="width:180px;height:180px;bottom:100px;right:340px;background:var(--terracotta);opacity:0.07;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:480px;height:480px;top:-120px;right:-100px;background:var(--teal);opacity:0.09;"></div>
+      <div class="bg-circle" style="width:180px;height:180px;bottom:100px;right:340px;background:var(--terracotta);opacity:0.07;"></div>
+    </div>
     <div style="display:flex;align-items:flex-start;gap:28px;margin-bottom:24px;">
       <div class="accent-bar" style="margin-top:8px;"></div>
       <h1 class="h-display">Systems Thinking</h1>
@@ -849,7 +865,9 @@
 
   <!-- 02 · THE PROBLEM -->
   <div class="slide slide-white" data-index="1">
-    <div class="bg-circle" style="width:300px;height:300px;bottom:-70px;left:-70px;background:var(--teal);opacity:0.07;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:300px;height:300px;bottom:-70px;left:-70px;background:var(--teal);opacity:0.07;"></div>
+    </div>
     <span class="eyebrow">The Problem</span>
     <h2 class="h-title" style="max-width:720px;">Every fire gets fought. The thing producing the fires never gets touched.</h2>
     <p class="t-body" style="max-width:680px;margin-bottom:24px;">Without Systems Thinking, teams treat each flare-up as its own isolated event — a bug here, a missed deadline there, a customer complaint somewhere else. Each one gets patched. None of them get traced back to the structure that keeps producing them. The cost compounds quietly: the same fire keeps returning, dressed as a new one. The same blind spot shows up before anything breaks, too — a dependency nobody thought to name until it was too late to plan around.</p>
@@ -860,7 +878,9 @@
 
   <!-- 03 · WHEN IT MATTERS -->
   <div class="slide slide-white" data-index="2">
-    <div class="bg-circle" style="width:240px;height:240px;top:-50px;right:-50px;background:var(--teal);opacity:0.07;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:240px;height:240px;top:-50px;right:-50px;background:var(--teal);opacity:0.07;"></div>
+    </div>
     <span class="eyebrow">When It Matters Most</span>
     <h2 class="h-title" style="max-width:640px;">Six moments where this skill makes the difference.</h2>
     <div class="num-list" style="max-width:760px;">
@@ -875,8 +895,10 @@
 
   <!-- 04 · THE OUTCOME (dark) -->
   <div class="slide slide-teal" data-index="3">
-    <div class="bg-circle" style="width:500px;height:500px;top:-140px;right:-140px;background:var(--teal);opacity:0.12;"></div>
-    <div class="bg-circle" style="width:240px;height:240px;bottom:-40px;left:60px;background:var(--amber);opacity:0.08;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:500px;height:500px;top:-140px;right:-140px;background:var(--teal);opacity:0.12;"></div>
+      <div class="bg-circle" style="width:240px;height:240px;bottom:-40px;left:60px;background:var(--amber);opacity:0.08;"></div>
+    </div>
     <span class="eyebrow eyebrow-lt">The Outcome It Enables</span>
     <h2 class="h-title h-lt" style="max-width:780px;">A wide enough picture that nothing connected stays invisible.</h2>
     <p class="t-body t-light" style="max-width:640px;margin-bottom:28px;">The ability to hold a picture of the wider system wide enough that a dependency, a ripple effect, or a structural cause doesn't stay invisible until it surfaces as a surprise — whether that's tracing a recurring problem to its root, or naming what a new decision will touch before anyone else does.</p>
@@ -887,7 +909,9 @@
 
   <!-- 05 · WHAT IT IS -->
   <div class="slide slide-sage" data-index="4">
-    <div class="bg-circle" style="width:360px;height:360px;bottom:-80px;right:-80px;background:var(--teal);opacity:0.08;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:360px;height:360px;bottom:-80px;right:-80px;background:var(--teal);opacity:0.08;"></div>
+    </div>
     <span class="eyebrow">What It Is — And What It Isn't</span>
     <h2 class="h-title" style="max-width:680px;">Where Analytical Thinking works within a boundary, this questions it.</h2>
     <p class="t-body" style="max-width:700px;margin-bottom:28px;">Analytical Thinking decomposes a problem within a defined scope. Systems Thinking asks what lies beyond that scope — and how it's connected. Both are trainable disciplines, most useful in sequence.</p>
@@ -931,7 +955,9 @@
 
   <!-- 07 · MENTAL MODEL: THE ICEBERG MODEL -->
   <div class="slide slide-white slide-dense" data-index="6">
-    <div class="bg-circle" style="width:220px;height:220px;top:-50px;right:80px;background:var(--amber);opacity:0.08;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:220px;height:220px;top:-50px;right:80px;background:var(--amber);opacity:0.08;"></div>
+    </div>
     <span class="eyebrow" style="margin-bottom:8px;">Mental Model 2 of 3</span>
     <h2 class="h-heading" style="margin-bottom:4px;">The Iceberg Model</h2>
     <p class="t-meta" style="margin-bottom:20px;">Systems thinking practice · four levels of depth</p>
@@ -979,8 +1005,10 @@
 
   <!-- 10 · SUMMARY -->
   <div class="slide slide-sage" data-index="9">
-    <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
-    <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
+    <div class="slide-bg">
+      <div class="bg-circle" style="width:440px;height:440px;top:-100px;right:-100px;background:var(--deep-teal);opacity:0.1;"></div>
+      <div class="bg-circle" style="width:180px;height:180px;bottom:50px;left:-40px;background:var(--terracotta);opacity:0.08;"></div>
+    </div>
     <span class="eyebrow" style="margin-bottom:32px;">Quick-Recall Summary</span>
     <h2 class="sr-only">Quick-Recall Summary</h2>
     <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">

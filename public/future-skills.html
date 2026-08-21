@@ -241,6 +241,20 @@
   .filter-empty{display:none;padding:32px 0;font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted)}
   .filter-empty.visible{display:block}
 
+  /* ── GUEST NOTE, top of the library ──
+     Hidden by default and shown only on data-session="out", set by nav.js from
+     a synchronous localStorage peek before the body parses. ⚠️ Match "out"
+     EXPLICITLY — nav.js also publishes "unknown", and :not([data-session="in"])
+     would show a sign-up prompt to someone who IS signed in.
+     One quiet line, never a banner: this is the third ask a guest meets, after
+     the nav control and the "not being saved" notice on a skill page. */
+  /* ⚠️ No max-width. It carried one (64ch) and wrapped at roughly half the
+     card width, which read as a broken column rather than a measure. The line
+     is a sibling of .skill-list, so its natural width IS the card width. */
+  .lib-guest-note{display:none;margin:0 0 28px;font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;color:var(--text-muted)}
+  .lib-guest-note a{color:var(--fg-brand);text-decoration:underline;text-underline-offset:2px}
+  html[data-session="out"] .lib-guest-note{display:block}
+
   /* ── SOURCES CALLOUT ── */
   .sources-callout{margin-top:40px;border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-lg);overflow:hidden}
   .sources-callout summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;cursor:pointer;list-style:none;background:var(--light-sage);transition:background .15s}
@@ -340,6 +354,7 @@
   [data-theme="dark"] .ftab{border-color:var(--line);color:var(--fg-2)}
   [data-theme="dark"] .ftab.active{color:var(--white)}
   [data-theme="dark"] .filter-empty{color:var(--fg-2)}
+  [data-theme="dark"] .lib-guest-note{color:var(--fg-2)}
   [data-theme="dark"] .sources-callout{border-color:var(--line)}
   [data-theme="dark"] .sc-body li{color:var(--fg-2)}
   [data-theme="dark"] .sc-body a{color:var(--fg-brand)}
@@ -652,6 +667,20 @@
       <button class="ftab" data-filter="engagement">Engagement</button>
     </div>
   </div>
+  <!-- Guest only. The top of the Library is the one place on this site where
+       the account argument is TRUE: the reader is at the start, so everything
+       ahead of them could be saved.
+       ⚠️ The inverse holds at the END of a plan, which is why progress.js shows
+       a guest nothing there — an account rescues nothing they have already
+       read, and the ask looks most natural exactly where it is worthless. Same
+       reasoning, opposite answer, decided by position in the journey.
+       ⚠️ COPY DEPENDENCY, logged in BACKLOG.md. "find your place again"
+       describes everything an account does TODAY. When the Future Skills
+       personalisation ships, an account also carries per-skill progress and a
+       dashboard — and this line becomes an understatement standing exactly
+       where someone decides whether to sign up. Change it in THAT commit. -->
+  <p class="lib-guest-note">Everything below is free to read, with or without an account. An account just means you don't have to find your place again. <a href="why-sign-up.html">Why sign up</a></p>
+
   <div class="filter-empty" id="filter-empty">No skills match this filter yet.</div>
 
   <div class="skill-list" role="list">
