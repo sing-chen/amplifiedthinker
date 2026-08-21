@@ -472,6 +472,14 @@ divergence, recorded here so it is a decision rather than a surprise.
 a number that is already wrong.
 
 #### ⚠️ `started_at` and `completed_at` come from different clocks — clamp any duration at zero
+**Reviewed 2026-08-21 and deliberately left alone. There is no code change available to make** —
+nothing on the site displays a duration yet, and the entry's own conclusion is *do not fix it in
+the database*. It is not a defect awaiting a fix; it is a constraint waiting for its first caller.
+⚠️ **Do not close it as done, and do not "tidy" it away.** The failure it prevents — a negative
+interval that looks like broken arithmetic rather than two clocks — happens on the day somebody
+builds the first duration figure, and this entry is the only thing that will be standing there
+when they do.
+
 Observed 2026-08-20 in the first real run of `npm run verify:completion`, against dev:
 
 ```
@@ -625,7 +633,46 @@ Because availability is already encoded structurally, the `.sstatus` badge is fr
 personal state on available cards without losing the other axis. ⚠️ Do not re-solve this.
 
 #### The top of the Library is the one slot worth filling for BOTH audiences
+**Status: the guest half is ✅ built 2026-08-21. The signed-in half is deferred, deliberately.**
 Raised 2026-08-20, out of the argument about whether to show a completion control to guests.
+
+✅ **The guest line shipped**, in `public/future-skills.html` between the Library header and the
+cards:
+
+> Everything below is free to read, with or without an account. An account just means you don't
+> have to find your place again. *Why sign up*
+
+**The two halves turned out to have completely different costs, which is why they separated.** The
+guest line needs no data at all. The signed-in strip needs *counts*, counts need denominators, and
+denominators need the generated catalogue — prerequisite 4 below, unbuilt. Building it here would
+have pulled most of Phase 9's substrate into a point release. A signed-in reader sees today's page,
+which is not a regression.
+
+**The gating mechanism is new and is worth knowing about, because the personalisation work wants
+it too.** `nav.js` now publishes `data-session` on `<html>` from its synchronous `peekSession()`,
+before the body parses, so CSS decides at first paint and nothing flashes. `auth.js` overwrites it
+from the real session in `setSession()`, since a stale token peeks as `in`.
+
+⚠️ **It has three values, not two — `in`, `out`, `unknown`** — and `unknown` must render the same
+as `in`. This is the rule `paintAuthSlot` already followed and the comment already said out loud:
+*showing the wrong state and correcting it a moment later is worse than showing nothing briefly.*
+Match `[data-session="out"]` explicitly; `:not([data-session="in"])` catches `unknown` and shows a
+sign-up prompt to somebody who is signed in.
+
+✅ **No privacy-page change.** `data-session` is an attribute derived from a key that already
+exists — no new device storage, no new processor, no new outbound request. Recorded because
+"adding something that tracks whether you are signed in" reads like it should trigger the rule in
+CLAUDE.md, and here it does not.
+
+⚠️ **THE COPY IS A DEPENDENCY, not finished text.** *"just means you don't have to find your place
+again"* describes everything an account does **today**. The moment the Future Skills
+personalisation ships, an account also carries per-skill progress and a dashboard — and this line
+becomes an understatement standing at the exact point where somebody decides whether to sign up.
+**It must be rewritten in that same commit**, to say that an account also keeps a personalised
+view of progress across every skill. This is the same shape as the *"Never a newsletter"* trap in
+CLAUDE.md: copy that describes the limits of a system rots like a comment, and this one rots in the
+direction of underselling. A note sits in the markup beside the line; the grep is `find your place
+again`.
 
 The Library section opens with an eyebrow, `Browse by skill`, and the category tabs — and then
 goes straight into the cards. That gap is the only place on the page where a guest and an account
@@ -687,12 +734,21 @@ rather than an obvious failure:
    off on the next frame and collapse repeat requests into one.
 
 #### What has to happen first
-1. **The completion control** on the ten skill pages. Nothing can show three states until
-   `completed_at` is written by something.
-2. **Settle-based coverage** — see the ⚠️ defect note under "Completion tracking" above. This is a fix,
-   not a polish, and it must land before any percentage ships.
-3. **`data-optional` on Explore Further**, five pages.
-4. **The generated catalogue and its check.**
+1. ✅ **The completion control** on the ten skill pages — **done 2026-08-21**. Nothing could show
+   three states until `completed_at` was written by something; it now is.
+2. ✅ **Settle-based coverage** — **done 2026-08-21**. This was a fix, not a polish, and it had to
+   land before any percentage shipped. See the defect note under "Completion tracking" above.
+3. ⬜ **`data-optional` on Explore Further**, five pages.
+4. ⬜ **The generated catalogue and its check.**
+
+**Two of four are done, and the two that remain are the same piece of work** — 3 is what makes 4's
+denominator derivable, so they belong in one pass rather than two.
+
+⚠️ **Whoever picks this up inherits two commitments made in this entry's absence**, both from the
+2026-08-21 point release. The `data-session` attribute on `<html>` already exists and is documented
+under "top of the Library" above — use it rather than inventing a second mechanism. And the guest
+line at the top of the Library **must be rewritten in the same commit that ships this**, because it
+currently describes an account as only remembering your place.
 
 ⚠️ **One rule to settle before this and the dashboard are both built:** they must agree on what the
 words mean, including the fact that `visited` will mean *stopped on* for a plan and *advanced to* for a
@@ -1091,10 +1147,33 @@ tracked in `docs/`, not here:
 Log new infrastructure *ideas* here; anything already committed to that plan belongs in the docs
 above, so status lives in one place.
 
-### A build stamp, so "is the deploy live?" is answerable by script
-**Status:** Idea · **Raised 2026-08-20**, after a push where the question could not be answered
-**Relates to:** [scripts/verify-published.mjs](scripts/verify-published.mjs),
+### ~~A build stamp, so "is the deploy live?" is answerable by script~~
+**Status:** ✅ **Built 2026-08-21** · Raised 2026-08-20, after a push where the question could not be answered
+**Relates to:** [scripts/verify-build-stamp.mjs](scripts/verify-build-stamp.mjs),
+[scripts/verify-published.mjs](scripts/verify-published.mjs),
 [.github/workflows/pages.yml](.github/workflows/pages.yml), [astro.config.mjs](astro.config.mjs)
+
+✅ **Shipped as an Astro `astro:build:done` integration** in `astro.config.mjs`, so one
+implementation covers both origins rather than two pieces of CI plumbing. It writes
+`dist/build.json` — `sha`, `short`, `source`, `base`, `builtAt` — reading
+`VERCEL_GIT_COMMIT_SHA`, then `GITHUB_SHA`, then `git rev-parse HEAD` locally.
+
+**`npm run verify:stamp`** reads it from both origins and compares against `origin/main`.
+It also reports the two origins disagreeing as its own finding, which turns the known
+"Pages lags Vercel by ~2 minutes" judgement call into a fact.
+
+Three things settled while building it:
+
+- ⚠️ **A missing SHA writes the stamp anyway, with `sha: null`.** Failing the build over a
+  diagnostic would invert the point of it — the stamp exists to report on deploys, not to
+  prevent them.
+- **`pages.yml` now asserts `build.json` is present** in the same list that already guards
+  `index.html`. The stamp is not optional on the origin that has no other way to be checked.
+- ✅ **Nothing needed adding to `.gitignore`.** `dist/` is already ignored, so the entry's
+  "generate it, never commit it" requirement is satisfied structurally rather than by a rule
+  someone has to remember.
+
+Original entry follows.
 
 Write the commit SHA into a small generated file at build time — `/build.json` or a `<meta>` in
 `BaseLayout` — so any origin can be asked *which commit am I built from?* and answer.
@@ -1419,8 +1498,66 @@ rule says `rgba(255,255,255,.5)`, which looks like a deliberate de-emphasis rath
 below a threshold. It only shows up once composited against the banner it sits on.
 
 ### ⚠️ Primer slides scroll inside themselves, with nothing to say so
-**Status:** Defect · **Pre-existing, found 2026-08-20** while measuring space for the completion
-control — not caused by it · **Relates to:** the five `public/skills/*/primer.html`
+**Status:** **Half fixed 2026-08-21.** Cause 1 shipped; Cause 2 open with fresh numbers ·
+Pre-existing, found 2026-08-20 while measuring space for the completion control — not caused by it
+**Relates to:** the five `public/skills/*/primer.html`
+
+#### ⚠️ This was TWO defects, and the original entry conflated them — 2026-08-21
+The entry below noticed that three slides overflow by *the same amount* at 800px and at 1000px and
+concluded *"height is not what is failing them"*. The observation was right. The conclusion drawn
+from it — that the content is genuinely too tall — was **wrong**, and it sent the fix toward
+editorial trimming that could never have worked.
+
+**Cause 1 — decorative circles created phantom scroll. ✅ Fixed.** Every `.bg-circle` is
+`position:absolute` and purely decorative. A circle with a **negative `bottom`** extends past the
+slide's bottom edge, and because `.slide` is `overflow-y:auto` the browser makes the panel
+scrollable to reveal it. The overflow was **exactly the negative offset**, every time:
+
+| Slide | Inline style | Overflow |
+|---|---|---|
+| 2 | `bottom:-70px` | +70px |
+| 4 | `bottom:-40px` | +40px |
+| 5 | `bottom:-80px` | +80px |
+
+Same three slides, same amounts, on **all five decks, at every viewport height** — because it had
+nothing to do with content. ⚠️ **And those pixels were never visible at rest**: `.stage` is
+`overflow:hidden` and `.slide` is `inset:0`, so the stage already crops the bleed. The scroll
+region revealed decoration the design intends to be cut off — a reader who scrolled got a blank
+gap and the edge of a circle.
+
+**The fix: a `.slide-bg` clipping layer** (`position:absolute; inset:0; overflow:hidden`) wrapping
+each slide's circles. 34 layers across the five decks, 49 circles, none moved. `inset:0` keeps the
+coordinates identical — an abs-positioned child resolves against the same padding box either way —
+and both the wrapper and the bare circles are positioned with `z-index:auto`, so paint order is
+unchanged too. Verified on slide 2: the circle still bleeds exactly 70px below the slide, and the
+slide's scrollable overflow is now **0**.
+
+⚠️ **The alternative — clamping `bottom` to 0 — was rejected because it is NOT free.** The circle
+would shift up by its offset and render as a whole circle rather than one cropped by the slide
+edge. The bleed is deliberate design; the scroll region was the accident.
+
+**Cause 2 — genuinely long content. Still open.** It shrinks as the viewport grows, which is how
+the two are told apart. Re-measured across all five decks after the fix, at 1280px wide:
+
+| Deck | 720px | 800px | 900px | 1000px | 1080px |
+|---|---|---|---|---|---|
+| analytical-thinking | 8 | 3 | 1 | **none** | **none** |
+| creative-thinking | 7 | 3 | 1 | **none** | **none** |
+| **critical-thinking** | 9 (worst **+411**) | 7 (+331) | 5 (+231) | 2 (+131) | **1 (+51)** |
+| strategic-synthesis | 8 | 8 | 2 | **none** | **none** |
+| systems-thinking | 10 | 9 | 5 | 2 | **none** |
+
+✅ **Read the 1080px column: four of five decks are completely clean, and the fifth is one slide.**
+The whole of what was reported at that height was Cause 1. What remains is a short-laptop problem
+plus **critical-thinking slide 7**, which is the only slide overflowing at a full-height desktop
+window and the worst at every height by a wide margin.
+
+**So the decision the entry called for is now much smaller than it looked.** It is not a five-deck
+editorial project; it is one outlier slide, plus a judgement about how far down the viewport-height
+range the one-screenful promise is meant to hold. ⚠️ **Do not re-derive the numbers above from the
+pre-fix entry** — those were inflated by a constant on three slides of every deck.
+
+Original entry follows, including the pre-fix measurements it was written from.
 
 `.stage` is `overflow: hidden` and `.slide` is `position:absolute; inset:0; overflow-y:auto`. So a
 slide whose content exceeds the stage **scrolls within its own panel** — and because the stage

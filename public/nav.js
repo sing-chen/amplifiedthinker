@@ -602,6 +602,24 @@
 
   function setupAuth() {
     var peek = peekSession();
+
+    /* Publish the peeked state so a page can render a guest-only or
+       account-only element with NO FLASH. peekSession() is synchronous
+       localStorage, and nav.js is loaded from the head of every page, so this
+       lands before the body is parsed — CSS can decide at first paint rather
+       than an element appearing and then being hidden.
+
+       ⚠️ 'unknown' is published as-is, never collapsed to 'out'. Same rule
+       paintAuthSlot follows two functions down: showing the wrong state and
+       correcting it a moment later is worse than showing nothing briefly. A
+       page keying off this must therefore match the state it wants EXPLICITLY
+       — `:not([data-session="in"])` would catch 'unknown' too and show a guest
+       prompt to someone who is signed in.
+
+       auth.js overwrites this with the authoritative answer once the real
+       session resolves; the peek is optimistic and a stale token reads 'in'. */
+    document.documentElement.setAttribute('data-session', peek.state);
+
     paintAuthSlot(peek);
 
     // Re-paint after a nav re-injection, so a signed-in avatar survives the

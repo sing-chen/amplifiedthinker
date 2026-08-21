@@ -15,6 +15,7 @@
     "keepalive": "node scripts/keepalive.mjs",
     "verify:redirects": "node scripts/verify-redirects.mjs",
     "verify:published": "node scripts/verify-published.mjs",
+    "verify:stamp": "node scripts/verify-build-stamp.mjs",
     "verify:schema": "node scripts/verify-schema-columns.mjs",
     "verify:completion": "node scripts/verify-completion.mjs",
     "specimen:completion": "node scripts/dev/build-completion-specimen.mjs"
