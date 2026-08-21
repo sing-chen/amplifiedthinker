@@ -332,7 +332,37 @@
     D + '.ac-box.is-done .ac-tick{background:var(--d-bg-page,#142320)}' +
     D + '.ac-box.is-done .ac-tick svg{stroke:var(--d-teal-stroke,#8FCFC3)}' +
 
-    '@media(prefers-reduced-motion:reduce){' + S + '.ac-btn{transition:none}}';
+    '@media(prefers-reduced-motion:reduce){' + S + '.ac-btn{transition:none}}' +
+
+    /* ── the kept-date line in the start-over confirmation ────────────────
+       Scoped to the banner, which is fixed dark in both themes. */
+    '#resumeBanner .ac-kept{display:flex;align-items:center;gap:6px;margin-top:8px;' +
+      'color:var(--teal,#5BA79F)}' +
+    '#resumeBanner .ac-kept b{font-weight:600}' +
+    '#resumeBanner .ac-kept-warn{color:rgba(255,255,255,.75)}' +
+    '#resumeBanner .ac-tick-sm{width:13px;height:13px;fill:none;stroke:currentColor;' +
+      'stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}' +
+
+    /* ── the rail badge ───────────────────────────────────────────────────
+       Answers "have I finished this?" without scrolling to the end. It goes in
+       `.nav-brand`, which is where each artefact already names itself, and the
+       rail is fixed — so the answer is on screen wherever the reader is.
+       Considered and rejected: the slide counter at the foot of the rail, which
+       is about POSITION rather than completion; the hero, which needs a scroll
+       to the top and so fails the actual request; and a tick on the Summary nav
+       item, which would conflate "section seen" with "plan finished".
+       Dark in both themes, like the banner. */
+    // ⚠️ The tick is teal and the LABEL IS NOT, and that is a contrast decision
+    // rather than a decorative one. --teal measures 4.59:1 on the rail — over
+    // AA, but only just, and thin enough that any future change to the rail
+    // would quietly break it. Text carries the meaning, so it takes --sage at
+    // 6.96:1; the tick keeps the green and needs only the 3:1 that non-text
+    // contrast asks for.
+    '.nav-brand .ac-rail-done{display:flex;align-items:center;gap:7px;margin-top:12px;' +
+      "font-family:Poppins,sans-serif;font-size:11.5px;font-weight:600;" +
+      'line-height:1.35;color:var(--sage,#ACC4B6)}' +
+    '.nav-brand .ac-tick-sm{width:13px;height:13px;fill:none;stroke:var(--teal,#5BA79F);' +
+      'stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}';
 
   // The only interpolated value is a date this file formatted itself, so this
   // is belt and braces rather than a live defence — but the alternative is a
@@ -355,13 +385,28 @@
   // Exactly the rot CLAUDE.md describes: copy that states a limit is a claim
   // about the system, and it goes stale like a comment. One implementation
   // cannot drift from the behaviour it describes; ten can, and did.
-  function clearWarning(kind, completedAt) {
-    return ' This clears your place and your answers for this ' +
+  // ⚠️ IT NAMES ONLY WHAT IS ACTUALLY THERE. The first version said "your place
+  // and your answers" on every page, which was wrong twice: a PRIMER has no
+  // knowledge check at all, so there are no answers to clear; and a plan that
+  // has one only has answers if the reader has actually selected some.
+  //
+  // The state to judge that by is already in the snapshot — `quizSelected` and
+  // `quizRevealed` are documented at the top of this file as part of a plan's
+  // shape, and the resume banner on each page decides its own note the same way.
+  function hasQuizAnswers(snap) {
+    if (!snap) return false;
+    return !!(snap.quizRevealed ||
+              (snap.quizSelected && Object.keys(snap.quizSelected).length > 0));
+  }
+
+  function clearWarning(kind, snap) {
+    var what = (kind !== 'primer' && hasQuizAnswers(snap))
+      ? 'your place and your knowledge check answers'
+      : 'your place';
+
+    return ' This clears ' + what + ' for this ' +
            (kind === 'primer' ? 'primer' : 'plan') +
-           ', on every device you sign in on.' +
-           (completedAt
-             ? ' The date you completed it is kept.'
-             : ' It cannot be undone.');
+           ', on every device you sign in on.';
   }
 
   var cssDone = false;
@@ -390,6 +435,35 @@
 
   var TICK = '<span class="ac-tick" aria-hidden="true"><svg viewBox="0 0 24 24">' +
              '<polyline points="4 12.5 9.5 18 20 6.5"/></svg></span>';
+
+  // A bare stroked tick, for the dark surfaces — the resume banner and the nav
+  // rail. ⚠️ Both are fixed dark in BOTH themes, like the footer: neither has a
+  // [data-theme="dark"] rule anywhere in the ten pages. So this needs one colour,
+  // not a light and a dark one, and `currentColor` carries it.
+  var TICK_SM = '<svg class="ac-tick-sm" viewBox="0 0 24 24" aria-hidden="true">' +
+                '<polyline points="4 12.5 9.5 18 20 6.5"/></svg>';
+
+  // Kept in step with the control at the foot of the page, from the same call,
+  // so the two can never disagree about whether this is finished.
+  function paintRailBadge(doc, completedAt) {
+    var brand = doc.querySelector('.nav-brand');
+    if (!brand) return;
+
+    var badge = doc.getElementById('acRailDone');
+    if (!completedAt) {
+      if (badge) badge.remove();
+      return;
+    }
+
+    if (!badge) {
+      badge = doc.createElement('div');
+      badge.className = 'ac-rail-done';
+      badge.id = 'acRailDone';
+      brand.appendChild(badge);
+    }
+    badge.innerHTML = TICK_SM + '<span>Completed ' +
+                      escapeHtml(completionDate(completedAt)) + '</span>';
+  }
 
   function mountCompletion(store) {
     var doc = global.document;
@@ -428,9 +502,16 @@
         // the first save that did not happen — early, while there is still a
         // read ahead of them to be worth saving. Asking twice is worse than
         // asking once, and asking last is worse than asking first.
-        if (store.mode() !== 'account') { slot.innerHTML = ''; return; }
+        if (store.mode() !== 'account') {
+          slot.innerHTML = '';
+          paintRailBadge(doc, null);
+          return;
+        }
 
         var done = store.completedAt();
+        // Same call, same source of truth - the rail cannot say "completed"
+        // while the control at the foot of the page disagrees.
+        paintRailBadge(doc, done);
 
         if (done) {
           slot.innerHTML =
@@ -821,16 +902,26 @@
         // A page that reaches clear() without one would otherwise lose the
         // warning entirely, which is worse than an ugly dialog.
         if (!banner) {
-          if (global.confirm(clearWarning(kind, completedAt))) go();
+          var plain = clearWarning(kind, snapshot) +
+            (completedAt ? ' The date you completed it is kept.' : ' It cannot be undone.');
+          if (global.confirm(plain)) go();
           return;
         }
 
         var restore = banner.innerHTML;
         var returnFocus = doc.activeElement;
 
+        // The reassurance gets its own line and the tick, because it is the one
+        // part someone who has finished the thing is scanning for. The warning
+        // above it is what they are agreeing to; this is what they keep.
+        var kept = completedAt
+          ? '<span class="ac-kept">' + TICK_SM +
+            '<b>The date you completed it is kept.</b></span>'
+          : '<span class="ac-kept ac-kept-warn">It cannot be undone.</span>';
+
         banner.innerHTML =
           '<div class="resume-banner-text"><strong>Start over?</strong>' +
-          escapeHtml(clearWarning(kind, completedAt)) + '</div>' +
+          escapeHtml(clearWarning(kind, snapshot)) + kept + '</div>' +
           // ⚠️ Cancel is the PRIMARY button and confirming is the quiet one.
           // The loud button should not be the destructive one — the same
           // instinct behind account.astro's `danger-quiet`.
