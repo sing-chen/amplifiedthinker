@@ -476,15 +476,15 @@
         return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
       }
 
-      // ⚠️ Built by hand rather than through toLocaleDateString, and not for
-      // the hyphens. `{ month: 'short' }` under en-GB returns "Sept" for
-      // September — four letters, where every other month gives three — so the
-      // column width would depend on which month it was. A fixed table gives a
-      // fixed width, and DD-Mmm-yyyy is unambiguous in a way DD/MM vs MM/DD
-      // never is.
+      // ⚠️ Built by hand rather than through toLocaleDateString.
+      // `{ month: 'short' }` under en-GB returns "Sept" for September — four
+      // letters, where every other month gives three — so the pill's width
+      // would depend on which month it happened to be. A fixed table gives a
+      // fixed width; padding the day to two digits does the same at the other
+      // end, and together they make this format effectively constant-width.
       var dd = d.getDate();
-      return (dd < 10 ? '0' : '') + dd + '-' +
-             MONTHS_SHORT[d.getMonth()] + '-' + d.getFullYear();
+      return (dd < 10 ? '0' : '') + dd + ' ' +
+             MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
     } catch (e) { return ''; }
   }
 
