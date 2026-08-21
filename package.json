@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/verify-catalogue.mjs",
+    "prebuild": "node scripts/verify-catalogue.mjs && node scripts/verify-signin-return.mjs",
+    "verify:signin-return": "node scripts/verify-signin-return.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",

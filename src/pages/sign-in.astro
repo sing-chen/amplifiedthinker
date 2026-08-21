@@ -627,6 +627,84 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       // the site on the Pages origin.
       var HOME = '../index.html';
 
+      /* ── where to go after signing in ───────────────────────────────────
+         The nav appends `?next=<path>` so somebody who signs in mid-browse is
+         put back where they were rather than dumped on the home page.
+
+         ⚠️ THIS IS AN OPEN REDIRECT IF IT IS WRITTEN AS SANITISATION. `next`
+         comes from the URL bar, so it is attacker-controlled by definition: a
+         link like /sign-in/?next=https://evil.example genuinely originates from
+         this domain, shows this real sign-in form, and then hands the reader
+         over the moment they authenticate. That is a phishing primitive, and it
+         is the standard way this feature goes wrong.
+
+         So every rule below REJECTS. Nothing is stripped, trimmed, escaped or
+         repaired — a value that is not obviously safe is dropped and the reader
+         goes to the home page instead. There is no message: a rejected `next`
+         is not something a reader did, and explaining it would only teach
+         whoever crafted the link which rule they hit.
+
+         The origin comparison is done by the URL parser rather than by pattern
+         matching, because the parser is the thing that will eventually resolve
+         it. Anything clever enough to fool a regex but not the parser is
+         exactly the bug being avoided.
+      ─────────────────────────────────────────────────────────────────── */
+
+      // This page is served from <base>/sign-in/ on both origins, so stripping
+      // that suffix yields the site's own root — '/' on Vercel,
+      // '/amplifiedthinker/' on Pages.
+      var SITE_BASE = window.location.pathname.replace(/sign-in\/?$/, '');
+
+      function safeNext() {
+        try {
+          var raw = new URLSearchParams(window.location.search).get('next');
+          if (!raw) return null;
+
+          // Must be a site-absolute path. A scheme, a host, or a relative
+          // fragment all fail here rather than being coerced into one.
+          if (raw.charAt(0) !== '/') return null;
+
+          // ⚠️ '//evil.example' is a PROTOCOL-RELATIVE URL, not a path. It
+          // starts with '/' and is the single most common way this check is
+          // written wrong.
+          if (raw.charAt(1) === '/') return null;
+
+          // Browsers normalise '\' to '/' inconsistently, so '/\evil.example'
+          // can resolve off-origin in some of them.
+          if (raw.indexOf('\\') !== -1) return null;
+
+          var url = new URL(raw, window.location.origin);
+
+          // The real check, made by the parser that will do the resolving.
+          if (url.origin !== window.location.origin) return null;
+
+          var path = url.pathname + url.search + url.hash;
+
+          // ⚠️ Same-origin is NOT enough on the Pages origin. sing-chen.github.io
+          // hosts every one of this account's projects at the same origin, so an
+          // origin check alone would happily redirect to a different repository's
+          // site. Confine it to this site's own base.
+          if (path.indexOf(SITE_BASE) !== 0) return null;
+
+          // Returning to the sign-in page from the sign-in page is a loop.
+          if (/\/sign-in\/?$/.test(url.pathname)) return null;
+
+          return path;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // ⚠️ Deliberately NOT used by the email flows. A confirmation or reset
+      // link comes back through Supabase's redirect allowlist, and threading a
+      // destination through that means widening the allowlist that password
+      // resets depend on — for a reader who has already left the page in their
+      // mail client. Those keep going to HOME, which is what happens naturally
+      // here since the returning URL carries no `next`.
+      function returnTarget() {
+        return safeNext() || HOME;
+      }
+
       var statusEl = el('auth-status');
       var submitBtn = el('auth-submit');
       // signin | signup | forgot
@@ -1342,14 +1420,19 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         if (linkError && session) { show('none'); return; }
 
         if (session) {
-          // Straight to the home page. `replace` rather than `assign`, so Back
-          // does not return here only to bounce forward again — this page has
-          // nothing to offer someone who is already signed in.
+          // Back where they came from, or the home page. `replace` rather than
+          // `assign`, so Back does not return here only to bounce forward
+          // again — this page has nothing to offer someone already signed in.
           //
           // This also covers arriving with a session already: following the
           // confirmation link from a signup email, or simply opening /sign-in/
-          // while signed in.
-          window.location.replace(HOME);
+          // while signed in. Those carry no `next`, so they land on HOME.
+          //
+          // ⚠️ Only the DESTINATION changed here. The guards above this line are
+          // ordered the way they are because this redirect has quietly eaten
+          // four separate states that needed to be read — see the comments on
+          // each. Do not reorder them to make room for anything.
+          window.location.replace(returnTarget());
         } else {
           show('form');
           setMode(mode);

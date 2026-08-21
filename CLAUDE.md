@@ -74,6 +74,10 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so
                  a stale catalogue FAILS `npm run build` on both origins. Deliberate: see below
+                 verify-signin-return.mjs (npm run verify:signin-return) — ⚠️ also `prebuild`.
+                 Proves the `?next=` sign-in redirect cannot be pointed off-site. It LIFTS the real
+                 safeNext() out of sign-in.astro rather than reimplementing it, so a retyped copy
+                 cannot pass while the shipped one rots. Never delete it to make a build go green
 _originals/      full-resolution source images, gitignored — outside public/ on purpose
 .env             gitignored; shape in .env.example. Needed ONLY by npm run verify:rls.
                  There are deliberately no Supabase env vars in Vercel or pages.yml —
@@ -138,9 +142,11 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   `document.currentScript.src`; bundled as a module that is `null` and every nav link breaks. The
   skill pages also carry ~240 inline `onclick` handlers, which is why they stay in `public/`.
 - **`main` can now fail to deploy.** Before Phase 2 nothing was built, so nothing could fail.
-  **A second way to fail was added deliberately on 2026-08-21:** `verify:catalogue` runs as npm's
-  `prebuild`, and both origins build with `npm run build`, so editing a plan's nav rail without
-  running `npm run build:catalogue` stops the deploy on *both*. That is the intended behaviour —
+  **Two more ways to fail were added deliberately on 2026-08-21**, both as npm's `prebuild`, and both
+  origins build with `npm run build` so they gate *both*: `verify:catalogue` and
+  `verify:signin-return`. Editing a plan's nav rail without running `npm run build:catalogue` stops
+  the deploy, and so does weakening the open-redirect guard on the sign-in return. That is the
+  intended behaviour —
   the alternative is `public/skills-catalogue.json` quietly reporting a wrong denominator, which
   reads as "14 of 15 is complete" and fails nothing. A failed build leaves the previous deployment
   serving, where the pages and the catalogue still agree, so the failure mode is consistent.
