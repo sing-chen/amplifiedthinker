@@ -622,6 +622,37 @@
     return '#at=' + y;
   }
 
+  /* ⚠️ THE HREF IS BAKED AT PAINT TIME, AND THE NAV PAINTS AT PAGE LOAD —
+     when the scroll offset is still 0, so the marker computed there is always
+     absent. The reader then scrolls, clicks a link that has not changed since,
+     and lands at the top.
+
+     This is precisely why the offset worked when tested in isolation and not in
+     the page: calling returnParam() recomputes, reading the rendered href does
+     not. Any future test of this must read the ATTRIBUTE after scrolling, never
+     call the function.
+
+     So the href is refreshed immediately before activation. Capture phase, and
+     on mousedown/touchstart/keydown rather than click, so it is already correct
+     by the time any navigation begins — including middle-click and
+     ctrl-click, which never fire a plain `click`. */
+  function refreshSignInHref(e) {
+    try {
+      var t = e.target;
+      var a = t && t.closest ? t.closest('.snav-auth-signin') : null;
+      if (!a) return;
+      a.setAttribute('href', root('sign-in/') + returnParam());
+    } catch (err) { /* leave the existing href — it still signs them in */ }
+  }
+
+  function watchSignInActivation() {
+    document.addEventListener('mousedown', refreshSignInHref, true);
+    document.addEventListener('touchstart', refreshSignInHref, { capture: true, passive: true });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') refreshSignInHref(e);
+    }, true);
+  }
+
   /* The other half: land, scroll, and clean up after ourselves. */
   function restoreScroll() {
     try {
@@ -871,6 +902,10 @@
     // After setupAuth, so the auth stack is already being fetched — the scroll
     // is restored while it loads rather than after it.
     restoreScroll();
+
+    // Delegated, so it survives auth.js repainting the slot and the primer
+    // bundle wiping the nav — neither of which this has to know about.
+    watchSignInActivation();
   }
 
   if (document.body) {
