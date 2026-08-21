@@ -3488,8 +3488,21 @@ store.ready(function (savedData) {
   }
   updateNav();
 
-  // Show resume banner if there's a saved section beyond the first
-  if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
+  // Show the resume banner if there is a saved section beyond the first —
+  // and if the reader is not already standing in it.
+  //
+  // ⚠️ THE SECOND CONDITION IS ABOUT RELOADS. Nothing here overrides
+  // history.scrollRestoration, so the browser puts a refresh back at the
+  // scroll position it left. Without the check, refreshing mid-plan lands you
+  // at the saved section and then asks whether you would like to go to the
+  // saved section. updateNav() has just run against the restored scroll, so
+  // lastActiveId is where the reader actually is.
+  //
+  // The primers deliberately have no equivalent, and it is not an oversight:
+  // a deck does not scroll, so a reload genuinely does return to slide one and
+  // the offer is worth making.
+  if (savedData && savedData.section && savedData.section !== sectionIds[0] &&
+      lastActiveId !== savedData.section) {
     const resumeBanner      = document.getElementById('resumeBanner');
     const resumeBtn         = document.getElementById('resumeBtn');
     const resumeDismissBtn  = document.getElementById('resumeDismissBtn');

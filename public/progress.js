@@ -750,6 +750,34 @@
       // or bookmarklet still calling it gets null rather than an exception.
       load: function () { return null; },
 
+      /* ── the "Start over" confirmation ───────────────────────────────────
+         ⚠️ THE WORDING IS A CLAIM ABOUT WHAT clear() DOES, so it lives next to
+         clear() rather than in ten pages.
+
+         It was previously ten copies of "this permanently deletes your saved
+         progress… It cannot be undone." That was true when clear() was a hard
+         DELETE. The moment clear() started preserving `completed_at`, every one
+         of those copies became an overstatement — the page threatening to
+         destroy something it now deliberately keeps.
+
+         Exactly the rot CLAUDE.md describes: copy that states a limit is a claim
+         about the system, and it goes stale like a comment. One implementation
+         cannot drift from the behaviour it describes; ten can, and did. */
+      confirmClear: function () {
+        // A guest has nothing stored to lose, so nothing to warn about.
+        if (mode !== 'account') return true;
+
+        var msg = 'Start over? This clears your place and your answers for this ' +
+                  (kind === 'primer' ? 'primer' : 'plan') +
+                  ', on every device you sign in on.';
+
+        msg += completedAt
+          ? ' The date you completed it is kept.'
+          : ' It cannot be undone.';
+
+        return global.confirm(msg);
+      },
+
       /* ── completion ──────────────────────────────────────────────────────
          `completed_at` is the one column the DATABASE holds and the PAGE never
          authors. The schema is explicit that completion is decided deliberately

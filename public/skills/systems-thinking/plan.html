@@ -3416,8 +3416,21 @@ store.ready(function (savedData) {
   }
   updateNav();
 
-  // Show resume banner if there's a saved section beyond the first
-  if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
+  // Show the resume banner if there is a saved section beyond the first —
+  // and if the reader is not already standing in it.
+  //
+  // ⚠️ THE SECOND CONDITION IS ABOUT RELOADS. Nothing here overrides
+  // history.scrollRestoration, so the browser puts a refresh back at the
+  // scroll position it left. Without the check, refreshing mid-plan lands you
+  // at the saved section and then asks whether you would like to go to the
+  // saved section. updateNav() has just run against the restored scroll, so
+  // lastActiveId is where the reader actually is.
+  //
+  // The primers deliberately have no equivalent, and it is not an oversight:
+  // a deck does not scroll, so a reload genuinely does return to slide one and
+  // the offer is worth making.
+  if (savedData && savedData.section && savedData.section !== sectionIds[0] &&
+      lastActiveId !== savedData.section) {
     const resumeBanner      = document.getElementById('resumeBanner');
     const resumeBtn         = document.getElementById('resumeBtn');
     const resumeDismissBtn  = document.getElementById('resumeDismissBtn');
@@ -3442,17 +3455,20 @@ store.ready(function (savedData) {
     }, { once: true });
 
     // ⚠️ Destructive, and far more so than it looks. For a signed-in user this
-    // deletes the account's row for this plan on EVERY device, permanently.
-    // Before Phase 5 the same click cleared one key in one browser. Guests are
-    // not asked, because there is nothing stored to lose.
+    // clears the account's row for this plan on EVERY device. Before Phase 5 the
+    // same click cleared one key in one browser.
+    //
+    // ⚠️ THE WARNING TEXT NOW LIVES IN progress.js, beside the clear() it
+    // describes. It used to be spelled out here, in all ten pages, and said the
+    // progress was deleted permanently — which stopped being true the moment
+    // clear() began preserving `completed_at`. Ten copies of a sentence about
+    // behaviour defined somewhere else is how that happens. Do not inline it
+    // again. confirmClear() also handles the guest case, who is not asked
+    // because there is nothing stored to lose.
     //
     // No { once: true }: cancelling must leave the button working.
     resumeDismissBtn.addEventListener('click', function () {
-      if (store.mode() === 'account' && !window.confirm(
-            'Start over? This permanently deletes your saved progress for ' +
-            'this plan, on every device you sign in on. It cannot be undone.')) {
-        return;
-      }
+      if (!store.confirmClear()) return;
       hideBanner();
       resetAllProgress();
     });

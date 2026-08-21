@@ -1095,14 +1095,11 @@
       saveProgress();
     }, { once: true });
 
-    // ⚠️ See the matching comment on the plan pages. For a signed-in user this
-    // deletes the account's row for this primer on every device, permanently.
+    // ⚠️ See the matching comment on the plan pages. The warning text lives in
+    // progress.js beside the clear() it describes, because ten inlined copies
+    // of it had already gone stale once.
     resumeDismissBtn.addEventListener('click', function () {
-      if (store.mode() === 'account' && !window.confirm(
-            'Start over? This permanently deletes your saved progress for ' +
-            'this primer, on every device you sign in on. It cannot be undone.')) {
-        return;
-      }
+      if (!store.confirmClear()) return;
       hideBanner();
       visited = new Set([0]);
       updateUI();
