@@ -391,6 +391,33 @@
 <body>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <script src="nav.js"></script>
+<script>
+/* The personal layer, for signed-in readers only.
+   ⚠️ A GUEST FETCHES NEITHER FILE. That is the whole point of gating here
+   rather than inside the modules: the guest page ships exactly as it always
+   has, with no extra bytes for markup they never receive.
+
+   data-session is set by nav.js above, synchronously, from a localStorage peek
+   — so this decision is made before the Library markup is even parsed.
+
+   ⚠️ "unknown" LOADS THE STACK, deliberately. It means the peek could not tell,
+   which includes a signed-in reader whose token could not be parsed; the module
+   waits for the real session and does nothing if it turns out to be a guest.
+   Only a definite "out" skips. Matching nav.js's own
+   `if (peek.state !== 'out' || pageNeedsAuth()) loadAuthStack()`.
+
+   ⚠️ async=false preserves EXECUTION ORDER — future-skills-progress.js reads
+   AmplifiedSkillsProgress, which the first file defines. It does not make the
+   load blocking. Same reasoning as nav.js's loadAuthStack. */
+(function () {
+  if (document.documentElement.getAttribute('data-session') === 'out') return;
+  ['skills-progress.js', 'future-skills-progress.js'].forEach(function (f) {
+    var s = document.createElement('script');
+    s.src = f; s.async = false; s.defer = true;
+    document.head.appendChild(s);
+  });
+})();
+</script>
 
 <section class="hero" id="overview">
   <svg class="hero-pattern" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
