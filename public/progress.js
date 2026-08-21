@@ -191,6 +191,439 @@
     if (btn) btn.addEventListener('click', function () { el.remove(); });
   }
 
+  /* ── the completion control ────────────────────────────────────────────── */
+
+  // ⚠️ More UI in a storage module, and the argument is the one made above the
+  // guest notice: the alternative is thirty-odd lines and a stylesheet pasted
+  // into ten hand-written pages that already carry ~240 inline handlers each.
+  //
+  // It renders into whatever the page offers as `#completionSlot`, and does
+  // NOTHING AT ALL when there isn't one. That is deliberate — it means the ten
+  // pages can be fitted one at a time, and a page that has not been fitted is
+  // unchanged rather than broken.
+  //
+  // Completion is the one thing here the user states rather than the page
+  // inferring it. The schema has said so since Phase 3, and the reason is that
+  // `visited` is coverage by scrolling: inferring completion from it would make
+  // a fast scroll count as finishing.
+
+  // ⚠️ EVERY RULE IS SCOPED UNDER THE ID, AND THAT IS NOT TIDINESS.
+  //
+  // This stylesheet is injected into ten hand-written pages, each with its own
+  // <style> block and its own element selectors. `.section p` is (0,1,1) and
+  // beats a bare `.ac-note` at (0,1,0) — which it duly did: the note rendered
+  // in the body colour in both themes, and looked deliberate. An id prefix is
+  // (1,1,0), so these rules win without anyone having to audit ten stylesheets
+  // first, or re-audit them when a page gains a rule.
+  //
+  // Same family as the `.auth-panel label` defect in CLAUDE.md. The tell is
+  // identical: nothing errors, and the wrong result looks like a design choice.
+  var S = '#completionSlot ';
+  var D = '[data-theme="dark"] #completionSlot ';
+
+  /* The colour system, in one sentence: the TERRACOTTA LEFT BAR identifies the
+     component and never changes; the FILL carries the state.
+
+     It has to be legible against its neighbours, not merely pretty. The plan's
+     Summary already ends with `.next-step-card` — light-sage fill, teal left
+     bar — so the first version of this, a pale sage tint, read as a washed-out
+     copy of the card directly beneath it. Terracotta is the page's emphasis
+     accent (the hero bar, root-cause step numbers) and belongs to no other
+     component here; `--cream` is the even-section striping and `--amber` is the
+     overuse-warning colour, so both were unavailable for different reasons.
+
+     Done is an INVERSION rather than another tint — solid fill, reversed text —
+     because the two states have to be distinguishable at a glance, not only by
+     reading them. */
+  var COMPLETION_CSS =
+    '#completionSlot{margin:40px 0 0}' +
+    // A guest gets an empty slot, and an empty slot must take no space —
+    // otherwise the page carries a 40px gap explained by nothing.
+    '#completionSlot:empty{display:none;margin:0}' +
+
+    /* ── the primer variant ───────────────────────────────────────────────
+       ⚠️ THE REASON IS WIDTH, not height. `--content-max` is NOT declared on
+       the primers, so the shared rule falls back to 780px — while the slide's
+       own `.next-step-card` is 560px. Left alone the control renders 220px
+       wider than everything beside it, on the one page type whose layout is
+       fixed enough to make that obvious.
+
+       The tighter padding is a smaller gain than it looks, and the measurement
+       is worth recording so nobody re-derives it: in situ the compact box saves
+       about 10px against the full one, because at 560px the head and note wrap
+       onto more lines and eat most of what the padding gives back.
+
+       And DO NOT justify this by "a slide should not scroll". At a 720px
+       viewport, nine of the ten slides on an untouched primer already overflow,
+       by up to 96px — measured on analytical-thinking before any anchor was
+       added. Slides scrolling at laptop heights is a pre-existing property of
+       the decks, not something this control introduces or fixes. */
+    S + '.ac-box.ac-compact{max-width:560px;padding:16px 20px}' +
+    S + '.ac-box.ac-compact .ac-btn{margin-top:12px;padding:8px 16px}' +
+    S + '.ac-box.ac-compact .ac-note{margin-top:8px}' +
+
+    /* ── unset ── */
+    S + '.ac-box{background:#FFFFFF;border:1px solid rgba(138,75,44,.22);' +
+      'border-left:4px solid var(--terracotta,#8A4B2C);' +
+      'border-radius:0 var(--radius,8px) var(--radius,8px) 0;' +
+      'padding:22px 26px;max-width:var(--content-max,780px)}' +
+    S + '.ac-head{display:flex;align-items:center;gap:10px;font-family:Poppins,sans-serif;' +
+      'font-size:15px;font-weight:600;color:var(--navy,#1F4D4A);line-height:1.4;margin:0}' +
+    S + '.ac-tick{width:20px;height:20px;border-radius:50%;background:var(--deep-teal,#2D756F);' +
+      'display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}' +
+    S + '.ac-tick svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:3;' +
+      'stroke-linecap:round;stroke-linejoin:round}' +
+    S + '.ac-btn{margin-top:14px;font-family:Poppins,sans-serif;font-size:13px;font-weight:600;' +
+      'color:#fff;background:var(--deep-teal,#2D756F);border:0;border-radius:6px;' +
+      'padding:10px 20px;cursor:pointer;transition:background .15s}' +
+    S + '.ac-btn:hover:not(:disabled){background:var(--teal,#5BA79F)}' +
+    S + '.ac-btn:disabled{opacity:.6;cursor:default}' +
+    S + '.ac-undo{margin-top:12px;display:inline-block;font-family:Poppins,sans-serif;' +
+      'font-size:12.5px;font-weight:600;color:var(--deep-teal,#2D756F);background:none;' +
+      'border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}' +
+    S + '.ac-undo:disabled{opacity:.6;cursor:default}' +
+    // ⚠️ NOT --warm-gray. That is #8B8A85, which is 3.46:1 on this white card —
+    // under AA for 13px text. It reads as the obvious "muted text" choice and
+    // is used as such elsewhere, but not on a ground this light. --text-muted
+    // is the site-wide token for exactly this job; the skill pages do not
+    // declare it, so the fallback carries its value and reaches 6.9:1.
+    S + '.ac-note{margin:10px 0 0;font-family:Inter,sans-serif;font-size:13px;line-height:1.6;' +
+      'color:var(--text-muted,#4A5C55)}' +
+    S + '.ac-note a{color:var(--deep-teal,#2D756F)}' +
+    S + '.ac-note.ac-err{color:var(--terracotta,#8A4B2C)}' +
+
+    /* ── done: inverted ── */
+    S + '.ac-box.is-done{background:var(--deep-teal,#2D756F);border-color:var(--deep-teal,#2D756F);' +
+      'border-left-color:var(--terracotta,#8A4B2C)}' +
+    S + '.ac-box.is-done .ac-head{color:var(--off-white,#EEF2EF)}' +
+    S + '.ac-box.is-done .ac-note{color:rgba(238,242,239,.80)}' +
+    S + '.ac-box.is-done .ac-note a,' + S + '.ac-box.is-done .ac-undo{color:var(--off-white,#EEF2EF)}' +
+    S + '.ac-box.is-done .ac-tick{background:var(--off-white,#EEF2EF)}' +
+    S + '.ac-box.is-done .ac-tick svg{stroke:var(--deep-teal,#2D756F)}' +
+
+    /* ── dark ── */
+    // ⚠️ NOT --d-bg-surface. That is #1B2E29, and `.next-step-card` sits at
+    // #1C332E directly beneath this — within five points on every channel, so
+    // the two read as one continuous block and only the bar colours tell them
+    // apart. --d-terra-bg is the hero's own surface on these pages, so it is an
+    // established background rather than an invented one, and it pairs with the
+    // terracotta bar instead of competing with the neighbour's teal.
+    D + '.ac-box{background:var(--d-terra-bg,#33231A);' +
+      'border-color:rgba(232,201,174,.22);' +
+      'border-left-color:var(--d-terra-stroke,#E8C9AE)}' +
+    D + '.ac-head{color:var(--d-fg-heading,#DCEAE3)}' +
+    D + '.ac-note{color:var(--d-fg-2,#9BAAA3)}' +
+    D + '.ac-note.ac-err{color:var(--d-terra-stroke,#E8C9AE)}' +
+    D + '.ac-tick{background:var(--d-teal-stroke,#8FCFC3)}' +
+    D + '.ac-tick svg{stroke:var(--d-bg-page,#142320)}' +
+    D + '.ac-btn{background:var(--d-teal-stroke,#8FCFC3);color:var(--d-bg-page,#142320)}' +
+    D + '.ac-btn:hover:not(:disabled){background:var(--sage,#ACC4B6)}' +
+    D + '.ac-undo,' + D + '.ac-note a{color:var(--d-fg-brand,#ACC4B6)}' +
+
+    // Dark inverts the other way: a light fill on a dark page, so the state
+    // change is the same gesture rather than the same colour.
+    D + '.ac-box.is-done{background:var(--d-teal-stroke,#8FCFC3);' +
+      'border-color:var(--d-teal-stroke,#8FCFC3);' +
+      'border-left-color:var(--d-terra-stroke,#E8C9AE)}' +
+    D + '.ac-box.is-done .ac-head{color:var(--d-bg-page,#142320)}' +
+    D + '.ac-box.is-done .ac-note{color:rgba(20,35,32,.78)}' +
+    D + '.ac-box.is-done .ac-note a,' + D + '.ac-box.is-done .ac-undo{' +
+      'color:var(--d-bg-page,#142320)}' +
+    D + '.ac-box.is-done .ac-tick{background:var(--d-bg-page,#142320)}' +
+    D + '.ac-box.is-done .ac-tick svg{stroke:var(--d-teal-stroke,#8FCFC3)}' +
+
+    '@media(prefers-reduced-motion:reduce){' + S + '.ac-btn{transition:none}}' +
+
+    /* ── the start-over confirmation ──────────────────────────────────────
+       ⚠️ IT LAYS OUT AS A COLUMN, and the banner's own layout is why. The
+       default is a 480px flex ROW — text, then two buttons — which suits
+       "Welcome back · You were in Summary" and nothing longer. A full sentence
+       plus a kept line leaves the text about 250px between the padding and the
+       buttons, so it wrapped four times, the buttons floated against a block
+       taller than themselves, and the tick detached from its own label.
+
+       So while confirming, the banner stacks: message across the full width,
+       buttons on a row beneath it, and a little more room to breathe. The
+       banner is fixed dark in both themes, so none of this needs a variant. */
+    '#resumeBanner.ac-confirming{display:block;max-width:560px;padding:16px 18px 16px 20px}' +
+    '#resumeBanner.ac-confirming .resume-banner-text{margin-bottom:14px}' +
+    // Left-aligned, to sit under the left-aligned message rather than drifting
+    // to the opposite edge of a block they belong to.
+    '#resumeBanner .ac-actions{display:flex;gap:10px;justify-content:flex-start}' +
+
+    // align-items:flex-start, not center: once the label wraps to two lines a
+    // centred tick sits between them, attached to neither. The offset drops it
+    // onto the optical middle of the FIRST line instead.
+    '#resumeBanner .ac-kept{display:flex;align-items:flex-start;gap:7px;margin-top:10px;' +
+      'color:var(--teal,#5BA79F)}' +
+    '#resumeBanner .ac-kept b{font-weight:600}' +
+    '#resumeBanner .ac-kept-warn{color:rgba(255,255,255,.75)}' +
+    '#resumeBanner .ac-tick-sm{width:13px;height:13px;fill:none;stroke:currentColor;' +
+      'stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;' +
+      'margin-top:3px}' +
+
+    /* ── the rail badge ───────────────────────────────────────────────────
+       Answers "have I finished this?" without scrolling to the end. It goes in
+       `.nav-brand`, which is where each artefact already names itself, and the
+       rail is fixed — so the answer is on screen wherever the reader is.
+       Considered and rejected: the slide counter at the foot of the rail, which
+       is about POSITION rather than completion; the hero, which needs a scroll
+       to the top and so fails the actual request; and a tick on the Summary nav
+       item, which would conflate "section seen" with "plan finished".
+       Dark in both themes, like the banner. */
+    // ⚠️ The tick is teal and the LABEL IS NOT, and that is a contrast decision
+    // rather than a decorative one. --teal measures 4.59:1 on the rail — over
+    // AA, but only just, and thin enough that any future change to the rail
+    // would quietly break it. Text carries the meaning, so it takes --sage at
+    // 6.96:1; the tick keeps the green and needs only the 3:1 that non-text
+    // contrast asks for.
+    // A pill rather than a bare line. The first version was a tick and some text
+    // at the same weight as everything else on the rail, which read as another
+    // label rather than as a status — it needed a shape of its own to be seen.
+    // inline-flex so it hugs its text: a full-width band would read as a section
+    // divider on a rail that is already a stack of full-width rows.
+    '.nav-brand .ac-rail-done{display:inline-flex;align-items:center;gap:7px;' +
+      'margin-top:14px;padding:5px 11px 5px 9px;border-radius:999px;' +
+      'background:rgba(91,167,159,.14);border:1px solid rgba(91,167,159,.38);' +
+      "font-family:Poppins,sans-serif;font-size:12px;font-weight:600;" +
+      'line-height:1.3;color:var(--light-sage,#D0E2D6);white-space:nowrap;' +
+      // Backstop. The date format above is what keeps this inside the rail; this
+      // is what stops an unexpected string breaking the layout rather than just
+      // being clipped.
+      'max-width:100%;overflow:hidden}' +
+    '.nav-brand .ac-rail-done span{overflow:hidden;text-overflow:ellipsis}' +
+    '.nav-brand .ac-tick-sm{width:13px;height:13px;fill:none;stroke:var(--teal,#5BA79F);' +
+      'stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}';
+
+  // The only interpolated value is a date this file formatted itself, so this
+  // is belt and braces rather than a live defence — but the alternative is a
+  // reader having to prove that, every time they read the template.
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // ⚠️ THE WORDING IS A CLAIM ABOUT WHAT clear() DOES, so it lives beside it
+  // rather than in ten pages.
+  //
+  // It was previously ten copies of "this permanently deletes your saved
+  // progress… It cannot be undone." That was true while clear() was a hard
+  // DELETE. The moment clear() started preserving `completed_at`, every one of
+  // those copies became an overstatement — the page threatening to destroy the
+  // one thing it now deliberately keeps.
+  //
+  // Exactly the rot CLAUDE.md describes: copy that states a limit is a claim
+  // about the system, and it goes stale like a comment. One implementation
+  // cannot drift from the behaviour it describes; ten can, and did.
+  // ⚠️ IT NAMES ONLY WHAT IS ACTUALLY THERE. The first version said "your place
+  // and your answers" on every page, which was wrong twice: a PRIMER has no
+  // knowledge check at all, so there are no answers to clear; and a plan that
+  // has one only has answers if the reader has actually selected some.
+  //
+  // The state to judge that by is already in the snapshot — `quizSelected` and
+  // `quizRevealed` are documented at the top of this file as part of a plan's
+  // shape, and the resume banner on each page decides its own note the same way.
+  function hasQuizAnswers(snap) {
+    if (!snap) return false;
+    return !!(snap.quizRevealed ||
+              (snap.quizSelected && Object.keys(snap.quizSelected).length > 0));
+  }
+
+  function clearWarning(kind, snap) {
+    var what = (kind !== 'primer' && hasQuizAnswers(snap))
+      ? 'your place and your knowledge check answers'
+      : 'your place';
+
+    return ' This clears ' + what + ' for this ' +
+           (kind === 'primer' ? 'primer' : 'plan') +
+           ', on every device you sign in on.';
+  }
+
+  var cssDone = false;
+
+  function injectCompletionCss(doc) {
+    if (cssDone) return;
+    cssDone = true;
+    var s = doc.createElement('style');
+    s.id = 'amplified-completion-css';
+    s.textContent = COMPLETION_CSS;
+    doc.head.appendChild(s);
+  }
+
+  // ⚠️ Not `toLocaleDateString`, and the reason is width rather than taste.
+  // `{ month: 'short' }` under en-GB returns "Sept" for September — four
+  // letters, where every other month gives three. A fixed table gives every
+  // month the same width; padding the day does the same at the other end.
+  var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  // ONE FORMAT, ALWAYS: DD Mmm YYYY. It renders in the rail pill, which has
+  // 212px to work with, and in the completion control at the foot of the page.
+  //
+  // ⚠️ It used to drop the year for dates in the current year, on the reasoning
+  // that a bare year reads as clutter on something finished last week. That was
+  // a trap, not a nicety: the long form only appeared once a completion was no
+  // longer from this year, so "Completed 30 September 2025" — 231px in a 212px
+  // rail — would have looked perfect for months and first overflowed in
+  // January, on a date nobody would connect to a layout change.
+  //
+  // One format cannot do that. Every date is the same shape and the same width,
+  // so what is measured today is what renders in any month of any year.
+  function completionDate(iso) {
+    try {
+      // ⚠️ The falsy check is not redundant with the isNaN below it.
+      // `new Date(null)` is the epoch, not an invalid date, so a null would
+      // render as "01 Jan 1970" — a plausible-looking date rather than an
+      // obvious failure. No caller passes one today; this is so none can.
+      if (!iso) return '';
+
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      var dd = d.getDate();
+      return (dd < 10 ? '0' : '') + dd + ' ' +
+             MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
+    } catch (e) { return ''; }
+  }
+
+  var TICK = '<span class="ac-tick" aria-hidden="true"><svg viewBox="0 0 24 24">' +
+             '<polyline points="4 12.5 9.5 18 20 6.5"/></svg></span>';
+
+  // A bare stroked tick, for the dark surfaces — the resume banner and the nav
+  // rail. ⚠️ Both are fixed dark in BOTH themes, like the footer: neither has a
+  // [data-theme="dark"] rule anywhere in the ten pages. So this needs one colour,
+  // not a light and a dark one, and `currentColor` carries it.
+  var TICK_SM = '<svg class="ac-tick-sm" viewBox="0 0 24 24" aria-hidden="true">' +
+                '<polyline points="4 12.5 9.5 18 20 6.5"/></svg>';
+
+  // Kept in step with the control at the foot of the page, from the same call,
+  // so the two can never disagree about whether this is finished.
+  function paintRailBadge(doc, completedAt) {
+    var brand = doc.querySelector('.nav-brand');
+    if (!brand) return;
+
+    var badge = doc.getElementById('acRailDone');
+    if (!completedAt) {
+      if (badge) badge.remove();
+      return;
+    }
+
+    if (!badge) {
+      badge = doc.createElement('div');
+      badge.className = 'ac-rail-done';
+      badge.id = 'acRailDone';
+      brand.appendChild(badge);
+    }
+    badge.innerHTML = TICK_SM + '<span>Completed ' +
+                      escapeHtml(completionDate(completedAt)) + '</span>';
+  }
+
+  function mountCompletion(store) {
+    var doc = global.document;
+
+    function attach() {
+      var slot = doc.getElementById('completionSlot');
+      if (!slot) return;                      // page not fitted yet — do nothing
+      injectCompletionCss(doc);
+
+      var isPrimer = store.kind === 'primer';
+
+      // A plan is worked through; a ten-minute deck is finished. "Worked all the
+      // way through this primer" overstates what it asks of someone, and the
+      // slide has no room for the longer line anyway.
+      var prompt = isPrimer
+        ? 'Finished this primer?'
+        : 'Worked all the way through this learning plan?';
+
+      // Narrower and tighter, so the last slide does not start scrolling.
+      var boxClass = isPrimer ? 'ac-box ac-compact' : 'ac-box';
+
+      var busy = false;
+
+      function render(msg, isErr) {
+        // ⚠️ GUESTS SEE NOTHING HERE, AND THAT IS THE POINT.
+        //
+        // The first version showed the button and answered a guest who pressed
+        // it. Two things are wrong with that. Marking complete would do nothing
+        // even for the current session, because this file keeps nothing at all
+        // for a guest — so the button is a promise it cannot keep.
+        //
+        // Worse, the END OF A PLAN IS THE WEAKEST MOMENT TO ASK. A guest has no
+        // stored progress, so signing up there rescues nothing; the honest
+        // version of the offer is "make an account, and note that none of what
+        // you just read was recorded". The guest notice above already asks, at
+        // the first save that did not happen — early, while there is still a
+        // read ahead of them to be worth saving. Asking twice is worse than
+        // asking once, and asking last is worse than asking first.
+        if (store.mode() !== 'account') {
+          slot.innerHTML = '';
+          paintRailBadge(doc, null);
+          return;
+        }
+
+        var done = store.completedAt();
+        // Same call, same source of truth - the rail cannot say "completed"
+        // while the control at the foot of the page disagrees.
+        paintRailBadge(doc, done);
+
+        if (done) {
+          slot.innerHTML =
+            '<div class="' + boxClass + ' is-done">' +
+              '<p class="ac-head">' + TICK + 'Completed ' +
+                escapeHtml(completionDate(done)) + '</p>' +
+              '<button class="ac-undo" type="button" id="acUndo">' +
+                'Mark as not complete</button>' +
+              (msg ? '<p class="ac-note' + (isErr ? ' ac-err' : '') + '">' +
+                     msg + '</p>' : '') +
+            '</div>';
+          wire(doc.getElementById('acUndo'), false);
+          return;
+        }
+
+        slot.innerHTML =
+          '<div class="' + boxClass + '">' +
+            '<p class="ac-head">' + prompt + '</p>' +
+            '<button class="ac-btn" type="button" id="acDone">' +
+              'I’ve completed this</button>' +
+            '<p class="ac-note' + (isErr ? ' ac-err' : '') + '">' +
+              (msg || 'Only you can see this, and you can undo it at any time.') +
+            '</p>' +
+          '</div>';
+        wire(doc.getElementById('acDone'), true);
+      }
+
+      function wire(btn, value) {
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          if (busy) return;
+
+          // No guest branch: render() never draws a button for one. The guard
+          // inside store.setComplete() stays as the backstop for any other
+          // caller, but nothing here can reach it.
+          busy = true;
+          btn.disabled = true;
+          store.setComplete(value, function (ok) {
+            busy = false;
+            if (ok) { render(); return; }
+            // Leave the state as it was and say so. Silently doing nothing is
+            // the one outcome that would make someone press it twice.
+            render('That did not save. Check your connection and try again.', true);
+          });
+        });
+      }
+
+      // ready() gives the authoritative completedAt in account mode and null
+      // for a guest, so this is the first moment either state can be drawn.
+      store.ready(function () { render(); });
+    }
+
+    if (doc.readyState === 'loading') {
+      doc.addEventListener('DOMContentLoaded', attach);
+    } else {
+      attach();
+    }
+  }
+
   /* ── remote layer ──────────────────────────────────────────────────────── */
 
   function client() {
@@ -256,6 +689,12 @@
     var updatedAt = null;     // the row's updated_at, our write precondition
     var inFlight = false;
 
+    // The completion timestamp, or null. Deliberately NOT part of `snapshot`:
+    // everything in there is page state that round-trips through `state` jsonb,
+    // and this is a column the page never authors. Keeping them separate is
+    // what stops a page's save from ever carrying a completion value with it.
+    var completedAt = null;
+
     function fireReady(data) {
       settled = true;
       snapshot = data;
@@ -276,13 +715,14 @@
       // is the thing under test. A filter here would mask a broken policy by
       // making a leak impossible to observe from this page.
       c.from(TABLE)
-        .select('state, updated_at')
+        .select('state, updated_at, completed_at')
         .eq('skill_slug', slug)
         .eq('content_type', kind)
         .maybeSingle()
         .then(function (r) {
           if (r.error || !r.data) { fireReady(null); return; }
           updatedAt = r.data.updated_at;
+          completedAt = r.data.completed_at || null;
           syncedJson = JSON.stringify(r.data.state);
           fireReady(r.data.state || null);
         }, function () { fireReady(null); });
@@ -465,6 +905,174 @@
       // or bookmarklet still calling it gets null rather than an exception.
       load: function () { return null; },
 
+      /* ── the "Start over" confirmation ───────────────────────────────────
+         ⚠️ THE WORDING IS A CLAIM ABOUT WHAT clear() DOES, so it lives next to
+         clear() rather than in ten pages.
+
+         It was previously ten copies of "this permanently deletes your saved
+         progress… It cannot be undone." That was true when clear() was a hard
+         DELETE. The moment clear() started preserving `completed_at`, every one
+         of those copies became an overstatement — the page threatening to
+         destroy something it now deliberately keeps.
+
+         Exactly the rot CLAUDE.md describes: copy that states a limit is a claim
+         about the system, and it goes stale like a comment. One implementation
+         cannot drift from the behaviour it describes; ten can, and did. */
+      // ⚠️ ASYNCHRONOUS, and it has to be. It asks INSIDE THE RESUME BANNER
+      // rather than through window.confirm(), so it cannot return an answer the
+      // caller can branch on immediately. Every call site passes a callback that
+      // runs only on confirmation; there is deliberately no "on cancel" branch,
+      // because cancelling means nothing happens.
+      //
+      // ── why a disclosure and not a browser dialog ──
+      // `window.confirm()` was inherited, not chosen. It renders as a system
+      // dialog captioned with the origin — "JavaScript from http://…" — which
+      // reads as a security warning rather than as the site asking a question,
+      // and it was the most alarming surface on a site whose genuinely
+      // destructive action, deleting an account, is a quiet inline panel.
+      //
+      // ── why a disclosure and not a modal ──
+      // Same reason account.astro gives for the same decision, and it is
+      // stronger here: a hand-rolled modal means owning a focus trap, scroll
+      // lock, Escape handling, backdrop clicks and focus return, across ten
+      // hand-written pages with no dialog component between them. Done badly
+      // that is an ACCESSIBILITY REGRESSION from confirm(), which gets focus
+      // handling and screen-reader announcement for free. The banner is already
+      // a live region and already on screen, so re-using it costs none of that.
+      //
+      // It also adds no CSS: the banner's own classes exist on all ten pages,
+      // the same reason showGuestNotice() borrows them.
+      confirmClear: function (onConfirm) {
+        function go() { if (onConfirm) { try { onConfirm(); } catch (e) {} } }
+
+        // A guest has nothing stored to lose, so there is nothing to ask about.
+        if (mode !== 'account') { go(); return; }
+
+        var doc = global.document;
+        var banner = doc.getElementById('resumeBanner');
+
+        // No banner to ask in — fall back rather than silently doing nothing.
+        // A page that reaches clear() without one would otherwise lose the
+        // warning entirely, which is worse than an ugly dialog.
+        if (!banner) {
+          var plain = clearWarning(kind, snapshot) +
+            (completedAt ? ' The date you completed it is kept.' : ' It cannot be undone.');
+          if (global.confirm(plain)) go();
+          return;
+        }
+
+        var restore = banner.innerHTML;
+        var returnFocus = doc.activeElement;
+
+        // The reassurance gets its own line and the tick, because it is the one
+        // part someone who has finished the thing is scanning for. The warning
+        // above it is what they are agreeing to; this is what they keep.
+        var kept = completedAt
+          ? '<span class="ac-kept">' + TICK_SM +
+            '<b>The date you completed it is kept.</b></span>'
+          : '<span class="ac-kept ac-kept-warn">It cannot be undone.</span>';
+
+        banner.classList.add('ac-confirming');
+        banner.innerHTML =
+          '<div class="resume-banner-text"><strong>Start over?</strong>' +
+          escapeHtml(clearWarning(kind, snapshot)) + kept + '</div>' +
+          '<div class="ac-actions">' +
+          // ⚠️ Cancel is the PRIMARY button and confirming is the quiet one.
+          // The loud button should not be the destructive one — the same
+          // instinct behind account.astro's `danger-quiet`.
+          '<button class="resume-banner-btn primary" type="button" ' +
+          'id="acClearCancel">Cancel</button>' +
+          // ⚠️ The inline colour is not decoration. `.dismiss` renders its label
+          // at 50% white, which measures 3.87:1 on this banner — under AA for
+          // 12px text. That is pre-existing: the banner's own "Start over"
+          // button has carried it all along. Inheriting it for a DESTRUCTIVE
+          // CONFIRMATION is where it stops being tolerable, so this one button
+          // is lifted to a legible weight while keeping the quiet background.
+          // Fixing `.dismiss` itself means touching ten stylesheets and is a
+          // separate job — see BACKLOG.md.
+          '<button class="resume-banner-btn dismiss" type="button" ' +
+          'style="color:rgba(255,255,255,.82)" ' +
+          'id="acClearYes">Yes, start over</button>' +
+          '</div>';
+
+        function close() {
+          doc.removeEventListener('keydown', onKey);
+          // ⚠️ Drop the modifier as well as the markup. Leaving it on returns
+          // the original two-button row to a column layout it was never
+          // designed for.
+          banner.classList.remove('ac-confirming');
+          banner.innerHTML = restore;
+          if (returnFocus && returnFocus.focus) {
+            try { returnFocus.focus(); } catch (e) {}
+          }
+        }
+
+        function onKey(e) {
+          if (e.key === 'Escape') { e.preventDefault(); close(); }
+        }
+
+        doc.addEventListener('keydown', onKey);
+        doc.getElementById('acClearCancel').addEventListener('click', close);
+        doc.getElementById('acClearYes').addEventListener('click', function () {
+          doc.removeEventListener('keydown', onKey);
+          go();
+        });
+
+        // Focus the safe option. The banner is aria-live, so replacing its
+        // contents announces the question; moving focus here means a keyboard
+        // user lands on Cancel rather than on whatever they pressed.
+        var cancel = doc.getElementById('acClearCancel');
+        if (cancel && cancel.focus) cancel.focus();
+      },
+
+      /* ── completion ──────────────────────────────────────────────────────
+         `completed_at` is the one column the DATABASE holds and the PAGE never
+         authors. The schema is explicit that completion is decided deliberately
+         and never inferred from coverage, so this is its only writer. */
+      completedAt: function () { return completedAt; },
+
+      // ⚠️ Written IMMEDIATELY, not through the debounce. Every other write in
+      // this file is a side effect of scrolling and can afford to wait 800ms;
+      // this one is a button press, and a button that does nothing for most of
+      // a second reads as broken.
+      //
+      // It also touches no other column. `toRow()` omits `completed_at` for the
+      // mirror-image reason, so an ordinary save can never carry a completion
+      // value and this can never carry a half-initialised DOM.
+      setComplete: function (done, cb) {
+        function finish(ok) { if (cb) { try { cb(ok); } catch (e) {} } }
+
+        if (mode !== 'account') { showGuestNotice(); finish(false); return; }
+        var c = client();
+        if (!c) { finish(false); return; }
+
+        var value = done ? new Date().toISOString() : null;
+
+        // Upsert, not update: someone can reach the end of a plan and press
+        // this before any scroll has created the row. On conflict PostgREST
+        // updates only the columns in the payload, so state and visited survive.
+        var row = withUser({
+          skill_slug: slug,
+          content_type: kind,
+          completed_at: value
+        });
+        if (!row) { finish(false); return; }
+
+        c.from(TABLE)
+          .upsert(row, { onConflict: 'user_id,skill_slug,content_type' })
+          .select('updated_at')
+          .maybeSingle()
+          .then(function (r) {
+            if (r.error) { finish(false); return; }
+            completedAt = value;
+            // The row just moved under flush()'s guarded update. Take the new
+            // baseline, or the next ordinary save writes against a stale one
+            // and falls back to an unguarded upsert for no reason.
+            if (r.data && r.data.updated_at) updatedAt = r.data.updated_at;
+            finish(true);
+          }, function () { finish(false); });
+      },
+
       // "Start from top" / dismissing the resume banner. Deletes the account's
       // row. It does NOT touch localStorage — nothing in this file does.
       clear: function () {
@@ -475,11 +1083,34 @@
         if (mode !== 'account') return;
         var c = client();
         if (!c) return;
+
+        // ⚠️ "Start over" is about re-reading, not about undoing an achievement.
+        // A plain delete takes `completed_at` with it, so someone re-reading a
+        // plan they finished in March would silently lose the fact that they
+        // finished it — and nothing would tell them. When there is a completion
+        // worth keeping, blank the progress columns and leave the row standing.
+        //
+        // The hard delete stays right when there is nothing to preserve. A
+        // deliberate "clear everything for this skill" is a different feature
+        // (see BACKLOG.md) and that one WOULD remove the completion.
+        if (completedAt) {
+          c.from(TABLE)
+            .update({ state: {}, visited: [], position: null })
+            .eq('skill_slug', slug)
+            .eq('content_type', kind)
+            .select('updated_at')
+            .maybeSingle()
+            .then(function (r) {
+              updatedAt = (r && r.data && r.data.updated_at) || null;
+            }, function () {});
+          return;
+        }
+
         c.from(TABLE)
           .delete()
           .eq('skill_slug', slug)
           .eq('content_type', kind)
-          .then(function () { updatedAt = null; }, function () {});
+          .then(function () { updatedAt = null; completedAt = null; }, function () {});
       }
     };
 
@@ -504,7 +1135,11 @@
   function forPage() {
     var match = PAGE_RE.exec(global.location.pathname);
     if (!match) return createNullStore();
-    return createStore(match[2], match[1]);
+    var store = createStore(match[2], match[1]);
+    // Self-mounting on purpose: ten pages already call forPage(), and none of
+    // them should have to learn a second call to get the control.
+    mountCompletion(store);
+    return store;
   }
 
   global.AmplifiedProgress = {

@@ -34,3 +34,7 @@ amplifiedthinker-backup/
 # Fingerprints of what the live origins serve, written by npm run verify:published.
 # A point-in-time measurement of production, not source. Regenerate rather than commit.
 baseline-*.json
+
+# Specimen pages from scripts/dev/. Generated from the source they document,
+# so they are always reproducible and never the source of truth.
+specimen-*.html

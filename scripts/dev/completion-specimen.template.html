@@ -1,0 +1,177 @@
+<title>Completion Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap">
+<style>
+/* ── Brand tokens, copied verbatim from the plan pages ─────────────────────
+   Both sets are declared unconditionally so a data-theme="dark" WRAPPER can
+   resolve the --d-* names. On the real page dark lives on :root[data-theme],
+   which cannot be scoped to a single panel. */
+:root{
+  --sage:#ACC4B6; --teal:#5BA79F; --deep-teal:#2D756F; --off-white:#EEF2EF;
+  --cream:#F2E0D4; --terracotta:#8A4B2C; --amber:#D9A05B; --navy:#1F4D4A;
+  --charcoal:#2D3330; --light-sage:#D0E2D6; --warm-gray:#8B8A85;
+  --content-max:780px; --radius:8px;
+  --d-bg-page:#142320; --d-bg-surface:#1B2E29; --d-bg-sunken:#0E1917;
+  --d-fg-1:#E7EDE9; --d-fg-2:#9BAAA3; --d-fg-heading:#DCEAE3; --d-fg-brand:#ACC4B6;
+  --d-line:rgba(255,255,255,.12);
+  --d-teal-bg:#1C332E; --d-teal-stroke:#8FCFC3;
+  --d-terra-bg:#33231A; --d-terra-stroke:#E8C9AE;
+
+  --ui-bg:#F4F7F5; --ui-panel:#FFFFFF; --ui-ink:#16241F; --ui-ink-2:#4A5C55;
+  --ui-line:rgba(22,36,31,.14); --ui-accent:#2D756F;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ui-bg:#0F1A17; --ui-panel:#16241F; --ui-ink:#E8F0EC; --ui-ink-2:#A9BAB3;
+  --ui-line:rgba(232,240,236,.16); --ui-accent:#8FCFC3;
+}}
+:root[data-theme="dark"]{
+  --ui-bg:#0F1A17; --ui-panel:#16241F; --ui-ink:#E8F0EC; --ui-ink-2:#A9BAB3;
+  --ui-line:rgba(232,240,236,.16); --ui-accent:#8FCFC3;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ui-bg);color:var(--ui-ink-2);
+  font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.65}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 24px 88px}
+h1,h2,h3{font-family:Poppins,sans-serif;color:var(--ui-ink);margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+h2{font-size:19px;font-weight:600;margin:44px 0 4px}
+p{margin:0}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;
+  background:var(--ui-panel);border:1px solid var(--ui-line);padding:1px 5px;border-radius:4px}
+.eyebrow{font-family:Poppins,sans-serif;font-size:10.5px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ui-accent);display:block;margin-bottom:12px}
+.lede{margin-top:14px;max-width:640px;font-size:17px}
+.sub{margin-top:6px;max-width:660px;font-size:14.5px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;margin-top:18px}
+.stage{margin:0;border:1px solid var(--ui-line);border-radius:12px;overflow:hidden;background:var(--ui-panel)}
+.cap{font-family:Poppins,sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;
+  color:var(--ui-ink-2);padding:11px 16px;border-bottom:1px solid var(--ui-line)}
+.cap b{color:var(--ui-ink);font-weight:700}
+/* The real section ground: #summary is .section-odd. */
+.ground{background:var(--off-white);padding:26px 22px 30px}
+.ground[data-theme="dark"]{background:var(--d-bg-page)}
+
+/* The real neighbour, so distinctness can actually be judged. */
+.next-step-card{background:var(--light-sage);border-left:4px solid var(--deep-teal);
+  border-radius:0 var(--radius) var(--radius) 0;padding:20px 24px;margin:26px 0 0;max-width:var(--content-max)}
+.ground[data-theme="dark"] .next-step-card{background:var(--d-teal-bg);border-left-color:var(--d-teal-stroke)}
+.next-step-label{font-family:Poppins,sans-serif;font-size:11px;font-weight:600;
+  letter-spacing:.02em;text-transform:uppercase;color:var(--deep-teal);margin-bottom:8px}
+.ground[data-theme="dark"] .next-step-label{color:var(--d-teal-stroke)}
+.next-step-body{font-size:14px;line-height:1.65;color:var(--navy)}
+.ground[data-theme="dark"] .next-step-body{color:var(--d-fg-1)}
+.next-step-btn-outline{display:inline-block;margin-top:14px;font-family:Poppins,sans-serif;
+  font-size:12.5px;font-weight:600;color:var(--deep-teal);background:rgba(45,117,111,.1);
+  border:1.5px solid var(--deep-teal);border-radius:6px;padding:8px 16px}
+.ground[data-theme="dark"] .next-step-btn-outline{color:var(--d-teal-stroke);
+  background:rgba(143,207,195,.1);border-color:var(--d-teal-stroke)}
+
+.note{border-left:3px solid var(--ui-accent);padding:14px 18px;margin-top:20px;
+  background:var(--ui-panel);border-radius:0 8px 8px 0;font-size:14.5px}
+.note strong{color:var(--ui-ink)}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.sw{display:flex;align-items:center;gap:8px;font-size:12.5px;font-family:Poppins,sans-serif;
+  background:var(--ui-panel);border:1px solid var(--ui-line);border-radius:999px;padding:5px 12px 5px 6px}
+.sw i{width:18px;height:18px;border-radius:50%;display:block;border:1px solid var(--ui-line)}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--ui-line);
+  font-size:13px;color:var(--ui-ink-2)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ══ Below: the shipped stylesheet, verbatim except that #completionSlot is
+      renamed #slot1…#slotN so several instances can coexist on one page.
+      Nothing else is altered. ══ */
+/*__SCOPED_CSS__*/
+</style>
+
+<div class="wrap">
+  <span class="eyebrow">Lifted from the running page · not a mock</span>
+  <h1>The completion control, in place</h1>
+  <p class="lede">Every rule below is the stylesheet <code>progress.js</code> injects,
+  extracted from the source and reproduced byte-for-byte — the only change is renaming the
+  <code>#completionSlot</code> scope so several instances can sit on one page.</p>
+  <p class="sub">Each panel puts the control on the real section ground with its real
+  neighbour, <code>.next-step-card</code>, underneath it. That pairing is the whole point:
+  the first version was a pale sage tint, and it read as a washed-out copy of the card
+  below rather than as a separate thing.</p>
+
+  <h2>Unset and done</h2>
+  <p class="sub">The terracotta left bar identifies the component and never changes. The
+  fill carries the state, and done is an inversion rather than another tint.</p>
+  <div class="grid">
+    <!--__STAGES_A__-->
+  </div>
+
+  <div class="note">
+    <strong>What to judge here.</strong> Is the unset state distinct enough from the sage
+    card beneath it, and does the done state read as an achievement without shouting over
+    the rest of the section? Those are the two questions the colour change was meant to
+    answer.
+  </div>
+
+  <h2>When the write fails</h2>
+  <p class="sub">The state is left exactly as it was and the failure is said plainly.
+  Silently doing nothing is the one outcome that would make someone press it twice.</p>
+  <div class="grid">
+    <!--__STAGES_B__-->
+  </div>
+
+  <h2>The primer variant</h2>
+  <p class="sub">A plan section is a scrolling column; a primer slide is a fixed panel with its
+  own 560px card. The shared rule falls back to 780px there, because
+  <code>--content-max</code> is not declared on the primers — so without this the control would
+  render 220px wider than everything beside it.</p>
+  <div class="grid">
+    <!--__STAGES_C__-->
+  </div>
+  <div class="note">
+    <strong>Measured, so nobody re-derives it.</strong> The tighter padding saves about 10px in
+    situ, not the 80 the numbers suggest — at 560px the head and note wrap onto more lines and eat
+    most of what the padding gives back. And this is <em>not</em> justified by keeping a slide from
+    scrolling: at a 720px viewport, nine of the ten slides on an untouched primer already overflow,
+    by up to 96px. Slides scrolling at laptop heights is a pre-existing property of the decks.
+  </div>
+
+  <h2>Guests see nothing at all</h2>
+  <p class="sub">There is no fourth state, because the slot renders empty and collapses to
+  zero height for anyone who is not signed in.</p>
+  <div class="note">
+    <strong>Why, given a button and a prompt would have been easy.</strong> Marking
+    complete would do nothing even for the current session — this file keeps nothing
+    whatsoever for a guest. And the end of a plan is the <em>weakest</em> moment to ask for
+    a sign-up: a guest has no stored progress, so an account rescues nothing that was just
+    read. The honest wording would have been “make an account, and note that none of what
+    you just read was recorded.”
+    <br><br>
+    The site already asks, better and earlier — the existing “not being saved” notice fires
+    at the first save that did not happen, while there is still a read ahead worth keeping.
+    Asking twice is worse than asking once, and asking last is worse than asking first.
+  </div>
+
+  <h2>Measured values</h2>
+  <p class="sub">Read off the live page with <code>getComputedStyle</code>, in both themes,
+  across a frame boundary — reading paint-only properties in the same tick as a theme
+  switch returns the previous value, which cost a false bug report earlier.</p>
+  <div class="swatches">
+    <span class="sw"><i style="background:#FFFFFF"></i>unset fill · light</span>
+    <span class="sw"><i style="background:#2D756F"></i>done fill · light</span>
+    <span class="sw"><i style="background:#8A4B2C"></i>bar · light</span>
+    <span class="sw"><i style="background:#1B2E29"></i>unset fill · dark</span>
+    <span class="sw"><i style="background:#8FCFC3"></i>done fill · dark</span>
+    <span class="sw"><i style="background:#E8C9AE"></i>bar · dark</span>
+  </div>
+
+  <div class="note">
+    <strong>What this cannot tell you.</strong> It renders the component out of context by
+    design — no hero, no fourteen sections above it, no scroll. Whether it sits comfortably
+    at the end of a long read is still a question for the real page.
+  </div>
+
+  <footer>
+    Generated from <code>public/progress.js</code> on the
+    <code>feat/completion-control</code> branch. Regenerating after a style change is one
+    command, so this should never describe a version that no longer ships.
+  </footer>
+</div>

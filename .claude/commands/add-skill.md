@@ -136,6 +136,23 @@ Once the content plan is approved, build both files.
 
 9. Folder path: files go into `public/skills/[skill-slug]/` where slug is hyphenated lowercase (e.g. `creative-thinking`).
 
+10. **`<div id="completionSlot"></div>` must survive the copy, on BOTH pages.** ⚠️ It looks like
+    cruft — an empty div with no content, no classes and no visible effect — and that is exactly
+    why it is called out here. `progress.js` renders the "I've completed this" control into it for
+    signed-in readers and leaves it empty for everyone else, so a page without the anchor simply
+    never shows the control, with nothing failing and no error to notice.
+
+    It goes **immediately before `.next-step-card`**: in `#summary` on `plan.html`, and on the last
+    slide of `primer.html`. On the plan that position is deliberate — it sits at the end of Summary
+    rather than after Explore Further, because Explore Further is an additional resource and is not
+    counted as part of the plan.
+
+11. **The "Start over" handler calls `store.confirmClear(callback)`.** Do not write a
+    `window.confirm()` into the page. ⚠️ The warning wording is a claim about what `clear()` does —
+    it names the knowledge check only when there are answers to lose, and says the completion date
+    is kept only when there is one — so it lives in `progress.js` beside the behaviour it describes.
+    Ten inlined copies of that sentence had already gone stale once, which is why it moved.
+
 ---
 
 ## STEP 5 — AFTER BUILD

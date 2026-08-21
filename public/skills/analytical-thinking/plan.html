@@ -2917,6 +2917,13 @@
         </blockquote>
       </div>
 
+      <!-- Filled by progress.js, which owns the markup so ten pages do not each
+           carry a copy. Empty and inert if that file is unavailable. It sits
+           here, at the end of Summary, rather than after Explore Further —
+           Explore Further is an additional resource and is deliberately not
+           counted as part of the plan. -->
+      <div id="completionSlot"></div>
+
       <div class="next-step-card" style="margin:40px 0 0;padding:28px 32px;border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
         <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
         <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:16px;">Analytical Thinking gives you structure for understanding what's happening. Critical Thinking gives you the tools to test whether your conclusions hold. The two skills reinforce each other — once you can decompose a problem, the natural next challenge is evaluating what you find.</p>
@@ -3044,6 +3051,28 @@
 </main>
 
 <script>
+// ⚠️ THE BROWSER DOES NOT GET TO RESTORE SCROLL ON THIS PAGE.
+//
+// Left on `auto`, a refresh mid-plan put the reader back at their scroll
+// position AND showed the resume banner - so the page returned you to where
+// you were, then asked whether you would like to go to where you were.
+//
+// The first attempt at fixing that suppressed the banner when the restored
+// position already matched the saved section. It raced: the banner is decided
+// inside store.ready(), which fires after a network read, and the browser
+// restores scroll on its own schedule. Whichever won varied by browser, which
+// is precisely the kind of fix that cannot be verified.
+//
+// So do not race it. `manual` means a reload lands at the top, the banner is
+// always a real offer, and the behaviour matches the PRIMERS - a deck cannot
+// scroll-restore either, and returning to the start with an offer to resume
+// is the more intuitive of the two behaviours anyway.
+//
+// ⚠️ This also applies to back/forward navigation, not only reloads. Coming
+// back to a plan lands at the top rather than where you were - which is the
+// same trade, and the banner is what covers it.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 // ── PROGRESS STORE ───────────────────────
 // Storage lives in progress.js, shared by every skill page. This page owns
 // only the mapping between its own DOM and the stored shape.
@@ -3469,8 +3498,21 @@ store.ready(function (savedData) {
   }
   updateNav();
 
-  // Show resume banner if there's a saved section beyond the first
-  if (savedData && savedData.section && savedData.section !== sectionIds[0]) {
+  // Show the resume banner if there is a saved section beyond the first —
+  // and if the reader is not already standing in it.
+  //
+  // ⚠️ THE SECOND CONDITION IS ABOUT RELOADS. Nothing here overrides
+  // history.scrollRestoration, so the browser puts a refresh back at the
+  // scroll position it left. Without the check, refreshing mid-plan lands you
+  // at the saved section and then asks whether you would like to go to the
+  // saved section. updateNav() has just run against the restored scroll, so
+  // lastActiveId is where the reader actually is.
+  //
+  // The primers deliberately have no equivalent, and it is not an oversight:
+  // a deck does not scroll, so a reload genuinely does return to slide one and
+  // the offer is worth making.
+  if (savedData && savedData.section && savedData.section !== sectionIds[0] &&
+      lastActiveId !== savedData.section) {
     const resumeBanner      = document.getElementById('resumeBanner');
     const resumeBtn         = document.getElementById('resumeBtn');
     const resumeDismissBtn  = document.getElementById('resumeDismissBtn');
@@ -3495,19 +3537,25 @@ store.ready(function (savedData) {
     }, { once: true });
 
     // ⚠️ Destructive, and far more so than it looks. For a signed-in user this
-    // deletes the account's row for this plan on EVERY device, permanently.
-    // Before Phase 5 the same click cleared one key in one browser. Guests are
-    // not asked, because there is nothing stored to lose.
+    // clears the account's row for this plan on EVERY device. Before Phase 5 the
+    // same click cleared one key in one browser.
+    //
+    // ⚠️ THE WARNING TEXT NOW LIVES IN progress.js, beside the clear() it
+    // describes. It used to be spelled out here, in all ten pages, and said the
+    // progress was deleted permanently — which stopped being true the moment
+    // clear() began preserving `completed_at`. Ten copies of a sentence about
+    // behaviour defined somewhere else is how that happens. Do not inline it
+    // again. confirmClear() also handles the guest case, who is not asked
+    // because there is nothing stored to lose.
     //
     // No { once: true }: cancelling must leave the button working.
     resumeDismissBtn.addEventListener('click', function () {
-      if (store.mode() === 'account' && !window.confirm(
-            'Start over? This permanently deletes your saved progress for ' +
-            'this plan, on every device you sign in on. It cannot be undone.')) {
-        return;
-      }
-      hideBanner();
-      resetAllProgress();
+      // Asks inside the banner and calls back only on confirmation. There is
+      // no cancel branch because cancelling means nothing happens.
+      store.confirmClear(function () {
+        hideBanner();
+        resetAllProgress();
+      });
     });
   }
 });

@@ -320,6 +320,16 @@
   var ANNOUNCEMENTS = [
     {
       type: 'feature',
+      date: '2026-08-21',
+      // No expiryDays override: this takes the 14-day `feature` default. The
+      // Accounts item below runs 35 because it changed how the site works;
+      // this is one addition on top of that, so the default is right.
+      text: '<b>Mark a plan complete</b> when you have actually worked through it — your call, not the page\'s.',
+      linkHref: 'future-skills.html',
+      linkLabel: 'Browse the library'
+    },
+    {
+      type: 'feature',
       date: '2026-08-20',
       // `expiryDays` overrides EXPIRY_DAYS for this item alone. Accounts are a
       // change to how the site works rather than another thing added to it, so
