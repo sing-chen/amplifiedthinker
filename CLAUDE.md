@@ -51,8 +51,16 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    auth.js             session state site-wide, and the nav auth control
                    pwned.js            breach check; auth surfaces ONLY, not loaded by nav.js
                    auth-pages.css      styling for /sign-in/ and /account/, same scoping rule
-src/pages/       new Astro surfaces. sign-in.astro and account.astro are live; blog, admin
-                 and dashboard still to come. Both scaffolds were deleted 2026-08-19 —
+                   learning.js/.css    ⚠️ /learning/ ONLY, same scoping rule as the two above.
+                                       Owns NO definitions — what "complete" means and what
+                                       counts toward a denominator live in skills-progress.js,
+                                       so this page and the Future Skills library cannot
+                                       disagree about one account. Recomputing them here was a
+                                       defect within a day: the library read completed_at and
+                                       this read visited coverage, and one finished skill
+                                       showed as COMPLETED on one page and 30% on the other
+src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.astro are live;
+                 blog and admin still to come. Both scaffolds were deleted 2026-08-19 —
                  auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is
                  ever wanted back (auth-test holds RLS checks nothing has replaced)
 src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages match old ones

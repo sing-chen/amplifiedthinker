@@ -136,6 +136,11 @@
       escapeHtml(n.initialFor(name, email())) + '</button>' +
       '<div class="snav-auth-menu" id="snav-auth-menu" hidden>' +
       '  <p class="snav-auth-email">' + escapeHtml(greeting) + '</p>' +
+      // Your learning has no top-nav entry on purpose — it is for signed-in
+      // readers only, and this menu is the one place that is already
+      // conditional on being signed in. nav.js paints the avatar BUTTON before
+      // this file loads but never the menu, so this list lives here alone.
+      '  <a href="' + n.root('learning/') + '">Your learning</a>' +
       '  <a href="' + n.root('account/') + '">Account</a>' +
       '  <button type="button" id="snav-auth-signout">Sign out</button>' +
       '</div>';

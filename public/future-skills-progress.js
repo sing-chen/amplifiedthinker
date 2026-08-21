@@ -216,10 +216,10 @@
     'html[data-session="in"] .lib-summary.is-ready{display:flex}',
     '.ls-counts{font-family:\'Inter\',sans-serif;font-size:13.5px;color:var(--fg-1,#2C3E3A)}',
     '.ls-counts strong{font-family:\'Poppins\',sans-serif;font-weight:600}',
-    '.ls-resume{margin-left:auto;font-family:\'Inter\',sans-serif;font-size:13.5px}',
+    '.ls-more{margin-left:auto;font-family:\'Inter\',sans-serif;font-size:13.5px}',
     // Darker than --fg-brand on purpose: the strip's own --light-sage ground
     // put the brand teal at 4.13:1, just under AA for normal text.
-    '.ls-resume a{color:#14584A;font-weight:600;text-decoration:underline;text-underline-offset:2px}',
+    '.ls-more a{color:#14584A;font-weight:600;text-decoration:underline;text-underline-offset:2px}',
 
     /* Dark mode. Tokens differ per surface on this page, so these are explicit. */
     '[data-theme="dark"] .sring .sr-track{stroke:rgba(255,255,255,.12)}',
@@ -246,7 +246,7 @@
     '[data-theme="dark"] .lib-summary{background:var(--d-bg-surface,#1B2E29);border-color:var(--d-line,#2C433D)}',
     '[data-theme="dark"] .ls-counts{color:var(--d-fg-1,#C7D6D1)}',
     '[data-theme="dark"] .ls-counts strong{color:var(--d-fg-heading,#E6EFEC)}',
-    '[data-theme="dark"] .ls-resume a{color:var(--d-teal-stroke,#8FCFC3)}',
+    '[data-theme="dark"] .ls-more a{color:var(--d-teal-stroke,#8FCFC3)}',
 
     /* ⚠️ Reduced motion is NOT a faster sweep. It renders the final value
        instantly — the page already carries a prefers-reduced-motion block and
@@ -260,7 +260,7 @@
     '@media (max-width:700px){',
     '  .sprog{gap:10px;padding-left:8px}',
     '  .sring,.sring svg{width:38px;height:38px}',
-    '  .ls-resume{margin-left:0;width:100%}',
+    '  .ls-more{margin-left:0;width:100%}',
     '}'
   ].join('\n');
 
@@ -662,7 +662,24 @@
        The reader already has a per-skill answer one chevron away, where the
        resume point is stated next to the skill it belongs to and they choose.
        `summarise()` still computes inFlight — the dashboard may have a surface
-       where a single next step IS the point. It is not this one. */
+       where a single next step IS the point. It is not this one.
+
+       ⚠️ The link below is NOT that shortcut coming back. It names a page, not
+       an artefact, so it guesses at nothing — which is the whole difference.
+       The slot it sits in kept its styles through the removal; only the class
+       was renamed (ls-resume → ls-more) when the meaning changed. */
+
+    var more = doc.createElement('div');
+    more.className = 'ls-more';
+    // Relative, deliberately: future-skills.html sits at the site root on both
+    // origins, so this resolves correctly under the Pages subpath too, with no
+    // dependency on nav.js having painted. AmplifiedNav.root() when it is there
+    // all the same, because that is the site's convention for a link's depth.
+    var nav = global.AmplifiedNav;
+    var href = nav && nav.root ? nav.root('learning/') : 'learning/';
+    more.innerHTML = 'More detail on every skill in ' +
+                     '<a href="' + href + '">your learning</a>';
+    strip.appendChild(more);
 
     host.parentNode.insertBefore(strip, host.nextSibling);
     strip.classList.add('is-ready');
