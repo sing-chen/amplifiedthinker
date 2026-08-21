@@ -435,7 +435,24 @@
   .result-card:hover .rc-arrow { transform: none; }
 }
 
-/* ── FOOTER ── */
+/* ── FOOTER — a DELIBERATE variant, not drift ──
+   Every other page uses the shared `.site-footer` in styles.css: a charcoal
+   band, 1100px wide, left-aligned. This page's footer is instead the closing
+   half of a pair — it matches .search-hero's fixed dark #1B4A44 band, at the
+   same 720px column as the results, centred. See the dark-mode note below:
+   hero and footer are both fixed dark in either theme, on purpose.
+
+   ⚠️ Every selector here is scoped under `.search-footer`, and must stay that
+   way. Four of these class names (.footer-tagline, .footer-nav, .footer-sep,
+   .fn) are also the shared ones, so the scope is what outranks styles.css —
+   (0,2,0) against (0,1,0) — rather than this page's inline <style> merely
+   coming later in the document. Unscope one and it silently starts depending
+   on load order.
+
+   ⚠️ Properties the shared rules set but this block does not will still reach
+   this footer. `letter-spacing` below is the one such case today, reset
+   explicitly. Check for new ones whenever the shared block gains a
+   declaration. */
 .search-footer {
   background: #1B4A44;
   border-top: 1px solid rgba(255,255,255,.07);
@@ -450,33 +467,34 @@
   gap: 16px;
   flex-wrap: wrap;
 }
-.footer-tagline {
+.search-footer .footer-tagline {
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: var(--sage);
+  letter-spacing: normal;   /* shared rule sets .02em; this band does not want it */
 }
-.footer-nav {
+.search-footer .footer-nav {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
-.footer-nav a {
+.search-footer .footer-nav a {
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   color: rgba(255,255,255,.65);
   text-decoration: none;
   transition: color .15s;
 }
-.footer-nav a:hover { color: var(--white); }
-.footer-nav a:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; border-radius: 2px; }
-.footer-sep {
+.search-footer .footer-nav a:hover { color: var(--white); }
+.search-footer .footer-nav a:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; border-radius: 2px; }
+.search-footer .footer-sep {
   color: rgba(255,255,255,.25);
   font-size: 13px;
   user-select: none;
 }
-.fn {
+.search-footer .fn {
   max-width: 720px;
   margin: 16px auto 0;
   padding: 0 40px;
@@ -486,13 +504,13 @@
   text-align: center;
 }
 
-.fn a {
+.search-footer .fn a {
   color: rgba(255,255,255,.62);
   text-decoration: none;
   transition: color .15s;
 }
-.fn a:hover { color: var(--white); }
-.fn a:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; border-radius: 2px; }
+.search-footer .fn a:hover { color: var(--white); }
+.search-footer .fn a:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; border-radius: 2px; }
 
 .search-inline-link {
   color: var(--mid-teal);
@@ -545,7 +563,7 @@
   .search-hero { padding: 48px 20px 40px; }
   .search-body { padding: 28px 20px 60px; }
   .search-footer { padding: 28px 20px; }
-  .fn { padding: 0 20px; }
+  .search-footer .fn { padding: 0 20px; }
   .sh-hl { font-size: 22px; }
   #search-input { font-size: 16px; padding: 14px 44px 14px 46px; }
   .rc-desc { white-space: normal; }
@@ -655,12 +673,10 @@
       <span class="footer-sep" aria-hidden="true">·</span>
       <a href="about.html">About</a>
       <span class="footer-sep" aria-hidden="true">·</span>
-      <a href="about.html#updates">What's New</a>
-      <span class="footer-sep" aria-hidden="true">·</span>
       <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </nav>
   </div>
-  <p class="fn">© <span id="yr"></span> Sing Chen · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></p>
+  <p class="fn">© <span id="yr"></span> Sing Chen · <a href="about.html#updates">What's New</a> · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></p>
   <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
 </footer>
 

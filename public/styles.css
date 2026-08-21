@@ -1,6 +1,7 @@
 /* ── Amplified Thinker · shared base ───────────────────────────────────────────────
    Brand design tokens, reset, base typography, skip-link and focus styles
-   shared by the top-level pages (index, future-skills, about).
+   shared by the top-level pages (index, future-skills, about), plus the one
+   shared component: the site footer, at the bottom of this file.
    Linked BEFORE each page's inline <style>, so page-specific rules still win.
    Note: the skill primer/plan pages are self-contained templates with a
    deliberately different focus/skip-link palette and are not bound to this file.
@@ -84,3 +85,40 @@ body{font-family:'Inter',system-ui,sans-serif;color:var(--text-dark);background:
 :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
 /* Keep skip-link jump targets from landing under the fixed nav.js site bar (WCAG 2.4.11) */
 #main-content,#results-region{scroll-margin-top:var(--site-total-offset,56px)}
+
+/* ── SITE FOOTER ────────────────────────────────────────────────────────────
+   One copy of what used to be pasted inline into nine hand-written pages and
+   again into BaseLayout.astro. That duplication already shipped a defect:
+   BaseLayout was written with the footer MARKUP copied over and the CSS left
+   behind, so /sign-in/ and /account/ reached production as a bare list of
+   default-styled links (7fe8ea9). Nothing could catch it — every page looked
+   correct in isolation.
+
+   ⚠️ `.site-footer`, NOT a bare `footer` element selector. search.html has a
+   `<footer class="search-footer">` — a deliberately different band, matched to
+   its own dark hero — and an element selector here would restyle a page that
+   was not part of this change. A new footer opts in by taking the class.
+
+   ⚠️ search.html reuses four of these class names (.footer-tagline,
+   .footer-nav, .footer-sep, .fn) with its own values. Those are scoped under
+   `.search-footer` in that page, which outranks the bare classes here on
+   specificity — so this file may be reordered without breaking it. Anything
+   ADDED here still needs checking against that block, since a property search
+   does not override will now reach it.
+
+   Values are the index.html originals, unchanged. Responsive padding stays in
+   each page: the breakpoints genuinely differ (700px on the wide pages, 640px
+   on the document pages), so there is no one rule to share. ───────────────── */
+.site-footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
+.fi{max-width:var(--page-max);margin:0 auto}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
+.footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
+.footer-nav a:hover{color:rgba(255,255,255,.85)}
+.footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+.footer-sep{color:rgba(255,255,255,.15);user-select:none}
+.fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
+.fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
+.fn a:hover{color:rgba(255,255,255,.85)}
+.fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}

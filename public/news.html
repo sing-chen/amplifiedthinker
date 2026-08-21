@@ -122,19 +122,8 @@
 
   .empty-state{font-family:'Inter',sans-serif;font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
 
-  footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
-  .fi{max-width:var(--page-max);margin:0 auto}
-  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-  .footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
-  .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
-  .footer-nav a:hover{color:rgba(255,255,255,.85)}
-  .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
-  .footer-sep{color:rgba(255,255,255,.15);user-select:none}
-  .fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
-  .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
-  .fn a:hover{color:rgba(255,255,255,.85)}
-  .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+  /* Footer rules live in styles.css under .site-footer. Only the responsive
+     padding is here, because the breakpoint is this page's own. */
 
   @media(max-width:800px){
     .news-layout{grid-template-columns:1fr}
@@ -153,7 +142,7 @@
   }
   @media(max-width:700px){
     .hero,main{padding-left:20px;padding-right:20px}
-    footer{padding-left:20px;padding-right:20px}
+    .site-footer{padding-left:20px;padding-right:20px}
   }
 
   /* ── DARK MODE ──
@@ -237,7 +226,7 @@
   </div>
 </main>
 
-<footer>
+<footer class="site-footer">
   <div class="fi">
     <div class="footer-inner">
       <p class="footer-tagline">Built for a world that keeps changing.</p>
@@ -250,12 +239,10 @@
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href="about.html">About</a>
         <span class="footer-sep" aria-hidden="true">·</span>
-        <a href="about.html#updates">What's New</a>
-        <span class="footer-sep" aria-hidden="true">·</span>
         <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </nav>
     </div>
-    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="about.html#updates">What's New</a> · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
   </div>
 </footer>
 

@@ -187,6 +187,19 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   component that sets `display` **and** gets toggled needs an explicit override; `auth-pages.css` and
   `why-sign-up.html` each carry one. ⚠️ **Assert computed `display`, never `element.hidden`** — the
   property was correct in both defects, which is exactly why the tests passed.
+- **A `<footer>` must carry `class="site-footer"` or it renders unstyled, and nothing fails.** The
+  footer rules live once in `public/styles.css` (de-duplicated 2026-08-21 from ten copies). They are
+  deliberately **not** a bare `footer` element selector, because `search.html`'s
+  `<footer class="search-footer">` is a different band — fixed `#1B4A44` matched to its own hero,
+  720px and centred — that must not be caught by them. ⚠️ **Omitting the class reproduces the
+  original defect exactly** (`7fe8ea9`, which shipped `/sign-in/` and `/account/` as a bare list of
+  default-styled links): correct markup, no styling, looks fine in source, found only by eye.
+  ⚠️ **`search.html`'s rules are scoped under `.search-footer` and must stay scoped** — four of its
+  class names are also the shared ones, so the scope (0,2,0) is what beats `styles.css` (0,1,0);
+  unscoped, it silently depends on inline `<style>` coming after the `<link>` instead. **Anything
+  added to the shared block must be checked against that variant** — a property it does not override
+  will reach it, which is why `.footer-tagline` there resets `letter-spacing` explicitly. Responsive
+  padding stays per page on purpose: the breakpoints genuinely differ (700/640/600px).
 - **The privacy page is a description of the system, not boilerplate.** `public/privacy.html` names
   every processor, every device-storage key, every outbound third-party request and the legal basis
   for each. Adding analytics, a font host, a CDN, an embed, a storage key or a new table makes it

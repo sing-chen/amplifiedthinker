@@ -112,7 +112,9 @@ Self-hosting means downloading the woff2 files, adding `@font-face` rules, and d
 from the critical path, so it is a performance change as much as a privacy one.
 
 ⚠️ **It touches the `<head>` of all 16 hand-written pages plus BaseLayout**, which is the same
-one-pass-over-everything problem as the duplicated footer CSS. Worth doing in the same pass as that.
+one-pass-over-everything problem the duplicated footer CSS was. That pass has since been done on its
+own (2026-08-21) without picking this up, so this no longer has a companion job waiting for it —
+it is a one-pass job in its own right whenever it is scheduled.
 
 ⚠️ **Some jurisdictions treat the Google Fonts request as requiring consent**, which is the sharper
 version of the argument: self-hosting removes the question entirely rather than answering it.
@@ -1342,9 +1344,9 @@ names the URL from the branch, so a deleted branch takes its preview with it. No
 previews, and they are auth-walled anyway — recorded so it is a known consequence rather than a
 surprise the first time a bookmarked preview 404s.
 
-**Sequence it with any other one-pass housekeeping** — the footer CSS de-duplication and the
-`.resume-banner*` consolidation below are both "open every file once" jobs, and this one costs
-nothing to do alongside them.
+**Sequence it with any other one-pass housekeeping** — the `.resume-banner*` consolidation below is
+an "open every file once" job, and this one costs nothing to do alongside it. (The footer CSS
+de-duplication was the other, and closed on its own on 2026-08-21.)
 
 ### Align `node-version` across the two workflows
 **Status:** Idea · Not started · Noticed 2026-08-19 during Phase 5
@@ -1685,34 +1687,94 @@ that it is invisible to a reader who is not looking for it.
 *Last updated: 18 August 2026*
 
 ### De-duplicate the footer CSS — seven copies of the same rules
-**Status:** Idea · Not started · Raised 2026-08-19 during Phase 5
-**Relates to:** [public/styles.css](public/styles.css), the 16 hand-written pages,
+**Status:** ✅ **Done 2026-08-21** · Raised 2026-08-19 during Phase 5
+**Relates to:** [public/styles.css](public/styles.css), the nine hand-written pages with a footer,
 [src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro)
 
 The footer rules — `footer`, `.fi`, `.footer-inner`, `.footer-tagline`, `.footer-nav`,
-`.footer-sep`, `.fn` — exist **seven times**: inline in five hand-written pages, again in
-`search.html` under different class names, and now in `BaseLayout.astro`.
+`.footer-sep`, `.fn` — existed **seven times** when this was raised: inline in five hand-written
+pages, again in `search.html` under different class names, and in `BaseLayout.astro`.
+
+⚠️ **It was ten by the time it was fixed, not seven.** `privacy.html`, `terms.html` and
+`why-sign-up.html` all shipped on 2026-08-19 carrying their own copy — three more added in the two
+days between raising this entry and closing it. Two of them even carried the comment *"copied
+verbatim from index.html so the two cannot drift"*, which is this entry's own mitigation being
+applied faithfully and still producing more duplication. **A written "keep these in sync" rule does
+not stop copies accruing; it only stops the copies that exist from diverging.**
 
 **How it surfaced:** the Astro layout was written with the footer *markup* copied across and the
 CSS left behind, so `/sign-in/` and `/account/` shipped a bare list of default-styled links.
 ⚠️ **Nothing could have caught it** — no build step, no check, and each page looked fine in
 isolation. It reached production and was found by eye.
 
-**Why it was not fixed properly at the time.** The obvious move is to lift the rules into
-`styles.css`, which everything already loads. But `footer { … }` is an **element selector**, and
-`search.html` has a `<footer class="search-footer">` with a different structure and its own rules.
-A shared element selector would restyle a page that was not part of the change.
+**Why it was not fixed at the time.** The obvious move is to lift the rules into `styles.css`,
+which everything already loads. But `footer { … }` is an **element selector**, and `search.html`
+has a `<footer class="search-footer">` with a different structure and its own rules. A shared
+element selector would restyle a page that was not part of the change.
 
-**So the real fix needs all 16 pages in one pass:** settle on one footer structure, move the rules
-to `styles.css`, delete the six inline copies, and reconcile `search.html` — either by giving it
-the standard markup or by keeping `.search-footer` as a documented deliberate variant.
+#### ✅ What was done
 
-⚠️ **Until then, `BaseLayout.astro`'s copy is verbatim from `index.html` and must stay that way.**
-Two copies that drift are worse than two that are identical, because the difference will show up as
-a footer that looks subtly wrong on new pages only.
+**The shared rules live in `styles.css` as `.site-footer`, not as a bare `footer`.** The nine
+standard footers take the class; `search.html` does not. A new footer opts in explicitly, which is
+what makes the element-selector problem go away rather than be worked around.
 
-**Worth pairing with:** the same question applies to any other rules the hand-written pages
-duplicate inline. Nobody has counted.
+**`search.html` kept as a documented deliberate variant** — the second of the two options this
+entry offered. It is not drift: its footer is the closing half of a pair with `.search-hero`,
+sharing that band's fixed `#1B4A44` in either theme, at the same 720px column as the results and
+centred rather than left-aligned. Verified still matching the hero exactly after the change.
+
+⚠️ **Its rules are now scoped under `.search-footer`, and must stay that way.** Four of its class
+names (`.footer-tagline`, `.footer-nav`, `.footer-sep`, `.fn`) are also the shared ones, so the
+scope — (0,2,0) against (0,1,0) — is what outranks `styles.css`. Before, it won only because a
+page's inline `<style>` comes after the `<link>`. **Unscope one selector and it silently goes back
+to depending on load order.**
+
+⚠️ **One property leaked and had to be reset explicitly:** the shared `.footer-tagline` sets
+`letter-spacing:.02em` and search's did not, so it inherited spacing it never had.
+**Anything ADDED to the shared block still needs checking against that variant** — a declaration
+the variant does not override will reach it. Noted in both files.
+
+**Responsive padding deliberately stayed per page.** The breakpoints genuinely differ — 700px on
+index and news, 640px on about and the three document pages, 600px on my-people and search — so
+there is no single rule to share. Only the base rules were duplicated; those are the ones that
+moved.
+
+**Two pieces of pre-existing drift fell out of doing it:** `about.html` hardcoded
+`.fi{max-width:1100px}` where the other eight used `var(--page-max)` (same value today, so
+invisible until the token changes), and `future-skills.html` had *two* footer padding rules inside
+the same media query, the shorthand silently beating the longhand. Both resolved.
+
+**Verified** by asserting computed styles on all ten footers plus `/sign-in/` and `/account/`, at
+1280px and 375px, in both themes: background, padding, border, column width, flex layout, every
+font size and colour, the sticky-footer behaviour on the short pages, and `[data-embed]` still
+computing `display:none` on the two pages that hide the footer inside the sign-up modal.
+
+#### ⚠️ Still true, and now the only way to reproduce the original defect
+
+**A `<footer>` without `.site-footer` renders unstyled and nothing fails.** That is the same
+failure mode as `7fe8ea9`, just moved: it used to be "you forgot to copy the CSS", it is now "you
+forgot the class". One class is a much smaller thing to forget than thirteen declarations, and the
+fix is visible in `styles.css` rather than needing archaeology — but it is still caught only by
+eye. See the follow-up entry below.
+
+**What this did not do:** the same question applies to any other rules the hand-written pages
+duplicate inline. Nobody has counted. This entry only ever claimed the footer.
+
+### A build check for footers that render unstyled
+**Status:** Idea · Not started · Raised 2026-08-21 when the footer de-duplication closed
+
+The de-duplication above removed nine copies of the footer CSS but did not remove the failure mode
+that created them: a `<footer>` that is missing `.site-footer` gets no styling, looks fine in
+source, and fails nothing. That defect has already shipped once (`7fe8ea9`).
+
+**The check is small:** every `<footer>` under `public/` and `src/` carries either `.site-footer`
+or `.search-footer`, and fail otherwise. `scripts/verify-catalogue.mjs` is the precedent — wired as
+npm's `prebuild`, so it stops the deploy on **both** origins, and a failed build leaves the previous
+deployment serving.
+
+⚠️ **Weigh it against the deploy risk before adding it.** `prebuild` gates are the one mechanism
+that can stop a content fix reaching production, and there are already two. The alternative reading
+is that one forgotten class every eighteen months does not justify a third way for `main` to fail.
 
 ### Re-verify the signed-in security rules — the old checks are in git
 **Status:** Note for Phase 7 · Raised 2026-08-19 when `auth-test.astro` was deleted
