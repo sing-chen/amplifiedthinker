@@ -153,6 +153,25 @@ Once the content plan is approved, build both files.
     is kept only when there is one — so it lives in `progress.js` beside the behaviour it describes.
     Ten inlined copies of that sentence had already gone stale once, which is why it moved.
 
+12. **The Explore Further nav link carries `data-optional`**, on `plan.html`:
+
+    ```html
+    <a class="nav-link" href="#resources" data-section="resources" data-optional>
+    ```
+
+    ⚠️ **This attribute is the only thing that keeps the plan's denominator honest.** Without it the
+    section counts toward completion, and a reader who works through the whole plan but does not
+    scroll the reading list is stranded one section short — permanently, with nothing failing.
+    Copy the explanatory comment above the `<li>` along with it.
+
+    It changes the **display denominator only**. The section stays in `visited` and in
+    `state.total`; `total = navLinks.length` still counts every section. Record all of them, divide
+    by the counted ones.
+
+    ⚠️ **Explore Further must remain the LAST nav item.** The catalogue build rejects an optional
+    section anywhere else, because excluding one in the middle leaves a trailing *counted* section
+    that may never cross the active line — making 100% unreachable, silently.
+
 ---
 
 ## STEP 5 — AFTER BUILD
@@ -245,7 +264,26 @@ Reference — the Creative Thinking prompt this pattern is drawn from:
 
 This prompt doesn't produce a file to save — it's fed into the user's own video-generation tool. Once they have the resulting video and its ID, that's the trigger to come back and wire the video embed markup into the primer's slide 1 (see Step 4 build rule 8 — that markup was deliberately left out at build time and still needs adding).
 
-**5g. Report a commit log entry**
+**5g. Regenerate the skills catalogue**
+
+```bash
+npm run build:catalogue
+```
+
+This rewrites [public/skills-catalogue.json](public/skills-catalogue.json), which is how any page
+learns a plan or primer's length **for a skill nobody has opened** — the database cannot answer
+that, because a `skill_progress` row exists only once someone visits.
+
+⚠️ **This is not optional and it is not deferrable.** `verify:catalogue` runs as npm's `prebuild`,
+so a stale catalogue **fails `npm run build`** — and both origins build with `npm run build`, so a
+new skill without this step does not deploy anywhere. That is deliberate: the alternative is a
+committed file quietly reporting the wrong denominator, which is what a `skills` table was rejected
+for. Add the new skill to the `SKILLS` array in
+[scripts/build-skills-catalogue.mjs](scripts/build-skills-catalogue.mjs) at the same time.
+
+Confirm it reports the new skill with the counts you expect, then `npm run verify:catalogue`.
+
+**5h. Report a commit log entry**
 
 Report (don't create) a commit log entry in conventional commit format covering all touched files:
 
@@ -257,6 +295,7 @@ feat: add [Skill Name] primer and learning plan
 - public/nav.js, public/future-skills.html: register and activate the [Skill Name] card
 - public/search-index.json: add primer/plan entries so the skill surfaces in site search
 - public/updates.json, public/index.html: What's New entry and homepage banner item, same date
+- public/skills-catalogue.json, scripts/build-skills-catalogue.mjs: regenerated counts
 ```
 
 Don't commit or deploy unprompted — ask first, per standard practice on this site.

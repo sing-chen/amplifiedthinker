@@ -1,0 +1,626 @@
+{
+  "version": 1,
+  "skills": {
+    "analytical-thinking": {
+      "plan": {
+        "total": 14,
+        "counted": 13,
+        "sections": [
+          {
+            "id": "snapshot",
+            "name": "Skill Snapshot",
+            "optional": false
+          },
+          {
+            "id": "overview",
+            "name": "Overview",
+            "optional": false
+          },
+          {
+            "id": "objectives",
+            "name": "Learning Objectives",
+            "optional": false
+          },
+          {
+            "id": "principles",
+            "name": "First Principles",
+            "optional": false
+          },
+          {
+            "id": "models",
+            "name": "Mental Models",
+            "optional": false
+          },
+          {
+            "id": "mistakes",
+            "name": "Common Mistakes",
+            "optional": false
+          },
+          {
+            "id": "indicators",
+            "name": "Behavioral Indicators",
+            "optional": false
+          },
+          {
+            "id": "scenarios",
+            "name": "Practical Examples",
+            "optional": false
+          },
+          {
+            "id": "reflection",
+            "name": "Self-Reflection",
+            "optional": false
+          },
+          {
+            "id": "check",
+            "name": "Knowledge Check",
+            "optional": false
+          },
+          {
+            "id": "habits",
+            "name": "5-Day Habit Builder",
+            "optional": false
+          },
+          {
+            "id": "progression",
+            "name": "Progression Path",
+            "optional": false
+          },
+          {
+            "id": "summary",
+            "name": "Summary",
+            "optional": false
+          },
+          {
+            "id": "resources",
+            "name": "Explore Further",
+            "optional": true
+          }
+        ]
+      },
+      "primer": {
+        "total": 10,
+        "counted": 10,
+        "slides": [
+          {
+            "index": 0,
+            "name": "Introduction"
+          },
+          {
+            "index": 1,
+            "name": "The Problem"
+          },
+          {
+            "index": 2,
+            "name": "When It Matters"
+          },
+          {
+            "index": 3,
+            "name": "The Outcome"
+          },
+          {
+            "index": 4,
+            "name": "What It Is"
+          },
+          {
+            "index": 5,
+            "name": "Model: MECE"
+          },
+          {
+            "index": 6,
+            "name": "Model: The 5 Whys"
+          },
+          {
+            "index": 7,
+            "name": "Model: Issue Tree"
+          },
+          {
+            "index": 8,
+            "name": "In Practice"
+          },
+          {
+            "index": 9,
+            "name": "Summary"
+          }
+        ]
+      }
+    },
+    "creative-thinking": {
+      "plan": {
+        "total": 14,
+        "counted": 13,
+        "sections": [
+          {
+            "id": "snapshot",
+            "name": "Skill Snapshot",
+            "optional": false
+          },
+          {
+            "id": "overview",
+            "name": "Overview",
+            "optional": false
+          },
+          {
+            "id": "objectives",
+            "name": "Learning Objectives",
+            "optional": false
+          },
+          {
+            "id": "principles",
+            "name": "First Principles",
+            "optional": false
+          },
+          {
+            "id": "models",
+            "name": "Mental Models",
+            "optional": false
+          },
+          {
+            "id": "mistakes",
+            "name": "Common Mistakes",
+            "optional": false
+          },
+          {
+            "id": "indicators",
+            "name": "Behavioral Indicators",
+            "optional": false
+          },
+          {
+            "id": "scenarios",
+            "name": "Practical Examples",
+            "optional": false
+          },
+          {
+            "id": "reflection",
+            "name": "Self-Reflection",
+            "optional": false
+          },
+          {
+            "id": "check",
+            "name": "Knowledge Check",
+            "optional": false
+          },
+          {
+            "id": "habits",
+            "name": "5-Day Habit Builder",
+            "optional": false
+          },
+          {
+            "id": "progression",
+            "name": "Progression Path",
+            "optional": false
+          },
+          {
+            "id": "summary",
+            "name": "Summary",
+            "optional": false
+          },
+          {
+            "id": "resources",
+            "name": "Explore Further",
+            "optional": true
+          }
+        ]
+      },
+      "primer": {
+        "total": 10,
+        "counted": 10,
+        "slides": [
+          {
+            "index": 0,
+            "name": "Introduction"
+          },
+          {
+            "index": 1,
+            "name": "The Problem"
+          },
+          {
+            "index": 2,
+            "name": "When It Matters"
+          },
+          {
+            "index": 3,
+            "name": "The Outcome"
+          },
+          {
+            "index": 4,
+            "name": "What It Is"
+          },
+          {
+            "index": 5,
+            "name": "Model: SCAMPER"
+          },
+          {
+            "index": 6,
+            "name": "Model: Divergent–Convergent"
+          },
+          {
+            "index": 7,
+            "name": "Model: Assumption Reversal"
+          },
+          {
+            "index": 8,
+            "name": "In Practice"
+          },
+          {
+            "index": 9,
+            "name": "Summary"
+          }
+        ]
+      }
+    },
+    "critical-thinking": {
+      "plan": {
+        "total": 15,
+        "counted": 14,
+        "sections": [
+          {
+            "id": "snapshot",
+            "name": "Skill Snapshot",
+            "optional": false
+          },
+          {
+            "id": "overview",
+            "name": "Overview",
+            "optional": false
+          },
+          {
+            "id": "objectives",
+            "name": "Learning Objectives",
+            "optional": false
+          },
+          {
+            "id": "principles",
+            "name": "Principles of Evaluation",
+            "optional": false
+          },
+          {
+            "id": "biasguide",
+            "name": "Bias Field Guide",
+            "optional": false
+          },
+          {
+            "id": "model",
+            "name": "Mental Model",
+            "optional": false
+          },
+          {
+            "id": "mistakes",
+            "name": "Common Mistakes",
+            "optional": false
+          },
+          {
+            "id": "indicators",
+            "name": "Behavioral Indicators",
+            "optional": false
+          },
+          {
+            "id": "scenarios",
+            "name": "Practical Examples",
+            "optional": false
+          },
+          {
+            "id": "reflection",
+            "name": "Self-Reflection",
+            "optional": false
+          },
+          {
+            "id": "check",
+            "name": "Knowledge Check",
+            "optional": false
+          },
+          {
+            "id": "habits",
+            "name": "5-Day Habit Builder",
+            "optional": false
+          },
+          {
+            "id": "progression",
+            "name": "Progression Path",
+            "optional": false
+          },
+          {
+            "id": "summary",
+            "name": "Summary",
+            "optional": false
+          },
+          {
+            "id": "resources",
+            "name": "Explore Further",
+            "optional": true
+          }
+        ]
+      },
+      "primer": {
+        "total": 9,
+        "counted": 9,
+        "slides": [
+          {
+            "index": 0,
+            "name": "Introduction"
+          },
+          {
+            "index": 1,
+            "name": "The Problem"
+          },
+          {
+            "index": 2,
+            "name": "When It Matters"
+          },
+          {
+            "index": 3,
+            "name": "The Outcome"
+          },
+          {
+            "index": 4,
+            "name": "What It Is"
+          },
+          {
+            "index": 5,
+            "name": "The Evidence Filter"
+          },
+          {
+            "index": 6,
+            "name": "Model: Ladder of Inference"
+          },
+          {
+            "index": 7,
+            "name": "In Practice"
+          },
+          {
+            "index": 8,
+            "name": "Summary"
+          }
+        ]
+      }
+    },
+    "strategic-synthesis": {
+      "plan": {
+        "total": 14,
+        "counted": 13,
+        "sections": [
+          {
+            "id": "snapshot",
+            "name": "Skill Snapshot",
+            "optional": false
+          },
+          {
+            "id": "overview",
+            "name": "Overview",
+            "optional": false
+          },
+          {
+            "id": "objectives",
+            "name": "Learning Objectives",
+            "optional": false
+          },
+          {
+            "id": "principles",
+            "name": "First Principles",
+            "optional": false
+          },
+          {
+            "id": "models",
+            "name": "Mental Models",
+            "optional": false
+          },
+          {
+            "id": "mistakes",
+            "name": "Common Mistakes",
+            "optional": false
+          },
+          {
+            "id": "indicators",
+            "name": "Behavioral Indicators",
+            "optional": false
+          },
+          {
+            "id": "scenarios",
+            "name": "Practical Examples",
+            "optional": false
+          },
+          {
+            "id": "reflection",
+            "name": "Self-Reflection",
+            "optional": false
+          },
+          {
+            "id": "check",
+            "name": "Knowledge Check",
+            "optional": false
+          },
+          {
+            "id": "habits",
+            "name": "5-Day Habit Builder",
+            "optional": false
+          },
+          {
+            "id": "progression",
+            "name": "Progression Path",
+            "optional": false
+          },
+          {
+            "id": "summary",
+            "name": "Summary",
+            "optional": false
+          },
+          {
+            "id": "resources",
+            "name": "Explore Further",
+            "optional": true
+          }
+        ]
+      },
+      "primer": {
+        "total": 10,
+        "counted": 10,
+        "slides": [
+          {
+            "index": 0,
+            "name": "Introduction"
+          },
+          {
+            "index": 1,
+            "name": "The Problem"
+          },
+          {
+            "index": 2,
+            "name": "When It Matters"
+          },
+          {
+            "index": 3,
+            "name": "The Outcome"
+          },
+          {
+            "index": 4,
+            "name": "What It Is"
+          },
+          {
+            "index": 5,
+            "name": "Model: Weighted Decision Matrix"
+          },
+          {
+            "index": 6,
+            "name": "Model: The Scenario Cross"
+          },
+          {
+            "index": 7,
+            "name": "Model: The Pyramid Principle"
+          },
+          {
+            "index": 8,
+            "name": "In Practice"
+          },
+          {
+            "index": 9,
+            "name": "Summary"
+          }
+        ]
+      }
+    },
+    "systems-thinking": {
+      "plan": {
+        "total": 14,
+        "counted": 13,
+        "sections": [
+          {
+            "id": "snapshot",
+            "name": "Skill Snapshot",
+            "optional": false
+          },
+          {
+            "id": "overview",
+            "name": "Overview",
+            "optional": false
+          },
+          {
+            "id": "objectives",
+            "name": "Learning Objectives",
+            "optional": false
+          },
+          {
+            "id": "principles",
+            "name": "First Principles",
+            "optional": false
+          },
+          {
+            "id": "models",
+            "name": "Mental Models",
+            "optional": false
+          },
+          {
+            "id": "mistakes",
+            "name": "Common Mistakes",
+            "optional": false
+          },
+          {
+            "id": "indicators",
+            "name": "Behavioral Indicators",
+            "optional": false
+          },
+          {
+            "id": "scenarios",
+            "name": "Practical Examples",
+            "optional": false
+          },
+          {
+            "id": "reflection",
+            "name": "Self-Reflection",
+            "optional": false
+          },
+          {
+            "id": "check",
+            "name": "Knowledge Check",
+            "optional": false
+          },
+          {
+            "id": "habits",
+            "name": "5-Day Habit Builder",
+            "optional": false
+          },
+          {
+            "id": "progression",
+            "name": "Progression Path",
+            "optional": false
+          },
+          {
+            "id": "summary",
+            "name": "Summary",
+            "optional": false
+          },
+          {
+            "id": "resources",
+            "name": "Explore Further",
+            "optional": true
+          }
+        ]
+      },
+      "primer": {
+        "total": 10,
+        "counted": 10,
+        "slides": [
+          {
+            "index": 0,
+            "name": "Introduction"
+          },
+          {
+            "index": 1,
+            "name": "The Problem"
+          },
+          {
+            "index": 2,
+            "name": "When It Matters"
+          },
+          {
+            "index": 3,
+            "name": "The Outcome"
+          },
+          {
+            "index": 4,
+            "name": "What It Is"
+          },
+          {
+            "index": 5,
+            "name": "Model: Feedback Loops"
+          },
+          {
+            "index": 6,
+            "name": "Model: The Iceberg Model"
+          },
+          {
+            "index": 7,
+            "name": "Model: Leverage Points"
+          },
+          {
+            "index": 8,
+            "name": "In Practice"
+          },
+          {
+            "index": 9,
+            "name": "Summary"
+          }
+        ]
+      }
+    }
+  }
+}

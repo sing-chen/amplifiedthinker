@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "node scripts/verify-catalogue.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -16,6 +17,8 @@
     "verify:redirects": "node scripts/verify-redirects.mjs",
     "verify:published": "node scripts/verify-published.mjs",
     "verify:stamp": "node scripts/verify-build-stamp.mjs",
+    "build:catalogue": "node scripts/build-skills-catalogue.mjs",
+    "verify:catalogue": "node scripts/verify-catalogue.mjs",
     "verify:schema": "node scripts/verify-schema-columns.mjs",
     "verify:completion": "node scripts/verify-completion.mjs",
     "specimen:completion": "node scripts/dev/build-completion-specimen.mjs",

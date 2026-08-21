@@ -34,6 +34,10 @@ The project has a written architecture and a phased plan. Read them rather than 
 public/          the 19 hand-written pages, shipped byte-for-byte untouched by Astro
                  index/about/future-skills/my-people/news/search .html, skills/**,
                  nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt, sitemap.xml
+                 — including skills-catalogue.json, which is GENERATED from the plan and primer
+                   pages and committed because the site serves it. ⚠️ Never hand-edit it; run
+                   npm run build:catalogue. It holds counts only — display names, categories and
+                   copy are editorial and deliberately stay out
                  — plus three added 2026-08-19, hand-written for the same reasons the
                    other 16 are: static content, no auth logic, identical on both origins
                    privacy.html        UK GDPR / DPA 2018. ⚠️ Says what the site ACTUALLY
@@ -63,6 +67,13 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
                  verify-redirects.mjs (npm run verify:redirects) — the redirect allowlist, both
                  projects, no email sent. Run it FIRST whenever an auth link lands in the wrong place
                  keepalive.mjs — one read a day, or the free project pauses itself
+                 verify-build-stamp.mjs (npm run verify:stamp) — asks both origins which commit they
+                 are built from. The ONLY check that distinguishes "deployed" from "quietly still
+                 serving last week's build"; verify:published is differential and cannot
+                 build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
+                 from the pages into public/skills-catalogue.json
+                 verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so
+                 a stale catalogue FAILS `npm run build` on both origins. Deliberate: see below
 _originals/      full-resolution source images, gitignored — outside public/ on purpose
 .env             gitignored; shape in .env.example. Needed ONLY by npm run verify:rls.
                  There are deliberately no Supabase env vars in Vercel or pages.yml —
@@ -127,6 +138,20 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   `document.currentScript.src`; bundled as a module that is `null` and every nav link breaks. The
   skill pages also carry ~240 inline `onclick` handlers, which is why they stay in `public/`.
 - **`main` can now fail to deploy.** Before Phase 2 nothing was built, so nothing could fail.
+  **A second way to fail was added deliberately on 2026-08-21:** `verify:catalogue` runs as npm's
+  `prebuild`, and both origins build with `npm run build`, so editing a plan's nav rail without
+  running `npm run build:catalogue` stops the deploy on *both*. That is the intended behaviour —
+  the alternative is `public/skills-catalogue.json` quietly reporting a wrong denominator, which
+  reads as "14 of 15 is complete" and fails nothing. A failed build leaves the previous deployment
+  serving, where the pages and the catalogue still agree, so the failure mode is consistent.
+- ⚠️ **Never round-trip a page through PowerShell `Get-Content`/`Set-Content`.** On 2026-08-21 a
+  `Set-Content -Encoding utf8` restore added a **UTF-8 BOM** and re-encoded every `·` into `Â·` —
+  504 lines changed in one file, from a command whose only intent was to put the original back.
+  Windows PowerShell 5.1 writes UTF-8 *with* BOM and decodes as ANSI on the way in. This is a
+  separate trap from the line-endings one below it and it corrupts **content**, not just endings.
+  Use `node` (`readFileSync`/`writeFileSync`, utf8) for any script that rewrites these files, and
+  `git checkout -- <path>` to restore. The damage is loud in `git diff --stat` — a one-line edit
+  reporting hundreds of changed lines is this, every time.
 - **A new table lands with *no* grants, and that looks exactly like a broken policy.** The Phase 3
   migration ends with `alter default privileges … revoke all on tables from anon, authenticated`,
   so every future table must grant explicitly. Symptom: `permission denied for table X` even as an

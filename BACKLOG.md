@@ -533,6 +533,9 @@ its top passes the active line, so if the *last* section never gets there, nobod
 14 — silently, with nothing failing. Excluding Explore Further makes Summary the last counted section,
 which is comfortably scrolled past. The problem stops existing rather than being solved.
 
+✅ **Done 2026-08-21.** The attribute is on all five plans, with the reasoning in a comment beside
+it, and the catalogue generator both reads it and refuses to build without exactly one per plan.
+
 **Declare optionality in the markup** — one `data-optional` attribute on the Explore Further nav link,
 on five pages. Optionality is a judgement and cannot be counted out of the HTML, but one attribute
 converts it into a derived fact that lives beside the thing it describes, moves with the content, and
@@ -575,6 +578,10 @@ manual step; this would be another, and it cannot be automated until an admin UI
 **Near term:** generate the counts rather than declare them, and pair it with a check in the shape the
 repo already trusts for `verify:redirects` and `verify:email`, so a content edit that outgrows the
 catalogue fails loudly instead of quietly reporting "14 of 15" as complete.
+
+✅ **Done 2026-08-21, and it went further than "fails loudly" —** the check is npm's `prebuild`, so
+a stale catalogue fails the build on both origins rather than printing a warning someone has to be
+running to see. Details under "What has to happen first" in the entry below.
 
 **Later:** the editorial half is a good fit for a table and is consistent with news, updates and
 announcements all having moved the same way — but its natural home is *alongside* the admin UI, since a
@@ -738,11 +745,47 @@ rather than an obvious failure:
    three states until `completed_at` was written by something; it now is.
 2. ✅ **Settle-based coverage** — **done 2026-08-21**. This was a fix, not a polish, and it had to
    land before any percentage shipped. See the defect note under "Completion tracking" above.
-3. ⬜ **`data-optional` on Explore Further**, five pages.
-4. ⬜ **The generated catalogue and its check.**
+3. ✅ **`data-optional` on Explore Further**, five pages — **done 2026-08-21**.
+4. ✅ **The generated catalogue and its check** — **done 2026-08-21**.
 
-**Two of four are done, and the two that remain are the same piece of work** — 3 is what makes 4's
-denominator derivable, so they belong in one pass rather than two.
+**All four prerequisites are met. This is now build work, not decision work.**
+
+#### ✅ How the catalogue landed — 2026-08-21
+`public/skills-catalogue.json`, derived from the pages by `npm run build:catalogue`, guarded by
+`npm run verify:catalogue`. Counts confirmed against the table above: primers 10/10/**9**/10/10,
+plans 14/14/**15**/14/14, denominators 13/13/**14**/13/13.
+
+**The nav rail is the source of truth**, not the section markup — because `progress.js` writes
+`state.total` from `navLinks.length` and the scroll handler marks the same `data-section` values.
+Reading anything else would describe a different list from the one actually recorded.
+
+⚠️ **The check is wired as npm's `prebuild`, so a stale catalogue fails `npm run build`.** Both
+`vercel.json` and `pages.yml` build with `npm run build`, so this gates **both origins** rather
+than one. Verified by mutating a page and confirming the build exits 1. Putting it only in
+`pages.yml` would have been worse than nothing: Pages would go red while Vercel shipped the wrong
+denominator.
+
+**Four consistency rules the generator enforces**, each of which fails loudly rather than producing
+a plausible wrong number:
+
+| | |
+|---|---|
+| Exactly one `data-optional` section per plan | More would silently shrink the denominator |
+| The optional section must be **last** | Excluding one mid-list leaves a trailing *counted* section that may never cross the active line — 100% unreachable, silently |
+| The primer rail and the deck must agree | Two independent lists in one file; nothing else keeps them in step |
+| `data-slide` must be sequential from 0 | A gap would misalign every resume point after it |
+
+⚠️ **The output carries NO timestamp**, deliberately. A generated-at field would produce a diff on
+every regeneration, so the check could no longer compare content and would churn the file on every
+run. Git history is the timestamp.
+
+⚠️ **The check compares parsed values, not bytes** — `core.autocrlf=true` means a byte comparison
+would fail on every machine for a reason unrelated to drift. Same trap `verify:published` already
+documents.
+
+✅ **`/add-skill` was updated in the same sitting** — build rule 12 for the attribute, and a new
+step 5g for regenerating the catalogue. This is the **fifth** instance of that command drifting and
+the first caught *before* it broke rather than after.
 
 ⚠️ **Whoever picks this up inherits two commitments made in this entry's absence**, both from the
 2026-08-21 point release. The `data-session` attribute on `<html>` already exists and is documented
