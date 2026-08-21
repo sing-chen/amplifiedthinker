@@ -188,6 +188,39 @@
     overflow: hidden;
   }
 
+/* ── "THERE IS MORE BELOW" ───────────────────
+     ⚠️ A slide taller than the stage scrolls INSIDE ITS OWN PANEL, and because
+     the stage hides its overflow there is no page scrollbar to say so. Content
+     simply stopped, on a surface whose whole visual language promises one
+     screenful. Nothing failed and no measurement anyone ran would report it —
+     a reader who never suspected there was more just read less than was
+     written. Found 2026-08-21.
+
+     Slide content is trimmed where it can be (see the .ladder note), but below
+     roughly 1000px the content genuinely does not fit and no honest trim would
+     make it. So the reader is told.
+
+     The fade is on .stage, not .slide: the slide is the scroll container and a
+     fade on it would scroll away with the content — present at the top and
+     gone exactly when it is still needed. */
+  .stage::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 56px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 78%);
+  }
+  .stage.has-more::after { opacity: 1; }
+  /* The slide backgrounds differ, so the fade has to match the one it sits on
+     or it reads as a grey band rather than the content running out. */
+  .stage.on-sage::after  { background: linear-gradient(to bottom, rgba(224,235,231,0) 0%, rgba(224,235,231,0.94) 78%); }
+  .stage.on-teal::after  { background: linear-gradient(to bottom, rgba(45,58,55,0) 0%, rgba(45,58,55,0.94) 78%); }
+  [data-theme="dark"] .stage::after { background: linear-gradient(to bottom, rgba(18,33,30,0) 0%, rgba(18,33,30,0.94) 78%); }
+  @media (prefers-reduced-motion: reduce) { .stage::after { transition: none; } }
+
   /* ── SLIDES ─────────────────────────────────── */
   .slide {
     position: absolute; inset: 0;
@@ -688,7 +721,10 @@
   .resume-banner-btn.primary:hover { background: var(--navy); }
   .resume-banner-btn.dismiss {
     background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.5);
+    /* 0.62, not 0.5: at 12px on --charcoal, 50% white composites to 4.49:1 —
+       under AA. 0.62 gives 5.98:1 and stays visibly quieter than the 0.75
+       body text above it (8.01:1), which is what the de-emphasis was for. */
+    color: rgba(255,255,255,0.62);
     margin-left: 4px;
   }
   .resume-banner-btn.dismiss:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); }
@@ -1344,5 +1380,42 @@
 </script>
 
 <script defer src="/_vercel/insights/script.js"></script>
+
+<script>
+/* Shows the stage fade only while the active slide actually overflows.
+   ⚠️ Measured, never assumed from the viewport: whether a slide overflows
+   depends on its own content, and it changes as the deck advances and as the
+   window resizes. */
+(function () {
+  var stage = document.querySelector('.stage');
+  if (!stage) return;
+
+  function activeSlide() { return document.querySelector('.slide.active'); }
+
+  function sync() {
+    var s = activeSlide();
+    if (!s) return;
+    var more = (s.scrollHeight - s.clientHeight) > 2 &&
+               (s.scrollHeight - s.clientHeight - s.scrollTop) > 2;
+    stage.classList.toggle('has-more', more);
+    stage.classList.toggle('on-sage', s.classList.contains('slide-sage'));
+    stage.classList.toggle('on-teal', s.classList.contains('slide-teal'));
+  }
+
+  // The deck swaps .active without telling anyone, so watch the attribute
+  // rather than trying to hook every control that advances it.
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(function () { sync(); })
+      .observe(stage, { attributes: true, attributeFilter: ['class'], subtree: true });
+  }
+  // Hide it once the reader reaches the bottom of a slide, and re-show on the
+  // way back up.
+  stage.addEventListener('scroll', function () { sync(); }, { capture: true, passive: true });
+  window.addEventListener('resize', sync);
+  document.addEventListener('DOMContentLoaded', sync);
+  window.setTimeout(sync, 300);
+  sync();
+})();
+</script>
 </body>
 </html>
