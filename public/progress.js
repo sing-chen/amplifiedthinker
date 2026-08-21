@@ -347,7 +347,9 @@
        banner is fixed dark in both themes, so none of this needs a variant. */
     '#resumeBanner.ac-confirming{display:block;max-width:560px;padding:16px 18px 16px 20px}' +
     '#resumeBanner.ac-confirming .resume-banner-text{margin-bottom:14px}' +
-    '#resumeBanner .ac-actions{display:flex;gap:10px;justify-content:flex-end}' +
+    // Left-aligned, to sit under the left-aligned message rather than drifting
+    // to the opposite edge of a block they belong to.
+    '#resumeBanner .ac-actions{display:flex;gap:10px;justify-content:flex-start}' +
 
     // align-items:flex-start, not center: once the label wraps to two lines a
     // centred tick sits between them, attached to neither. The offset drops it
@@ -375,9 +377,21 @@
     // would quietly break it. Text carries the meaning, so it takes --sage at
     // 6.96:1; the tick keeps the green and needs only the 3:1 that non-text
     // contrast asks for.
-    '.nav-brand .ac-rail-done{display:flex;align-items:center;gap:7px;margin-top:12px;' +
-      "font-family:Poppins,sans-serif;font-size:11.5px;font-weight:600;" +
-      'line-height:1.35;color:var(--sage,#ACC4B6)}' +
+    // A pill rather than a bare line. The first version was a tick and some text
+    // at the same weight as everything else on the rail, which read as another
+    // label rather than as a status — it needed a shape of its own to be seen.
+    // inline-flex so it hugs its text: a full-width band would read as a section
+    // divider on a rail that is already a stack of full-width rows.
+    '.nav-brand .ac-rail-done{display:inline-flex;align-items:center;gap:7px;' +
+      'margin-top:14px;padding:5px 11px 5px 9px;border-radius:999px;' +
+      'background:rgba(91,167,159,.14);border:1px solid rgba(91,167,159,.38);' +
+      "font-family:Poppins,sans-serif;font-size:12px;font-weight:600;" +
+      'line-height:1.3;color:var(--light-sage,#D0E2D6);white-space:nowrap;' +
+      // Backstop. The date format above is what keeps this inside the rail; this
+      // is what stops an unexpected string breaking the layout rather than just
+      // being clipped.
+      'max-width:100%;overflow:hidden}' +
+    '.nav-brand .ac-rail-done span{overflow:hidden;text-overflow:ellipsis}' +
     '.nav-brand .ac-tick-sm{width:13px;height:13px;fill:none;stroke:var(--teal,#5BA79F);' +
       'stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}';
 
@@ -444,8 +458,22 @@
     try {
       var d = new Date(iso);
       if (isNaN(d.getTime())) return '';
-      var opts = { day: 'numeric', month: 'long' };
-      if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
+
+      // ⚠️ THE MONTH SHORTENS WHEN THE YEAR APPEARS, and that is a width fix
+      // rather than a style preference. The rail pill has 212px of usable
+      // width; "Completed 30 September" measures 199 and fits, while
+      // "Completed 30 September 2025" measures 231 and does not.
+      //
+      // The nasty part is WHEN it would have broken: the year is only added
+      // once the completion is not from the current year, so this would have
+      // looked perfect until the first January after launch and then quietly
+      // overflowed the rail on old completions. "30 Sep 2025" loses nothing —
+      // a date old enough to need its year is not one anybody reads precisely.
+      var sameYear = d.getFullYear() === new Date().getFullYear();
+      var opts = sameYear
+        ? { day: 'numeric', month: 'long' }
+        : { day: 'numeric', month: 'short', year: 'numeric' };
+
       return d.toLocaleDateString('en-GB', opts);
     } catch (e) { return ''; }
   }
