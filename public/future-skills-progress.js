@@ -23,6 +23,30 @@
   var doc = global.document;
   var M = null;   // AmplifiedSkillsProgress, resolved at run time
 
+  /* ── undoing all of it ─────────────────────────────────────────────────
+     ⚠️ SIGNING OUT DOES NOT RELOAD THE PAGE. auth.js signs out locally and
+     repaints the nav, so without this every ring, pill, bar and date stays on
+     screen — one reader's progress left in front of whoever is at the browser
+     next. Found on the second visual pass, and it is a disclosure bug, not a
+     cosmetic one.
+
+     Rather than reversing the mutations afterwards — which means remembering
+     what was replaced, and silently rots the moment a new mutation is added —
+     every change registers its own exact restore as it is made. Teardown is
+     then "run them all backwards", and a mutation that forgets to register is
+     the only way to leak, which is a much smaller thing to get right.
+  ─────────────────────────────────────────────────────────────────────── */
+  var teardowns = [];
+
+  function onTeardown(fn) { teardowns.push(fn); }
+
+  function teardown() {
+    while (teardowns.length) {
+      try { teardowns.pop()(); } catch (e) { /* keep unwinding */ }
+    }
+    painted = false;
+  }
+
   /* ── motion ─────────────────────────────────────────────────────────────
      Decided 2026-08-20, and the reasoning matters more than the numbers.
 
@@ -222,6 +246,10 @@
     s.id = 'fs-progress-css';
     s.textContent = CSS;
     doc.head.appendChild(s);
+    // Goes on sign-out too. Nothing it targets would still be in the document,
+    // so this is belt and braces — but "a signed-out page is indistinguishable
+    // from a guest's" is a cheaper rule to verify than "harmless leftovers".
+    onTeardown(function () { s.remove(); });
   }
 
   /* ── small builders ────────────────────────────────────────────────────── */
@@ -338,8 +366,14 @@
 
     // ⚠️ The description is REPLACED, not hidden, and only here. Leaving both
     // would put a generic sentence above a specific one saying the same thing.
+    // The node is DETACHED, never destroyed, and its exact position recorded —
+    // signing out has to put the guest text back where it was.
     var desc = el.querySelector('.lcdesc');
-    if (desc) desc.remove();
+    if (desc) {
+      var descParent = desc.parentNode, descNext = desc.nextSibling;
+      desc.remove();
+      onTeardown(function () { descParent.insertBefore(desc, descNext); });
+    }
 
     var type = el.querySelector('.lctype');
     if (type && type.nextSibling) {
@@ -350,10 +384,17 @@
       el.appendChild(state); el.appendChild(meta); el.appendChild(bar);
     }
 
+    onTeardown(function () {
+      state.remove(); meta.remove(); bar.remove();
+      el.classList.remove('lc-done');
+    });
+
     // Resuming should say so on the button too.
     var cta = el.querySelector('.lccta');
     if (cta && cta.firstChild && cta.firstChild.nodeType === 3 && !done) {
-      cta.firstChild.nodeValue = 'Resume ' + (kindLabel === 'Primer' ? 'primer' : 'plan');
+      var ctaNode = cta.firstChild, ctaWas = ctaNode.nodeValue;
+      ctaNode.nodeValue = 'Resume ' + (kindLabel === 'Primer' ? 'primer' : 'plan');
+      onTeardown(function () { ctaNode.nodeValue = ctaWas; });
     }
 
     bar._fill = fill;
@@ -387,6 +428,7 @@
     var toggle = header.querySelector('.stoggle');
     if (toggle) header.insertBefore(rings, toggle);
     else header.appendChild(rings);
+    onTeardown(function () { rings.remove(); });
 
     /* The status pill now says where the READER is, not that the skill exists.
        ⚠️ Rolled up from both artefacts, and it is a CONJUNCTION, never an
@@ -395,12 +437,16 @@
        skill, not a half-finished one. */
     var badge = shc.querySelector('.sstatus');
     if (badge) {
+      // Capture BOTH before touching either — "Available Now" and ss-avail are
+      // what a guest must get back.
+      var badgeText = badge.textContent, badgeClass = badge.className;
       var both = pair.primer.status === M.STATUS.COMPLETE && pair.plan.status === M.STATUS.COMPLETE;
       var any = pair.primer.status !== M.STATUS.NOT_STARTED || pair.plan.status !== M.STATUS.NOT_STARTED;
       badge.classList.remove('ss-avail');
       if (both) { badge.classList.add('ss-done'); badge.textContent = 'Complete'; }
       else if (any) { badge.classList.add('ss-ip'); badge.textContent = 'In progress'; }
       else { badge.classList.add('ss-ns'); badge.textContent = 'Not started'; }
+      onTeardown(function () { badge.className = badgeClass; badge.textContent = badgeText; });
     }
 
     /* A skill counts as complete only when BOTH artefacts are.
@@ -409,13 +455,15 @@
        is not "half done"; it is a started skill. */
     if (pair.primer.status === M.STATUS.COMPLETE && pair.plan.status === M.STATUS.COMPLETE) {
       card.classList.add('sk-done');
+      onTeardown(function () { card.classList.remove('sk-done'); });
       var name = shc.querySelector('.sname');
       if (name && !name.querySelector('.sname-check')) {
-        var badge = doc.createElement('span');
-        badge.className = 'sname-check';
-        badge.setAttribute('aria-label', 'Complete');
-        badge.appendChild(checkSvg());
-        name.appendChild(badge);
+        var tick = doc.createElement('span');
+        tick.className = 'sname-check';
+        tick.setAttribute('aria-label', 'Complete');
+        tick.appendChild(checkSvg());
+        name.appendChild(tick);
+        onTeardown(function () { tick.remove(); });
       }
     }
 
@@ -431,6 +479,21 @@
 
     card._rings = [primerRing, planRing];
     card._bars = bars;
+
+    // Cancel anything in flight and drop the references. The expansion
+    // listeners stay attached — removing them is not worth the bookkeeping —
+    // but animateCard() returns immediately once _rings is gone, so an expand
+    // after signing out animates nothing.
+    onTeardown(function () {
+      if (card._pending) global.cancelAnimationFrame(card._pending);
+      if (card._pulseTimer) global.clearTimeout(card._pulseTimer);
+      for (var i = 0; i < card._rings.length; i++) {
+        if (card._rings[i]._raf) global.cancelAnimationFrame(card._rings[i]._raf);
+      }
+      card._pending = card._pulseTimer = null;
+      card._rings = null;
+      card._bars = null;
+    });
   }
 
   /* ── the animation, and the three traps it has to avoid ─────────────────
@@ -579,6 +642,7 @@
 
     host.parentNode.insertBefore(strip, host.nextSibling);
     strip.classList.add('is-ready');
+    onTeardown(function () { strip.remove(); });
   }
 
   /* ── wiring ────────────────────────────────────────────────────────────── */
@@ -643,11 +707,23 @@
       var auth = global.AmplifiedAuth;
       if (auth) {
         auth.onAuthChange(function (session) {
-          if (!session) return;               // guest, or a stale token resolved
+          /* ⚠️ A NULL SESSION IS AN EVENT, not just an absence. It arrives both
+             for a reader who was never signed in AND for one who has just
+             signed out from the nav — and the page is NOT reloaded in either
+             case. Returning early here was the bug: everything stayed on
+             screen for whoever was at the browser next. teardown() is a no-op
+             when nothing has been painted, so both cases take the same path. */
+          if (!session) { teardown(); return; }
+
           M = global.AmplifiedSkillsProgress;
           if (!M) return;
+
+          // Guarded by `painted` inside paint(), so a token refresh — which
+          // also fires this — does not re-query or re-render.
+          if (painted) return;
+
           M.load({}).then(function (data) {
-            if (data) { try { paint(data); } catch (e) { /* leave the guest page */ } }
+            if (data) { try { paint(data); } catch (e) { teardown(); } }
           });
         });
         return;
