@@ -998,6 +998,12 @@
       <p>Critical Thinking is the discipline of testing whether a conclusion holds before deciding what to trust. It means separating what's claimed from what's evidenced, checking that evidence against its source, method, currency, and motive, watching for bias in the source, the data, and yourself, and tracing surprising conclusions back to the point where an assumption took over from observation.</p>
     </div>
     <p class="t-body" style="max-width:640px;opacity:0.75;">The output is a judgment — sound, questionable, missing — not a fix. What you do with that judgment is a different skill; this one gives you the confidence to know which parts of the picture you can actually stand on.</p>
+    <!-- Filled by progress.js, which owns the markup so ten pages do not each
+         carry a copy. Empty and inert for a guest, and if that file is
+         unavailable. It takes the compact variant here: a slide is a fixed
+         panel, not a scrolling section. -->
+    <div id="completionSlot"></div>
+
     <div class="next-step-card" style="margin-top:40px;padding:24px 28px;border-radius:0 8px 8px 0;max-width:560px;">
       <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
       <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers principles of evaluation, the Ladder of Inference, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
@@ -1101,14 +1107,11 @@
       saveProgress();
     }, { once: true });
 
-    // ⚠️ See the matching comment on the plan pages. For a signed-in user this
-    // deletes the account's row for this primer on every device, permanently.
+    // ⚠️ See the matching comment on the plan pages. The warning text lives in
+    // progress.js beside the clear() it describes, because ten inlined copies
+    // of it had already gone stale once.
     resumeDismissBtn.addEventListener('click', function () {
-      if (store.mode() === 'account' && !window.confirm(
-            'Start over? This permanently deletes your saved progress for ' +
-            'this primer, on every device you sign in on. It cannot be undone.')) {
-        return;
-      }
+      if (!store.confirmClear()) return;
       hideBanner();
       visited = new Set([0]);
       updateUI();

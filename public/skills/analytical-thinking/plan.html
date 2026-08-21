@@ -2917,6 +2917,13 @@
         </blockquote>
       </div>
 
+      <!-- Filled by progress.js, which owns the markup so ten pages do not each
+           carry a copy. Empty and inert if that file is unavailable. It sits
+           here, at the end of Summary, rather than after Explore Further —
+           Explore Further is an additional resource and is deliberately not
+           counted as part of the plan. -->
+      <div id="completionSlot"></div>
+
       <div class="next-step-card" style="margin:40px 0 0;padding:28px 32px;border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
         <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
         <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:16px;">Analytical Thinking gives you structure for understanding what's happening. Critical Thinking gives you the tools to test whether your conclusions hold. The two skills reinforce each other — once you can decompose a problem, the natural next challenge is evaluating what you find.</p>
@@ -3530,17 +3537,20 @@ store.ready(function (savedData) {
     }, { once: true });
 
     // ⚠️ Destructive, and far more so than it looks. For a signed-in user this
-    // deletes the account's row for this plan on EVERY device, permanently.
-    // Before Phase 5 the same click cleared one key in one browser. Guests are
-    // not asked, because there is nothing stored to lose.
+    // clears the account's row for this plan on EVERY device. Before Phase 5 the
+    // same click cleared one key in one browser.
+    //
+    // ⚠️ THE WARNING TEXT NOW LIVES IN progress.js, beside the clear() it
+    // describes. It used to be spelled out here, in all ten pages, and said the
+    // progress was deleted permanently — which stopped being true the moment
+    // clear() began preserving `completed_at`. Ten copies of a sentence about
+    // behaviour defined somewhere else is how that happens. Do not inline it
+    // again. confirmClear() also handles the guest case, who is not asked
+    // because there is nothing stored to lose.
     //
     // No { once: true }: cancelling must leave the button working.
     resumeDismissBtn.addEventListener('click', function () {
-      if (store.mode() === 'account' && !window.confirm(
-            'Start over? This permanently deletes your saved progress for ' +
-            'this plan, on every device you sign in on. It cannot be undone.')) {
-        return;
-      }
+      if (!store.confirmClear()) return;
       hideBanner();
       resetAllProgress();
     });
