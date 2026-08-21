@@ -3041,6 +3041,28 @@
 </main>
 
 <script>
+// ⚠️ THE BROWSER DOES NOT GET TO RESTORE SCROLL ON THIS PAGE.
+//
+// Left on `auto`, a refresh mid-plan put the reader back at their scroll
+// position AND showed the resume banner - so the page returned you to where
+// you were, then asked whether you would like to go to where you were.
+//
+// The first attempt at fixing that suppressed the banner when the restored
+// position already matched the saved section. It raced: the banner is decided
+// inside store.ready(), which fires after a network read, and the browser
+// restores scroll on its own schedule. Whichever won varied by browser, which
+// is precisely the kind of fix that cannot be verified.
+//
+// So do not race it. `manual` means a reload lands at the top, the banner is
+// always a real offer, and the behaviour matches the PRIMERS - a deck cannot
+// scroll-restore either, and returning to the start with an offer to resume
+// is the more intuitive of the two behaviours anyway.
+//
+// ⚠️ This also applies to back/forward navigation, not only reloads. Coming
+// back to a plan lands at the top rather than where you were - which is the
+// same trade, and the banner is what covers it.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 // ── PROGRESS STORE ───────────────────────
 // Storage lives in progress.js, shared by every skill page. This page owns
 // only the mapping between its own DOM and the stored shape.
