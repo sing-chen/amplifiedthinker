@@ -334,14 +334,31 @@
 
     '@media(prefers-reduced-motion:reduce){' + S + '.ac-btn{transition:none}}' +
 
-    /* ── the kept-date line in the start-over confirmation ────────────────
-       Scoped to the banner, which is fixed dark in both themes. */
-    '#resumeBanner .ac-kept{display:flex;align-items:center;gap:6px;margin-top:8px;' +
+    /* ── the start-over confirmation ──────────────────────────────────────
+       ⚠️ IT LAYS OUT AS A COLUMN, and the banner's own layout is why. The
+       default is a 480px flex ROW — text, then two buttons — which suits
+       "Welcome back · You were in Summary" and nothing longer. A full sentence
+       plus a kept line leaves the text about 250px between the padding and the
+       buttons, so it wrapped four times, the buttons floated against a block
+       taller than themselves, and the tick detached from its own label.
+
+       So while confirming, the banner stacks: message across the full width,
+       buttons on a row beneath it, and a little more room to breathe. The
+       banner is fixed dark in both themes, so none of this needs a variant. */
+    '#resumeBanner.ac-confirming{display:block;max-width:560px;padding:16px 18px 16px 20px}' +
+    '#resumeBanner.ac-confirming .resume-banner-text{margin-bottom:14px}' +
+    '#resumeBanner .ac-actions{display:flex;gap:10px;justify-content:flex-end}' +
+
+    // align-items:flex-start, not center: once the label wraps to two lines a
+    // centred tick sits between them, attached to neither. The offset drops it
+    // onto the optical middle of the FIRST line instead.
+    '#resumeBanner .ac-kept{display:flex;align-items:flex-start;gap:7px;margin-top:10px;' +
       'color:var(--teal,#5BA79F)}' +
     '#resumeBanner .ac-kept b{font-weight:600}' +
     '#resumeBanner .ac-kept-warn{color:rgba(255,255,255,.75)}' +
     '#resumeBanner .ac-tick-sm{width:13px;height:13px;fill:none;stroke:currentColor;' +
-      'stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}' +
+      'stroke-width:3;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;' +
+      'margin-top:3px}' +
 
     /* ── the rail badge ───────────────────────────────────────────────────
        Answers "have I finished this?" without scrolling to the end. It goes in
@@ -919,9 +936,11 @@
             '<b>The date you completed it is kept.</b></span>'
           : '<span class="ac-kept ac-kept-warn">It cannot be undone.</span>';
 
+        banner.classList.add('ac-confirming');
         banner.innerHTML =
           '<div class="resume-banner-text"><strong>Start over?</strong>' +
           escapeHtml(clearWarning(kind, snapshot)) + kept + '</div>' +
+          '<div class="ac-actions">' +
           // ⚠️ Cancel is the PRIMARY button and confirming is the quiet one.
           // The loud button should not be the destructive one — the same
           // instinct behind account.astro's `danger-quiet`.
@@ -937,10 +956,15 @@
           // separate job — see BACKLOG.md.
           '<button class="resume-banner-btn dismiss" type="button" ' +
           'style="color:rgba(255,255,255,.82)" ' +
-          'id="acClearYes">Yes, start over</button>';
+          'id="acClearYes">Yes, start over</button>' +
+          '</div>';
 
         function close() {
           doc.removeEventListener('keydown', onKey);
+          // ⚠️ Drop the modifier as well as the markup. Leaving it on returns
+          // the original two-button row to a column layout it was never
+          // designed for.
+          banner.classList.remove('ac-confirming');
           banner.innerHTML = restore;
           if (returnFocus && returnFocus.focus) {
             try { returnFocus.focus(); } catch (e) {}
