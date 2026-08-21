@@ -1339,6 +1339,16 @@ in. The candidate rule is *delete the local branch in the same sitting as the me
 this list existing rather than periodically clearing it. Worth adopting into the working agreements
 in [CLAUDE.md](CLAUDE.md) if it holds up.
 
+**Applied once, 2026-08-21 — `chore/footer-css-dedup`, local and `origin` both, immediately after
+the merge at `4cd8924`.** It held up: `--merged main` confirmed, `--no-merged main` empty, `-d` not
+`-D`, and the merge commit carries everything the branch did. **That is one data point, not a
+verdict** — and it is the easy case, a branch merged minutes earlier by the person deleting it,
+which is exactly when the pointer is least likely to still be wanted. The case the rule has *not*
+been tested against is a branch someone might want to return to: a preview URL still being circulated,
+or work that turns out to need a follow-up commit. ⚠️ **Promoting it to CLAUDE.md on this evidence
+would be promoting it on its easiest instance.** Give it a few more merges, including one that is
+not same-sitting, before it becomes a working agreement.
+
 ⚠️ **`main` is not the only thing these pointers protect.** Vercel builds a preview per branch and
 names the URL from the branch, so a deleted branch takes its preview with it. Nothing links to those
 previews, and they are auth-walled anyway — recorded so it is a known consequence rather than a
