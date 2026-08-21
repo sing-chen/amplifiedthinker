@@ -64,7 +64,13 @@
     /* Header rings. Sit between the header content and the chevron. */
     '.sprog{display:flex;align-items:center;gap:14px;margin-left:auto;padding-left:14px;flex-shrink:0}',
     '.sring{position:relative;width:44px;height:44px;flex-shrink:0}',
-    '.sring svg{width:44px;height:44px;transform:rotate(-90deg);display:block}',
+    /* ⚠️ DIRECT CHILD, not a descendant. As `.sring svg` this was (0,2,0) and
+       matched EVERY svg in the ring — including the completion check inside
+       .sr-fig, which it blew up to 44px and rotated -90deg. The result read as
+       a slash through the ring rather than a tick, and looked like a deliberate
+       "not available" symbol. Same shape as the .auth-panel label trap in
+       CLAUDE.md: an element selector quietly outranking a class. */
+    '.sring > svg{width:44px;height:44px;transform:rotate(-90deg);display:block}',
     '.sring .sr-track{fill:none;stroke:var(--light-sage,#DCE7E3);stroke-width:3.2}',
     '.sring .sr-arc{fill:none;stroke:var(--mid-teal,#3E7F72);stroke-width:3.2;stroke-linecap:round;' +
       'stroke-dasharray:' + C.toFixed(3) + ';stroke-dashoffset:' + C.toFixed(3) + '}',
@@ -79,9 +85,16 @@
     /* Complete: a check, never "100%". A percentage on a finished thing invites
        the reader to work out what the missing 7% was. */
     '.sring.is-done .sr-arc{stroke:var(--fg-brand,#1F6F5C)}',
-    '.sr-check{width:13px;height:13px;display:block}',
-    '.sr-check polyline{fill:none;stroke:var(--fg-brand,#1F6F5C);stroke-width:2.6;' +
+    '.sr-fig .sr-check{width:15px;height:15px;display:block;transform:none}',
+    '.sr-check polyline{fill:none;stroke:var(--fg-brand,#1F6F5C);stroke-width:2.8;' +
       'stroke-linecap:round;stroke-linejoin:round}',
+    /* A completed ring still SWEEPS — the gesture is the same for every card,
+       and skipping it on the finished ones makes them read as inert. What the
+       check must not do is sit there during the sweep, which looked like the
+       arc was drawing itself around an already-final answer. It is held back
+       and lands with the pulse instead. */
+    '.sr-fig .sr-check{transition:opacity 200ms ease,transform 260ms cubic-bezier(.34,1.5,.64,1)}',
+    '.sring.is-sweeping .sr-check{opacity:0;transform:scale(.55)}',
     /* The pulse. Scale is reduced deliberately — at full strength beside a
        sweep it reads as a bounce rather than a landing. */
     '@keyframes sr-pulse{0%{transform:scale(1)}45%{transform:scale(1.055)}100%{transform:scale(1)}}',
@@ -98,7 +111,22 @@
     '.scard.sk-done .skill-icon svg{stroke:#fff}',
     '.sname-check{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;' +
       'border-radius:50%;background:var(--fg-brand,#1F6F5C);margin-left:7px;vertical-align:middle}',
-    '.sname-check svg{width:9px;height:9px}',
+    '.sname-check svg{width:9px;height:9px;transform:none}',
+
+    /* The status pill, repurposed. On an AVAILABLE card "Available Now" is a
+       fact the reader already has — the card is open, the launch buttons are
+       there. For a signed-in reader the same slot can carry something they do
+       not know, which is where THEY are.
+       ⚠️ This costs nothing on the other axis. A "coming soon" card carries a
+       zero-width status rail, no chevron and no body, so availability is
+       already encoded structurally and the badge is free. Guests keep
+       "Available Now" untouched. */
+    '.sstatus.ss-ns{background:rgba(20,60,50,.07);color:#43554F}',
+    '.sstatus.ss-ip{background:rgba(62,127,114,.16);color:#14584A}',
+    '.sstatus.ss-done{background:var(--fg-brand,#1F6F5C);color:#fff}',
+    '[data-theme="dark"] .sstatus.ss-ns{background:rgba(255,255,255,.08);color:#B6C7C1}',
+    '[data-theme="dark"] .sstatus.ss-ip{background:rgba(143,207,195,.16);color:#8FCFC3}',
+    '[data-theme="dark"] .sstatus.ss-done{background:#8FCFC3;color:#12211E}',
     '.sname-check polyline{fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}',
 
     /* Launch cards gain state. The description gives way to a date and a resume
@@ -360,6 +388,21 @@
     if (toggle) header.insertBefore(rings, toggle);
     else header.appendChild(rings);
 
+    /* The status pill now says where the READER is, not that the skill exists.
+       ⚠️ Rolled up from both artefacts, and it is a CONJUNCTION, never an
+       average: complete only when both are, in progress the moment either has
+       been touched. A finished primer beside an untouched plan is a started
+       skill, not a half-finished one. */
+    var badge = shc.querySelector('.sstatus');
+    if (badge) {
+      var both = pair.primer.status === M.STATUS.COMPLETE && pair.plan.status === M.STATUS.COMPLETE;
+      var any = pair.primer.status !== M.STATUS.NOT_STARTED || pair.plan.status !== M.STATUS.NOT_STARTED;
+      badge.classList.remove('ss-avail');
+      if (both) { badge.classList.add('ss-done'); badge.textContent = 'Complete'; }
+      else if (any) { badge.classList.add('ss-ip'); badge.textContent = 'In progress'; }
+      else { badge.classList.add('ss-ns'); badge.textContent = 'Not started'; }
+    }
+
     /* A skill counts as complete only when BOTH artefacts are.
        ⚠️ The two rings are deliberately never averaged, and this is not an
        average — it is a conjunction. A finished primer beside an untouched plan
@@ -462,6 +505,11 @@
       for (var b = 0; b < card._bars.length; b++) {
         card._bars[b]._fill.style.width = card._bars[b]._target + '%';
       }
+      // The check is never hidden under reduced motion — there is no sweep for
+      // it to be held back from.
+      for (var c = 0; c < card._rings.length; c++) {
+        card._rings[c]._ring.classList.remove('is-sweeping');
+      }
       return;
     }
 
@@ -472,16 +520,22 @@
     card._pending = global.requestAnimationFrame(function () {
       card._pending = null;
       for (var i = 0; i < card._rings.length; i++) {
-        restartRing(card._rings[i]);
-        countUp(card._rings[i]);
-        card._rings[i]._ring.classList.remove('is-pulse');
+        var w = card._rings[i];
+        // Hold the check back so the arc is not drawing itself around an
+        // answer that is already on screen.
+        if (w._done) w._ring.classList.add('is-sweeping');
+        restartRing(w);
+        countUp(w);
+        w._ring.classList.remove('is-pulse');
       }
       for (var j = 0; j < card._bars.length; j++) restartBar(card._bars[j]);
 
-      // The landing, overlapping the last 200ms of the sweep.
+      // The landing, overlapping the last 200ms of the sweep — and the moment
+      // the check arrives on a completed ring.
       card._pulseTimer = global.setTimeout(function () {
         for (var k = 0; k < card._rings.length; k++) {
           var ring = card._rings[k]._ring;
+          ring.classList.remove('is-sweeping');
           ring.classList.remove('is-pulse');
           void ring.getBoundingClientRect();
           ring.classList.add('is-pulse');
@@ -512,23 +566,16 @@
     }
     strip.appendChild(counts);
 
-    if (summary.inFlight) {
-      var f = summary.inFlight;
-      var link = doc.createElement('div');
-      link.className = 'ls-resume';
-      var a = doc.createElement('a');
-      a.href = 'skills/' + f.slug + '/' + f.kind + '.html';
-      a.textContent = 'Pick up where you left off';
-      link.appendChild(a);
-      if (f.artefact.resume) {
-        link.appendChild(doc.createTextNode(' '));
-        var small = doc.createElement('span');
-        small.className = 'ls-counts';
-        small.textContent = '— ' + f.artefact.resume.name;
-        link.appendChild(small);
-      }
-      strip.appendChild(link);
-    }
+    /* ⚠️ NO RESUME SHORTCUT HERE, and this reverses the original design.
+       "Pick up where you left off" has to choose ONE artefact, and the only
+       basis available is `updated_at` — most recently touched. With several
+       plans in progress that is a guess about intent dressed up as a
+       convenience, and a wrong guess is worse than no link: it sends someone
+       into the thing they were not thinking about.
+       The reader already has a per-skill answer one chevron away, where the
+       resume point is stated next to the skill it belongs to and they choose.
+       `summarise()` still computes inFlight — the dashboard may have a surface
+       where a single next step IS the point. It is not this one. */
 
     host.parentNode.insertBefore(strip, host.nextSibling);
     strip.classList.add('is-ready');
@@ -558,8 +605,19 @@
     });
   }
 
+  var painted = false;
+
   function paint(data) {
     if (!data || !data.progress) return;
+
+    /* ⚠️ ONCE ONLY. onAuthChange fires on more than signing in — a token
+       refresh fires it too, and Supabase refreshes on a timer. Without this
+       guard a session left open long enough repaints and every card ends up
+       with two sets of rings, appended one after the other. Reproduced by
+       accident while debugging: four rings on a two-artefact card. */
+    if (painted) return;
+    painted = true;
+
     injectCss();
 
     var cards = doc.querySelectorAll('.scard');

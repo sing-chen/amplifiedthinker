@@ -641,6 +641,13 @@ and has **no chevron, no body, no click handler and no `tabindex`**. Checked dir
 Because availability is already encoded structurally, the `.sstatus` badge is free to carry the
 personal state on available cards without losing the other axis. ⚠️ Do not re-solve this.
 
+✅ **Built 2026-08-21, and it was nearly missed.** The first implementation left "Available Now"
+showing for signed-in readers — a fact they already have, since the card is open and the launch
+buttons are in front of them. The badge now reads **Not started / In progress / Complete**, rolled up
+from both artefacts as a **conjunction, never an average**: complete only when both are, in progress
+the moment either is touched. A finished primer beside an untouched plan is a started skill, not a
+half-finished one. Guests and coming-soon cards are untouched.
+
 #### The top of the Library is the one slot worth filling for BOTH audiences
 **Status: the guest half is ✅ built 2026-08-21. The signed-in half is deferred, deliberately.**
 Raised 2026-08-20, out of the argument about whether to show a completion control to guests.
@@ -697,7 +704,15 @@ because the position in the journey is what decides it.
 | Who | What goes here |
 |---|---|
 | Guest | One quiet line — the honest, early version of the ask, in the one place it is actually true |
-| Signed in | The summary strip: counts, and a resume shortcut into the skill in flight |
+| Signed in | The summary strip: counts. ⚠️ **NOT a resume shortcut — reversed on build, see below** |
+
+⚠️ **The resume shortcut was designed, built, and then removed on 2026-08-21.** It has to choose ONE
+artefact, and the only basis available is `updated_at` — most recently touched. With several plans in
+progress that is a guess about intent presented as a convenience, and a wrong guess is worse than no
+link: it sends someone into the thing they were not thinking about. The per-skill answer is one
+chevron away, stated next to the skill it belongs to, where the reader chooses. `summarise()` still
+computes `inFlight`, because a dashboard may have a surface where a single next step genuinely is the
+point. The Library is not it.
 
 **This is Option D returning, and the reversal is deliberate.** D was rejected as a *replacement*
 for per-card personalisation, which was right — counts alone cannot say *which* skill is where. As
