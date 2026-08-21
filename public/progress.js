@@ -982,16 +982,14 @@
           // instinct behind account.astro's `danger-quiet`.
           '<button class="resume-banner-btn primary" type="button" ' +
           'id="acClearCancel">Cancel</button>' +
-          // ⚠️ The inline colour is not decoration. `.dismiss` renders its label
-          // at 50% white, which measures 3.87:1 on this banner — under AA for
-          // 12px text. That is pre-existing: the banner's own "Start over"
-          // button has carried it all along. Inheriting it for a DESTRUCTIVE
-          // CONFIRMATION is where it stops being tolerable, so this one button
-          // is lifted to a legible weight while keeping the quiet background.
-          // Fixing `.dismiss` itself means touching ten stylesheets and is a
-          // separate job — see BACKLOG.md.
+          // This carried an inline colour lift until 2026-08-21, because
+          // `.dismiss` rendered its label at 50% white — 4.49:1 on this banner,
+          // under AA — and inheriting that for a DESTRUCTIVE CONFIRMATION was
+          // where it stopped being tolerable. ⚠️ The rule itself is now fixed in
+          // all ten stylesheets (0.62, 5.98:1), so the patch is gone: a local
+          // override whose reason has been repaired elsewhere is exactly the
+          // kind of thing that outlives its justification and then gets copied.
           '<button class="resume-banner-btn dismiss" type="button" ' +
-          'style="color:rgba(255,255,255,.82)" ' +
           'id="acClearYes">Yes, start over</button>' +
           '</div>';
 

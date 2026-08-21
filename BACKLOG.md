@@ -1617,9 +1617,34 @@ the first thing to check when the alias stops working and nothing was changed.
 
 ## Accessibility / Performance
 
-### `.resume-banner-btn.dismiss` fails AA — 3.87:1 on its own banner
-**Status:** Defect · **Pre-existing, measured 2026-08-20** while building the start-over
-confirmation · **Relates to:** the ten `public/skills/*/{plan,primer}.html`
+### ~~`.resume-banner-btn.dismiss` fails AA~~
+**Status:** ✅ **Fixed 2026-08-21** · Pre-existing, measured 2026-08-20 while building the
+start-over confirmation · **Relates to:** the ten `public/skills/*/{plan,primer}.html`
+
+✅ **`rgba(255,255,255,0.5)` → `0.62`, in all ten stylesheets.** Re-measured by compositing over
+the banner's own `--charcoal`: **4.49:1 → 5.98:1**. It stays visibly quieter than the 0.75 body
+text above it (8.01:1), which is what the de-emphasis was for in the first place.
+
+⚠️ **The entry's own preferred option was wrong, and the reasoning is worth keeping.** It proposed
+moving `.resume-banner*` into `styles.css` as the version that "cannot drift again". But
+`styles.css` is loaded by **all 19 pages** and the banner exists on **10** — and CLAUDE.md's rule is
+explicit that page-scoped CSS does not go in the shared file, which is why `pwned.js` and
+`auth-pages.css` are scoped. The footer belonged there because it is on every page; this does not.
+Two further findings made the move worse than it looked: `--radius` is **6px in `styles.css` and
+8px on the plan pages**, and `--nav-width` is defined only on skill pages — so shared rules would
+have carried hidden coupling to variables that only some pages define.
+
+✅ **The inline patch in `progress.js` is gone with it.** The destructive confirmation's
+*"Yes, start over"* button carried `style="color:rgba(255,255,255,.82)"` solely because the class
+was sub-AA. The base is now fixed, so the override went — ⚠️ a local patch whose reason has been
+repaired elsewhere is exactly the thing that outlives its justification and then gets copied.
+Verified: the confirm button now inherits 5.98:1 with no inline colour.
+
+**Checked before touching anything:** all ten copies of the banner CSS are functionally identical.
+Five plans match exactly, four primers match exactly, and critical-thinking's primer differs from
+the other four **by a comment only**.
+
+Original entry follows.
 
 The banner's quiet button renders its label at **50% white** on the charcoal panel, which
 composites to **3.87:1** at 12px — under the 4.5:1 AA threshold for normal text. It is the
@@ -1732,7 +1757,52 @@ carries 152px of vertical padding, leaving ~752px — and those slides hold more
 counter is right. A reader who never suspects there is more below simply reads less than was
 written, and no measurement anyone currently runs would report it.
 
-**Not decided, and worth deciding rather than defaulting:**
+#### ✅ Cause 2 resolved 2026-08-21 — one outlier trimmed, and the rest declared
+**Decided both halves rather than defaulting, with the post-circle-fix numbers in hand.**
+
+**The outlier: critical-thinking slide 7, the Ladder of Inference.** Seven rungs plus an intro and
+a closing paragraph made it the tallest slide in the library and **the only one still overflowing at
+1080px**. Rung padding 12→7, gaps 8→5, `.ladder` margin-top 24→14, dense-slide padding 48→32 for
+that deck. **~130px recovered with nothing cut** — every rung, the intro and the closing paragraph
+all stay. Rung height 66px → 55px. Slide 6 gained the same headroom for free.
+
+⚠️ **That spacing is now load-bearing, not taste**, and the file says so where someone would loosen
+it. Slide 7 sits at exactly 0 overflow in a 1000px window; any of those values going back up puts
+it outside again.
+
+**Everything else: a scroll affordance, on all five decks.** A fade at the stage's bottom edge,
+shown only while the active slide actually overflows.
+
+⚠️ **The fade is on `.stage`, NOT `.slide`.** The slide is the scroll container, so a fade attached
+to it would scroll away with the content — visible at the top and gone exactly when it is still
+needed. `.stage` is `position:relative; overflow:hidden` and does not move.
+
+⚠️ **It tints to match the slide behind it.** The decks use sage, white and teal slides; one grey
+fade over all three reads as a band rather than as content running out.
+
+⚠️ **Overflow is measured, never inferred from the viewport** — it depends on the slide's own
+content, and changes as the deck advances and as the window resizes. A MutationObserver on the
+stage watches `.active` rather than trying to hook every control that advances it.
+
+**The result, measured across all five decks:**
+
+| Viewport | Before Cause 2 | After |
+|---|---|---|
+| **1080px** | critical 7 (+51) | ✅ **every deck clean** |
+| 1000px | critical 1, 7 (+131); systems 1, 9 | critical 1 (+25); systems 1 (+6), 9 (+38) |
+| 900px | critical worst **+231** | critical worst **+97** |
+
+**This entry's original framing called the affordance "the least honest of the three".** That was
+right when the numbers were unknown. With them in hand it is not: below roughly 1000px the content
+genuinely does not fit, and no trim that keeps the teaching would make it. Telling the reader is
+then the honest act rather than a dodge — and above 1000px the decks now keep their one-screenful
+promise, which is what makes the affordance rare instead of permanent.
+
+**Still open, deliberately:** slide 1 overflows by small amounts on most decks below 1080px (+25 on
+critical at 1000px). It is the title slide, so trimming means touching the hero of every deck for a
+handful of pixels. The affordance covers it.
+
+**Not decided at the time, and worth deciding rather than defaulting:**
 
 - Trim the offending slides so the deck's own promise — one screenful per slide — holds. Most
   faithful to the format, most editorial work.

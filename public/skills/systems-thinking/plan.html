@@ -1575,7 +1575,10 @@
   .resume-banner-btn.primary:hover { background: var(--navy); }
   .resume-banner-btn.dismiss {
     background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.5);
+    /* 0.62, not 0.5: at 12px on --charcoal, 50% white composites to 4.49:1 —
+       under AA. 0.62 gives 5.98:1 and stays visibly quieter than the 0.75
+       body text above it (8.01:1), which is what the de-emphasis was for. */
+    color: rgba(255,255,255,0.62);
     margin-left: 4px;
   }
   .resume-banner-btn.dismiss:hover { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); }
