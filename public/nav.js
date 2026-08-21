@@ -559,6 +559,29 @@
     return (name && name.trim()) || email || '';
   }
 
+  /* Where the reader should be put back after signing in.
+     ⚠️ A PATH, NEVER A URL, and that is the whole safety argument on this side.
+     `location.pathname` already carries the origin's own base — `/` on Vercel,
+     `/amplifiedthinker/` on Pages — so one form is correct on both, and what
+     reaches the sign-in page has no scheme and no host in it at all. Sending an
+     absolute URL would mean the receiving end had to strip one, and stripping is
+     how open redirects get written.
+
+     Nothing is added from the auth pages themselves: /sign-in/ would loop, and
+     the nav shows no "Sign in" link on /account/ anyway.
+
+     ⚠️ The receiving end does NOT trust this. It re-validates from scratch —
+     anyone can type a `next` of their choosing, so this function being careful
+     is a convenience, not a control. See safeNext() in sign-in.astro. */
+  function returnParam() {
+    try {
+      if (pageNeedsAuth()) return '';
+      var here = window.location.pathname + window.location.search + window.location.hash;
+      if (!here || here.charAt(0) !== '/') return '';
+      return '?next=' + encodeURIComponent(here);
+    } catch (e) { return ''; }
+  }
+
   // Paints the slot before any network request. auth.js re-renders the same
   // markup once loaded, adding the dropdown — so nothing moves when it arrives.
   function paintAuthSlot(peek) {
@@ -566,7 +589,8 @@
     if (!slot) return;
 
     if (peek.state === 'out') {
-      slot.innerHTML = '<a class="snav-auth-signin" href="' + root('sign-in/') + '">Sign in</a>';
+      slot.innerHTML = '<a class="snav-auth-signin" href="' +
+        root('sign-in/') + returnParam() + '">Sign in</a>';
     } else if (peek.state === 'in') {
       slot.innerHTML =
         '<button type="button" class="snav-auth-avatar" id="snav-auth-avatar"' +
