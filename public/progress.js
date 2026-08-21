@@ -454,12 +454,15 @@
   // "12 August", or "12 August 2025" once the year stops being obvious. A bare
   // year on something finished last week reads as clutter; omitting it on
   // something finished two years ago reads as wrong.
+  var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
   function completionDate(iso) {
     try {
       var d = new Date(iso);
       if (isNaN(d.getTime())) return '';
 
-      // ⚠️ THE MONTH SHORTENS WHEN THE YEAR APPEARS, and that is a width fix
+      // ⚠️ THE FORMAT CHANGES WHEN THE YEAR APPEARS, and that is a width fix
       // rather than a style preference. The rail pill has 212px of usable
       // width; "Completed 30 September" measures 199 and fits, while
       // "Completed 30 September 2025" measures 231 and does not.
@@ -467,14 +470,21 @@
       // The nasty part is WHEN it would have broken: the year is only added
       // once the completion is not from the current year, so this would have
       // looked perfect until the first January after launch and then quietly
-      // overflowed the rail on old completions. "30 Sep 2025" loses nothing —
-      // a date old enough to need its year is not one anybody reads precisely.
-      var sameYear = d.getFullYear() === new Date().getFullYear();
-      var opts = sameYear
-        ? { day: 'numeric', month: 'long' }
-        : { day: 'numeric', month: 'short', year: 'numeric' };
+      // overflowed the rail on old completions — on a date nobody would connect
+      // to a layout change.
+      if (d.getFullYear() === new Date().getFullYear()) {
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+      }
 
-      return d.toLocaleDateString('en-GB', opts);
+      // ⚠️ Built by hand rather than through toLocaleDateString, and not for
+      // the hyphens. `{ month: 'short' }` under en-GB returns "Sept" for
+      // September — four letters, where every other month gives three — so the
+      // column width would depend on which month it was. A fixed table gives a
+      // fixed width, and DD-Mmm-yyyy is unambiguous in a way DD/MM vs MM/DD
+      // never is.
+      var dd = d.getDate();
+      return (dd < 10 ? '0' : '') + dd + '-' +
+             MONTHS_SHORT[d.getMonth()] + '-' + d.getFullYear();
     } catch (e) { return ''; }
   }
 
