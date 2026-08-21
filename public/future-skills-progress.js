@@ -40,11 +40,35 @@
 
   function onTeardown(fn) { teardowns.push(fn); }
 
+  /* Collapse anything the previous reader left open.
+     ⚠️ Uses the page's own toggleSkill rather than setting `open` directly:
+     that function owns BOTH the class and aria-expanded, and setting one
+     without the other leaves the card visually closed but announced as
+     expanded. Duplicating two lines here is exactly how the two drift.
+     ⚠️ GUARDED ON HAVING PAINTED, and that guard is load-bearing. teardown()
+     also runs for an ordinary guest — the first null session on any page load
+     is one — and future-skills.html opens a card from a `#s-…` deep link on
+     DOMContentLoaded. Collapsing unconditionally would slam that card shut a
+     moment after it opened, for a reader who never signed in at all. */
+  function collapseAll() {
+    if (typeof global.toggleSkill !== 'function') return;
+    var open = doc.querySelectorAll('.scard.open');
+    for (var i = 0; i < open.length; i++) {
+      if (open[i].id) global.toggleSkill(open[i].id);
+    }
+  }
+
   function teardown() {
+    var wasPainted = painted;
+    painted = false;
+
+    // Collapse first, then strip the contents: the removal then happens inside
+    // a card that is already closing rather than in front of the reader.
+    if (wasPainted) collapseAll();
+
     while (teardowns.length) {
       try { teardowns.pop()(); } catch (e) { /* keep unwinding */ }
     }
-    painted = false;
   }
 
   /* ── motion ─────────────────────────────────────────────────────────────
