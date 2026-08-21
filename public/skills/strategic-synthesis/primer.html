@@ -1168,11 +1168,14 @@
     // progress.js beside the clear() it describes, because ten inlined copies
     // of it had already gone stale once.
     resumeDismissBtn.addEventListener('click', function () {
-      if (!store.confirmClear()) return;
-      hideBanner();
-      visited = new Set([0]);
-      updateUI();
-      store.clear();
+      // Asks inside the banner and calls back only on confirmation. There is
+      // no cancel branch because cancelling means nothing happens.
+      store.confirmClear(function () {
+        hideBanner();
+        visited = new Set([0]);
+        updateUI();
+        store.clear();
+      });
     });
   }
 

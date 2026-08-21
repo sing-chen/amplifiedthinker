@@ -343,6 +343,27 @@
     });
   }
 
+  // ⚠️ THE WORDING IS A CLAIM ABOUT WHAT clear() DOES, so it lives beside it
+  // rather than in ten pages.
+  //
+  // It was previously ten copies of "this permanently deletes your saved
+  // progress… It cannot be undone." That was true while clear() was a hard
+  // DELETE. The moment clear() started preserving `completed_at`, every one of
+  // those copies became an overstatement — the page threatening to destroy the
+  // one thing it now deliberately keeps.
+  //
+  // Exactly the rot CLAUDE.md describes: copy that states a limit is a claim
+  // about the system, and it goes stale like a comment. One implementation
+  // cannot drift from the behaviour it describes; ten can, and did.
+  function clearWarning(kind, completedAt) {
+    return ' This clears your place and your answers for this ' +
+           (kind === 'primer' ? 'primer' : 'plan') +
+           ', on every device you sign in on.' +
+           (completedAt
+             ? ' The date you completed it is kept.'
+             : ' It cannot be undone.');
+  }
+
   var cssDone = false;
 
   function injectCompletionCss(doc) {
@@ -763,19 +784,94 @@
          Exactly the rot CLAUDE.md describes: copy that states a limit is a claim
          about the system, and it goes stale like a comment. One implementation
          cannot drift from the behaviour it describes; ten can, and did. */
-      confirmClear: function () {
-        // A guest has nothing stored to lose, so nothing to warn about.
-        if (mode !== 'account') return true;
+      // ⚠️ ASYNCHRONOUS, and it has to be. It asks INSIDE THE RESUME BANNER
+      // rather than through window.confirm(), so it cannot return an answer the
+      // caller can branch on immediately. Every call site passes a callback that
+      // runs only on confirmation; there is deliberately no "on cancel" branch,
+      // because cancelling means nothing happens.
+      //
+      // ── why a disclosure and not a browser dialog ──
+      // `window.confirm()` was inherited, not chosen. It renders as a system
+      // dialog captioned with the origin — "JavaScript from http://…" — which
+      // reads as a security warning rather than as the site asking a question,
+      // and it was the most alarming surface on a site whose genuinely
+      // destructive action, deleting an account, is a quiet inline panel.
+      //
+      // ── why a disclosure and not a modal ──
+      // Same reason account.astro gives for the same decision, and it is
+      // stronger here: a hand-rolled modal means owning a focus trap, scroll
+      // lock, Escape handling, backdrop clicks and focus return, across ten
+      // hand-written pages with no dialog component between them. Done badly
+      // that is an ACCESSIBILITY REGRESSION from confirm(), which gets focus
+      // handling and screen-reader announcement for free. The banner is already
+      // a live region and already on screen, so re-using it costs none of that.
+      //
+      // It also adds no CSS: the banner's own classes exist on all ten pages,
+      // the same reason showGuestNotice() borrows them.
+      confirmClear: function (onConfirm) {
+        function go() { if (onConfirm) { try { onConfirm(); } catch (e) {} } }
 
-        var msg = 'Start over? This clears your place and your answers for this ' +
-                  (kind === 'primer' ? 'primer' : 'plan') +
-                  ', on every device you sign in on.';
+        // A guest has nothing stored to lose, so there is nothing to ask about.
+        if (mode !== 'account') { go(); return; }
 
-        msg += completedAt
-          ? ' The date you completed it is kept.'
-          : ' It cannot be undone.';
+        var doc = global.document;
+        var banner = doc.getElementById('resumeBanner');
 
-        return global.confirm(msg);
+        // No banner to ask in — fall back rather than silently doing nothing.
+        // A page that reaches clear() without one would otherwise lose the
+        // warning entirely, which is worse than an ugly dialog.
+        if (!banner) {
+          if (global.confirm(clearWarning(kind, completedAt))) go();
+          return;
+        }
+
+        var restore = banner.innerHTML;
+        var returnFocus = doc.activeElement;
+
+        banner.innerHTML =
+          '<div class="resume-banner-text"><strong>Start over?</strong>' +
+          escapeHtml(clearWarning(kind, completedAt)) + '</div>' +
+          // ⚠️ Cancel is the PRIMARY button and confirming is the quiet one.
+          // The loud button should not be the destructive one — the same
+          // instinct behind account.astro's `danger-quiet`.
+          '<button class="resume-banner-btn primary" type="button" ' +
+          'id="acClearCancel">Cancel</button>' +
+          // ⚠️ The inline colour is not decoration. `.dismiss` renders its label
+          // at 50% white, which measures 3.87:1 on this banner — under AA for
+          // 12px text. That is pre-existing: the banner's own "Start over"
+          // button has carried it all along. Inheriting it for a DESTRUCTIVE
+          // CONFIRMATION is where it stops being tolerable, so this one button
+          // is lifted to a legible weight while keeping the quiet background.
+          // Fixing `.dismiss` itself means touching ten stylesheets and is a
+          // separate job — see BACKLOG.md.
+          '<button class="resume-banner-btn dismiss" type="button" ' +
+          'style="color:rgba(255,255,255,.82)" ' +
+          'id="acClearYes">Yes, start over</button>';
+
+        function close() {
+          doc.removeEventListener('keydown', onKey);
+          banner.innerHTML = restore;
+          if (returnFocus && returnFocus.focus) {
+            try { returnFocus.focus(); } catch (e) {}
+          }
+        }
+
+        function onKey(e) {
+          if (e.key === 'Escape') { e.preventDefault(); close(); }
+        }
+
+        doc.addEventListener('keydown', onKey);
+        doc.getElementById('acClearCancel').addEventListener('click', close);
+        doc.getElementById('acClearYes').addEventListener('click', function () {
+          doc.removeEventListener('keydown', onKey);
+          go();
+        });
+
+        // Focus the safe option. The banner is aria-live, so replacing its
+        // contents announces the question; moving focus here means a keyboard
+        // user lands on Cancel rather than on whatever they pressed.
+        var cancel = doc.getElementById('acClearCancel');
+        if (cancel && cancel.focus) cancel.focus();
       },
 
       /* ── completion ──────────────────────────────────────────────────────

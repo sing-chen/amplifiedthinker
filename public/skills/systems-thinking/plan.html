@@ -3490,9 +3490,12 @@ store.ready(function (savedData) {
     //
     // No { once: true }: cancelling must leave the button working.
     resumeDismissBtn.addEventListener('click', function () {
-      if (!store.confirmClear()) return;
-      hideBanner();
-      resetAllProgress();
+      // Asks inside the banner and calls back only on confirmation. There is
+      // no cancel branch because cancelling means nothing happens.
+      store.confirmClear(function () {
+        hideBanner();
+        resetAllProgress();
+      });
     });
   }
 });
