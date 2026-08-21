@@ -1955,7 +1955,15 @@
     <li class="nav-item"><a class="nav-link" href="#habits"     data-section="habits"><span class="nav-dot"></span>11 · 5-Day Habit Builder</a></li>
     <li class="nav-item"><a class="nav-link" href="#progression" data-section="progression"><span class="nav-dot"></span>12 · Progression Path</a></li>
     <li class="nav-item"><a class="nav-link" href="#summary"    data-section="summary"><span class="nav-dot"></span>13 · Summary</a></li>
-    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources"><span class="nav-dot"></span>14 · Explore Further</a></li>
+    <!-- data-optional — reference material, not part of the learning.
+         ⚠️ It stays in `visited` and stays in `state.total`: this attribute
+         removes the section from the DISPLAY denominator only (13 of 14 here),
+         never from what is recorded. Dropping it from `visited` would throw away
+         any knowledge of whether the reading list is opened, for no gain.
+         Optionality is a judgement and cannot be counted out of the HTML, so it
+         is declared beside the thing it describes, moves with the content, and
+         shows up in review. Read by scripts/build-skills-catalogue.mjs. -->
+    <li class="nav-item"><a class="nav-link" href="#resources"  data-section="resources" data-optional><span class="nav-dot"></span>14 · Explore Further</a></li>
   </ul>
   <div class="nav-arrows">
     <button class="nav-arrow" id="btnPrev" disabled>
