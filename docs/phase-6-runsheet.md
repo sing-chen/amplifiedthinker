@@ -83,6 +83,56 @@ migration is **not** undoable by rollback: a Vercel rollback restores code, neve
 
 ---
 
+## Pacing — where gaps are safe, and the four places they are not
+
+**Most of this runsheet tolerates being picked up and put down.** It is written for that: the handoff
+table is the state precisely so a stage can be done weeks after the one before it. What follows is
+the short list of exceptions, so a gap is taken deliberately rather than discovered.
+
+### Same sitting, no gap
+
+| Stages | Why |
+|---|---|
+| **4 + 5** | Stage 4 edits the *expected* allowlist in `verify-redirects.mjs`; stage 5 changes the actual Supabase and Turnstile dashboards. A gap in **either** direction leaves the gate red. ⚠️ And `verify:redirects` is **not** a prebuild gate — it fails only when run by hand, so nothing forces the issue. A red check that no build complains about is a red check you get used to |
+| **17, internally** | Prod migration → merge → verify, back to back. Minutes, not days. The migration goes in **immediately before** the merge: early enough that no deployed code calls an empty table, late enough that it has been proven on dev. "Straight after the merge" is explicitly the wrong answer |
+| **18, internally** | The banner item and the `updates.json` entry state the same date twice with nothing checking they agree, and the banner expires in 14–21 days. Written apart, they drift, and the expiry makes the drift unfalsifiable |
+
+### Gaps that are the point
+
+- **Stage 3 is a 48-hour gap.** That is the entire stage. It exists to sit on one origin while stage
+  2 is still two clicks from reversal.
+- **Stage 7 deploys alone**, with nothing else riding on it, so that an adapter swap which should
+  change nothing visible can be *proven* to change nothing visible.
+
+### Gaps that cost something without breaking anything
+
+| Gap | What it costs |
+|---|---|
+| Weeks between **1 and 2** | Stage 1 is point-in-time and the origin is still live and crawlable. Re-run the `site:` search rather than trusting the row |
+| ⚠️ Over ~7 days between **9 and 16** | **The dev Supabase project pauses.** It is deliberately *not* kept alive — [keepalive.mjs](../scripts/keepalive.mjs) covers prod only, which is what makes the two-project free tier workable. A paused project answers nothing, and that looks exactly like a broken build. One Resume click fixes it; the cost is recognising it instead of debugging it |
+| Long gaps generally | `feat/news-db` diverges from `main`. The design-depth stash is a live example of what "leave it for now" costs — it was never committed, so the stash is the only copy |
+| Two months dormant | GitHub disables scheduled workflows after 60 days of repository inactivity. That is `keepalive.yml`, and it protects **prod**. The outer bound rather than a real risk, but it is the one where the safeguard switches off exactly when it is most needed |
+
+### ⚠️ One correction to this runsheet's own instructions
+
+Stage 16 carries the `privacy.html` edit for the notes feature built in stage 14, while citing the
+same-commit rule. **The binding constraint is the same *merge*, not the same commit.** Nothing in
+Part B reaches production until stage 17, and the whole branch lands at once — the rule exists so a
+*deployed* site never has code and privacy page disagreeing. Stages 14 and 16 may be days apart.
+
+The rule returns to its literal form for anything that ships straight to `main`.
+
+### Suggested shape
+
+**Merge Part A to `main` on its own, before starting Part B.** It is self-contained and low-risk, and
+otherwise stage 2 unpublishes the origin by dashboard while stages 4 and 6's repo changes sit
+unmerged on a branch — leaving `main` carrying a half-retired origin for as long as Part B takes.
+
+Realistically: Part A is one evening (stage 2), a two-day wait, then one sitting (4 + 5 + 6) and a
+merge. Part B is where longer breaks belong, subject to the dev-pause row above.
+
+---
+
 # Part A — Retiring the Pages origin
 
 ## Stage 0 — Baseline: what is true before you start · Owner: Claude + Human
@@ -714,8 +764,12 @@ come from the page itself, which is the whole improvement.
 
 ⚠️ **`privacy.html` again, and this time it is a new category of personal data.** Stage 14 stores
 free text that a user wrote. The page names every table, every storage key and the legal basis for
-each, and it is now wrong until it mentions `user_news` and `notes`. Same-commit rule; check the
-Promptly sibling.
+each, and it is now wrong until it mentions `user_news` and `notes`. Check the Promptly sibling.
+
+**On the same-commit rule, precisely:** the binding constraint here is the same **merge**, not the
+same commit. Nothing in Part B reaches production until stage 17 and the branch lands as one — the
+rule exists so a *deployed* site never has code and privacy page disagreeing. So this stage may be
+days after stage 14. It may not be after stage 17. See **Pacing** above.
 
 ⚠️ **`/add-news` is dead, not stale.** The command is written end-to-end around editing
 `public/news.json` and regenerating `search-index.json` positionally. Both files are gone by the end
