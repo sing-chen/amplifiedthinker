@@ -34,7 +34,7 @@ prevent.
 |---|---|---|---|---|
 | **A** | **Retire the Pages origin** | | | |
 | 0 | Baseline — what is true before you start | Claude + Human | ✅ Done | 2026-08-22, all three gates green, **no deviation from the state described below**. `verify:stamp` both origins current on `96f9b9d`, 9s apart; `verify:published` 79 files / 158 fetches / 0 not served; `verify:redirects` 12 assertions, every origin resolving to the project that owns it. ⚠️ Two findings: the `verify:published` baseline is **two-origin and cannot be retaken after stage 2**, and the Pages redirect entry must **move to `rejected`** rather than be deleted — stages 4 and 5 amended |
-| 1 | Is the origin actually indexed? | Human | ☐ Not started | Decides whether stage 5 publishes redirect stubs or deletes outright |
+| 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs**, which removes the stub step and its 3-month soak from stage 5. ⚠️ Point-in-time — re-run if Part A stalls for weeks |
 | 2 | Stop publishing to Pages | Human + Claude | ☐ Not started | Disable the workflow and unset the Pages source. **Fully reversible** |
 | 3 | Soak on one origin | Human | ☐ Not started | Vercel becomes a single point of failure here. Minimum 48h before stage 4 |
 | 4 | Remove Pages from code, gates and docs | Claude | ☐ Not started | ⚠️ Includes `privacy.html` — the GitHub processor row and the analytics claim |
@@ -241,11 +241,46 @@ rather than an assumption.
 
 **Tick as you go**
 
-- [ ] `site:` search run logged-out, result recorded below
-- [ ] Stage 5's shape decided from it — stubs or straight deletion
-- [ ] Anyone with a known bookmark identified, if the answer is "delete outright"
+- [x] `site:` search run logged-out on **DuckDuckGo and Bing** — 2026-08-22, nothing from the host
+- [x] **Google `site:` search run** — 2026-08-22, *"did not match any documents"*
+- [x] Stage 5's shape decided from it — **straight deletion, no redirect stubs**
+- [ ] Anyone with a known bookmark identified and told
 
-**Observed:** _(how many results, and which pages)_
+**Observed 2026-08-22 — two engines say nothing, and the third could not be asked.**
+
+| Engine | Result |
+|---|---|
+| **Google** | ✅ **"Your search — `site:sing-chen.github.io/amplifiedthinker` — did not match any documents."** Zero. Not a low count; the empty-result page, offering Search Console to whoever owns the host |
+| DuckDuckGo | *"No more results found"*. One unrelated `archive.org` page returned as off-topic fallback |
+| Bing | *"About 1 results"* — the **same** unrelated `archive.org` page. Bing's known behaviour of returning one irrelevant result rather than zero |
+
+DuckDuckGo is Bing-backed, so those two are **one data point, not two**: the Bing index holds
+nothing from that host.
+
+A general web search for the host name returned `amplifiedthinker.com/` and
+`amplifiedthinker.com/about.html` and **no `sing-chen.github.io` URL at all**, despite the host being
+named in the query. Weak corroboration that the apex is what got indexed and the canonical tags did
+their job — but it is inference from a search backend that ignored the `site:` operator, not a
+`site:` result.
+
+**Decided: delete outright. No redirect stubs, in stage 5 or anywhere else.** All three engines
+agree, and the one that mattered answered with the explicit no-documents page rather than a thin
+result set.
+
+**Why this was worth two minutes rather than being assumed.** The prediction was that the
+cross-origin canonical tags had caused Google to index the apex and drop the duplicate — and the
+result is consistent with that. But `robots.txt` on that origin says `Allow: /`, so crawling was
+never blocked; canonical is a hint, not a directive, and Google is free to ignore it. "Probably
+deduplicated" and "zero documents" are different claims, and only one of them justifies deleting a
+public URL without a redirect.
+
+**What this removes from the retirement:** the stub-publishing step, the three-month soak that went
+with it, and the follow-up to delete the stubs afterwards. Stage 5 is unchanged and stage 6 can
+delete `pages.yml` as soon as stage 3's soak is done.
+
+⚠️ **This is a point-in-time answer with a short shelf life.** The origin is still live and still
+crawlable as this is written. If Part A stalls for weeks, re-run the search before stage 2 rather
+than trusting this row.
 
 ---
 
