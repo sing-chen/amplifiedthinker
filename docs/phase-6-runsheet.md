@@ -33,7 +33,7 @@ prevent.
 | # | Stage | Owner | Status | Notes from the person who did it |
 |---|---|---|---|---|
 | **A** | **Retire the Pages origin** | | | |
-| 0 | Baseline — what is true before you start | Claude + Human | ◐ In progress | Repo half done 2026-08-22, recorded in the stage. **Live-origin half still owed** — `verify:stamp`, `verify:published`, `verify:redirects` |
+| 0 | Baseline — what is true before you start | Claude + Human | ✅ Done | 2026-08-22, all three gates green, **no deviation from the state described below**. `verify:stamp` both origins current on `96f9b9d`, 9s apart; `verify:published` 79 files / 158 fetches / 0 not served; `verify:redirects` 12 assertions, every origin resolving to the project that owns it. ⚠️ Two findings: the `verify:published` baseline is **two-origin and cannot be retaken after stage 2**, and the Pages redirect entry must **move to `rejected`** rather than be deleted — stages 4 and 5 amended |
 | 1 | Is the origin actually indexed? | Human | ☐ Not started | Decides whether stage 5 publishes redirect stubs or deletes outright |
 | 2 | Stop publishing to Pages | Human + Claude | ☐ Not started | Disable the workflow and unset the Pages source. **Fully reversible** |
 | 3 | Soak on one origin | Human | ☐ Not started | Vercel becomes a single point of failure here. Minimum 48h before stage 4 |
@@ -99,7 +99,7 @@ Every file that mentions the Pages origin, so stage 4 has a checklist rather tha
 | [astro.config.mjs:70](../astro.config.mjs:70) | `base: process.env.ASTRO_BASE \|\| '/'` | Simplify to `/`; drop the `GITHUB_SHA` arm of the stamp |
 | [scripts/verify-published.mjs:26](../scripts/verify-published.mjs:26) | Two-origin byte comparison | Drop the `pages` origin |
 | [scripts/verify-build-stamp.mjs:25](../scripts/verify-build-stamp.mjs:25) | Asks both origins for `build.json` | Drop the `pages` URL. ⚠️ See the note below |
-| [scripts/verify-redirects.mjs:54](../scripts/verify-redirects.mjs:54) | Prod allowlist *expects* the Pages URL | Remove the entry — must match stage 5 |
+| [scripts/verify-redirects.mjs:54](../scripts/verify-redirects.mjs:54) | Prod allowlist *expects* the Pages URL | ⚠️ **Move it from `allowed` to `rejected`**, do not delete — must match stage 5 |
 | [scripts/verify-schema-columns.mjs:47](../scripts/verify-schema-columns.mjs:47) | Uses `sing-chen.github.io` as a prod host fixture | Repoint to `amplifiedthinker.com` |
 | [scripts/verify-signin-return.mjs:40](../scripts/verify-signin-return.mjs:40) | `PAGES_ORIGIN`, a **prebuild gate** | ⚠️ **Leave the assertions.** See below |
 | [public/supabase-client.js:52](../public/supabase-client.js:52) | The blocklist comment | ⚠️ **Leave the code.** See below |
@@ -166,12 +166,48 @@ from the outside and only one of them is safe to walk away from.
 - [x] Every Pages reference in the repo enumerated — table above, 2026-08-22
 - [x] `news.json` counted: 23 groups, 73 stories, 1 pinned
 - [x] The three must-not-simplify items identified and written down
-- [ ] `npm run verify:stamp` run, both origins agreeing with `origin/main`
-- [ ] `npm run verify:published` run and clean
-- [ ] `npm run verify:redirects` run, both entries present in prod
-- [ ] Any deviation recorded in the handoff table
+- [x] `npm run verify:stamp` run, both origins agreeing with `origin/main` — 2026-08-22
+- [x] `npm run verify:published` run and clean — 2026-08-22
+- [x] `npm run verify:redirects` run, both entries present in prod — 2026-08-22
+- [x] Any deviation recorded in the handoff table — **none**
 
-**Observed:** _(fill in — say what the checks printed, not that they passed)_
+**Observed 2026-08-22:**
+
+`verify:stamp` — **both origins current**, expecting `96f9b9d` (`origin/main`):
+
+| Origin | | SHA | Built | Source |
+|---|---|---|---|---|
+| vercel | ok | `96f9b9d` | 2026-08-21T20:03:37.159Z | vercel |
+| pages | ok | `96f9b9d` | 2026-08-21T20:03:46.442Z | github |
+
+Nine seconds apart, both on the commit `feat/news-db` branched from. The "Pages lags Vercel by
+~2 minutes" judgement call did not arise here.
+
+`verify:published` — **79 published files across two origins, 158 fetches, 0 not served.** Baseline
+written to `baseline-before.json` (gitignored via `baseline-*.json`).
+
+⚠️ **That baseline is a two-origin baseline, and it is the last one that can ever be taken.** From
+stage 2 onward there is one origin, so a differential run against this file will report every Pages
+fetch as missing — correctly, and confusingly. Either retake the baseline after stage 2, or read
+the first post-retirement diff knowing that half its findings are the retirement itself.
+
+`verify:redirects` — **gate green, 12 assertions across both projects, no email sent.**
+
+| Project | Site URL fallback | Allowed | Rejected |
+|---|---|---|---|
+| **prod** `spehmrgmcdenqdftkyrt` | `https://amplifiedthinker.com/` | `amplifiedthinker.com/`, **`sing-chen.github.io/amplifiedthinker/`** | `localhost:4321/sign-in/`, the `feat-auth` preview alias, `example.com/nope` |
+| **dev** `yirsvthwffoetcrgbevj` | `http://localhost:4321/` | `localhost:4321/sign-in/`, the `feat-auth` preview alias | `amplifiedthinker.com/`, `example.com/nope` |
+
+Every origin resolves to the project that owns it, and the CONTROL assertion — an unlisted origin
+falling back to the Site URL — passes on both, which is what makes the `rejected` rows meaningful
+rather than vacuous.
+
+⚠️ **This output corrects stage 4 and stage 5.** The Pages entry should **move from `allowed` to
+`rejected`**, not simply be deleted. The script's own comment says the rejected lists are not
+padding — after the Phase 5 split, prod must *actively refuse* origins that belong elsewhere. The
+same reasoning applies to a retired origin: `sing-chen.github.io` does not stop existing, it hosts
+every project on that GitHub account. Asserting that prod refuses it is strictly stronger than
+neglecting to mention it, and it costs one line.
 
 ---
 
@@ -295,7 +331,7 @@ Both prebuild gates must still pass — `verify:catalogue` and `verify:signin-re
 
 - [ ] `astro.config.mjs` — `base` simplified, `GITHUB_SHA` arm dropped from the stamp
 - [ ] `verify-published.mjs`, `verify-build-stamp.mjs`, `verify-schema-columns.mjs` reduced to one origin
-- [ ] `verify-redirects.mjs` — Pages entry removed from the prod allowlist
+- [ ] `verify-redirects.mjs` — ⚠️ Pages entry **moved from `allowed` to `rejected`** in prod, not deleted
 - [ ] `verify-signin-return.mjs` — **assertions kept**, fixture/comment updated only
 - [ ] `supabase-client.js` — **`environment()` untouched**, comment rewritten to keep the reasoning
 - [ ] `nav.js`, `progress.js`, `BaseLayout.astro` — comments updated, logic untouched
@@ -336,6 +372,12 @@ npm run verify:redirects
 It must now show the Pages URL **rejected** by prod and falling back to the Site URL. This only
 passes if stage 4's edit to the expected list and this dashboard change agree — which is the point
 of doing them close together.
+
+⚠️ **The assertion moves sides; it does not disappear.** Before stage 5 the gate proves prod
+*accepts* `https://sing-chen.github.io/amplifiedthinker/` (verified 2026-08-22). After it, the gate
+must prove prod *refuses* it. Deleting the line instead would leave the shared GitHub origin
+untested against production auth for ever — and it is a host that keeps existing after the site
+stops using it.
 
 **Tick as you go**
 
