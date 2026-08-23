@@ -20,7 +20,7 @@
    actually served for this site's latin subset:
 
        before   266 KB over 10 third-party requests (9 fonts + 1 CSS)
-       after    142 KB over  2 same-origin requests
+       after    157 KB over  2 same-origin requests
 
    Subset to latin + Latin Extended-A. Latin-1 alone would save a further 15 KB,
    but Extended-A covers accented names (Ł, ć, š, ž, ő) and My People is a page
@@ -29,8 +29,35 @@
    U+2715 ✕ — so they fall back to a system face. That is unchanged from before:
    Google's latin subset did not carry them either.
 
-   ⚠️ Regenerating: subset from the ORIGINAL variable TTFs, never from these
-   woff2 files. Command and rationale are in docs/dev-workflow.md.
+   ── REGENERATING ────────────────────────────────────────────────────────────
+   ⚠️ Subset from the ORIGINAL variable TTFs, never from these woff2 files.
+   The command is here rather than cross-referenced: the first version of this
+   comment pointed at docs/dev-workflow.md, where it had never been written.
+
+       pyftsubset Inter-VariableFont_opsz,wght.ttf \
+         --output-file=public/fonts/inter-var.woff2 --flavor=woff2 \
+         --layout-features='kern,calt,locl,ccmp,mark,mkmk,case,cpsp,tnum,pnum,frac,zero' \
+         --unicodes='U+0000-00FF,U+0100-017F,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,
+                     U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2190-2193,
+                     U+2212,U+2215,U+2264,U+26A0,U+FEFF,U+FFFD'
+
+   ⚠️ --layout-features IS NOT OPTIONAL AND ITS DEFAULT IS DESTRUCTIVE. Anything
+   not named is stripped. The first subset of these files listed only
+   kern/calt/locl and silently dropped 40 OpenType features, `tnum` among them —
+   so `font-variant-numeric: tabular-nums` was written into 45 rules and did
+   nothing at all. Neither the CSS nor the computed style gave any sign: the
+   property resolved to "tabular-nums" exactly as authored, because the feature
+   the font was being asked for simply was not there.
+
+   The only check that catches it measures RENDERED WIDTH: set "111" and "999"
+   in the face and compare. Proportional figures differ; tabular are identical.
+   If both differ, the feature is missing from the subset regardless of what the
+   stylesheet says.
+
+   Why each is kept: tnum for figures that align in rows or change in place —
+   the stat strip, the slide counter. case and cpsp for the uppercase labels the
+   site uses heavily. ccmp/mark/mkmk so Latin Extended-A accents compose. pnum so
+   the proportional default stays addressable if anything ever opts back out.
 
    Licence: SIL Open Font License 1.1, see fonts/OFL.txt — it ships with the
    fonts because the licence requires it.
