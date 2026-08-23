@@ -1,16 +1,26 @@
 <title>Completion Control</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap">
+<!-- The site's own self-hosted Inter. The path is relative to the OUTPUT
+     (specimen-completion.html, written to the repo root), not to this template.
+     fonts.css's own url() then resolves against itself to public/fonts/*.woff2. -->
+<link rel="stylesheet" href="public/fonts.css">
 <style>
-/* ── Brand tokens, copied verbatim from the plan pages ─────────────────────
+/* ── Brand tokens, copied from the plan pages ─────────────────────────────
+   ⚠️ THIS IS A COPY, AND COPIES ROT. It read "copied verbatim" until
+   2026-08-23, by which point --deep-teal and --warm-gray had both moved on the
+   real pages and this file was quietly rendering specimens in last month's
+   palette. Nothing checks it and nothing will. Before trusting a specimen
+   generated from here, diff these against the source:
+
+       grep -o -- '--[a-z-]*: *#[0-9A-Fa-f]*' public/skills/critical-thinking/plan.html
+
    Both sets are declared unconditionally so a data-theme="dark" WRAPPER can
    resolve the --d-* names. On the real page dark lives on :root[data-theme],
    which cannot be scoped to a single panel. */
 :root{
-  --sage:#ACC4B6; --teal:#5BA79F; --deep-teal:#2D756F; --off-white:#EEF2EF;
+  --sage:#ACC4B6; --teal:#5BA79F; --deep-teal:#26605B; --off-white:#EEF2EF;
   --cream:#F2E0D4; --terracotta:#8A4B2C; --amber:#D9A05B; --navy:#1F4D4A;
-  --charcoal:#2D3330; --light-sage:#D0E2D6; --warm-gray:#8B8A85;
+  --charcoal:#2D3330; --light-sage:#D0E2D6; --warm-gray:#6E6D68;
+  --font-display:'Inter',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
   --content-max:780px; --radius:8px;
   --d-bg-page:#142320; --d-bg-surface:#1B2E29; --d-bg-sunken:#0E1917;
   --d-fg-1:#E7EDE9; --d-fg-2:#9BAAA3; --d-fg-heading:#DCEAE3; --d-fg-brand:#ACC4B6;
@@ -19,7 +29,7 @@
   --d-terra-bg:#33231A; --d-terra-stroke:#E8C9AE;
 
   --ui-bg:#F4F7F5; --ui-panel:#FFFFFF; --ui-ink:#16241F; --ui-ink-2:#4A5C55;
-  --ui-line:rgba(22,36,31,.14); --ui-accent:#2D756F;
+  --ui-line:rgba(22,36,31,.14); --ui-accent:#26605B;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --ui-bg:#0F1A17; --ui-panel:#16241F; --ui-ink:#E8F0EC; --ui-ink-2:#A9BAB3;
@@ -32,22 +42,22 @@
 
 *{box-sizing:border-box}
 body{margin:0;background:var(--ui-bg);color:var(--ui-ink-2);
-  font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.65}
+  font-family:var(--font-body);font-size:15px;line-height:1.65}
 .wrap{max-width:1080px;margin:0 auto;padding:56px 24px 88px}
-h1,h2,h3{font-family:Poppins,sans-serif;color:var(--ui-ink);margin:0;text-wrap:balance}
+h1,h2,h3{font-family:var(--font-display);color:var(--ui-ink);margin:0;text-wrap:balance}
 h1{font-size:clamp(26px,3.4vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
 h2{font-size:19px;font-weight:600;margin:44px 0 4px}
 p{margin:0}
 code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;
   background:var(--ui-panel);border:1px solid var(--ui-line);padding:1px 5px;border-radius:4px}
-.eyebrow{font-family:Poppins,sans-serif;font-size:10.5px;font-weight:700;
+.eyebrow{font-family:var(--font-display);font-size:10.5px;font-weight:700;
   letter-spacing:.14em;text-transform:uppercase;color:var(--ui-accent);display:block;margin-bottom:12px}
 .lede{margin-top:14px;max-width:640px;font-size:17px}
 .sub{margin-top:6px;max-width:660px;font-size:14.5px}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;margin-top:18px}
 .stage{margin:0;border:1px solid var(--ui-line);border-radius:12px;overflow:hidden;background:var(--ui-panel)}
-.cap{font-family:Poppins,sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;
+.cap{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.04em;
   color:var(--ui-ink-2);padding:11px 16px;border-bottom:1px solid var(--ui-line)}
 .cap b{color:var(--ui-ink);font-weight:700}
 /* The real section ground: #summary is .section-odd. */
@@ -58,12 +68,12 @@ code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;
 .next-step-card{background:var(--light-sage);border-left:4px solid var(--deep-teal);
   border-radius:0 var(--radius) var(--radius) 0;padding:20px 24px;margin:26px 0 0;max-width:var(--content-max)}
 .ground[data-theme="dark"] .next-step-card{background:var(--d-teal-bg);border-left-color:var(--d-teal-stroke)}
-.next-step-label{font-family:Poppins,sans-serif;font-size:11px;font-weight:600;
+.next-step-label{font-family:var(--font-display);font-size:11px;font-weight:600;
   letter-spacing:.02em;text-transform:uppercase;color:var(--deep-teal);margin-bottom:8px}
 .ground[data-theme="dark"] .next-step-label{color:var(--d-teal-stroke)}
 .next-step-body{font-size:14px;line-height:1.65;color:var(--navy)}
 .ground[data-theme="dark"] .next-step-body{color:var(--d-fg-1)}
-.next-step-btn-outline{display:inline-block;margin-top:14px;font-family:Poppins,sans-serif;
+.next-step-btn-outline{display:inline-block;margin-top:14px;font-family:var(--font-display);
   font-size:12.5px;font-weight:600;color:var(--deep-teal);background:rgba(45,117,111,.1);
   border:1.5px solid var(--deep-teal);border-radius:6px;padding:8px 16px}
 .ground[data-theme="dark"] .next-step-btn-outline{color:var(--d-teal-stroke);
@@ -73,7 +83,7 @@ code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;
   background:var(--ui-panel);border-radius:0 8px 8px 0;font-size:14.5px}
 .note strong{color:var(--ui-ink)}
 .swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-.sw{display:flex;align-items:center;gap:8px;font-size:12.5px;font-family:Poppins,sans-serif;
+.sw{display:flex;align-items:center;gap:8px;font-size:12.5px;font-family:var(--font-display);
   background:var(--ui-panel);border:1px solid var(--ui-line);border-radius:999px;padding:5px 12px 5px 6px}
 .sw i{width:18px;height:18px;border-radius:50%;display:block;border:1px solid var(--ui-line)}
 footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--ui-line);
@@ -156,7 +166,7 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--ui-line);
   switch returns the previous value, which cost a false bug report earlier.</p>
   <div class="swatches">
     <span class="sw"><i style="background:#FFFFFF"></i>unset fill · light</span>
-    <span class="sw"><i style="background:#2D756F"></i>done fill · light</span>
+    <span class="sw"><i style="background:#26605B"></i>done fill · light</span>
     <span class="sw"><i style="background:#8A4B2C"></i>bar · light</span>
     <span class="sw"><i style="background:#1B2E29"></i>unset fill · dark</span>
     <span class="sw"><i style="background:#8FCFC3"></i>done fill · dark</span>
