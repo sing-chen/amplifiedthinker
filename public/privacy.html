@@ -31,14 +31,14 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
   .doc-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
 
   /* ── MASTHEAD ── */
-  .doc-eyebrow{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
-  .doc-title{font-family:'Poppins',sans-serif;font-size:34px;font-weight:700;color:var(--fg-heading);letter-spacing:-.015em;line-height:1.15;margin-top:10px}
-  .doc-lede{font-family:'Inter',sans-serif;font-size:17px;line-height:1.7;color:var(--text-muted);margin-top:16px}
-  .doc-stamp{font-family:'Inter',sans-serif;font-size:13px;color:var(--warm-gray);margin-top:14px}
+  .doc-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+  .doc-title{font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--fg-heading);letter-spacing:-.015em;line-height:1.15;margin-top:10px}
+  .doc-lede{font-family:var(--font-body);font-size:17px;line-height:1.7;color:var(--text-muted);margin-top:16px}
+  .doc-stamp{font-family:var(--font-body);font-size:13px;color:var(--warm-gray);margin-top:14px}
 
   /* ── PROSE ── */
   .doc-body{display:flex;flex-direction:column;gap:24px;margin-top:40px}
-  .doc-body p{font-family:'Inter',sans-serif;font-size:16px;line-height:1.8;color:var(--navy)}
+  .doc-body p{font-family:var(--font-body);font-size:16px;line-height:1.8;color:var(--navy)}
   .doc-body p strong{color:var(--fg-heading);font-weight:500}
   .doc-body a{color:var(--teal);text-decoration:underline;text-decoration-color:rgba(91,167,159,.4);text-underline-offset:2px}
   .doc-body a:hover{color:var(--mid-teal)}
@@ -50,15 +50,15 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
      navigated rather than read straight through, and an 11px letterspaced
      label at that count stops being scannable. Same family and palette, one
      size up, with the number carrying the brand colour. */
-  .doc-h2{font-family:'Poppins',sans-serif;font-weight:600;font-size:18px;color:var(--fg-heading);letter-spacing:-.01em;line-height:1.35;margin-top:20px;scroll-margin-top:88px}
+  .doc-h2{font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--fg-heading);letter-spacing:-.01em;line-height:1.35;margin-top:20px;scroll-margin-top:88px}
   .doc-h2 .doc-num{color:var(--fg-brand);font-weight:700;margin-right:8px}
   .doc-h2:first-child{margin-top:0}
 
   /* ── CONTENTS ── */
   .doc-toc{border:1px solid rgba(172,196,182,.45);border-radius:var(--radius-lg);padding:20px 24px}
-  .doc-toc-label{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
+  .doc-toc-label{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
   .doc-toc ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
-  .doc-toc li{font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.5;color:var(--text-muted)}
+  .doc-toc li{font-family:var(--font-body);font-size:14.5px;line-height:1.5;color:var(--text-muted)}
   .doc-toc a{color:var(--navy);text-decoration:none;border-bottom:1px solid transparent}
   .doc-toc a:hover{color:var(--mid-teal);border-bottom-color:rgba(91,167,159,.4)}
 
@@ -66,16 +66,16 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
      A brand band, same treatment as .thesis on about.html. Fixed dark in both
      themes, like the footer. */
   .doc-claim{background:#1B4A44;border-radius:var(--radius-lg);padding:26px 30px}
-  .doc-claim p{font-family:'Poppins',sans-serif;font-size:16px;font-weight:500;color:rgba(255,255,255,.9);line-height:1.6}
+  .doc-claim p{font-family:var(--font-display);font-size:16px;font-weight:500;color:rgba(255,255,255,.9);line-height:1.6}
   .doc-claim ul{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
-  .doc-claim li{font-family:'Inter',sans-serif;font-size:15px;color:rgba(255,255,255,.72);line-height:1.6;padding-left:20px;position:relative}
+  .doc-claim li{font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,.72);line-height:1.6;padding-left:20px;position:relative}
   .doc-claim li::before{content:"";position:absolute;left:2px;top:10px;width:6px;height:6px;border-radius:50%;background:var(--sage)}
 
   /* ── TABLES ── */
   .doc-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .doc-table{width:100%;min-width:460px;border-collapse:collapse;font-family:'Inter',sans-serif;font-size:14.5px}
+  .doc-table{width:100%;min-width:460px;border-collapse:collapse;font-family:var(--font-body);font-size:14.5px}
   .doc-table th,.doc-table td{text-align:left;padding:12px 14px;border-bottom:1px solid rgba(172,196,182,.35);vertical-align:top;line-height:1.55}
-  .doc-table thead th{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
+  .doc-table thead th{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
   .doc-table tbody th{font-weight:500;color:var(--fg-heading)}
   .doc-table td{color:var(--text-muted)}
   .doc-table code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:rgba(172,196,182,.22);padding:1px 5px;border-radius:4px;color:var(--navy)}
@@ -87,10 +87,10 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
   /* ── LIST ── */
   .doc-list{display:flex;flex-direction:column;gap:11px;margin:0;padding:0;list-style:none}
-  .doc-list li{font-family:'Inter',sans-serif;font-size:16px;line-height:1.75;color:var(--navy);padding-left:26px;position:relative}
+  .doc-list li{font-family:var(--font-body);font-size:16px;line-height:1.75;color:var(--navy);padding-left:26px;position:relative}
   .doc-list li::before{content:"";position:absolute;left:6px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--sage)}
 
-  .doc-note{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-muted);line-height:1.6}
+  .doc-note{font-family:var(--font-body);font-size:13px;color:var(--text-muted);line-height:1.6}
   .doc-divider{height:1px;background:rgba(172,196,182,.35);margin:6px 0}
 
   /* ── FOOTER (copied verbatim from index.html so the two cannot drift) ── */

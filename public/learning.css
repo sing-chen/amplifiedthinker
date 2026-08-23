@@ -60,7 +60,7 @@
 }
 .learn-head { margin-bottom: var(--space-6); }
 .learn-eyebrow {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
   color: var(--fg-brand); margin-bottom: 10px;
 }
@@ -97,7 +97,7 @@
   border-top: 1px solid var(--line-soft);
 }
 .learn-h2 {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 18px; font-weight: 600; color: var(--fg-heading);
   letter-spacing: -.01em; line-height: 1.35;
 }
@@ -145,7 +145,7 @@
   min-height: 72px;
 }
 .learn-tile-big {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 40px; font-weight: 600; line-height: 1; color: var(--fg-heading);
   font-variant-numeric: tabular-nums;
 }
@@ -164,7 +164,7 @@
   fill: none; stroke: var(--dv-read); stroke-width: 3; stroke-linecap: round;
 }
 .learn-tile-ring .ring-pct {
-  font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600;
+  font-family:var(--font-display); font-size: 10px; font-weight: 600;
   fill: var(--fg-heading); text-anchor: middle; dominant-baseline: central;
   font-variant-numeric: tabular-nums;
 }
@@ -222,7 +222,7 @@
   border-bottom: 1px solid var(--line-soft);
 }
 .learn-table thead th {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
   color: var(--fg-heading); padding-top: 11px; padding-bottom: 11px;
 }
@@ -230,7 +230,7 @@
 .learn-table tbody tr:hover { background: var(--bg-page); }
 .learn-table tbody tr:last-child th, .learn-table tbody tr:last-child td { border-bottom: 0; }
 .learn-skill {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 15px; font-weight: 600; color: var(--fg-heading); min-width: 150px;
 }
 
@@ -252,7 +252,7 @@
 }
 .learn-ring .ring-value.doing { stroke: var(--dv-doing-fill); }
 .learn-ring .ring-pct {
-  font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600;
+  font-family:var(--font-body); font-size: 10px; font-weight: 600;
   fill: var(--fg-heading); text-anchor: middle;
 }
 .learn-ring .ring-tick {
@@ -267,7 +267,7 @@
 .learn-act {
   flex: none; min-width: 92px; text-align: center;
   padding: 8px 16px; border-radius: var(--radius-sm);
-  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
+  font-family:var(--font-display); font-size: 13px; font-weight: 600;
   text-decoration: none; cursor: pointer;
   border: 1px solid transparent;
   background: var(--bg-brand); color: var(--fg-on-brand);
@@ -310,12 +310,12 @@
 /* dominant-baseline central, so the figure sits on the ring's true centre
    whatever its width — it must not drift as the count-up runs from 0% to 45%. */
 .learn-donut .donut-pct {
-  font-family: 'Poppins', sans-serif; font-size: 30px; font-weight: 600;
+  font-family:var(--font-display); font-size: 30px; font-weight: 600;
   fill: var(--fg-heading); text-anchor: middle; dominant-baseline: central;
   font-variant-numeric: tabular-nums;
 }
 .learn-donut .donut-cap {
-  font-family: 'Inter', sans-serif; font-size: 11px; fill: var(--text-muted); text-anchor: middle;
+  font-family:var(--font-body); font-size: 11px; fill: var(--text-muted); text-anchor: middle;
 }
 
 /* ── legend, shared by donut and bars ──────────────────────────────────── */
@@ -362,7 +362,7 @@
 .learn-vbar .seg-label {
   position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: center; height: 100%;
-  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
+  font-family:var(--font-display); font-size: 13px; font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 /* Ink per segment. ⚠️ The read fill flips from dark teal to light teal between
@@ -454,7 +454,7 @@
 .learn-msg .learn-actions { display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-5); flex-wrap: wrap; }
 .learn-msg .learn-actions[hidden] { display: none !important; }
 .learn-btn {
-  font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+  font-family:var(--font-display); font-size: 14px; font-weight: 500;
   padding: 11px 22px; border-radius: var(--radius-pill); text-decoration: none;
   background: var(--bg-brand); color: var(--fg-on-brand); border: 1px solid transparent;
 }
@@ -494,7 +494,7 @@
   .learn-table th, .learn-table td { border-bottom: 0; padding: var(--space-2) 0; min-width: 0; }
   .learn-table td::before {
     content: attr(data-label);
-    display: block; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+    display: block; font-family:var(--font-display); font-size: 11px; font-weight: 600;
     letter-spacing: .1em; text-transform: uppercase; color: var(--fg-brand); margin-bottom: 8px;
   }
 }

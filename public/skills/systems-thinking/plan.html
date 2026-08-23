@@ -77,6 +77,12 @@
     --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
     --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
     --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
+
+  /* The two workhorse faces, as tokens. These hold exactly what every page
+     hardcoded before, so defining them changes nothing on its own — it only
+     creates one place to change the typeface from. */
+  --font-display:'Poppins',sans-serif;
+  --font-body:'Inter',sans-serif;
   }
 
   /* ── DARK-MODE TOKENS ───────────────────────── */
@@ -95,7 +101,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 17px;
     line-height: 1.65;
     color: var(--navy);
@@ -123,7 +129,7 @@
     margin-bottom: 20px;
   }
   .nav-series {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -132,7 +138,7 @@
     margin-bottom: 6px;
   }
   .nav-skill {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 16px;
     font-weight: 700;
     color: var(--off-white);
@@ -146,7 +152,7 @@
     gap: 10px;
     padding: 8px 12px;
     border-radius: var(--radius);
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px;
     font-weight: 400;
     color: rgba(255,255,255,0.72);
@@ -197,7 +203,7 @@
     border: 1px solid rgba(255,255,255,0.28);
     border-radius: 5px;
     padding: 7px 10px;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 12px; font-weight: 600;
     color: #E8EDEB;
     text-decoration: none;
@@ -216,7 +222,7 @@
   }
   .nav-arrow:disabled { opacity: 0.3; cursor: default; }
   .slide-counter {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.06em;
     color: rgba(255,255,255,0.55);
@@ -278,7 +284,7 @@
     bottom: -40px; right: 200px;
   }
   .hero-series {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -299,7 +305,7 @@
     max-width: 600px;
   }
   .hero-sub {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 18px;
     color: var(--navy);
     line-height: 1.6;
@@ -307,7 +313,7 @@
 
   /* ── TAGS ───────────────────────────────────── */
   .tag {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 12px;
     font-weight: 500;
     padding: 4px 12px;
@@ -329,7 +335,7 @@
     padding-bottom: 16px;
   }
   .section h2 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 30px;
     font-weight: 700;
     color: var(--deep-teal);
@@ -338,7 +344,7 @@
     max-width: var(--content-max);
   }
   .section h3 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 20px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -371,7 +377,7 @@
     border-top: 3px solid var(--teal);
   }
   .snapshot-card-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -420,7 +426,7 @@
     margin: 24px 0;
   }
   .callout p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 16px;
     font-weight: 500;
     color: var(--terracotta);
@@ -442,7 +448,7 @@
     margin: 28px 0;
   }
   .definition-box p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 18px;
     font-weight: 500;
     color: var(--cream);
@@ -469,7 +475,7 @@
     border-left: 3px solid var(--teal);
   }
   .obj-num {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 13px;
     font-weight: 700;
     color: var(--teal);
@@ -477,7 +483,7 @@
     padding-top: 1px;
   }
   .obj-text {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 15px;
     color: var(--navy);
     line-height: 1.5;
@@ -497,7 +503,7 @@
     margin-top: 28px;
   }
   .principle-number {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -539,7 +545,7 @@
     margin-top: 4px;
   }
   .accordion-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -583,7 +589,7 @@
     border-left: 3px solid var(--amber);
   }
   .ai-note-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -614,7 +620,7 @@
   .model-header-text h3 { margin: 0 0 6px; }
   .model-header .model-source { margin-bottom: 0; }
   .model-source {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px;
     color: var(--warm-gray);
     margin-bottom: 14px;
@@ -627,7 +633,7 @@
     border-left: 3px solid var(--terracotta);
   }
   .model-applied-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -663,10 +669,10 @@
     stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
   }
   .loop-label {
-    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 13px;
+    font-family:var(--font-display); font-weight: 700; font-size: 13px;
     letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px;
   }
-  .loop-card p { font-family: 'Inter', sans-serif; font-size: 13.5px; margin: 0; line-height: 1.55; color: var(--navy); }
+  .loop-card p { font-family:var(--font-body); font-size: 13.5px; margin: 0; line-height: 1.55; color: var(--navy); }
 
   /* Iceberg Model step chain (shared pattern with Assumption-Reversal-style models) */
   .step-chain { display: flex; flex-direction: column; gap: 12px; }
@@ -675,7 +681,7 @@
     width: 32px; height: 32px; border-radius: 50%;
     background: var(--tag-analytical-bg);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-weight: 700; font-size: 12px; color: var(--deep-teal);
     flex-shrink: 0;
   }
@@ -687,7 +693,7 @@
   .model-applied .step-num.root { background: var(--terracotta); }
   .step-root-label {
     margin: 4px 0 0 48px;
-    font-family: 'Poppins', sans-serif; font-weight: 600;
+    font-family:var(--font-display); font-weight: 600;
     font-size: 11px; color: var(--terracotta); letter-spacing: 0.04em;
   }
 
@@ -695,7 +701,7 @@
   .ladder-list { display: flex; flex-direction: column; gap: 12px; }
   .ladder-item { display: flex; align-items: flex-start; gap: 18px; }
   .ladder-badge {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 12px; font-weight: 700;
     color: var(--teal); min-width: 26px; flex-shrink: 0;
     padding-top: 2px;
@@ -712,7 +718,7 @@
     position: absolute; transform: translate(-50%, -50%);
     background: white; border: 1.5px solid var(--teal);
     border-radius: var(--radius-pill); padding: 8px 14px;
-    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    font-family:var(--font-body); font-size: 12px; font-weight: 600;
     color: var(--deep-teal); text-align: center; white-space: nowrap;
     z-index: 2;
   }
@@ -740,7 +746,7 @@
     border-left: 3px solid var(--terracotta);
   }
   .mistake h4 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 16px;
     font-weight: 600;
     color: var(--terracotta);
@@ -753,7 +759,7 @@
     margin-top: 12px;
   }
   .mistake-cell-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -773,7 +779,7 @@
   .continuum-segment {
     flex: 1;
     text-align: center;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -826,7 +832,7 @@
   .indicator-panel.underuse .indicator-icon { color: var(--terracotta); }
   .indicator-panel.overuse  .indicator-icon { color: var(--amber); }
   .indicator-col-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -876,7 +882,7 @@
     margin-bottom: 32px;
   }
   .scenario h4 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 17px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -900,7 +906,7 @@
     border-top: 3px solid var(--teal);
   }
   .scenario-col-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -926,7 +932,7 @@
     align-items: flex-start;
   }
   .reflection-num {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 20px;
     font-weight: 700;
     color: var(--slate-blue);
@@ -934,7 +940,7 @@
     padding-top: 1px;
   }
   .reflection-q {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 15px;
     line-height: 1.6;
     color: var(--navy);
@@ -954,7 +960,7 @@
     padding: 24px 28px;
   }
   .kc-q-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -963,7 +969,7 @@
     margin-bottom: 8px;
   }
   .kc-q-text {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 15px;
     font-weight: 600;
     color: var(--navy);
@@ -983,7 +989,7 @@
     transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
     font-size: 14px;
     color: var(--navy);
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     text-align: left;
     line-height: 1.45;
   }
@@ -1019,7 +1025,7 @@
     border: none;
     border-radius: 6px;
     padding: 10px 24px;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
@@ -1035,7 +1041,7 @@
     max-width: var(--content-max);
   }
   .kc-score p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 14px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1049,7 +1055,7 @@
     border: 1.5px solid var(--deep-teal);
     border-radius: 6px;
     padding: 8px 20px;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
@@ -1059,7 +1065,7 @@
   .kc-retake-btn:focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 2px; }
   .kc-answer { display: none; margin-top: 10px; }
   .kc-answer-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -1092,7 +1098,7 @@
   .habit-day-header:hover { background: var(--light-sage); }
   .habit-day-header.open  { background: var(--deep-teal); }
   .habit-day-num {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 22px;
     font-weight: 700;
     color: var(--teal);
@@ -1101,7 +1107,7 @@
   .habit-day-header.open .habit-day-num { color: var(--sage); }
   .habit-day-title-wrap { flex: 1; }
   .habit-day-title {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 15px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1109,7 +1115,7 @@
   }
   .habit-day-header.open .habit-day-title { color: var(--off-white); }
   .habit-day-concept {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 12px;
     color: var(--warm-gray);
     margin-top: 2px;
@@ -1132,7 +1138,7 @@
     margin-bottom: 20px;
   }
   .habit-focus strong {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 15px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1142,7 +1148,7 @@
   .habit-focus p { font-size: 14px; margin: 0; }
   .habit-tasks { margin-bottom: 20px; }
   .habit-tasks-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -1154,7 +1160,7 @@
     margin-bottom: 16px;
   }
   .habit-task-title {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 14px;
     font-weight: 600;
     color: var(--navy);
@@ -1172,7 +1178,7 @@
     border-left: 3px solid var(--amber);
   }
   .habit-example-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -1187,7 +1193,7 @@
     align-items: flex-start;
   }
   .habit-meta-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -1209,7 +1215,7 @@
     border-left: 3px solid var(--slate-blue);
   }
   .habit-not-clicking-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -1234,7 +1240,7 @@
     margin-bottom: 14px;
   }
   .progression-stage h4 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 18px;
     font-weight: 700;
     color: var(--deep-teal);
@@ -1248,7 +1254,7 @@
     gap: 16px;
   }
   .progression-cap-item label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -1284,7 +1290,7 @@
     position: relative;
   }
   .summary-block p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 19px;
     font-weight: 500;
     color: var(--off-white);
@@ -1314,7 +1320,7 @@
     box-shadow: 0 2px 10px rgba(31,77,74,0.06);
   }
   .resource-table th {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -1351,7 +1357,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 500;
     padding: 4px 10px 4px 8px;
@@ -1371,7 +1377,7 @@
   .resource-link {
     display: inline-flex;
     align-items: center;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 500;
     color: var(--deep-teal);
@@ -1468,7 +1474,7 @@
     top: 38px;
     left: 0;
     z-index: -1;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-weight: 700;
     font-size: 100px;
     line-height: 1;
@@ -1539,14 +1545,14 @@
   }
   .resume-banner-text {
     flex: 1;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px;
     line-height: 1.45;
     color: rgba(255,255,255,0.75);
   }
   .resume-banner-text strong {
     display: block;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -1556,7 +1562,7 @@
   }
   .resume-banner-note.hidden { display: none; }
   .resume-banner-btn {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 12px;
     font-weight: 600;
     padding: 7px 14px;
@@ -2885,12 +2891,12 @@
       <div id="completionSlot"></div>
 
       <div class="next-step-card" style="margin:40px 0 0;padding:28px 32px;border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
-        <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
-        <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:16px;">Systems Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical decomposes within a boundary, Systems Thinking questions and maps beyond it, Critical Thinking tests whether a conclusion built on that map actually holds. With all three in place, the next stretch is connecting the map to a decision — a Strategic Synthesis &amp; Decision-Making skill that isn't live on Amplified Thinker yet.</p>
-        <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and a podcast below if you want to go deeper into the concepts behind this one first.</p>
+        <p class="next-step-label" style="font-family:var(--font-display);font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
+        <p class="next-step-body" style="font-family:var(--font-body);font-size:15px;line-height:1.7;margin-bottom:16px;">Systems Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical decomposes within a boundary, Systems Thinking questions and maps beyond it, Critical Thinking tests whether a conclusion built on that map actually holds. With all three in place, the next stretch is connecting the map to a decision — a Strategic Synthesis &amp; Decision-Making skill that isn't live on Amplified Thinker yet.</p>
+        <p class="next-step-body" style="font-family:var(--font-body);font-size:15px;line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and a podcast below if you want to go deeper into the concepts behind this one first.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-          <a href="#resources" class="next-step-btn-outline" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;border-radius:6px;text-decoration:none;padding:10px 20px;transition:background .15s;">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-          <a href="../../future-skills.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:var(--navy);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='var(--deep-teal)'" onmouseout="this.style.background='var(--navy)'">Browse the Library <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="#resources" class="next-step-btn-outline" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:13px;font-weight:600;border-radius:6px;text-decoration:none;padding:10px 20px;transition:background .15s;">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="../../future-skills.html" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:13px;font-weight:600;color:#FFFFFF;background:var(--navy);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='var(--deep-teal)'" onmouseout="this.style.background='var(--navy)'">Browse the Library <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
         </div>
       </div>
     </div>

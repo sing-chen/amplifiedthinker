@@ -65,6 +65,12 @@
     --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
     --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
     --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
+
+  /* The two workhorse faces, as tokens. These hold exactly what every page
+     hardcoded before, so defining them changes nothing on its own — it only
+     creates one place to change the typeface from. */
+  --font-display:'Poppins',sans-serif;
+  --font-body:'Inter',sans-serif;
   }
 
   /* ── DARK-MODE TOKENS ───────────────────────── */
@@ -83,7 +89,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 16px;
     line-height: 1.65;
     color: var(--navy);
@@ -111,13 +117,13 @@
     margin-bottom: 20px;
   }
   .nav-series {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px; font-weight: 600;
     letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--sage); margin-bottom: 6px;
   }
   .nav-skill {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 15px; font-weight: 700;
     color: var(--off-white); line-height: 1.2;
     margin-bottom: 4px;
@@ -131,7 +137,7 @@
   .nav-link {
     display: flex; align-items: center; gap: 10px;
     padding: 8px 12px; border-radius: var(--radius);
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 12.5px; font-weight: 400;
     color: rgba(255,255,255,0.45);
     text-decoration: none; cursor: pointer;
@@ -142,7 +148,7 @@
   .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.22); }
   .nav-link.visited { color: rgba(255,255,255,0.65); }
   .nav-num {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px; font-weight: 600;
     color: rgba(255,255,255,0.2);
     min-width: 18px; flex-shrink: 0;
@@ -270,7 +276,7 @@
 
   /* ── TYPOGRAPHY ─────────────────────────────── */
   .eyebrow {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--deep-teal); margin-bottom: 20px;
@@ -308,12 +314,12 @@
   .h-lt   { color: var(--off-white); }
 
   .t-body {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: clamp(16px, 1.5vw, 20px);
     line-height: 1.65; color: var(--navy);
   }
   .t-lead {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: clamp(17px, 1.7vw, 22px);
     line-height: 1.65; color: var(--navy);
   }
@@ -334,7 +340,7 @@
   .tag {
     display: inline-block;
     padding: 7px 18px; border-radius: var(--radius-pill);
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px; font-weight: 500;
   }
   .tag-a { background: #C5DDD9; color: var(--deep-teal); }
@@ -354,7 +360,7 @@
     border-radius: var(--radius); padding: 22px 28px;
   }
   .callout-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px; font-weight: 600;
     letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--deep-teal); margin-bottom: 8px;
@@ -373,7 +379,7 @@
   }
   .card-top-teal { border-top: 3px solid var(--teal); }
   .card-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--deep-teal); margin-bottom: 10px;
@@ -383,7 +389,7 @@
   .num-list { display: flex; flex-direction: column; gap: 14px; }
   .num-item { display: flex; align-items: flex-start; gap: 20px; }
   .num-badge {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
     color: var(--teal); min-width: 28px; flex-shrink: 0;
     padding-top: 3px;
@@ -394,7 +400,7 @@
   .comp-without { background: #F2E0D4; border-top: 3px solid var(--terracotta); }
   .comp-with    { background: rgba(197,221,217,0.35); border-top: 3px solid var(--teal); }
   .comp-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px; font-weight: 700;
     letter-spacing: 0.08em; text-transform: uppercase;
     margin-bottom: 14px;
@@ -406,7 +412,7 @@
   .mece-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .mece-cell {
     border-radius: var(--radius); padding: 20px 16px;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-weight: 600; font-size: 15px; text-align: center;
   }
   .mece-cell-teal  { background: #C5DDD9; color: var(--deep-teal); }
@@ -425,7 +431,7 @@
   .tree-root {
     max-width: 420px; margin: 0 auto;
     background: var(--terracotta); color: var(--off-white);
-    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px;
+    font-family:var(--font-body); font-weight: 600; font-size: 15px;
     text-align: center; border-radius: var(--radius);
     padding: 14px 22px; position: relative;
   }
@@ -454,7 +460,7 @@
   .tree-branch-box {
     background: #C5DDD9; color: var(--deep-teal);
     border-radius: var(--radius); padding: 14px 12px;
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    font-family:var(--font-body); font-size: 13px; font-weight: 600;
     text-align: center; line-height: 1.4;
   }
   .tree-branch-sub {
@@ -469,7 +475,7 @@
     width: 32px; height: 32px; border-radius: 50%;
     background: #C5DDD9;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-weight: 700; font-size: 12px; color: var(--deep-teal);
     flex-shrink: 0;
   }
@@ -489,7 +495,7 @@
 
   /* quiz */
   .quiz-q {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: clamp(15px, 1.4vw, 18px);
     font-weight: 600; color: var(--navy);
     line-height: 1.4; margin-bottom: 16px;
@@ -499,7 +505,7 @@
     background: var(--light-sage);
     border: 2px solid transparent;
     border-radius: 6px; padding: 9px 18px;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: clamp(13px, 1.2vw, 16px);
     color: var(--navy); cursor: pointer; text-align: left;
     line-height: 1.4; transition: border-color 0.15s;
@@ -531,7 +537,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 5px;
     padding: 7px 10px;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 12px; font-weight: 500;
     color: rgba(255,255,255,0.6); cursor: pointer;
     transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -550,7 +556,7 @@
     flex-shrink: 0;
   }
   .slide-counter {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.06em;
     color: rgba(255,255,255,0.25);
@@ -616,7 +622,7 @@
   .video-meta { margin-top: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
   .video-transcript-toggle {
     background: none; border: none; padding: 0;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px; font-weight: 500;
     color: var(--deep-teal); text-decoration: underline;
     cursor: pointer;
@@ -626,7 +632,7 @@
     display: none; margin-top: 14px; padding: 18px 24px;
     background: rgba(255,255,255,0.55);
     border-radius: var(--radius);
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 14px; line-height: 1.65; color: var(--navy);
     max-height: 280px; overflow-y: auto;
   }
@@ -686,14 +692,14 @@
   }
   .resume-banner-text {
     flex: 1;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px;
     line-height: 1.45;
     color: rgba(255,255,255,0.75);
   }
   .resume-banner-text strong {
     display: block;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -702,7 +708,7 @@
     margin-bottom: 2px;
   }
   .resume-banner-btn {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 12px;
     font-weight: 600;
     padding: 7px 14px;
@@ -1066,7 +1072,7 @@
       <div class="step-item"><div class="step-num">3</div><p class="t-body" style="padding-top:4px;"><span class="t-meta">Why? &nbsp;</span>A UI update changed the flow without updating help docs</p></div>
       <div class="step-item"><div class="step-num root">4</div><p class="t-body t-terra" style="padding-top:4px;font-weight:500;"><span class="t-meta">Why? &nbsp;</span>No documentation review step in the release process — ownership sits outside the release workflow</p></div>
     </div>
-    <p class="root-cause-label" style="margin-top:14px;margin-left:48px;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.04em;">ROOT CAUSE IDENTIFIED</p>
+    <p class="root-cause-label" style="margin-top:14px;margin-left:48px;font-family:var(--font-display);font-weight:600;font-size:11px;letter-spacing:0.04em;">ROOT CAUSE IDENTIFIED</p>
   </div>
 
   <!-- 08 · MENTAL MODEL: ISSUE TREE -->
@@ -1124,9 +1130,9 @@
     <div id="completionSlot"></div>
 
     <div class="next-step-card" style="margin-top:40px;padding:24px 28px;border-radius:0 8px 8px 0;max-width:560px;">
-      <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
-      <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
-      <a href="plan.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--white);background:var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#5BA79F'" onmouseout="this.style.background='var(--deep-teal)'">Open Full Learning Plan <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      <p class="next-step-label" style="font-family:var(--font-display);font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
+      <p class="next-step-body" style="font-family:var(--font-body);font-size:14px;line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
+      <a href="plan.html" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--white);background:var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#5BA79F'" onmouseout="this.style.background='var(--deep-teal)'">Open Full Learning Plan <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     </div>
   </div>
 
