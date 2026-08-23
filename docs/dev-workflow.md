@@ -489,20 +489,55 @@ for exactly the users who have no alternative origin.
 **Nothing is required.** Branch protection on `main` (Settings → Branches) sounds like free safety
 but conflicts with how content updates ship here:
 
-⚠️ **`deploy.bat` runs `git add . && git commit && git push` directly to whatever branch is checked
-out.** Turning on *Require a pull request before merging* makes that fail on `main`, so every typo
-fix becomes a PR. On a solo repo, the protection buys little — there is no one else to guard against —
-and the cost lands on the workflow used most often.
+⚠️ **`deploy.bat` commits and pushes to `main` directly.** Turning on *Require a pull request before
+merging* makes that fail, so every typo fix becomes a PR. On a solo repo, the protection buys little
+— there is no one else to guard against — and the cost lands on the workflow used most often.
+
+**The 2026-08-22 hardening does not change this.** The script now refuses to run anywhere except
+`main`, which removes the *wrong-branch* hazard, but it still pushes straight to `main` — so
+protection and `deploy.bat` remain mutually exclusive. Only deleting the script unlocks branch
+protection, and that costs the one-step content publish plus seven touchpoints of documentation.
 
 **Recommendation: leave `main` unprotected**, and rely on the branch-per-phase habit plus explicit
 git commands for feature work. Revisit if anyone else ever gets push access.
 
-### `deploy.bat` commits everything
+### `deploy.bat` — what it guards, and what it cost to get there
 
-Separately from the branch question: `deploy.bat` stages with `git add .`, so it commits
-*everything* in the working tree — half-finished work, local scratch files, anything untracked. It
-pushes whatever branch is checked out, so it is branch-*safe*, just not selective. Use explicit git
-commands while developing and keep `deploy.bat` for content updates on `main`.
+Until 2026-08-22 this was three unguarded lines — `git add .`, `git commit`, `git push`. That was
+survivable while `main` was the only branch anyone worked on. It stopped being survivable the day a
+second long-lived branch appeared: `git add .` sweeps up whatever happens to be in the tree, and the
+script pushed to **whatever branch was checked out**.
+
+⚠️ **An earlier version of this section called that "branch-*safe*, just not selective." That was
+wrong**, and worth recording as a wrong call rather than quietly deleting: pushing whichever branch
+happens to be checked out is not safety, it is the hazard. It only looked safe while there was one
+branch to check out.
+
+Four guards now, each closing one failure:
+
+| Guard | Closes |
+|---|---|
+| `main` only | pushing a feature branch's work-in-progress by accident |
+| stages `public/` + `docs/` only | committing half-finished work and local scratch files |
+| `npm run build` first | a failed prebuild gate taking `main`'s deploy down |
+| diffstat + confirm | pushing something other than what you thought |
+
+Escapes for when a guard is wrong rather than right: `--all` (stage everything), `--yes` (skip the
+prompt, for non-interactive use), `--no-build`.
+
+⚠️ **Three cmd.exe traps, all found by running it rather than reading it, and all silent.** They are
+commented in the file; the third is the one to remember:
+
+1. `--untracked-files=all` returns **nothing** inside `for /f` backticks — the `=` breaks cmd's
+   parsing. The classify loop saw an empty tree, which the script read as "clean". Use `-uall`.
+2. `tokens=*` strips the leading space from `git status --porcelain`'s `XY path` format, so a `~3`
+   offset eats the first character of every path. Use `delims=`.
+3. **`exit /b 1` from a doubly-nested block prints the error and returns exit code `0`** — so a
+   refused push reads as a successful one to anything checking the code. Every failure exit now
+   jumps to a top-level label. Single-level nesting is fine; the bug needs two.
+
+The script cannot commit itself — it sits at the repo root, outside `public/` and `docs/`, so its own
+second guard blocks it. That is correct: use explicit git commands for changes to the tooling.
 
 ---
 

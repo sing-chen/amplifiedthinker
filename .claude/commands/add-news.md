@@ -142,4 +142,10 @@ After writing news.json, ask the user whether to deploy now. If yes, run:
 deploy.bat "add news for <date>"
 ```
 
-This stages, commits, and pushes — confirm with the user first since it's a push to the live site, per standard practice. Don't run it unprompted.
+This stages, builds, shows a diffstat, asks for confirmation, then pushes — confirm with the user
+first anyway, since it's a push to the live site, per standard practice. Don't run it unprompted.
+
+Both files this command writes — `public/news.json` and `public/search-index.json` — are under
+`public/`, so they pass the script's second guard. Two ways it can legitimately refuse: you are not
+on `main`, or something outside `public/`/`docs/` is dirty. Neither is a fault in this command;
+resolve the tree and re-run rather than reaching for `--all`.
