@@ -209,6 +209,19 @@ Note the video-thumbnail.png referenced here won't exist yet (per Step 4's build
 
 After editing, validate the file is still well-formed JSON before moving on (a trailing comma or missed brace here breaks site search entirely, not just this skill's entry).
 
+⚠️ **Edit it in place, and never through PowerShell.** "Hand-maintained" makes this the likeliest
+file in the repo to be round-tripped by whatever tool is nearest, and PowerShell 5.1 decodes as ANSI
+on the way in — so `Get-Content`/`Set-Content` or `ConvertTo-Json` re-encodes every non-ASCII
+character in the file, not just the lines you touched: `·` becomes `Â·`, `—` becomes `â€”`, `é`
+becomes `Ã©`. On 2026-08-23 this file was found live on `main` with **39** such characters. Valid
+JSON, right entry count, every check green — the only symptom was search results reading
+`Brené Brown`. Use the editing tools directly, or node (`readFileSync`/`writeFileSync`, utf8). See
+the PowerShell trap in [CLAUDE.md](../../CLAUDE.md).
+
+Skill titles and descriptions here routinely contain em dashes and `·`, so this file is squarely in
+range. `npm run verify:encoding` catches it and runs as `prebuild` on both origins; `npm run
+fix:encoding` repairs it.
+
 **5d. Announce the skill in both places, in one sitting**
 
 A new skill gets **two** entries, and they are the same fact written twice:
