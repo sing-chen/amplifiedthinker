@@ -123,6 +123,25 @@ print('Rebuilt', len(news_entries), 'news entries. Total index size:', len(idx))
 
 If no python runtime is available, do the equivalent by hand: remove every existing `"type": "news"` object from search-index.json, then re-append one object per story across the whole news.json (not just the ones added this run), in the same shape as above.
 
+⚠️ **Rewrite this file with python or node, never with PowerShell.** The snippet above is
+UTF-8-safe on purpose — `encoding='utf-8'`, `ensure_ascii=False`, `newline='\n'`. PowerShell 5.1
+decodes as ANSI on the way in and so re-encodes every non-ASCII character: `·` becomes `Â·`, `—`
+becomes `â€”`, `é` becomes `Ã©`. This is not hypothetical — on 2026-08-23 this exact file was found
+live on `main` with **39** such characters across four sequences, because it had been rewritten with
+`ConvertTo-Json` instead of the snippet above. The JSON stayed valid and every check passed; the only
+symptom was search results reading `Brené Brown`. See the PowerShell trap in
+[CLAUDE.md](../../CLAUDE.md).
+
+`npm run verify:encoding` now catches this, and it is wired as `prebuild`, so a corrupted index fails
+the build on both origins rather than shipping. If it ever fires: `npm run fix:encoding`, then find
+what wrote the file.
+
+⚠️ **Expect a whole-file reformat the first time the snippet is used.** The committed file is
+currently in `ConvertTo-Json`'s shape — 4-space indent, two spaces after each `:` — which
+`json.dump(indent=2)` does not produce. The first correct run reformats all ~1000 lines. That is the
+file converging on the documented tool, not damage; check it with `npm run verify:encoding` and
+confirm the parsed entry count is unchanged rather than reading the diffstat.
+
 ## Step 4 — Pin (optional)
 
 Ask the user whether any of the stories just added should be pinned — pinning promotes a story to a dedicated "Pinned" section at the top of news.html regardless of date, and makes it the default story shown on load. Offer the shortlist of newly-added titles, or "none."

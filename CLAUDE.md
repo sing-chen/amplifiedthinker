@@ -82,6 +82,12 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so
                  a stale catalogue FAILS `npm run build` on both origins. Deliberate: see below
+                 verify-encoding.mjs (npm run verify:encoding) — ⚠️ also `prebuild`. Fails on UTF-8
+                 decoded as CP1252 anywhere in the tree. `npm run fix:encoding` repairs in place.
+                 Its source is deliberately pure ASCII, and its allowlist of the few files that
+                 legitimately QUOTE mojibake is built with String.fromCharCode: a scanner for
+                 encoding damage that stores its own patterns as literals stops matching the moment
+                 something re-encodes it, and then passes everything
                  verify-signin-return.mjs (npm run verify:signin-return) — ⚠️ also `prebuild`.
                  Proves the `?next=` sign-in redirect cannot be pointed off-site. It LIFTS the real
                  safeNext() out of sign-in.astro rather than reimplementing it, so a retyped copy
@@ -152,8 +158,10 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
 - **`main` can now fail to deploy.** Before Phase 2 nothing was built, so nothing could fail.
   **Two more ways to fail were added deliberately on 2026-08-21**, both as npm's `prebuild`, and both
   origins build with `npm run build` so they gate *both*: `verify:catalogue` and
-  `verify:signin-return`. Editing a plan's nav rail without running `npm run build:catalogue` stops
-  the deploy, and so does weakening the open-redirect guard on the sign-in return. That is the
+  `verify:signin-return`. **A third joined them on 2026-08-23: `verify:encoding`**, after mojibake
+  reached `main` unnoticed. Editing a plan's nav rail without running `npm run build:catalogue` stops
+  the deploy, so does weakening the open-redirect guard on the sign-in return, and so does letting a
+  PowerShell round-trip re-encode any file in the tree. That is the
   intended behaviour —
   the alternative is `public/skills-catalogue.json` quietly reporting a wrong denominator, which
   reads as "14 of 15 is complete" and fails nothing. A failed build leaves the previous deployment
@@ -166,6 +174,18 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   Use `node` (`readFileSync`/`writeFileSync`, utf8) for any script that rewrites these files, and
   `git checkout -- <path>` to restore. The damage is loud in `git diff --stat` — a one-line edit
   reporting hundreds of changed lines is this, every time.
+  ⚠️ **Second instance, 2026-08-23, and the warning above did not prevent it.** `search-index.json`
+  was found on `main` with **39** re-encoded characters in four sequences — `Â·`, `â€”`, `â€“`, `Ã©`
+  — from a `ConvertTo-Json` rewrite that bypassed the UTF-8-safe python `/add-news` documents. The
+  giveaway was in the formatting, not the text: all 522 keys had two spaces after the `:`, which
+  `json.dump` cannot emit. **The loud-diffstat tell does not work once the damage is committed** —
+  it is only visible in the sitting that caused it, and this had been live long enough that the
+  corrupted bytes *were* the baseline. Nothing else caught it: valid JSON, right entry count, all
+  checks green, and the whole symptom was a search result reading `Brené Brown`.
+  **So the rule is now enforced rather than written down**: `npm run verify:encoding` (a third
+  `prebuild`, gating both origins) fails the build on any CP1252-decoded UTF-8, and
+  `npm run fix:encoding` repairs it. A prose warning was not enough — it had been in this file for
+  two days when the second instance shipped.
 - **A new table lands with *no* grants, and that looks exactly like a broken policy.** The Phase 3
   migration ends with `alter default privileges … revoke all on tables from anon, authenticated`,
   so every future table must grant explicitly. Symptom: `permission denied for table X` even as an

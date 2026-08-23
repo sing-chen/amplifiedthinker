@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/verify-catalogue.mjs && node scripts/verify-signin-return.mjs",
+    "prebuild": "node scripts/verify-catalogue.mjs && node scripts/verify-signin-return.mjs && node scripts/verify-encoding.mjs",
     "verify:signin-return": "node scripts/verify-signin-return.mjs",
+    "verify:encoding": "node scripts/verify-encoding.mjs",
+    "fix:encoding": "node scripts/verify-encoding.mjs --fix",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
