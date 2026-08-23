@@ -67,11 +67,11 @@
 /* The editorial token on purpose: this is an editorial headline in the same
    sense the News and primer headlines are. It was a serif until 2026-08-23;
    now the whole site is Inter and the distinction is carried by WEIGHT —
-   this runs light (350, 400 in dark) where display headlines run 650–700.
+   this runs light (380, 420 in dark) where display headlines run 650–700.
    Setting it heavier would silently reclassify it as a display headline. */
 .learn-title {
   font-family: var(--font-editorial);
-  font-weight:350; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.15;
+  font-weight:380; font-size: clamp(28px, 3.4vw, 46px); line-height: 1.15;
   letter-spacing:-.034em; color: var(--fg-heading); text-wrap: balance;
 }
 /* ⚠️ No max-width on either of these. They are single sentences meant to sit
@@ -506,5 +506,5 @@
   .learn-cell-inner { flex-wrap: wrap; }
 }
 
-/* 350 reads fragile light-on-dark; 400 in dark only. */
-[data-theme="dark"] .learn-title{font-weight:400}
+/* Light-on-dark thins the strokes; 420 in dark against 380 in light. */
+[data-theme="dark"] .learn-title{font-weight:420}

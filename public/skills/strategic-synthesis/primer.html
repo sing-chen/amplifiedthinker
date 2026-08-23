@@ -292,7 +292,7 @@
   .h-display {
     font-family: var(--font-editorial);
     font-size: clamp(42px, 4.4vw, 66px);
-    font-weight:350; line-height: 1.04;
+    font-weight:380; line-height: 1.04;
     letter-spacing:-.04em;
     color: var(--navy); margin-bottom: 28px;
   }
@@ -781,11 +781,11 @@
   [data-theme="dark"] .video-transcript-toggle:hover { color: var(--d-terra-stroke); }
 
   /* Light-on-dark makes strokes read thinner than dark-on-light, so the 350
-     display weight would look fragile. 400 in dark only. Both selectors are
+     display weight would look fragile. 420 in dark against 380 in light. Both selectors are
      listed because the primer calls this .h-display and the plan calls it
      .hero h1 — they are the same role. */
   [data-theme="dark"] .h-display,
-  [data-theme="dark"] .hero h1 { font-weight:400 }
+  [data-theme="dark"] .hero h1 { font-weight:420 }
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */

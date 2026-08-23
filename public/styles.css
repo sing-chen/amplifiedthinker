@@ -48,7 +48,7 @@
   /* ── Typography — the site is set entirely in Inter as of 2026-08-23.
      All three tokens therefore hold the SAME value, and are deliberately kept
      separate: they name the ROLE, not the family. What distinguishes them now
-     is weight — editorial runs light (350–400) where display runs heavy
+     is weight — editorial runs light (380–420) where display runs heavy
      (650–700), which is how the contrast the serif used to provide survives a
      single-typeface site. Collapsing these into one token would throw away the
      only place a future change could re-differentiate them.
@@ -56,9 +56,11 @@
      does not just make it bolder, it makes it a display headline. ───────── */
   --font-editorial:'Inter',system-ui,sans-serif;
 
-  /* The two workhorse faces, as tokens. These hold exactly what every page
-     hardcoded before, so defining them changes nothing on its own — it only
-     creates one place to change the typeface from. */
+  /* Display and body. Same family as editorial above — the roles are told
+     apart by weight, not by face. ⚠️ The 10 skill primer/plan pages do NOT
+     link this file; they carry their own copy of these three tokens in their
+     own :root, so a change here has to be made there too or two thirds of the
+     site's declarations keep the old value. */
   --font-display:'Inter',system-ui,sans-serif;
   --font-body:'Inter',system-ui,sans-serif;
 
