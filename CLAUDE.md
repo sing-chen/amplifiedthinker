@@ -278,7 +278,13 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
 - **`main` is unprotected on purpose.** `deploy.bat` pushes straight to it, so requiring PRs would
   turn every content fix into one. Solo repo.
 - Ask before committing, pushing, or deploying.
-- `deploy.bat "msg"` stages **everything** (`git add .`) — fine for content updates on `main`, wrong
-  while developing. Use explicit git commands.
+- `deploy.bat "msg"` stages `public/` and `docs/`, builds, shows the diffstat, asks, then pushes.
+  **Hardened 2026-08-22**, when a second long-lived branch made the old version dangerous: it was
+  `git add .` + commit + push with no guards, so it swept up whatever was in the tree and pushed
+  **whatever branch was checked out**. It now refuses off `main`, refuses if anything outside
+  `public/`/`docs/` is dirty, and refuses if `npm run build` fails. Escapes: `--all`, `--yes`,
+  `--no-build`. ⚠️ Three cmd.exe traps are written up in the file itself, all of which failed
+  *silently* — most importantly `exit /b` from a doubly-nested block returning **0**, which made a
+  refused push look like a successful one. Keep every failure exit at top level.
 - Verification: automated checks are necessary but never sufficient for anything visual. Both Phase 1
   defects were found by a human looking at a browser, and neither was catchable by the passing test.
