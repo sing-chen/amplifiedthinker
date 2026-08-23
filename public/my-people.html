@@ -17,11 +17,8 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-my-people.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
   /* ── HERO ── */
@@ -29,8 +26,8 @@
   .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 80% 60%,rgba(91,167,159,.07) 0%,transparent 70%);pointer-events:none}
   .hero-pattern{position:absolute;top:0;right:0;width:60%;height:100%;opacity:.07;pointer-events:none}
   .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
-  .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
-  .hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.01em;margin-bottom:20px;max-width:860px}
+  .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
+  .hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:20px;max-width:860px}
   .hero-body{font-family:var(--font-body);font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:640px}
   .hero-hint{display:inline-flex;align-items:center;gap:7px;margin-top:22px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--sage);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:var(--radius-pill)}
   .hero-hint svg{width:15px;height:15px;flex-shrink:0}
@@ -55,7 +52,7 @@
   .bento-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,18,16,.82) 100%);z-index:1}
   .bento-tile-body{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;z-index:2;color:#fff;text-align:left}
   .bento-tile.large .bento-tile-body{padding:22px 24px}
-  .bento-name{display:block;font-family:var(--font-display);font-weight:600;font-size:14px;margin-bottom:6px;line-height:1.25}
+  .bento-name{display:block;font-family:var(--font-display);letter-spacing:-.006em;font-weight:600;font-size:14px;margin-bottom:6px;line-height:1.25}
   .bento-tile.large .bento-name{font-size:20px;margin-bottom:8px}
   .bento-quote{font-family:var(--font-body);font-size:11px;font-style:italic;color:rgba(255,255,255,.85);margin-top:7px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .bento-tile.large .bento-quote{margin-top:10px;font-size:13.5px;-webkit-line-clamp:3}
@@ -64,7 +61,7 @@
   @media(max-width:520px){.bento-featured{grid-template-columns:1fr}.bento-standard{grid-template-columns:1fr}}
 
   /* category pill (shared bento tile + modal) */
-  .ppill{display:inline-block;font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill)}
+  .ppill{display:inline-block;font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill)}
   .pp-leadership  {background:#C5DDD9;color:#1B4A44}
   .pp-communication{background:#F2DDB8;color:#5A3A00}
   .pp-influence   {background:#EDD5CB;color:#7A3A25}
@@ -83,7 +80,7 @@
   .modal-body{padding:26px 30px 32px}
 
   /* name + external link */
-  .pname{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-bottom:8px}
+  .pname{font-family:var(--font-display);letter-spacing:-.014em;font-size:19px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-bottom:8px}
   .ppills{margin-bottom:8px}
   .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:13px;font-weight:700;color:#5BA79F;text-decoration:none;margin-top:10px}
   .pext-link:hover{color:#2D756F;text-decoration:underline}
@@ -97,7 +94,7 @@
   .pquote{margin:0 0 16px;padding:0}
   .pquote-mark{font-family:var(--font-display);font-size:44px;font-weight:700;line-height:1;color:#ACC4B6;display:block;margin-bottom:-10px;user-select:none}
   .pquote-text{font-family:var(--font-body);font-size:13.5px;font-style:italic;line-height:1.6;color:#1F4D4A}
-  .pquote-source{font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-top:6px;opacity:.75}
+  .pquote-source{font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:6px;opacity:.75}
 
   /* description */
   .pdesc{font-family:var(--font-body);font-size:13.5px;line-height:1.65;color:var(--navy);margin-bottom:18px}

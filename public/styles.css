@@ -45,16 +45,22 @@
   --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
   --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
 
-  /* ── Typography — serif reserved for editorial headlines only
-     (section cards, News articles, skill primer/plan headlines);
-     Poppins/Inter remain the default everywhere else ─────────────── */
-  --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
+  /* ── Typography — the site is set entirely in Inter as of 2026-08-23.
+     All three tokens therefore hold the SAME value, and are deliberately kept
+     separate: they name the ROLE, not the family. What distinguishes them now
+     is weight — editorial runs light (350–400) where display runs heavy
+     (650–700), which is how the contrast the serif used to provide survives a
+     single-typeface site. Collapsing these into one token would throw away the
+     only place a future change could re-differentiate them.
+     ⚠️ Weight is load-bearing here. Setting an editorial headline to 600
+     does not just make it bolder, it makes it a display headline. ───────── */
+  --font-editorial:'Inter',system-ui,sans-serif;
 
   /* The two workhorse faces, as tokens. These hold exactly what every page
      hardcoded before, so defining them changes nothing on its own — it only
      creates one place to change the typeface from. */
-  --font-display:'Poppins',sans-serif;
-  --font-body:'Inter',sans-serif;
+  --font-display:'Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
 
   /* ── Fluid type scale — clamp(min, preferred, max); ceiling hit at the
      viewport width noted, floor holds below ~320px. Apply via these tokens
@@ -81,11 +87,12 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:'Inter',system-ui,sans-serif;color:var(--text-dark);background:var(--bg-page);font-size:16px;line-height:1.65}
+body{font-family:var(--font-body);color:var(--text-dark);background:var(--bg-page);font-size:16px;line-height:1.65}
 /* var(--text-dark) is a raw palette color (=navy), never remapped by the
    :root override above — needs its own dark-mode substitute here.
    fg-heading is the exact token equivalent of navy, not fg-1/charcoal. */
 [data-theme="dark"] body{color:var(--fg-heading)}
+button,input,select,textarea{font-family:inherit}
 .skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
 .skip-link:focus{top:0}
 :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}

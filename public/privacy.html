@@ -20,11 +20,8 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="fonts.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
   /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
@@ -33,8 +30,8 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
   .doc-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
 
   /* ── MASTHEAD ── */
-  .doc-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
-  .doc-title{font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--fg-heading);letter-spacing:-.015em;line-height:1.15;margin-top:10px}
+  .doc-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+  .doc-title{font-family:var(--font-display);font-size:34px;font-weight:650;color:var(--fg-heading);letter-spacing:-.03em;line-height:1.15;margin-top:10px}
   .doc-lede{font-family:var(--font-body);font-size:17px;line-height:1.7;color:var(--text-muted);margin-top:16px}
   .doc-stamp{font-family:var(--font-body);font-size:13px;color:var(--warm-gray);margin-top:14px}
 
@@ -52,13 +49,13 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
      navigated rather than read straight through, and an 11px letterspaced
      label at that count stops being scannable. Same family and palette, one
      size up, with the number carrying the brand colour. */
-  .doc-h2{font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--fg-heading);letter-spacing:-.01em;line-height:1.35;margin-top:20px;scroll-margin-top:88px}
+  .doc-h2{font-family:var(--font-display);font-weight:600;font-size:18px;color:var(--fg-heading);letter-spacing:-.014em;line-height:1.35;margin-top:20px;scroll-margin-top:88px}
   .doc-h2 .doc-num{color:var(--fg-brand);font-weight:700;margin-right:8px}
   .doc-h2:first-child{margin-top:0}
 
   /* ── CONTENTS ── */
   .doc-toc{border:1px solid rgba(172,196,182,.45);border-radius:var(--radius-lg);padding:20px 24px}
-  .doc-toc-label{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
+  .doc-toc-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
   .doc-toc ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
   .doc-toc li{font-family:var(--font-body);font-size:14.5px;line-height:1.5;color:var(--text-muted)}
   .doc-toc a{color:var(--navy);text-decoration:none;border-bottom:1px solid transparent}
@@ -68,7 +65,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
      A brand band, same treatment as .thesis on about.html. Fixed dark in both
      themes, like the footer. */
   .doc-claim{background:#1B4A44;border-radius:var(--radius-lg);padding:26px 30px}
-  .doc-claim p{font-family:var(--font-display);font-size:16px;font-weight:500;color:rgba(255,255,255,.9);line-height:1.6}
+  .doc-claim p{font-family:var(--font-display);letter-spacing:-.014em;font-size:16px;font-weight:500;color:rgba(255,255,255,.9);line-height:1.6}
   .doc-claim ul{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
   .doc-claim li{font-family:var(--font-body);font-size:15px;color:rgba(255,255,255,.72);line-height:1.6;padding-left:20px;position:relative}
   .doc-claim li::before{content:"";position:absolute;left:2px;top:10px;width:6px;height:6px;border-radius:50%;background:var(--sage)}
@@ -77,7 +74,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
   .doc-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .doc-table{width:100%;min-width:460px;border-collapse:collapse;font-family:var(--font-body);font-size:14.5px}
   .doc-table th,.doc-table td{text-align:left;padding:12px 14px;border-bottom:1px solid rgba(172,196,182,.35);vertical-align:top;line-height:1.55}
-  .doc-table thead th{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
+  .doc-table thead th{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
   .doc-table tbody th{font-weight:500;color:var(--fg-heading)}
   .doc-table td{color:var(--text-muted)}
   .doc-table code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:rgba(172,196,182,.22);padding:1px 5px;border-radius:4px;color:var(--navy)}
@@ -377,12 +374,13 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
     <p>Those services act under a data processing agreement and may not use your information for their own purposes. We may also disclose information where the law requires it.</p>
 
-    <p><strong>Two others are not our processors, and are called out separately for that reason.</strong></p>
+    <p><strong>One other is not our processor, and is called out separately for that reason.</strong></p>
 
     <ul class="doc-list">
-      <li><strong>Google Fonts.</strong> Every page loads two typefaces from <code>fonts.googleapis.com</code>, which then fetches the font files from <code>fonts.gstatic.com</code>. This happens on your very first visit, before you have done anything, and it happens even if you never create an account. It receives no account information and sets nothing on your device, but — as with any file your browser requests from anywhere — those servers see your IP address. It is not run by us and is not covered by an agreement with us. <strong>Serving the fonts from our own domain would remove the request entirely, and that is the intention.</strong></li>
       <li><strong>Have I Been Pwned.</strong> Contacted only when you choose a password, and only ever sent the first five characters of a hash. See section 7.</li>
     </ul>
+
+    <p><strong>Typefaces are served from this domain.</strong> Until 23 August 2026 every page loaded its fonts from <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code> — a request your browser made on its very first visit, before you had done anything, and whether or not you ever created an account. Those servers saw your IP address as a result. The font files are now served from <code>amplifiedthinker.com</code> alongside the rest of the site, so that request is no longer made and no third party is involved in showing you the page.</p>
 
     <h2 class="doc-h2" id="s10"><span class="doc-num">10.</span>Does my information leave the UK?</h2>
 

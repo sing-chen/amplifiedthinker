@@ -17,11 +17,8 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="../../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../../fonts.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <style>
   /* ── BRAND TOKENS ───────────────────────────── */
   :root {
@@ -78,13 +75,13 @@
     /* ── Motion tokens ── */
     --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
     --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
-    --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
+    --font-editorial:'Inter',system-ui,sans-serif;
 
   /* The two workhorse faces, as tokens. These hold exactly what every page
      hardcoded before, so defining them changes nothing on its own — it only
      creates one place to change the typeface from. */
-  --font-display:'Poppins',sans-serif;
-  --font-body:'Inter',sans-serif;
+  --font-display:'Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
   }
 
   /* ── DARK-MODE TOKENS ───────────────────────── */
@@ -100,6 +97,7 @@
   }
 
   /* ── RESET ──────────────────────────────────── */
+  button,input,select,textarea{font-family:inherit}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
@@ -133,14 +131,14 @@
   .nav-series {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--sage);
     margin-bottom: 6px;
   }
   .nav-skill {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 700;
     color: var(--off-white);
@@ -290,8 +288,8 @@
   .hero h1 {
     font-family: var(--font-editorial);
     font-size: 52px;
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    font-weight:350;
+    letter-spacing:-.034em;
     color: var(--deep-teal);
     line-height: 1.1;
     margin-bottom: 0;
@@ -328,16 +326,16 @@
     padding-bottom: 16px;
   }
   .section h2 {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.03em;
     font-size: 30px;
-    font-weight: 700;
+    font-weight:650;
     color: var(--deep-teal);
     line-height: 1.2;
     margin-bottom: 24px;
     max-width: var(--content-max);
   }
   .section h3 {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.024em;
     font-size: 20px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -372,8 +370,8 @@
   .snapshot-card-label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     margin-bottom: 10px;
@@ -419,7 +417,7 @@
     margin: 24px 0;
   }
   .callout p {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 500;
     color: var(--terracotta);
@@ -441,7 +439,7 @@
     margin: 28px 0;
   }
   .definition-box p {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 500;
     color: var(--cream);
@@ -541,8 +539,8 @@
   .accordion-label {
     font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     white-space: nowrap;
@@ -586,7 +584,7 @@
     font-family:var(--font-display);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--amber);
     white-space: nowrap;
@@ -618,7 +616,7 @@
     font-family:var(--font-display);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--deep-teal);
     margin-bottom: 8px;
@@ -668,7 +666,7 @@
   }
   .bias-card-icon svg { width: 100%; height: 100%; }
   .bias-card-name {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 14px;
     font-weight: 700;
     color: var(--navy);
@@ -709,7 +707,7 @@
   }
   .bias-panel-icon svg { width: 100%; height: 100%; }
   .bias-panel-header h4 {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 19px;
     font-weight: 700;
     color: var(--deep-teal);
@@ -728,7 +726,7 @@
     font-family:var(--font-display);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--terracotta);
     margin-bottom: 6px;
@@ -780,8 +778,8 @@
   .model-applied-label {
     font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--deep-teal);
     margin-bottom: 14px;
@@ -826,7 +824,7 @@
     transform: translateY(-50%);
     font-family:var(--font-display);
     font-size: 11px; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
+    letter-spacing:.1em; text-transform: uppercase;
     color: var(--terracotta); white-space: nowrap;
   }
   @media (max-width: 640px) {
@@ -849,7 +847,7 @@
     border-left: 3px solid var(--terracotta);
   }
   .mistake h4 {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 600;
     color: var(--terracotta);
@@ -864,8 +862,8 @@
   .mistake-cell-label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--warm-gray);
     margin-bottom: 4px;
@@ -884,8 +882,8 @@
     text-align: center;
     font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     padding: 9px 12px;
     border-radius: var(--radius);
@@ -937,8 +935,8 @@
   .indicator-col-label {
     font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--deep-teal);
   }
@@ -985,7 +983,7 @@
     margin-bottom: 32px;
   }
   .scenario h4 {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 17px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1012,7 +1010,7 @@
     font-family:var(--font-display);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing:.1em;
     text-transform: uppercase;
     margin-bottom: 12px;
   }
@@ -1065,14 +1063,14 @@
   .kc-q-label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--warm-gray);
     margin-bottom: 8px;
   }
   .kc-q-text {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 15px;
     font-weight: 600;
     color: var(--navy);
@@ -1128,7 +1126,7 @@
     border: none;
     border-radius: 6px;
     padding: 10px 24px;
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
@@ -1144,7 +1142,7 @@
     max-width: var(--content-max);
   }
   .kc-score p {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 14px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1158,7 +1156,7 @@
     border: 1.5px solid var(--deep-teal);
     border-radius: 6px;
     padding: 8px 20px;
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
@@ -1170,8 +1168,8 @@
   .kc-answer-label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     margin-bottom: 4px;
@@ -1210,7 +1208,7 @@
   .habit-day-header.open .habit-day-num { color: var(--sage); }
   .habit-day-title-wrap { flex: 1; }
   .habit-day-title {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 15px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1241,7 +1239,7 @@
     margin-bottom: 20px;
   }
   .habit-focus strong {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 15px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1253,8 +1251,8 @@
   .habit-tasks-label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     margin-bottom: 10px;
@@ -1263,7 +1261,7 @@
     margin-bottom: 16px;
   }
   .habit-task-title {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 14px;
     font-weight: 600;
     color: var(--navy);
@@ -1282,8 +1280,8 @@
   .habit-example-label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--deep-teal);
     margin-bottom: 6px;
@@ -1299,8 +1297,8 @@
   .habit-meta-label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     margin-bottom: 4px;
@@ -1318,7 +1316,7 @@
     font-family:var(--font-display);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--terracotta);
     margin-bottom: 6px;
@@ -1341,7 +1339,7 @@
     margin-bottom: 14px;
   }
   .progression-stage h4 {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 700;
     color: var(--deep-teal);
@@ -1357,8 +1355,8 @@
   .progression-cap-item label {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     display: block;
@@ -1391,7 +1389,7 @@
     position: relative;
   }
   .summary-block p {
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 19px;
     font-weight: 500;
     color: var(--off-white);
@@ -1426,8 +1424,8 @@
   .resource-table th {
     font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     text-align: left;
@@ -1584,7 +1582,7 @@
     top: 38px;
     left: 0;
     z-index: -1;
-    font-family:var(--font-display);
+    font-family:var(--font-display);letter-spacing:-.04em;
     font-weight: 700;
     font-size: 100px;
     line-height: 1;
@@ -1666,8 +1664,8 @@
     display: block;
     font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--teal);
     margin-bottom: 2px;
@@ -1903,6 +1901,11 @@
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
   [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
 
+
+  /* Light-on-dark makes strokes read thinner than dark-on-light, so the 350
+     display weight would look fragile. 400 in dark only. */
+  [data-theme="dark"] .h-display,
+  [data-theme="dark"] .hero h1 { font-weight:400 }
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */
