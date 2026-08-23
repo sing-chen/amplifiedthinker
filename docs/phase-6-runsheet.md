@@ -139,9 +139,20 @@ merge. Part B is where longer breaks belong, subject to the dev-pause row above.
 
 Confirm rather than assume; everything below was written against this state.
 
-### The repo half — verified 2026-08-22
+### The repo half — verified 2026-08-22, line numbers re-checked 2026-08-23
 
 Every file that mentions the Pages origin, so stage 4 has a checklist rather than a grep:
+
+⚠️ **The line numbers below drift, and one of them nearly caused real damage.** On 2026-08-23 an
+unrelated change — removing the Google Fonts `<link>` block from every page's head — took one line
+out of the top of twenty files, and every reference into them silently moved up by one. The row
+below reading *"privacy.html:370 · GitHub listed as a processor · **Delete the row**"* pointed at
+**Cloudflare's** row by the time anyone would have followed it. Deleting the wrong processor from a
+privacy policy is not something any gate here would catch.
+
+**Match on the content in the middle column, never on the line number alone.** The numbers are a
+convenience for jumping; the description is the identifier. Re-check them at the start of stage 4
+rather than trusting this table — anything that edits a page's `<head>` moves every one of them.
 
 | File | What it says | Stage 4 action |
 |---|---|---|
@@ -153,9 +164,9 @@ Every file that mentions the Pages origin, so stage 4 has a checklist rather tha
 | [scripts/verify-schema-columns.mjs:47](../scripts/verify-schema-columns.mjs:47) | Uses `sing-chen.github.io` as a prod host fixture | Repoint to `amplifiedthinker.com` |
 | [scripts/verify-signin-return.mjs:40](../scripts/verify-signin-return.mjs:40) | `PAGES_ORIGIN`, a **prebuild gate** | ⚠️ **Leave the assertions.** See below |
 | [public/supabase-client.js:52](../public/supabase-client.js:52) | The blocklist comment | ⚠️ **Leave the code.** See below |
-| [public/privacy.html:220](../public/privacy.html:220) | "The mirror … runs no analytics at all" | **Delete the paragraph** |
-| [public/privacy.html:370](../public/privacy.html:370) | GitHub listed as a processor | **Delete the row** |
-| [public/about.html:224](../public/about.html:224) | Comment about hiding the email on github.io | Update the comment |
+| [public/privacy.html:219](../public/privacy.html:219) | "The mirror … runs no analytics at all" | **Delete the paragraph** |
+| [public/privacy.html:369](../public/privacy.html:369) | GitHub listed as a processor — ⚠️ **the `<tr>` whose `<th>` reads GitHub**, not whatever sits on that line | **Delete the row** |
+| [public/about.html:223](../public/about.html:223) | Comment about hiding the email on github.io | Update the comment |
 | [public/nav.js:30](../public/nav.js:30), [public/progress.js:160](../public/progress.js:160) | Comments about subpath depth | Update the comments; **the logic still earns its keep on `file://`** |
 | [src/layouts/BaseLayout.astro:27](../src/layouts/BaseLayout.astro:27) | `base` handling and the canonical rule | Simplify the base note; **keep canonical pointing at the apex** |
 | [src/pages/sign-in.astro:683](../src/pages/sign-in.astro:683) | Same-origin hardening for a shared host | ⚠️ **Leave it.** See below |
@@ -409,7 +420,8 @@ stopped applying, rather than deleting them as though the project had always had
 npm run build
 ```
 
-Both prebuild gates must still pass — `verify:catalogue` and `verify:signin-return`. If
+All three prebuild gates must still pass — `verify:catalogue`, `verify:signin-return` and
+`verify:encoding`. If
 `verify:signin-return` fails, an assertion was removed that should not have been.
 
 **Tick as you go**
@@ -424,7 +436,7 @@ Both prebuild gates must still pass — `verify:catalogue` and `verify:signin-re
 - [ ] ⚠️ `privacy.html` — GitHub processor row **and** the mirror-analytics paragraph both removed
 - [ ] Promptly sibling checked for the same statements
 - [ ] `CLAUDE.md`, `dev-workflow.md`, `implementation-sequence.md`, `BACKLOG.md`, `recovery.md`, `supabase/README.md` rewritten as a retirement
-- [ ] `npm run build` passes, both prebuild gates green
+- [ ] `npm run build` passes, all three prebuild gates green
 - [ ] `.claude/settings.local.json` — stale `sing-chen.github.io` curl permissions cleaned up
 
 **Rollback:** `git revert`. This stage is entirely in the repo.
@@ -566,7 +578,8 @@ anything is sorted, filtered, or deduplicated. Get it wrong and every previously
 to the wrong story — silently, with no error anywhere, which is precisely the failure the slug design
 exists to prevent.
 
-**Derive the counts from the file.** Expect 23 groups / 73 stories / 1 pinned as of 2026-08-22, but
+**Derive the counts from the file.** Expect 23 groups / 73 stories / 1 pinned as of 2026-08-22 — but note the file was rewritten
+on 2026-08-23 to repair 39 mojibaked characters, so re-count rather than trusting this; and
 have the script report what it found and fail loudly if a title slugifies to a collision.
 
 **Tick as you go**
@@ -695,7 +708,7 @@ way of asking the same question.
 
 ## Stage 13 — `search-index.json` → `/api/search-index.json` · Owner: Claude
 
-Assembled from the DB plus the static page and person entries. `search.html:743` changes one fetch
+Assembled from the DB plus the static page and person entries. `search.html:742` changes one fetch
 URL. Keep `fuse.min.js` and the search UX exactly as they are — only the index source moves.
 
 This kills a hand-maintained file that drifts, and removes one of the manual `/add-skill`
