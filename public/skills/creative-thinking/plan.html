@@ -24,7 +24,7 @@
   :root {
     --sage:       #ACC4B6;
     --teal:       #5BA79F;
-    --deep-teal:  #2D756F;
+    --deep-teal:  #26605B;
     --off-white:  #EEF2EF;
     --cream:      #F2E0D4;
     --terracotta: #8A4B2C;
@@ -32,10 +32,10 @@
     --navy:       #1F4D4A;
     --charcoal:   #2D3330;
     --light-sage: #D0E2D6;
-    --warm-gray:  #8B8A85;
+    --warm-gray:  #6E6D68;
     --slate-blue: #55643A;
     --tag-analytical-bg: #C5DDD9;
-    --tag-analytical-tx: #2D756F;
+    --tag-analytical-tx: #26605B;
     --tag-structural-bg: #BFDACB;
     --tag-structural-tx: #1F4D4A;
     --tag-human-bg:      #EDD5CB;
@@ -57,7 +57,7 @@
     --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
 
     /* ── Status colors ── */
-    --status-ok:#2D756F;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
+    --status-ok:#26605B;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
 
     /* ── Spacing scale ── */
     --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
@@ -184,7 +184,7 @@
      The halo uses box-shadow so it costs no layout space. */
   .nav-link.active .nav-dot {
     background: var(--teal);
-    border-color: var(--teal);
+    border-color:var(--fg-brand);
     box-shadow: 0 0 0 3px rgba(91,167,159,0.45);
   }
   /* ── PREV / NEXT ARROWS ─────────────────────── */
@@ -211,7 +211,7 @@
   }
   .nav-arrow:hover {
     background: rgba(91,167,159,0.28);
-    border-color: var(--teal);
+    border-color:var(--fg-brand);
     color: #FFFFFF;
   }
   .nav-arrow svg {
@@ -289,7 +289,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 16px;
   }
   .hero-title-row { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; }
@@ -382,7 +382,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 10px;
   }
   .snapshot-card p {
@@ -478,7 +478,7 @@
     font-family:var(--font-display);
     font-size: 13px;
     font-weight: 700;
-    color: var(--teal);
+    color:var(--fg-brand);
     min-width: 24px;
     padding-top: 1px;
   }
@@ -508,7 +508,7 @@
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 8px;
   }
   .principle h3 {
@@ -550,14 +550,14 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     white-space: nowrap;
   }
   .accordion-toggle {
     flex-shrink: 0;
     width: 28px; height: 28px;
     display: flex; align-items: center; justify-content: center;
-    color: var(--teal);
+    color:var(--fg-brand);
   }
   .accordion-toggle svg {
     width: 18px; height: 18px;
@@ -680,7 +680,7 @@
     background: var(--teal); opacity: 0.55;
   }
   .funnel-dot.kept { opacity: 1; background: var(--terracotta); width: 24px; height: 24px; }
-  .funnel-arrow { flex-shrink: 0; color: var(--teal); }
+  .funnel-arrow { flex-shrink: 0; color:var(--fg-brand); }
   .funnel-arrow svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.6; }
 
   /* Mind map radial diagram */
@@ -870,7 +870,7 @@
     fill: none; stroke: currentColor;
     stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
   }
-  .indicator-panel.target   .indicator-icon { color: var(--teal); }
+  .indicator-panel.target   .indicator-icon { color:var(--fg-brand); }
   .indicator-panel.underuse .indicator-icon { color: var(--terracotta); }
   .indicator-panel.overuse  .indicator-icon { color: var(--amber); }
   .indicator-col-label {
@@ -1049,7 +1049,7 @@
   }
   .kc-option.correct  {
     background: var(--tag-analytical-bg);
-    border-color: var(--teal);
+    border-color:var(--fg-brand);
     border-width: 3px;
     box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
   }
@@ -1112,7 +1112,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 4px;
   }
   .kc-answer p { font-size: 13px; color: var(--navy); margin: 0; line-height: 1.5; }
@@ -1143,7 +1143,7 @@
     font-family:var(--font-display);
     font-size: 22px;
     font-weight: 700;
-    color: var(--teal);
+    color:var(--fg-brand);
     min-width: 32px;
   }
   .habit-day-header.open .habit-day-num { color: var(--sage); }
@@ -1195,7 +1195,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 10px;
   }
   .habit-task {
@@ -1301,7 +1301,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     display: block;
     margin-bottom: 4px;
   }
@@ -1367,7 +1367,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     text-align: left;
     padding: 12px 14px;
     background: var(--off-white);
@@ -1455,7 +1455,7 @@
   .cross-skill-practice {
     margin-top: 8px;
     font-size: 13px;
-    color: var(--teal);
+    color:var(--fg-brand);
     font-style: italic;
   }
 
@@ -1625,7 +1625,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 2px;
   }
   .resume-banner-note.hidden { display: none; }
@@ -1856,7 +1856,7 @@
   [data-theme="dark"] .next-step-btn-outline:hover { background: rgba(143,207,195,0.18); }
 
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
-  [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.55); }
 
 
   /* Light-on-dark makes strokes read thinner than dark-on-light, so the 350

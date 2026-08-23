@@ -24,14 +24,14 @@
   :root {
     --sage:        #ACC4B6;
     --teal:        #5BA79F;
-    --deep-teal:   #2D756F;
+    --deep-teal:   #26605B;
     --off-white:   #EEF2EF;
     --light-sage:  #D0E2D6;
     --terracotta:  #8A4B2C;
     --amber:       #D9A05B;
     --navy:        #1F4D4A;
     --charcoal:    #2D3330;
-    --warm-gray:   #8B8A85;
+    --warm-gray:   #6E6D68;
     --white:       #FFFFFF;
     --nav-width:   260px;
     --radius:      8px;
@@ -45,7 +45,7 @@
     --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
 
     /* ── Status colors ── */
-    --status-ok:#2D756F;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
+    --status-ok:#26605B;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
 
     /* ── Spacing scale ── */
     --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
@@ -154,7 +154,7 @@
     min-width: 18px; flex-shrink: 0;
     transition: color 0.15s;
   }
-  .nav-link.active .nav-num  { color: var(--teal); }
+  .nav-link.active .nav-num  { color:var(--fg-brand); }
   .nav-link.visited .nav-num { color: var(--sage); opacity: 0.7; }
   /* Three states, told apart by SHAPE as much as colour. At this size two
      similar greens are not distinguishable on their own, and the previous
@@ -181,7 +181,7 @@
      the order is free insurance if that ever changes. */
   .nav-link.active .nav-dot {
     background: var(--teal);
-    border-color: var(--teal);
+    border-color:var(--fg-brand);
     box-shadow: 0 0 0 3px rgba(91,167,159,0.45);
   }
 
@@ -390,7 +390,7 @@
   .num-badge {
     font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
-    color: var(--teal); min-width: 28px; flex-shrink: 0;
+    color:var(--fg-brand); min-width: 28px; flex-shrink: 0;
     padding-top: 3px;
   }
 
@@ -461,9 +461,9 @@
     color: var(--navy); cursor: pointer; text-align: left;
     line-height: 1.4; transition: border-color 0.15s;
   }
-  .quiz-opt:hover     { border-color: var(--teal); }
+  .quiz-opt:hover     { border-color:var(--fg-brand); }
   .quiz-opt.selected  { border-color: var(--deep-teal); background: rgba(91,167,159,0.15); }
-  .quiz-opt.correct   { background: #C5DDD9; border-color: var(--teal); }
+  .quiz-opt.correct   { background: #C5DDD9; border-color:var(--fg-brand); }
   .quiz-opt.incorrect { background: #F2E0D4; border-color: var(--terracotta); }
   .quiz-feedback {
     font-size: 13px; font-weight: 500; min-height: 20px;
@@ -515,7 +515,7 @@
     font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.06em;
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.55);
     text-align: center;
     flex-shrink: 0;
   }
@@ -660,7 +660,7 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 2px;
   }
   .resume-banner-btn {

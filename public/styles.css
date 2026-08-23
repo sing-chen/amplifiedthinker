@@ -7,9 +7,9 @@
    deliberately different focus/skip-link palette and are not bound to this file.
 ──────────────────────────────────────────────────────────────────────────── */
 :root {
-  --deep-teal:#2D756F;--mid-teal:#2D756F;--teal:#5BA79F;--sage:#ACC4B6;
+  --deep-teal:#26605B;--mid-teal:#26605B;--teal:#5BA79F;--sage:#ACC4B6;
   --light-sage:#D8E4DD;--off-white:#EEF2EF;--warm-cream:#EAD9C8;--charcoal:#2D3330;
-  --navy:#1F4D4A;--warm-gray:#8B8A85;--terracotta:#8A4B2C;--terracotta-icon:#9A5636;
+  --navy:#1F4D4A;--warm-gray:#6E6D68;--terracotta:#8A4B2C;--terracotta-icon:#9A5636;
   --moss:#55643A;--moss-tint:#DCE3CC;
   --text-dark:#1F4D4A;--text-mid:#1F4D4A;--text-muted:#4A5C55;--white:#FFFFFF;
   --page-max:1100px;--col:680px;--radius:6px;--radius-lg:10px;--radius-xl:14px;
@@ -25,7 +25,7 @@
   --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
 
   /* ── Status colors — all re-checked at 4.5:1+ against --bg-page/white ── */
-  --status-ok:#2D756F;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
+  --status-ok:#26605B;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
 
   /* ── Spacing scale ── */
   --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
@@ -80,7 +80,7 @@
 }
 :root[data-theme="dark"] {
   --bg-page:#142320;--bg-surface:#1B2E29;--bg-sunken:#0E1917;
-  --bg-inverse:var(--off-white);--bg-brand:var(--teal);--bg-brand-soft:#2D756F;
+  --bg-inverse:var(--off-white);--bg-brand:var(--teal);--bg-brand-soft:#26605B;
   --fg-1:#E7EDE9;--fg-2:#9BAAA3;--fg-heading:#DCEAE3;
   --fg-brand:var(--sage);--fg-on-brand:#0E1917;--fg-on-inverse:var(--navy);
   --accent-warm:#C97A4A;--accent-cool:var(--teal);--accent-support:#8AA35E;
