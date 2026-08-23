@@ -269,37 +269,37 @@
       'padding:22px 26px;max-width:var(--content-max,780px)}' +
     S + '.ac-head{display:flex;align-items:center;gap:10px;font-family:var(--font-display);' +
       'font-size:15px;font-weight:600;color:var(--navy,#1F4D4A);line-height:1.4;margin:0}' +
-    S + '.ac-tick{width:20px;height:20px;border-radius:50%;background:var(--deep-teal,#2D756F);' +
+    S + '.ac-tick{width:20px;height:20px;border-radius:50%;background:var(--deep-teal,#26605B);' +
       'display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}' +
     S + '.ac-tick svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:3;' +
       'stroke-linecap:round;stroke-linejoin:round}' +
     S + '.ac-btn{margin-top:14px;font-family:var(--font-display);font-size:13px;font-weight:600;' +
-      'color:#fff;background:var(--deep-teal,#2D756F);border:0;border-radius:6px;' +
+      'color:#fff;background:var(--deep-teal,#26605B);border:0;border-radius:6px;' +
       'padding:10px 20px;cursor:pointer;transition:background .15s}' +
     S + '.ac-btn:hover:not(:disabled){background:var(--teal,#5BA79F)}' +
     S + '.ac-btn:disabled{opacity:.6;cursor:default}' +
     S + '.ac-undo{margin-top:12px;display:inline-block;font-family:var(--font-display);' +
-      'font-size:12.5px;font-weight:600;color:var(--deep-teal,#2D756F);background:none;' +
+      'font-size:12.5px;font-weight:600;color:var(--deep-teal,#26605B);background:none;' +
       'border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}' +
     S + '.ac-undo:disabled{opacity:.6;cursor:default}' +
-    // ⚠️ NOT --warm-gray. That is #8B8A85, which is 3.46:1 on this white card —
+    // ⚠️ NOT --warm-gray. That is #6E6D68, which is 3.46:1 on this white card —
     // under AA for 13px text. It reads as the obvious "muted text" choice and
     // is used as such elsewhere, but not on a ground this light. --text-muted
     // is the site-wide token for exactly this job; the skill pages do not
     // declare it, so the fallback carries its value and reaches 6.9:1.
     S + '.ac-note{margin:10px 0 0;font-family:var(--font-body);font-size:13px;line-height:1.6;' +
       'color:var(--text-muted,#4A5C55)}' +
-    S + '.ac-note a{color:var(--deep-teal,#2D756F)}' +
+    S + '.ac-note a{color:var(--deep-teal,#26605B)}' +
     S + '.ac-note.ac-err{color:var(--terracotta,#8A4B2C)}' +
 
     /* ── done: inverted ── */
-    S + '.ac-box.is-done{background:var(--deep-teal,#2D756F);border-color:var(--deep-teal,#2D756F);' +
+    S + '.ac-box.is-done{background:var(--deep-teal,#26605B);border-color:var(--deep-teal,#26605B);' +
       'border-left-color:var(--terracotta,#8A4B2C)}' +
     S + '.ac-box.is-done .ac-head{color:var(--off-white,#EEF2EF)}' +
     S + '.ac-box.is-done .ac-note{color:rgba(238,242,239,.80)}' +
     S + '.ac-box.is-done .ac-note a,' + S + '.ac-box.is-done .ac-undo{color:var(--off-white,#EEF2EF)}' +
     S + '.ac-box.is-done .ac-tick{background:var(--off-white,#EEF2EF)}' +
-    S + '.ac-box.is-done .ac-tick svg{stroke:var(--deep-teal,#2D756F)}' +
+    S + '.ac-box.is-done .ac-tick svg{stroke:var(--deep-teal,#26605B)}' +
 
     /* ── dark ── */
     // ⚠️ NOT --d-bg-surface. That is #1B2E29, and `.next-step-card` sits at

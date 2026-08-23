@@ -31,7 +31,7 @@
   --dv-idle-line: rgba(31, 77, 74, .28);
   --dv-ring-track: #DCE7E2;
   --tile-hover-line: rgba(45, 117, 111, .32);
-  /* Label ink, measured against each fill: white on #2D756F is 5.40:1;
+  /* Label ink, measured against each fill: white on #26605B is 5.40:1;
      charcoal on #D9A05B is 5.56:1 (white would be 2.3:1 and fail badly). */
   --dv-read-ink: #FFFFFF;
   --dv-doing-ink: var(--charcoal);

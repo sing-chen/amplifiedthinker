@@ -296,7 +296,7 @@
     '  white-space: nowrap;',
     '}',
     '.ssb-btn:hover { background: rgba(172,196,182,0.1); border-color: rgba(172,196,182,0.5); color: #C4D8CC; }',
-    '.ssb-btn.ssb-btn-active { background: #2D756F; border-color: transparent; color: #fff; }',
+    '.ssb-btn.ssb-btn-active { background: #26605B; border-color: transparent; color: #fff; }',
 
     /* Focus styles for injected nav elements */
     '#site-nav a:focus-visible, .ssb-btn:focus-visible, .snav-toggle:focus-visible, .snav-search:focus-visible, .snav-auth-avatar:focus-visible, .snav-auth-menu button:focus-visible {',
