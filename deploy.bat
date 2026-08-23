@@ -10,6 +10,13 @@ REM  Despite the name this deploys nothing itself. Both origins publish on a
 REM  push to main -- Vercel through its git integration, GitHub Pages through
 REM  .github/workflows/pages.yml -- so all this does is get the commit there.
 REM
+REM  !! IT CANNOT PUSH AN ALREADY-COMMITTED CHANGE. Guard 2 exits 0 on a clean
+REM     tree ("Nothing to commit"), which is BEFORE the push at the bottom -- so
+REM     after merging a branch into main this reports success and pushes
+REM     nothing. That is fine for its actual job, staging loose content edits,
+REM     but it means a merge deploys with plain `git push`, not with this. Hit
+REM     on 2026-08-23 merging the encoding gate.
+REM
 REM  WHY THE GUARDS EXIST
 REM  The original was three unguarded lines: git add . / commit / push. That was
 REM  fine while main was the only branch anyone worked on. It stopped being fine
@@ -22,10 +29,11 @@ REM  Four guards, each closing one of those:
 REM    1. main only            -- refuses to run anywhere else
 REM    2. no blind `git add .` -- stages public/ and docs/ ONLY, and refuses
 REM                               outright if anything else is dirty
-REM    3. build first          -- npm run build carries two prebuild gates
-REM                               (verify:catalogue, verify:signin-return) and
-REM                               either can fail main's deploy. Better to find
-REM                               that here than in Vercel's log
+REM    3. build first          -- npm run build carries three prebuild gates
+REM                               (verify:catalogue, verify:signin-return,
+REM                               verify:encoding) and any can fail main's
+REM                               deploy. Better to find that here than in
+REM                               Vercel's log
 REM    4. shows and confirms   -- prints exactly what it is about to commit
 REM
 REM  Escapes, for when a guard is wrong rather than right:
@@ -152,9 +160,10 @@ goto :build_done
 :build_failed
 echo.
 echo Error: the build failed. Not pushing.
-echo   Re-run `npm run build` to see why. Two prebuild gates can stop it:
+echo   Re-run `npm run build` to see why. Three prebuild gates can stop it:
 echo     verify:catalogue      -- run `npm run build:catalogue`
 echo     verify:signin-return  -- the sign-in redirect guard weakened
+echo     verify:encoding       -- run `npm run fix:encoding`
 exit /b 1
 
 :build_done

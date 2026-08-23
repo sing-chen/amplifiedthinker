@@ -17,15 +17,14 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-cover.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="preload" href="../../fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../fonts.css">
 <style>
   /* ── BRAND TOKENS ───────────────────────────── */
   :root {
     --sage:       #ACC4B6;
     --teal:       #5BA79F;
-    --deep-teal:  #2D756F;
+    --deep-teal:  #26605B;
     --off-white:  #EEF2EF;
     --cream:      #F2E0D4;
     --terracotta: #8A4B2C;
@@ -33,10 +32,10 @@
     --navy:       #1F4D4A;
     --charcoal:   #2D3330;
     --light-sage: #D0E2D6;
-    --warm-gray:  #8B8A85;
+    --warm-gray:  #6E6D68;
     --slate-blue: #55643A;
     --tag-analytical-bg: #C5DDD9;
-    --tag-analytical-tx: #2D756F;
+    --tag-analytical-tx: #26605B;
     --tag-structural-bg: #BFDACB;
     --tag-structural-tx: #1F4D4A;
     --tag-human-bg:      #EDD5CB;
@@ -58,7 +57,7 @@
     --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
 
     /* ── Status colors ── */
-    --status-ok:#2D756F;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
+    --status-ok:#26605B;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
 
     /* ── Spacing scale ── */
     --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
@@ -76,7 +75,13 @@
     /* ── Motion tokens ── */
     --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
     --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
-    --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
+    --font-editorial:'Inter',system-ui,sans-serif;
+
+  /* The two workhorse faces, as tokens. These hold exactly what every page
+     hardcoded before, so defining them changes nothing on its own — it only
+     creates one place to change the typeface from. */
+  --font-display:'Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
   }
 
   /* ── DARK-MODE TOKENS ───────────────────────── */
@@ -92,10 +97,11 @@
   }
 
   /* ── RESET ──────────────────────────────────── */
+  button,input,select,textarea{font-family:inherit}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 17px;
     line-height: 1.65;
     color: var(--navy);
@@ -123,16 +129,16 @@
     margin-bottom: 20px;
   }
   .nav-series {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--sage);
     margin-bottom: 6px;
   }
   .nav-skill {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 700;
     color: var(--off-white);
@@ -146,7 +152,7 @@
     gap: 10px;
     padding: 8px 12px;
     border-radius: var(--radius);
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px;
     font-weight: 400;
     color: rgba(255,255,255,0.72);
@@ -178,7 +184,7 @@
      The halo uses box-shadow so it costs no layout space. */
   .nav-link.active .nav-dot {
     background: var(--teal);
-    border-color: var(--teal);
+    border-color:var(--fg-brand);
     box-shadow: 0 0 0 3px rgba(91,167,159,0.45);
   }
   /* ── PREV / NEXT ARROWS ─────────────────────── */
@@ -197,7 +203,7 @@
     border: 1px solid rgba(255,255,255,0.28);
     border-radius: 5px;
     padding: 7px 10px;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 12px; font-weight: 600;
     color: #E8EDEB;
     text-decoration: none;
@@ -205,7 +211,7 @@
   }
   .nav-arrow:hover {
     background: rgba(91,167,159,0.28);
-    border-color: var(--teal);
+    border-color:var(--fg-brand);
     color: #FFFFFF;
   }
   .nav-arrow svg {
@@ -216,7 +222,7 @@
   }
   .nav-arrow:disabled { opacity: 0.3; cursor: default; }
   .slide-counter {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.06em;
     color: rgba(255,255,255,0.55);
@@ -278,12 +284,12 @@
     bottom: -40px; right: 200px;
   }
   .hero-series {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 16px;
   }
   .hero-title-row { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; }
@@ -291,15 +297,15 @@
   .hero h1 {
     font-family: var(--font-editorial);
     font-size: 52px;
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    font-weight:380;
+    letter-spacing:-.034em;
     color: var(--deep-teal);
     line-height: 1.1;
     margin-bottom: 0;
     max-width: 600px;
   }
   .hero-sub {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 18px;
     color: var(--navy);
     line-height: 1.6;
@@ -307,7 +313,7 @@
 
   /* ── TAGS ───────────────────────────────────── */
   .tag {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 12px;
     font-weight: 500;
     padding: 4px 12px;
@@ -329,16 +335,16 @@
     padding-bottom: 16px;
   }
   .section h2 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.03em;
     font-size: 30px;
-    font-weight: 700;
+    font-weight:650;
     color: var(--deep-teal);
     line-height: 1.2;
     margin-bottom: 24px;
     max-width: var(--content-max);
   }
   .section h3 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.024em;
     font-size: 20px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -371,12 +377,12 @@
     border-top: 3px solid var(--teal);
   }
   .snapshot-card-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 10px;
   }
   .snapshot-card p {
@@ -420,7 +426,7 @@
     margin: 24px 0;
   }
   .callout p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 500;
     color: var(--terracotta);
@@ -442,7 +448,7 @@
     margin: 28px 0;
   }
   .definition-box p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 500;
     color: var(--cream);
@@ -469,15 +475,15 @@
     border-left: 3px solid var(--teal);
   }
   .obj-num {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 13px;
     font-weight: 700;
-    color: var(--teal);
+    color:var(--fg-brand);
     min-width: 24px;
     padding-top: 1px;
   }
   .obj-text {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 15px;
     color: var(--navy);
     line-height: 1.5;
@@ -497,12 +503,12 @@
     margin-top: 28px;
   }
   .principle-number {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 8px;
   }
   .principle h3 {
@@ -539,19 +545,19 @@
     margin-top: 4px;
   }
   .accordion-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     white-space: nowrap;
   }
   .accordion-toggle {
     flex-shrink: 0;
     width: 28px; height: 28px;
     display: flex; align-items: center; justify-content: center;
-    color: var(--teal);
+    color:var(--fg-brand);
   }
   .accordion-toggle svg {
     width: 18px; height: 18px;
@@ -583,10 +589,10 @@
     border-left: 3px solid var(--amber);
   }
   .ai-note-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--amber);
     white-space: nowrap;
@@ -614,7 +620,7 @@
   .model-header-text h3 { margin: 0 0 6px; }
   .model-header .model-source { margin-bottom: 0; }
   .model-source {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px;
     color: var(--warm-gray);
     margin-bottom: 14px;
@@ -627,10 +633,10 @@
     border-left: 3px solid var(--terracotta);
   }
   .model-applied-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--deep-teal);
     margin-bottom: 6px;
@@ -652,11 +658,11 @@
     display: flex; align-items: center; gap: 10px;
   }
   .scamper-letter {
-    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px;
+    font-family:var(--font-display); font-weight: 700; font-size: 20px;
     color: var(--deep-teal); flex-shrink: 0; width: 22px;
   }
   .scamper-word {
-    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px;
+    font-family:var(--font-body); font-weight: 600; font-size: 13px;
     color: var(--navy); line-height: 1.3;
   }
 
@@ -664,8 +670,8 @@
   .funnel-wrap { display: flex; align-items: center; gap: 32px; justify-content: center; }
   .funnel-phase { flex: 1; text-align: center; max-width: 240px; }
   .funnel-phase-label {
-    font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 11px;
-    letter-spacing: 0.08em; text-transform: uppercase; color: var(--deep-teal);
+    font-family:var(--font-display); font-weight:650; font-size: 11px;
+    letter-spacing:.1em; text-transform: uppercase; color: var(--deep-teal);
     margin-bottom: 14px;
   }
   .funnel-dots-wide { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
@@ -674,14 +680,14 @@
     background: var(--teal); opacity: 0.55;
   }
   .funnel-dot.kept { opacity: 1; background: var(--terracotta); width: 24px; height: 24px; }
-  .funnel-arrow { flex-shrink: 0; color: var(--teal); }
+  .funnel-arrow { flex-shrink: 0; color:var(--fg-brand); }
   .funnel-arrow svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.6; }
 
   /* Mind map radial diagram */
   .mindmap-wrap { position: relative; min-height: 260px; display: flex; align-items: center; justify-content: center; }
   .mindmap-center {
     background: var(--terracotta); color: var(--off-white);
-    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px;
+    font-family:var(--font-body); font-weight: 600; font-size: 14px;
     text-align: center; border-radius: var(--radius);
     padding: 14px 20px; position: relative; z-index: 2; max-width: 200px;
   }
@@ -692,7 +698,7 @@
   .mindmap-branch {
     background: var(--tag-analytical-bg); color: var(--deep-teal);
     border-radius: var(--radius); padding: 12px 14px;
-    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    font-family:var(--font-body); font-size: 13px; font-weight: 600;
     text-align: center; line-height: 1.4;
   }
   .mindmap-branch-sub {
@@ -707,11 +713,11 @@
     background: var(--light-sage);
   }
   .reframe-cell-label {
-    font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 12px;
-    letter-spacing: 0.04em; text-transform: uppercase; color: var(--deep-teal);
+    font-family:var(--font-display); font-weight: 700; font-size: 12px;
+    letter-spacing:.1em; text-transform: uppercase; color: var(--deep-teal);
     margin-bottom: 6px;
   }
-  .reframe-cell p { font-family: 'Inter', sans-serif; font-size: 13px; margin: 0; line-height: 1.5; color: var(--navy); }
+  .reframe-cell p { font-family:var(--font-body); font-size: 13px; margin: 0; line-height: 1.5; color: var(--navy); }
 
   /* Terracotta accent text — swaps to the dark-safe tint in dark mode
      (raw --terracotta reads too dark once its container's background
@@ -725,7 +731,7 @@
     width: 32px; height: 32px; border-radius: 50%;
     background: var(--tag-analytical-bg);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-weight: 700; font-size: 12px; color: var(--deep-teal);
     flex-shrink: 0;
   }
@@ -737,7 +743,7 @@
   .model-applied .step-num.root { background: var(--terracotta); }
   .step-root-label {
     margin: 4px 0 0 48px;
-    font-family: 'Poppins', sans-serif; font-weight: 600;
+    font-family:var(--font-display); font-weight: 600;
     font-size: 11px; color: var(--terracotta); letter-spacing: 0.04em;
   }
 
@@ -755,7 +761,7 @@
   .fishbone-cat-label {
     position: absolute; transform: translate(-50%, -50%);
     background: white; color: var(--deep-teal);
-    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+    font-family:var(--font-body); font-size: 12px; font-weight: 600;
     text-align: center; border-radius: var(--radius);
     padding: 10px 12px; white-space: normal;
     max-width: 24%; line-height: 1.3;
@@ -767,7 +773,7 @@
   .fishbone-effect-label {
     position: absolute; transform: translate(-50%, -50%);
     color: var(--off-white);
-    font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 700;
+    font-family:var(--font-display);letter-spacing:-.006em; font-size: 13px; font-weight: 700;
     text-align: center; line-height: 1.25;
     width: 100px; white-space: normal;
   }
@@ -782,7 +788,7 @@
     border-left: 3px solid var(--terracotta);
   }
   .mistake h4 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 600;
     color: var(--terracotta);
@@ -795,10 +801,10 @@
     margin-top: 12px;
   }
   .mistake-cell-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--warm-gray);
     margin-bottom: 4px;
@@ -815,10 +821,10 @@
   .continuum-segment {
     flex: 1;
     text-align: center;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     padding: 9px 12px;
     border-radius: var(--radius);
@@ -864,14 +870,14 @@
     fill: none; stroke: currentColor;
     stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
   }
-  .indicator-panel.target   .indicator-icon { color: var(--teal); }
+  .indicator-panel.target   .indicator-icon { color:var(--fg-brand); }
   .indicator-panel.underuse .indicator-icon { color: var(--terracotta); }
   .indicator-panel.overuse  .indicator-icon { color: var(--amber); }
   .indicator-col-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--deep-teal);
   }
@@ -918,7 +924,7 @@
     margin-bottom: 32px;
   }
   .scenario h4 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 17px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -942,10 +948,10 @@
     border-top: 3px solid var(--teal);
   }
   .scenario-col-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing:.1em;
     text-transform: uppercase;
     margin-bottom: 12px;
   }
@@ -968,7 +974,7 @@
     align-items: flex-start;
   }
   .reflection-num {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 20px;
     font-weight: 700;
     color: var(--slate-blue);
@@ -976,7 +982,7 @@
     padding-top: 1px;
   }
   .reflection-q {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 15px;
     line-height: 1.6;
     color: var(--navy);
@@ -996,16 +1002,16 @@
     padding: 24px 28px;
   }
   .kc-q-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--warm-gray);
     margin-bottom: 8px;
   }
   .kc-q-text {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 15px;
     font-weight: 600;
     color: var(--navy);
@@ -1025,7 +1031,7 @@
     transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
     font-size: 14px;
     color: var(--navy);
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     text-align: left;
     line-height: 1.45;
   }
@@ -1043,7 +1049,7 @@
   }
   .kc-option.correct  {
     background: var(--tag-analytical-bg);
-    border-color: var(--teal);
+    border-color:var(--fg-brand);
     border-width: 3px;
     box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
   }
@@ -1061,7 +1067,7 @@
     border: none;
     border-radius: 6px;
     padding: 10px 24px;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
@@ -1077,7 +1083,7 @@
     max-width: var(--content-max);
   }
   .kc-score p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 14px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1091,7 +1097,7 @@
     border: 1.5px solid var(--deep-teal);
     border-radius: 6px;
     padding: 8px 20px;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
@@ -1101,12 +1107,12 @@
   .kc-retake-btn:focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 2px; }
   .kc-answer { display: none; margin-top: 10px; }
   .kc-answer-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 4px;
   }
   .kc-answer p { font-size: 13px; color: var(--navy); margin: 0; line-height: 1.5; }
@@ -1134,16 +1140,16 @@
   .habit-day-header:hover { background: var(--light-sage); }
   .habit-day-header.open  { background: var(--deep-teal); }
   .habit-day-num {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 22px;
     font-weight: 700;
-    color: var(--teal);
+    color:var(--fg-brand);
     min-width: 32px;
   }
   .habit-day-header.open .habit-day-num { color: var(--sage); }
   .habit-day-title-wrap { flex: 1; }
   .habit-day-title {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 15px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1151,7 +1157,7 @@
   }
   .habit-day-header.open .habit-day-title { color: var(--off-white); }
   .habit-day-concept {
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 12px;
     color: var(--warm-gray);
     margin-top: 2px;
@@ -1174,7 +1180,7 @@
     margin-bottom: 20px;
   }
   .habit-focus strong {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 15px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1184,19 +1190,19 @@
   .habit-focus p { font-size: 14px; margin: 0; }
   .habit-tasks { margin-bottom: 20px; }
   .habit-tasks-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 10px;
   }
   .habit-task {
     margin-bottom: 16px;
   }
   .habit-task-title {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 14px;
     font-weight: 600;
     color: var(--navy);
@@ -1214,10 +1220,10 @@
     border-left: 3px solid var(--amber);
   }
   .habit-example-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--amber);
     margin-bottom: 4px;
@@ -1229,10 +1235,10 @@
     align-items: flex-start;
   }
   .habit-meta-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--warm-gray);
     min-width: 90px;
@@ -1251,10 +1257,10 @@
     border-left: 3px solid var(--slate-blue);
   }
   .habit-not-clicking-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
     color: var(--slate-blue);
     margin-bottom: 4px;
@@ -1276,7 +1282,7 @@
     margin-bottom: 14px;
   }
   .progression-stage h4 {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 700;
     color: var(--deep-teal);
@@ -1290,12 +1296,12 @@
     gap: 16px;
   }
   .progression-cap-item label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     display: block;
     margin-bottom: 4px;
   }
@@ -1326,7 +1332,7 @@
     position: relative;
   }
   .summary-block p {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 19px;
     font-weight: 500;
     color: var(--off-white);
@@ -1356,12 +1362,12 @@
     box-shadow: 0 2px 10px rgba(31,77,74,0.06);
   }
   .resource-table th {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     text-align: left;
     padding: 12px 14px;
     background: var(--off-white);
@@ -1393,7 +1399,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 500;
     padding: 4px 10px 4px 8px;
@@ -1413,7 +1419,7 @@
   .resource-link {
     display: inline-flex;
     align-items: center;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
     font-weight: 500;
     color: var(--deep-teal);
@@ -1439,7 +1445,7 @@
     align-items: flex-start;
   }
   .cross-skill-label {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 13px;
     font-weight: 600;
     color: var(--deep-teal);
@@ -1449,7 +1455,7 @@
   .cross-skill-practice {
     margin-top: 8px;
     font-size: 13px;
-    color: var(--teal);
+    color:var(--fg-brand);
     font-style: italic;
   }
 
@@ -1536,7 +1542,7 @@
     top: 38px;
     left: 0;
     z-index: -1;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);letter-spacing:-.04em;
     font-weight: 700;
     font-size: 100px;
     line-height: 1;
@@ -1607,24 +1613,24 @@
   }
   .resume-banner-text {
     flex: 1;
-    font-family: 'Inter', sans-serif;
+    font-family:var(--font-body);
     font-size: 13px;
     line-height: 1.45;
     color: rgba(255,255,255,0.75);
   }
   .resume-banner-text strong {
     display: block;
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-weight:650;
+    letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--teal);
+    color:var(--fg-brand);
     margin-bottom: 2px;
   }
   .resume-banner-note.hidden { display: none; }
   .resume-banner-btn {
-    font-family: 'Poppins', sans-serif;
+    font-family:var(--font-display);
     font-size: 12px;
     font-weight: 600;
     padding: 7px 14px;
@@ -1850,8 +1856,13 @@
   [data-theme="dark"] .next-step-btn-outline:hover { background: rgba(143,207,195,0.18); }
 
   [data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
-  [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+  [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.55); }
 
+
+  /* Light-on-dark makes strokes read thinner than dark-on-light, so the 350
+     display weight would look fragile. 420 in dark against 380 in light. */
+  [data-theme="dark"] .h-display,
+  [data-theme="dark"] .hero h1 { font-weight:420 }
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */
@@ -2964,12 +2975,12 @@
       <div id="completionSlot"></div>
 
       <div class="next-step-card" style="margin:40px 0 0;padding:28px 32px;border-radius:0 var(--radius) var(--radius) 0;max-width:var(--content-max);">
-        <p class="next-step-label" style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
-        <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:16px;">Creative Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical produces the picture, Critical tests it, Creative generates what to do next. With all three in place, the next stretch is choosing between what's been generated — a Decision-Making skill that isn't live on Amplified Thinker yet.</p>
-        <p class="next-step-body" style="font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and podcasts below if you want to go deeper into the concepts behind this one first.</p>
+        <p class="next-step-label" style="font-family:var(--font-display);font-size:13px;font-weight:600;margin-bottom:8px;letter-spacing:.02em;text-transform:uppercase;">What to work on next</p>
+        <p class="next-step-body" style="font-family:var(--font-body);font-size:15px;line-height:1.7;margin-bottom:16px;">Creative Thinking closes the loop with Analytical Thinking and Critical Thinking: Analytical produces the picture, Critical tests it, Creative generates what to do next. With all three in place, the next stretch is choosing between what's been generated — a Decision-Making skill that isn't live on Amplified Thinker yet.</p>
+        <p class="next-step-body" style="font-family:var(--font-body);font-size:15px;line-height:1.7;margin-bottom:20px;">There's also a curated set of reads, videos, and podcasts below if you want to go deeper into the concepts behind this one first.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-          <a href="#resources" class="next-step-btn-outline" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;border-radius:6px;text-decoration:none;padding:10px 20px;transition:background .15s;">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-          <a href="../../future-skills.html" style="display:inline-flex;align-items:center;gap:8px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:var(--navy);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='var(--deep-teal)'" onmouseout="this.style.background='var(--navy)'">Browse the Library <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="#resources" class="next-step-btn-outline" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:13px;font-weight:600;border-radius:6px;text-decoration:none;padding:10px 20px;transition:background .15s;">Browse resources below <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a href="../../future-skills.html" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:13px;font-weight:600;color:#FFFFFF;background:var(--navy);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='var(--deep-teal)'" onmouseout="this.style.background='var(--navy)'">Browse the Library <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
         </div>
       </div>
     </div>

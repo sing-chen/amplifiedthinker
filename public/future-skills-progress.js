@@ -125,9 +125,9 @@
     '.sring.is-anim .sr-arc{transition:stroke-dashoffset ' + RING_MS + 'ms cubic-bezier(.22,.75,.28,1)}',
     /* The figure sits in the middle, un-rotated. */
     '.sr-fig{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;' +
-      'font-family:\'Poppins\',sans-serif;font-size:10px;font-weight:600;color:var(--fg-brand,#1F6F5C);' +
+      'font-family:var(--font-display);font-size:10px;font-weight:600;color:var(--fg-brand,#1F6F5C);' +
       'font-variant-numeric:tabular-nums;letter-spacing:-.02em}',
-    '.sr-label{font-family:\'Poppins\',sans-serif;font-size:9px;font-weight:600;letter-spacing:.07em;' +
+    '.sr-label{font-family:var(--font-display);font-size:9px;font-weight:600;letter-spacing:.07em;' +
       'text-transform:uppercase;color:var(--text-muted,#5A6B66);text-align:center;margin-top:2px;display:block}',
     '.sring-wrap{display:flex;flex-direction:column;align-items:center}',
     /* Complete: a check, never "100%". A percentage on a finished thing invites
@@ -183,11 +183,11 @@
     // ⚠️ #14584A, not --fg-brand. At 10px on the warm-cream launch card the
     // brand teal measures 3.93:1 — under AA for normal text, and this label is
     // as small as text gets on the page.
-    '.lc-state{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-family:\'Poppins\',sans-serif;' +
+    '.lc-state{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-family:var(--font-display);' +
       'font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#14584A}',
     '.lc-dot{width:6px;height:6px;border-radius:50%;background:var(--mid-teal,#3E7F72);flex-shrink:0}',
     '.lcard.lc-done .lc-dot{background:var(--fg-brand,#1F6F5C)}',
-    '.lc-meta{font-family:\'Inter\',sans-serif;font-size:12.5px;line-height:1.5;color:var(--text-muted,#5A6B66);margin-bottom:9px}',
+    '.lc-meta{font-family:var(--font-body);font-size:12.5px;line-height:1.5;color:var(--text-muted,#5A6B66);margin-bottom:9px}',
     '.lc-meta strong{color:var(--fg-1,#2C3E3A);font-weight:600}',
     '.lc-bar{height:4px;border-radius:99px;background:var(--light-sage,#DCE7E3);overflow:hidden;margin-bottom:10px}',
     '.lc-fill{height:100%;width:0;border-radius:99px;background:var(--mid-teal,#3E7F72)}',
@@ -214,9 +214,9 @@
     '.lib-summary{display:none;align-items:center;gap:16px;flex-wrap:wrap;margin:0 0 28px;padding:14px 18px;' +
       'border:1px solid var(--line,#D8E2DE);border-radius:12px;background:var(--light-sage,#DCE7E3)}',
     'html[data-session="in"] .lib-summary.is-ready{display:flex}',
-    '.ls-counts{font-family:\'Inter\',sans-serif;font-size:13.5px;color:var(--fg-1,#2C3E3A)}',
-    '.ls-counts strong{font-family:\'Poppins\',sans-serif;font-weight:600}',
-    '.ls-more{margin-left:auto;font-family:\'Inter\',sans-serif;font-size:13.5px}',
+    '.ls-counts{font-family:var(--font-body);font-size:13.5px;color:var(--fg-1,#2C3E3A)}',
+    '.ls-counts strong{font-family:var(--font-display);font-weight:600}',
+    '.ls-more{margin-left:auto;font-family:var(--font-body);font-size:13.5px}',
     // Darker than --fg-brand on purpose: the strip's own --light-sage ground
     // put the brand teal at 4.13:1, just under AA for normal text.
     '.ls-more a{color:#14584A;font-weight:600;text-decoration:underline;text-underline-offset:2px}',

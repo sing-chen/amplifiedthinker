@@ -7,9 +7,9 @@
    deliberately different focus/skip-link palette and are not bound to this file.
 ──────────────────────────────────────────────────────────────────────────── */
 :root {
-  --deep-teal:#2D756F;--mid-teal:#2D756F;--teal:#5BA79F;--sage:#ACC4B6;
+  --deep-teal:#26605B;--mid-teal:#26605B;--teal:#5BA79F;--sage:#ACC4B6;
   --light-sage:#D8E4DD;--off-white:#EEF2EF;--warm-cream:#EAD9C8;--charcoal:#2D3330;
-  --navy:#1F4D4A;--warm-gray:#8B8A85;--terracotta:#8A4B2C;--terracotta-icon:#9A5636;
+  --navy:#1F4D4A;--warm-gray:#6E6D68;--terracotta:#8A4B2C;--terracotta-icon:#9A5636;
   --moss:#55643A;--moss-tint:#DCE3CC;
   --text-dark:#1F4D4A;--text-mid:#1F4D4A;--text-muted:#4A5C55;--white:#FFFFFF;
   --page-max:1100px;--col:680px;--radius:6px;--radius-lg:10px;--radius-xl:14px;
@@ -25,7 +25,7 @@
   --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
 
   /* ── Status colors — all re-checked at 4.5:1+ against --bg-page/white ── */
-  --status-ok:#2D756F;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
+  --status-ok:#26605B;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
 
   /* ── Spacing scale ── */
   --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
@@ -45,10 +45,24 @@
   --ease-standard:cubic-bezier(.4,0,.2,1);--ease-entrance:cubic-bezier(0,0,.2,1);--ease-exit:cubic-bezier(.4,0,1,1);
   --dur-fast:120ms;--dur-base:200ms;--dur-slow:360ms;
 
-  /* ── Typography — serif reserved for editorial headlines only
-     (section cards, News articles, skill primer/plan headlines);
-     Poppins/Inter remain the default everywhere else ─────────────── */
-  --font-editorial:'Source Serif 4',Georgia,'Times New Roman',serif;
+  /* ── Typography — the site is set entirely in Inter as of 2026-08-23.
+     All three tokens therefore hold the SAME value, and are deliberately kept
+     separate: they name the ROLE, not the family. What distinguishes them now
+     is weight — editorial runs light (380–420) where display runs heavy
+     (650–700), which is how the contrast the serif used to provide survives a
+     single-typeface site. Collapsing these into one token would throw away the
+     only place a future change could re-differentiate them.
+     ⚠️ Weight is load-bearing here. Setting an editorial headline to 600
+     does not just make it bolder, it makes it a display headline. ───────── */
+  --font-editorial:'Inter',system-ui,sans-serif;
+
+  /* Display and body. Same family as editorial above — the roles are told
+     apart by weight, not by face. ⚠️ The 10 skill primer/plan pages do NOT
+     link this file; they carry their own copy of these three tokens in their
+     own :root, so a change here has to be made there too or two thirds of the
+     site's declarations keep the old value. */
+  --font-display:'Inter',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
 
   /* ── Fluid type scale — clamp(min, preferred, max); ceiling hit at the
      viewport width noted, floor holds below ~320px. Apply via these tokens
@@ -66,7 +80,7 @@
 }
 :root[data-theme="dark"] {
   --bg-page:#142320;--bg-surface:#1B2E29;--bg-sunken:#0E1917;
-  --bg-inverse:var(--off-white);--bg-brand:var(--teal);--bg-brand-soft:#2D756F;
+  --bg-inverse:var(--off-white);--bg-brand:var(--teal);--bg-brand-soft:#26605B;
   --fg-1:#E7EDE9;--fg-2:#9BAAA3;--fg-heading:#DCEAE3;
   --fg-brand:var(--sage);--fg-on-brand:#0E1917;--fg-on-inverse:var(--navy);
   --accent-warm:#C97A4A;--accent-cool:var(--teal);--accent-support:#8AA35E;
@@ -75,11 +89,12 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:'Inter',system-ui,sans-serif;color:var(--text-dark);background:var(--bg-page);font-size:16px;line-height:1.65}
+body{font-family:var(--font-body);color:var(--text-dark);background:var(--bg-page);font-size:16px;line-height:1.65}
 /* var(--text-dark) is a raw palette color (=navy), never remapped by the
    :root override above — needs its own dark-mode substitute here.
    fg-heading is the exact token equivalent of navy, not fg-1/charcoal. */
 [data-theme="dark"] body{color:var(--fg-heading)}
+button,input,select,textarea{font-family:inherit}
 .skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
 .skip-link:focus{top:0}
 :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
@@ -112,13 +127,13 @@ body{font-family:'Inter',system-ui,sans-serif;color:var(--text-dark);background:
 .site-footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
 .fi{max-width:var(--page-max);margin:0 auto}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.footer-tagline{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
+.footer-tagline{font-family:var(--font-display);font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}
 .footer-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.footer-nav a{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
+.footer-nav a{font-family:var(--font-body);font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;transition:color .15s}
 .footer-nav a:hover{color:rgba(255,255,255,.85)}
 .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
 .footer-sep{color:rgba(255,255,255,.15);user-select:none}
-.fn{font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
+.fn{font-family:var(--font-body);font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
 .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
 .fn a:hover{color:rgba(255,255,255,.85)}
 .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
