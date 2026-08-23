@@ -1,0 +1,55 @@
+/* ── Amplified Thinker · self-hosted Inter ─────────────────────────────────────
+   Replaces the fonts.googleapis.com / fonts.gstatic.com request the site used to
+   make on every first visit, before the visitor had done anything.
+
+   ⚠️ THIS FILE IS LINKED BY ALL 19 HAND-WRITTEN PAGES AND BY BaseLayout.astro,
+   not just the ones that link styles.css. The 10 skill primer/plan pages are
+   self-contained templates that deliberately do NOT link styles.css, so
+   @font-face could not live there — a page without these rules would fall back
+   to whatever the OS calls "sans-serif".
+
+   Paths inside url() resolve against THIS FILE, not the linking page, so one
+   copy works from public/ and from public/skills/<skill>/ alike. The <link> in
+   each page is page-relative, which is what keeps the Pages origin's
+   /amplifiedthinker/ base working without an absolute path.
+
+   ── Why one variable font rather than eight statics ──────────────────────────
+   The site uses weights 400, 500, 600 and 700, plus italic 400. As static cuts
+   that is eight files; as a variable font it is two, and the whole 100–900 range
+   comes free — so a future weight costs nothing. Measured against what Google
+   actually served for this site's latin subset:
+
+       before   266 KB over 10 third-party requests (9 fonts + 1 CSS)
+       after    142 KB over  2 same-origin requests
+
+   Subset to latin + Latin Extended-A. Latin-1 alone would save a further 15 KB,
+   but Extended-A covers accented names (Ł, ć, š, ž, ő) and My People is a page
+   of names — cheap insurance against one rendering in a fallback face.
+   Three characters the site uses are NOT in Inter at all — U+2500 ─, U+25BE ▾,
+   U+2715 ✕ — so they fall back to a system face. That is unchanged from before:
+   Google's latin subset did not carry them either.
+
+   ⚠️ Regenerating: subset from the ORIGINAL variable TTFs, never from these
+   woff2 files. Command and rationale are in docs/dev-workflow.md.
+
+   Licence: SIL Open Font License 1.1, see fonts/OFL.txt — it ships with the
+   fonts because the licence requires it.
+──────────────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  /* The variable weight range. A single face answering every font-weight the
+     site asks for, so there is no "nearest cut" rounding. */
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('fonts/inter-var.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('fonts/inter-var-italic.woff2') format('woff2');
+}

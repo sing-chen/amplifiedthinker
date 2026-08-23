@@ -18,9 +18,8 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://amplifiedthinker.com/images/og-search.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;1,400&display=swap&family=Source+Serif+4:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="styles.css">
 <style>
 /* ── SEARCH PAGE ──────────────────────────────────────────────────────────── */
@@ -45,21 +44,21 @@
   z-index: 1;
 }
 .sh-eyebrow {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .12em;
+  font-weight:650;
+  letter-spacing:.1em;
   text-transform: uppercase;
   color: var(--sage);
   margin-bottom: 14px;
 }
 .sh-hl {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: clamp(24px, 3vw, 36px);
-  font-weight: 700;
+  font-weight:650;
   color: var(--white);
   line-height: 1.15;
-  letter-spacing: -.01em;
+  letter-spacing:-.03em;
   margin-bottom: 28px;
 }
 
@@ -91,7 +90,7 @@
 #search-input {
   width: 100%;
   padding: 16px 48px 16px 50px;
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 17px;
   color: var(--white);
   background: rgba(255,255,255,.09);
@@ -147,7 +146,7 @@
 /* ── HINT / COUNT ── */
 .search-hint {
   margin-top: 12px;
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 13px;
   color: rgba(255,255,255,.5);
   min-height: 18px;
@@ -164,7 +163,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 12px;
   font-weight: 500;
   color: rgba(255,255,255,.75);
@@ -204,13 +203,13 @@
 /* ── SYNTAX HINT ── */
 .search-syntax-hint {
   margin-top: 14px;
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 12px;
   line-height: 1.6;
   color: rgba(255,255,255,.4);
 }
 .search-syntax-hint code {
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 11px;
   font-weight: 600;
   color: rgba(255,255,255,.75);
@@ -263,13 +262,13 @@
   stroke: #9A5636;
 }
 .search-state-hl {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);letter-spacing:-.014em;
   font-size: 17px;
   font-weight: 600;
   color: var(--fg-heading);
 }
 .search-state-body {
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 14px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -353,9 +352,9 @@
 }
 .rc-type-label {
   display: block;
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 10px;
-  font-weight: 600;
+  font-weight:650;
   letter-spacing: .1em;
   text-transform: uppercase;
   margin-bottom: 3px;
@@ -368,7 +367,7 @@
 
 .rc-title {
   display: block;
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);letter-spacing:-.006em;
   font-size: 15px;
   font-weight: 600;
   color: var(--fg-heading);
@@ -377,7 +376,7 @@
 }
 .rc-desc {
   display: block;
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.6;
@@ -468,11 +467,11 @@
   flex-wrap: wrap;
 }
 .search-footer .footer-tagline {
-  font-family: 'Poppins', sans-serif;
+  font-family:var(--font-display);
   font-size: 13px;
   font-weight: 600;
   color: var(--sage);
-  letter-spacing: normal;   /* shared rule sets .02em; this band does not want it */
+  letter-spacing:-.006em;   /* shared rule sets .02em; this band does not want it */
 }
 .search-footer .footer-nav {
   display: flex;
@@ -481,7 +480,7 @@
   flex-wrap: wrap;
 }
 .search-footer .footer-nav a {
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 13px;
   color: rgba(255,255,255,.65);
   text-decoration: none;
@@ -498,7 +497,7 @@
   max-width: 720px;
   margin: 16px auto 0;
   padding: 0 40px;
-  font-family: 'Inter', sans-serif;
+  font-family:var(--font-body);
   font-size: 12px;
   color: rgba(255,255,255,.62);
   text-align: center;
