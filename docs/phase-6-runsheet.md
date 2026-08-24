@@ -1,6 +1,7 @@
 # Phase 6 runsheet — retiring the Pages origin, then news into the DB
 
-**Written:** 2026-08-22 · **Branch:** `feat/news-db`, off `main` at `96f9b9d`
+**Written:** 2026-08-22 · **Drift-checked:** 2026-08-24 · **Branch:** `feat/news-db`, cut from `main`
+at `96f9b9d` and kept current by merging `main` in — eight merges so far, no divergence
 **Phase definition:** [implementation-sequence.md](implementation-sequence.md) §Phase 6 ·
 **Architecture:** [supabase-integration-plan.md](supabase-integration-plan.md) §Phase 6
 **Migration runbook:** [../supabase/README.md](../supabase/README.md) ·
@@ -110,7 +111,7 @@ the short list of exceptions, so a gap is taken deliberately rather than discove
 |---|---|
 | Weeks between **1 and 2** | Stage 1 is point-in-time and the origin is still live and crawlable. Re-run the `site:` search rather than trusting the row |
 | ⚠️ Over ~7 days between **9 and 16** | **The dev Supabase project pauses.** It is deliberately *not* kept alive — [keepalive.mjs](../scripts/keepalive.mjs) covers prod only, which is what makes the two-project free tier workable. A paused project answers nothing, and that looks exactly like a broken build. One Resume click fixes it; the cost is recognising it instead of debugging it |
-| Long gaps generally | `feat/news-db` diverges from `main`. The design-depth stash is a live example of what "leave it for now" costs — it was never committed, so the stash is the only copy |
+| Long gaps generally | `feat/news-db` diverges from `main`. **Mitigated so far by merging `main` in** — eight merges as of 2026-08-24, which is what has kept this branch mergeable while `main` gained fonts, an encoding gate and a palette repaint. Keep doing that rather than letting the gap grow |
 | Two months dormant | GitHub disables scheduled workflows after 60 days of repository inactivity. That is `keepalive.yml`, and it protects **prod**. The outer bound rather than a real risk, but it is the one where the safeguard switches off exactly when it is most needed |
 
 ### ⚠️ One correction to this runsheet's own instructions
@@ -139,7 +140,7 @@ merge. Part B is where longer breaks belong, subject to the dev-pause row above.
 
 Confirm rather than assume; everything below was written against this state.
 
-### The repo half — verified 2026-08-22, line numbers re-checked 2026-08-23
+### The repo half — verified 2026-08-22, line numbers re-checked 2026-08-23 and 2026-08-24
 
 Every file that mentions the Pages origin, so stage 4 has a checklist rather than a grep:
 
@@ -153,6 +154,13 @@ privacy policy is not something any gate here would catch.
 **Match on the content in the middle column, never on the line number alone.** The numbers are a
 convenience for jumping; the description is the identifier. Re-check them at the start of stage 4
 rather than trusting this table — anything that edits a page's `<head>` moves every one of them.
+
+**The second drift check, 2026-08-24, found the same shift had reached the `news.json` consumer
+list** — `index.html` and `news.html` had both moved up by one and nobody had noticed, because those
+references are used for *reading* rather than for editing and a one-line miss just lands you next to
+the right code. Harmless there, dangerous in the privacy table. **The lesson is that these numbers
+go stale as a set, not individually**: when one has moved, assume all of them have, and re-run the
+greps rather than spot-fixing the one that was reported.
 
 | File | What it says | Stage 4 action |
 |---|---|---|
@@ -196,11 +204,20 @@ pinned**. Both planning docs say 21 groups / 69 stories, written in Phase 3. The
 satisfies `news_stories_single_pinned_idx` as-is, so the load will not trip it — but stage 8 must
 derive its counts from the file rather than trusting the documented ones.
 
-**The four `news.json` consumers**, which is one more than the plan lists:
-[public/index.html:411](../public/index.html:411) (banner fetch) and
-[:426](../public/index.html:426) (story link), [public/news.html:759](../public/news.html:759)
-(the page itself), [public/news.html:517](../public/news.html:517) (the share URL, still in the old
-format), and [middleware.js:56](../middleware.js:56).
+**`news.json` has five references across three files**, where the plan lists two — the banner and
+`middleware.js`. Line numbers re-verified 2026-08-24:
+
+| Reference | What it does |
+|---|---|
+| [public/index.html:410](../public/index.html:410) | The banner's `fetch('news.json')` |
+| [public/index.html:425](../public/index.html:425) | The banner's story link, old `news.html?story=` form |
+| [public/news.html:758](../public/news.html:758) | The news page itself |
+| [public/news.html:516](../public/news.html:516) | The share URL, old format |
+| [middleware.js:56](../middleware.js:56) | The bot-sniffing meta-tag shell |
+
+The two the plan does not mention are `news.html` itself — replaced wholesale by stage 10 — and the
+share URL, which is a one-line edit in stage 11 that is easy to miss precisely because nothing breaks
+without it.
 
 ### The live half — still owed
 
@@ -247,10 +264,12 @@ Nine seconds apart, both on the commit `feat/news-db` branched from. The "Pages 
 `verify:published` — **79 published files across two origins, 158 fetches, 0 not served.** Baseline
 written to `baseline-before.json` (gitignored via `baseline-*.json`).
 
-⚠️ **That baseline is a two-origin baseline, and it is the last one that can ever be taken.** From
-stage 2 onward there is one origin, so a differential run against this file will report every Pages
-fetch as missing — correctly, and confusingly. Either retake the baseline after stage 2, or read
-the first post-retirement diff knowing that half its findings are the retirement itself.
+⚠️ **That baseline is stale twice over as of 2026-08-24, and should simply be retaken.** It is a
+*two-origin* baseline, so after stage 2 a differential run reports every Pages fetch as missing —
+correctly, and confusingly. And the published file set has itself changed since: `main` has gained
+`fonts.css` and the self-hosted woff2 files, so the count no longer matches whatever a fresh run
+reports. Retake it immediately before stage 4 rather than reasoning about which half of a diff is
+the retirement and which half is four days of unrelated work.
 
 `verify:redirects` — **gate green, 12 assertions across both projects, no email sent.**
 
@@ -406,6 +425,17 @@ that the mirror runs no analytics. Once the mirror does not exist, both statemen
 merely out of date — and this is a page making legal claims under UK GDPR. The
 [CLAUDE.md](../CLAUDE.md) rule applies exactly: change it in the same commit. Check the sibling
 Promptly site, which makes the same statements about the same person under the same law.
+
+⚠️ **The page got stronger on 2026-08-23 and that changes this edit.** Self-hosting the fonts let it
+claim, at [privacy.html:383](../public/privacy.html:383), that *no third party is involved in showing
+you the page*. Removing the GitHub processor row is **consistent** with that — GitHub stops
+delivering anything to a visitor — so this stage makes the page more true, not less. But note what
+it means for the shape of the edit: the processor table is now the last place a third party could be
+declared, and there is no third-party section left to append a row to. Delete the GitHub row; do not
+soften line 383 to accommodate it.
+
+⚠️ **Match on content, not line number.** 383 is where that sentence sits on 2026-08-24. Two
+`<head>` edits have already moved every reference in this file, once dangerously.
 
 **Order within the stage:** code and gates first, then docs, then `privacy.html` last so it is
 written against what the code actually ended up doing.
@@ -578,9 +608,22 @@ anything is sorted, filtered, or deduplicated. Get it wrong and every previously
 to the wrong story — silently, with no error anywhere, which is precisely the failure the slug design
 exists to prevent.
 
-**Derive the counts from the file.** Expect 23 groups / 73 stories / 1 pinned as of 2026-08-22 — but note the file was rewritten
-on 2026-08-23 to repair 39 mojibaked characters, so re-count rather than trusting this; and
-have the script report what it found and fail loudly if a title slugifies to a collision.
+**Derive the counts from the file.** Re-counted 2026-08-24: **23 groups / 73 stories / 1 pinned**,
+unchanged since 2026-08-22. Have the script report what it found and fail loudly if a title
+slugifies to a collision.
+
+⚠️ **A correction to an earlier revision of this stage**, which warned that the file had been
+rewritten on 2026-08-23 to repair 39 mojibaked characters. **That was `search-index.json`, not
+`news.json`** — the repair landed in `0c3bb28` and touched only the search index. `news.json`'s last
+change is `4d600c4`, "add news for 2026-08-19". The two files were conflated because they are edited
+together by `/add-news` and both are deleted by this phase.
+
+**It still bears on this stage, just differently.** The mojibake reached `main` through a
+`ConvertTo-Json` rewrite that bypassed `/add-news`'s UTF-8-safe python, and it survived because the
+JSON was valid, the entry count was right and every check was green — the whole symptom was a search
+result reading `Brené Brown`. This migration reads the same kind of prose out of `news.json` and
+writes it to a database, where `npm run verify:encoding` cannot follow it. **Spot-check the accented
+characters in the loaded rows**, not just the counts.
 
 **Tick as you go**
 
@@ -678,15 +721,16 @@ forever".
 - [ ] Spot-checked against three real shared URLs from different dates
 - [ ] ⚠️ Reorder test: `sort_order` changed on dev, redirect re-run, **same story**
 - [ ] An unknown `story=` id gives a sensible 404 or falls back to `/news`, deliberately chosen
-- [ ] `news.html:517`'s share URL updated to emit the new format
+- [ ] `news.html:516`'s share URL updated to emit the new format — nothing breaks if this is missed, which is why it is easy to miss
 
 ---
 
 ## Stage 12 — Switch the banner's news source · Owner: Claude
 
-`newsItemsHTML()` in [public/index.html:411](../public/index.html:411) currently does
+`newsItemsHTML()` in [public/index.html:410](../public/index.html:410) currently does
 `fetch('news.json')`. That file is about to stop existing, so this is **forced by the phase, not
-optional**.
+optional**. The story link it builds is one line below, at
+[:425](../public/index.html:425), and moves to the `/news/:slug` form with it.
 
 **Visitors must see no difference.** Same three most-recent stories under 14 days old, same layout,
 same behaviour — only the source and the link format change.
@@ -786,11 +830,22 @@ days after stage 14. It may not be after stage 17. See **Pacing** above.
 
 ⚠️ **`/add-news` is dead, not stale.** The command is written end-to-end around editing
 `public/news.json` and regenerating `search-index.json` positionally. Both files are gone by the end
-of this phase. This is the fourth instance of the orphaned-command trap and the first where the fix
-is deletion rather than a path update — but news still has to be added somehow, and the admin UI is
-Phase 7. **Say explicitly, in the file or in its replacement, how news gets added between this merge
-and Phase 7 shipping.** A deleted command and no successor is how a phase silently removes a working
-capability.
+of this phase. This is the **fifth** instance of the orphaned-command trap and the first where the
+fix is deletion rather than a path update — but news still has to be added somehow, and the admin UI
+is Phase 7. **Say explicitly, in the file or in its replacement, how news gets added between this
+merge and Phase 7 shipping.** A deleted command and no successor is how a phase silently removes a
+working capability.
+
+⚠️ **The fourth instance landed on 2026-08-24 and raises the bar for this stage.** `/add-skill` still
+said *"Google Fonts: use the same imports as the template pages"* a day after the templates stopped
+having any — following it would have reintroduced the exact third-party request `privacy.html` now
+says is never made, turning a correct legal page into a false one. It also carried a retired hex
+value and a retired face name into an image prompt, where nothing in this repo can inspect the
+result.
+
+So the check here is **not** "do the paths still resolve". It is **"does this command still describe
+the site"** — and Phase 6 changes what the site *is* for both commands. Read them against the
+finished code, not against their own file paths.
 
 **Tick as you go**
 
