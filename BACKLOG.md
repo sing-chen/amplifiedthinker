@@ -94,30 +94,48 @@ down with it** — the reason `npm run verify:redirects` and the daily count wat
 emails are always sent, updates are opt-in, and nobody has opted in yet because there is nothing to
 opt into. No message may be sent on the strength of a policy page alone.
 
-### Self-hosting the two typefaces, and removing the Google Fonts request
-**Status:** Idea · Not started · Raised 2026-08-19 while writing the privacy page
-**Relates to:** all 16 pages in `public/`, [src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro),
+### Self-hosting the typefaces, and removing the Google Fonts request
+**Status:** ✅ **Done 2026-08-23** as [public/fonts.css](public/fonts.css) + `public/fonts/` · Raised
+2026-08-19 while writing the privacy page
+**Relates to:** all 19 pages in `public/`, [src/layouts/BaseLayout.astro](src/layouts/BaseLayout.astro),
 [public/privacy.html](public/privacy.html)
 
-Every page loads Poppins and Inter from `fonts.googleapis.com`, which then pulls the font files from
-`fonts.gstatic.com`. That discloses the visitor's IP address and browser to Google **on every page
-view, for every visitor, account or not** — the only third party with that reach on this site.
+**The problem, as it stood.** Every page loaded Poppins and Inter from `fonts.googleapis.com`, which
+then pulled the font files from `fonts.gstatic.com`. That disclosed the visitor's IP address and
+browser to Google **on every page view, for every visitor, account or not** — the only third party
+with that reach on this site. Some jurisdictions treat that request as requiring consent, which is
+the sharper version of the argument: self-hosting removes the question rather than answering it.
 
 **Writing the privacy page is what surfaced it.** It had to be named there, because a privacy page
 that lists Supabase and Cloudflare and omits the request every single visitor makes is not an honest
-one. Naming it is the minimum; removing it is the fix.
+one. Naming it was the minimum; removing it was the fix.
 
-Self-hosting means downloading the woff2 files, adding `@font-face` rules, and dropping the two
-`preconnect` hints and the stylesheet link. It also removes a render-blocking third-party request
-from the critical path, so it is a performance change as much as a privacy one.
+**What shipped, and how it differs from what was proposed here.** The entry assumed both faces would
+be self-hosted as-is. They were not — the site was **harmonised onto Inter alone** first, retiring
+Poppins and Source Serif 4, and only then self-hosted. Two variable woff2 files replaced nine static
+ones: **266 KB over 10 third-party requests became 157 KB over 2 same-origin requests.** The
+`preconnect` hints and the stylesheet link are gone rather than commented out, and `privacy.html`
+changed in the same commit — the third-party-font disclosure was **deleted**, not reworded, and
+replaced with a statement that typefaces are served from this domain.
 
-⚠️ **It touches the `<head>` of all 16 hand-written pages plus BaseLayout**, which is the same
-one-pass-over-everything problem the duplicated footer CSS was. That pass has since been done on its
-own (2026-08-21) without picking this up, so this no longer has a companion job waiting for it —
-it is a one-pass job in its own right whenever it is scheduled.
+**Where the reasoning above was right:** it *was* a one-pass-over-everything job, and it touched the
+`<head>` of all 19 hand-written pages plus BaseLayout in a single sweep. It also cost one line off
+the top of twenty files, which silently moved every line reference in
+[docs/phase-6-runsheet.md](docs/phase-6-runsheet.md) — see that document's stage 0 warning, which
+exists because of this change.
 
-⚠️ **Some jurisdictions treat the Google Fonts request as requiring consent**, which is the sharper
-version of the argument: self-hosting removes the question entirely rather than answering it.
+**Two things the job taught that are not obvious from the proposal:**
+
+1. ⚠️ **`@font-face` could not live in `styles.css`.** The 10 skill primer/plan pages are
+   self-contained templates that deliberately do not link it, so the rules needed their own file
+   linked by everything. That is why `fonts.css` exists as a separate stylesheet rather than a block
+   at the top of the shared one.
+2. ⚠️ **`pyftsubset --layout-features` defaults to destructive.** The first subset named only
+   `kern,calt,locl` and silently stripped 40 OpenType features, `tnum` among them — so
+   `font-variant-numeric: tabular-nums` was later written into 45 rules and did **nothing**, while
+   both the CSS and `getComputedStyle` read back exactly as authored. The only check that catches it
+   measures rendered width. The full command and the reasoning for every kept feature are in
+   [public/fonts.css](public/fonts.css); regenerate from there, never by hand.
 
 ### Keeping the legal pages in step with the sibling Promptly site
 **Status:** Watch item · Raised 2026-08-19
@@ -160,11 +178,16 @@ That is a divergence in this site's favour, not an oversight to correct.
 | | Promptly | Amplified Thinker |
 |---|---|---|
 | Analytics | None at all | ⚠️ **Vercel Web Analytics on every page** of the .com origin |
-| Third party every visitor touches | `esm.sh` | **Google Fonts** |
+| Third party every visitor touches | `esm.sh` | ✅ **None**, since 2026-08-23 — the fonts are self-hosted |
 | Outbound on password entry | — | **Have I Been Pwned** range API |
 | Bot check | — | **Cloudflare Turnstile**, sign-in page only |
 | Self-serve export | Yes, covers the portability right | ❌ **No** — the page says so, and offers to do it by hand |
 | Contact | `contact@promptly.simplelogin.com` | `singchen@amplifiedthinker.com` |
+
+⚠️ **The font row flipped on 2026-08-23 and the flip runs the other way to the rest of the table.**
+Amplified Thinker now makes *no* third-party request on a plain page view, while Promptly still
+pulls `esm.sh`. Every other row here is either neutral or a gap in Promptly's favour, so this is the
+one line that should not be read as "align with the sibling site" — Promptly is the one behind.
 
 ✅ **The export gap is the one worth closing.** Promptly satisfies the Article 20 portability right
 with a download button; Amplified Thinker promises a manual response within one month instead. That
@@ -288,11 +311,13 @@ draft *and* from this entry, and none of them are optional under the UK GDPR:
    request that is discarded after 24 hours, and no cross-site identifier. Nothing on the site
    stores anything on a device for a purpose the visitor did not ask for, so a consent banner would
    have been theatre. **The page says so, and says why** — that reasoning is the disclosure.
-2. ⚠️ **Google Fonts was missed by this entry entirely.** Every one of the 16 pages loads two
-   typefaces from `fonts.googleapis.com`, which discloses the visitor's IP to Google on every page
-   view, account or not. It is the one third party *every* visitor touches, and it was not in the
-   table above. It is now named on the page rather than quietly omitted. **Self-hosting the fonts
-   would remove it** — see the entry below.
+2. ⚠️ **Google Fonts was missed by this entry entirely.** Every one of the 16 pages loaded two
+   typefaces from `fonts.googleapis.com`, disclosing the visitor's IP to Google on every page view,
+   account or not. It was the one third party *every* visitor touched, and it was not in the table
+   above. Rather than being quietly omitted it was named on the page — and naming it is what led to
+   its removal. ✅ **Self-hosted since 2026-08-23**; the disclosure paragraph was deleted in the same
+   commit that stopped the request, and replaced with a statement that typefaces are served from
+   this domain. See the self-hosting entry above.
 
 **Also disclosed, and not in the original table:** the breached-password check sends the first five
 characters of a SHA-1 hash to Have I Been Pwned. It never leaves the browser in any recoverable

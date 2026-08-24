@@ -119,7 +119,19 @@ Once the content plan is approved, build both files.
      constant is needed — the served URL `/skills/[skill-slug]/plan.html` yields
      `amplified_plan_[skill-slug]`. Note that is the **URL**, not the file path: `public/` is
      stripped when served, so the key is unaffected by the Phase 2 move.
-   - Google Fonts: use the same imports as the template pages
+   - fonts.css: referenced as `../../fonts.css`, a `<link rel="stylesheet">` in the `<head>`.
+     **Required on both primer.html and plan.html.** ⚠️ This is NOT optional and it is NOT
+     covered by `styles.css` — the primer/plan templates deliberately do not link `styles.css`
+     at all, so `fonts.css` is the only thing that carries the `@font-face` rules onto a skill
+     page. Omit it and the page silently falls back to whatever the OS calls "sans-serif",
+     which looks like a rendering quirk rather than a missing file and fails nothing.
+   - ⚠️ **There is no Google Fonts import and there must not be one.** This line read "use the
+     same imports as the template pages" until 2026-08-24, by which point the templates had had
+     no such import for a day — the site was harmonised onto self-hosted Inter on 2026-08-23.
+     Following the old instruction would have reintroduced a third-party request to
+     `fonts.googleapis.com`, which makes [public/privacy.html](../../public/privacy.html)
+     **wrong** rather than merely out of date: it now states that no third party is involved in
+     showing a visitor the page. Adding a font host means changing that page in the same commit.
    - No external JS dependencies beyond what the templates already use
 
 3. Principles in plan.html default to COLLAPSED (`aria-expanded="false"`, no `open` class, label reads "Expand"). The single mental model card defaults to OPEN (`aria-expanded="true"`, `open` class, label reads "Collapse"). No extra wiring is needed for either: the page reads its open/closed defaults from the DOM at load and "reset progress" returns the cards to exactly that state.
@@ -253,8 +265,33 @@ Give the user a ready-to-run image-generation prompt for `public/skills/[slug]/v
 Template (fill in the two bracketed parts only):
 
 ```
-@Create image Abstract flat-vector illustration representing [SKILL NAME lowercase]: [ONE-OR-TWO-SENTENCE VISUAL METAPHOR — see guidance below]. Organic sage green (#ACC4B6) background. Primary structural shapes in deep teal (#2D756F) and teal (#5BA79F). Terracotta (#C77B5F) and amber (#D9A05B) used as accent shapes/color, roughly 25-35% of the composition. Bold geometric sans-serif text (Poppins Bold style) positioned in the left third: small all-caps label "AMPLIFIED THINKER · FUTURE SKILLS" in deep teal (#2D756F), with large headline text "[SKILL NAME UPPERCASE]" below it in charcoal (#2D3330) for maximum contrast. Clean geometric flat-vector style. Professional, modern, not corporate. 16:9 widescreen composition. No play button icons, no logos.
+@Create image Abstract flat-vector illustration representing [SKILL NAME lowercase]: [ONE-OR-TWO-SENTENCE VISUAL METAPHOR — see guidance below]. Organic sage green (#ACC4B6) background. Primary structural shapes in deep teal (#26605B) and teal (#5BA79F). Terracotta (#C77B5F) and amber (#D9A05B) used as accent shapes/color, roughly 25-35% of the composition. Bold geometric sans-serif text (Inter Bold style) positioned in the left third: small all-caps label "AMPLIFIED THINKER · FUTURE SKILLS" in deep teal (#26605B), with large headline text "[SKILL NAME UPPERCASE]" below it in charcoal (#2D3330) for maximum contrast. Clean geometric flat-vector style. Professional, modern, not corporate. 16:9 widescreen composition. No play button icons, no logos.
 ```
+
+⚠️ **These hexes are a hand-kept copy of the tokens, they have rotted twice, and the second one is
+still rotten.** Nothing checks them — the values end up baked into a PNG, where no gate on this
+repo can see them.
+
+| | In the prompt | Real token | |
+|---|---|---|---|
+| Deep teal | was `#2D756F` | `#26605B` since 2026-08-23 | ✅ corrected 2026-08-24 |
+| Typeface | was `Poppins Bold` | Inter, since 2026-08-23 | ✅ corrected 2026-08-24 |
+| Terracotta | `#C77B5F` | `#8A4B2C` since **2026-07-20** (`2f92728`) | ❌ **still wrong** |
+
+Before running this on a new skill, check the prompt against the source rather than trusting it:
+
+```bash
+grep -o -- "--\(deep-teal\|terracotta\|teal\|sage\|amber\|charcoal\):#[0-9A-Fa-f]*" public/styles.css
+```
+
+⚠️ **Terracotta is deliberately left wrong, and the reason applies to deep teal too — read this
+before "finishing the job".** All ten live thumbnails were generated from the old values, so every
+correction here makes the *next* skill's artwork diverge from the ten already shipped. That is the
+exact failure the paragraph above warns about. Deep teal was corrected anyway because the shift is
+small and same-hue; `#C77B5F` → `#8A4B2C` is light salmon to dark clay and would be obvious in a
+row of cards. **The real fix is one regeneration pass over all ten, not an edit to this prompt** —
+until someone does that, the set is internally consistent and slightly stale, which is the better
+of the two bad options.
 
 Guidance for the visual metaphor: draw it from the skill's own content, not a generic stand-in — specifically, from whichever mental model or first principle best captures the skill's core motion or shape (e.g. Creative Thinking used scattering shapes converging toward one, drawn from its Divergent–Convergent model; Systems Thinking used interconnected nodes with looping arrows and one emphasized node, drawn from Feedback Loops and Leverage Points). Pick something concrete and drawable — shapes, arrows, nodes, layers — not an abstract description of the skill's definition.
 
