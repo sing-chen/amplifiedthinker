@@ -134,13 +134,38 @@ and nothing to notice until one arrives.
 | | |
 |---|---|
 | **Inline-styled tables** | Clients strip `<style>` blocks, ignore most modern CSS, and several ignore background colours on anything but a table cell |
-| **System font stack** | The site is Poppins and Inter. Neither can be relied on in mail, and a webfont link is a third-party request from someone's inbox |
+| **System font stack** | The site is Inter throughout. It cannot be relied on in mail, and a webfont link is a third-party request from someone's inbox — sharper now than when this was written, since the site itself makes no third-party font request at all and `privacy.html` says so |
 | **No images at all** | The logo is an SVG, which most clients will not render — and a remote image is a tracking pixel by another name |
 | **The URL repeated as text** | Some clients refuse to render the button; some corporate filters rewrite links in ways that break them. A copy-pasteable URL always works |
 
 Colours are the site's own tokens, written as literals because a stylesheet
-cannot travel: `#2D756F` deep-teal, `#1F4D4A` navy, `#2D3330` charcoal,
+cannot travel: `#26605B` deep-teal, `#1F4D4A` navy, `#2D3330` charcoal,
 `#4A5C55` muted, `#EEF2EF` off-white, `#D8E4DD` light-sage.
+
+⚠️ **Literals drift, and nothing here can tell.** These six are a hand-kept copy of
+`public/styles.css`. Deep-teal read `#2D756F` until 2026-08-24 — `--deep-teal` had moved to
+`#26605B` in the 2026-08-23 contrast pass, so for a day both templates rendered the July teal in
+mail while every page rendered the new one. **No check catches this**: the files are valid HTML,
+Supabase accepts them, and delivery succeeds either way. The other five were verified against the
+tokens at the same time and are still correct.
+
+The swap improved contrast rather than merely matching. White button text over the teal, and the
+teal label and links over the white card, went **5.40 → 7.22**; against the off-white surround,
+**4.78 → 6.39**. Both values passed AA before; the new one clears **AAA** for normal text.
+
+⚠️ **Editing these files is only half the job, and the wrong half on its own.** They are
+configuration — nothing reads them, and Supabase serves what is pasted into its dashboard. A commit
+here that is not followed by a paste into **both** the dev and prod projects leaves the repo
+*disagreeing* with what is actually sent, which is a worse state than a stale colour, because the
+repo then looks authoritative and is not. The order that works:
+
+1. Edit the file here.
+2. Paste into **dev** → Authentication → Emails, save.
+3. Paste into **prod**, save. ⚠️ Both, in the same sitting — one done and one forgotten is the
+   failure mode, and the two projects are never compared by anything.
+4. Trigger one real send of each type and look at the result in a client, not in the dashboard
+   preview. A colour change is exactly the class of thing the preview renders correctly and a mail
+   client does not.
 
 ### What each template says, and why
 

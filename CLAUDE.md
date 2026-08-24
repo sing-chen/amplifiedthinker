@@ -34,6 +34,14 @@ The project has a written architecture and a phased plan. Read them rather than 
 public/          the 19 hand-written pages, shipped byte-for-byte untouched by Astro
                  index/about/future-skills/my-people/news/search .html, skills/**,
                  nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt, sitemap.xml
+                 — plus fonts.css and fonts/, the self-hosted type (2026-08-23). ⚠️ fonts.css is
+                   linked by ALL 19 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
+                   primer/plan pages are self-contained and deliberately skip styles.css, so the
+                   @font-face rules could not live there. That asymmetry is the whole reason it
+                   is a separate file. The site is Inter and only Inter; Poppins and Source
+                   Serif 4 were retired the same day, and there is no third-party font request
+                   left to make. Regenerating the woff2 files is a documented command inside
+                   fonts.css — ⚠️ never subset without --layout-features, see the traps below
                  — including skills-catalogue.json, which is GENERATED from the plan and primer
                    pages and committed because the site serves it. ⚠️ Never hand-edit it; run
                    npm run build:catalogue. It holds counts only — display names, categories and
@@ -262,6 +270,19 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   for each. Adding analytics, a font host, a CDN, an embed, a storage key or a new table makes it
   **wrong**, not merely out of date. Change it in the same commit. The sibling Promptly site makes
   the same statements about the same person under the same law — check it before editing either.
+  ⚠️ **Since 2026-08-23 the page claims something absolute:** the fonts are self-hosted, so it says
+  *no third party is involved in showing you the page*. That is a stronger claim than the one it
+  replaced and it is broken by the **first** font host, CDN or embed anyone adds — there is no
+  longer a third-party section to append a row to.
+- ⚠️ **`pyftsubset --layout-features` defaults to destructive, and the damage is invisible to every
+  check that isn't a ruler.** The first subset of the Inter files named only `kern,calt,locl` and
+  silently stripped **40** OpenType features, `tnum` among them. `font-variant-numeric: tabular-nums`
+  was then written into 45 rules and did nothing whatsoever — the CSS was valid, and
+  `getComputedStyle` read back `"tabular-nums"` exactly as authored, because the property was fine
+  and the *font* had no such feature to apply. **The only check that catches it measures rendered
+  width**: set "111" and "999" in the face and compare; proportional figures differ, tabular are
+  identical. The full regeneration command, and why each kept feature is kept, live in
+  `public/fonts.css` — subset from the original variable TTFs, never from the shipped woff2 files.
 - **Copy that states a limit is a claim about the system, and it rots like a comment.** The sign-up
   form said *"Never a newsletter."* — accurate when written, false the day the account started
   offering update email, and shown at the exact moment someone decides whether to trust the site.
@@ -282,6 +303,15 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   though every live skill has an entry in both — a step done by hand each time and written down
   nowhere. ⚠️ **Drift is not only paths going stale; it is also steps that were never captured.** A
   command that still runs cleanly can be missing half the job.
+  **Fourth instance, 2026-08-24, and the worst kind so far:** `/add-skill` said *"Google Fonts: use
+  the same imports as the template pages"* a day after the templates stopped having any. Following
+  it would have reintroduced the exact third-party request `privacy.html` now says is never made —
+  ⚠️ **a stale command turning a correct legal page into a false one.** It also carried `#2D756F`
+  and `Poppins Bold` in the thumbnail image prompt, baking a retired palette and a retired face into
+  PNGs where nothing in this repo can inspect them. **So the check after a design change is not just
+  "do the paths still resolve" but "does this command still describe the site"** — brand values,
+  face names and font links copied into a command rot exactly like the catalogue does, and none of
+  them fails a build.
 
 ---
 
