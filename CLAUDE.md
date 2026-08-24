@@ -224,12 +224,35 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   also sets `font-weight: 600` and a bottom margin, so anything that is *not* a field label has to
   reset both. Same file, `.auth-hint` carries `margin-top: -12px` to tuck a hint under the input it
   describes: reusing it anywhere that does not follow an input drags it onto whatever is above.
-- **`[hidden]` is the weakest rule in the cascade, and it has cost two defects.** The browser's own
-  `[hidden] { display: none }` is a UA rule, so **any** author `display` beats it — `.auth-actions`
-  and `.doc-cta` both set `display: flex`, and both would render a `hidden` element in full. Any new
-  component that sets `display` **and** gets toggled needs an explicit override; `auth-pages.css` and
-  `why-sign-up.html` each carry one. ⚠️ **Assert computed `display`, never `element.hidden`** — the
-  property was correct in both defects, which is exactly why the tests passed.
+- **`[hidden]` is the weakest rule in the cascade, and it has now cost three defects.** The browser's
+  own `[hidden] { display: none }` is a UA rule, so **any** author `display` beats it —
+  `.auth-actions` and `.doc-cta` both set `display: flex`, and both would render a `hidden` element
+  in full. Any new component that sets `display` **and** gets toggled needs an explicit override;
+  `auth-pages.css`, `why-sign-up.html` and `exit-guard.js` each carry one. ⚠️ **Assert computed
+  `display`, never `element.hidden`** — the property was correct in all three defects, which is
+  exactly why the tests passed.
+  **Third instance, 2026-08-24, in `exit-guard.js`, and it shipped past a check written by someone
+  who had just read this entry.** The leave dialog set `signIn.hidden = true` for signed-in readers
+  and showed them a **"Sign in first"** button anyway, because the file's own
+  `#exitGuard a.eg-btn { display: inline-flex }` beat the UA rule. It was found by a screenshot, not
+  by the test — which asserted `el.hidden`, got `true`, and would have got `true` for ever.
+  ⚠️ **Knowing this trap is not the same as not falling into it.** The override now sits *above* the
+  `display` rule with `!important` and a comment saying why, because the next `display` added to that
+  block would otherwise reopen it silently.
+- ⚠️ **On the ten skill pages the semantic tokens do NOT flip in dark mode.** `--bg-surface` is still
+  `#FFFFFF` under `[data-theme="dark"]`, and so are `--fg-1`, `--line` and the rest. Dark is built as
+  a **parallel `--d-*` set** — `--d-bg-surface`, `--d-fg-1`, `--d-fg-2`, `--d-fg-heading`, `--d-line`,
+  `--d-teal-bg`/`--d-teal-stroke` — applied per component
+  (`[data-theme="dark"] .next-step-card { background: var(--d-teal-bg) }`), not as a redefinition of
+  the light tokens. **A new component styled only with semantic tokens therefore renders its LIGHT
+  appearance in dark**, and nothing fails: valid CSS, correct token names, a white card on a `#142320`
+  page. Found 2026-08-24 by measuring `exit-guard.js`'s dialog rather than trusting the names; every
+  surface in it now carries an explicit `[data-theme="dark"]` counterpart.
+  ⚠️ **The brand fill inverts, so anything sitting on it has to invert too** — `--bg-brand` becomes a
+  *bright* teal in dark, and a light label on it is the same mistake as hardcoding `#FFFFFF` there.
+  `--fg-on-brand` does not flip on these pages either, so say it explicitly.
+  The binding colour rules live in
+  [docs/design-modernisation.md](docs/design-modernisation.md) — read it before adding a token.
 - ⚠️ **Test what the nav RENDERED, never the function that renders it.** Two defects in one
   afternoon, 2026-08-21, both in the sign-in `?next=` work, both passing every check at the time:
   1. `?next=` was wired into `nav.js`'s `paintAuthSlot` but not `auth.js`'s `renderNavAuth`. **Two
