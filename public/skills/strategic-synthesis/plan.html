@@ -263,7 +263,7 @@
     padding: 72px 80px 64px;
     position: relative;
     overflow: hidden;
-    border-bottom: 1px solid rgba(45,117,111,0.12);
+    border-bottom: 1px solid color-mix(in srgb, var(--deep-teal) 12%, transparent);
     width: 100%;
   }
   .hero::before {
@@ -360,7 +360,7 @@
   }
   .principles-intro {
     padding-bottom: 32px;
-    border-bottom: 1px solid rgba(45,117,111,0.08);
+    border-bottom: 1px solid color-mix(in srgb, var(--deep-teal) 8%, transparent);
   }
 
   /* ── SNAPSHOT CARDS ─────────────────────────── */
@@ -495,11 +495,11 @@
     max-width: var(--content-max);
     margin-bottom: 40px;
     padding-bottom: 40px;
-    border-bottom: 1px solid rgba(45,117,111,0.08);
+    border-bottom: 1px solid color-mix(in srgb, var(--deep-teal) 8%, transparent);
   }
   .principle:last-child { border-bottom: none; }
   .principle:first-child {
-    border-top: 1px solid rgba(45,117,111,0.08);
+    border-top: 1px solid color-mix(in srgb, var(--deep-teal) 8%, transparent);
     padding-top: 32px;
     margin-top: 28px;
   }
@@ -999,19 +999,19 @@
     border-color: var(--deep-teal);
     background: var(--tag-structural-bg);
     transform: translateX(3px);
-    box-shadow: 0 2px 8px rgba(45, 117, 111, 0.25);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--deep-teal) 25%, transparent);
   }
   .kc-option.selected {
     background: var(--tag-structural-bg);
     border-color: var(--deep-teal);
     border-width: 3px;
-    box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--deep-teal) 20%, transparent);
   }
   .kc-option.correct  {
     background: var(--tag-analytical-bg);
     border-color:var(--fg-brand);
     border-width: 3px;
-    box-shadow: 0 0 0 2px rgba(45, 117, 111, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--deep-teal) 20%, transparent);
   }
   .kc-option.incorrect {
     background: #F2E0D4;
@@ -1083,7 +1083,7 @@
     margin-bottom: 12px;
     border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid rgba(45,117,111,0.12);
+    border: 1px solid color-mix(in srgb, var(--deep-teal) 12%, transparent);
   }
   .habit-day-header {
     display: flex;
@@ -1133,7 +1133,7 @@
     display: none;
     padding: 24px 28px 24px 72px;
     background: white;
-    border-top: 1px solid rgba(45,117,111,0.08);
+    border-top: 1px solid color-mix(in srgb, var(--deep-teal) 8%, transparent);
   }
   .habit-day-body.open { display: block; }
   .habit-focus {
@@ -1250,7 +1250,7 @@
   .progression-cap {
     margin-top: 14px;
     padding-top: 14px;
-    border-top: 1px solid rgba(45,117,111,0.1);
+    border-top: 1px solid color-mix(in srgb, var(--deep-teal) 10%, transparent);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
@@ -1432,8 +1432,8 @@
   /* ── SCROLLBAR ──────────────────────────────── */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(45,117,111,0.3); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(45,117,111,0.5); }
+  ::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--deep-teal) 30%, transparent); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--deep-teal) 50%, transparent); }
 
   /* ── ALTERNATING SECTION BACKGROUNDS ───────── */
   /* Full-bleed: backgrounds span .main's full width (viewport minus nav rail),
@@ -1491,10 +1491,10 @@
   .next-step-body  { color: var(--navy); }
   .next-step-btn-outline {
     color: var(--deep-teal);
-    background: rgba(45,117,111,0.1);
+    background: color-mix(in srgb, var(--deep-teal) 10%, transparent);
     border: 1.5px solid var(--deep-teal);
   }
-  .next-step-btn-outline:hover { background: rgba(45,117,111,0.18); }
+  .next-step-btn-outline:hover { background: color-mix(in srgb, var(--deep-teal) 18%, transparent); }
 
   /* ── SKIP NAVIGATION ─────────────────────────── */
   .skip-link { position: absolute; top: -44px; left: 0; background: var(--deep-teal); color: var(--off-white); font-size: 14px; font-weight: 600; padding: 10px 18px; z-index: 9999; text-decoration: none; border-radius: 0 0 var(--radius) 0; transition: top .15s; }
