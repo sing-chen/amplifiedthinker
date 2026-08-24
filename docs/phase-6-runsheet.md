@@ -36,8 +36,8 @@ prevent.
 | **A** | **Retire the Pages origin** | | | |
 | 0 | Baseline — what is true before you start | Claude + Human | ✅ Done | 2026-08-22, all three gates green, **no deviation from the state described below**. `verify:stamp` both origins current on `96f9b9d`, 9s apart; `verify:published` 79 files / 158 fetches / 0 not served; `verify:redirects` 12 assertions, every origin resolving to the project that owns it. ⚠️ Two findings: the `verify:published` baseline is **two-origin and cannot be retaken after stage 2**, and the Pages redirect entry must **move to `rejected`** rather than be deleted — stages 4 and 5 amended |
 | 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs**, which removes the stub step and its 3-month soak from stage 5. ⚠️ Point-in-time — re-run if Part A stalls for weeks |
-| 2 | Stop publishing to Pages | Human + Claude | ☐ Not started | ⚠️ **Disable the workflow first, then Unpublish site** — there is no "None" in the Source dropdown any more. **Fully reversible** |
-| 3 | Soak on one origin | Human | ☐ Not started | Vercel becomes a single point of failure here. Minimum 48h before stage 4 |
+| 2 | Stop publishing to Pages | Human + Claude | ✅ Done | 2026-08-24. Workflow disabled first, then **Unpublish site** — ⚠️ there is no "None" in the Source dropdown any more, and the order was corrected mid-stage. Pages origin **404 on all four paths checked incl. `build.json`**; apex **200 on all twelve**, spanning hand-written pages, Astro auth surfaces, a skill page, both stylesheets and the stamp. `verify:stamp`: `vercel ok c5b1ce4` / `pages FAIL HTTP 404` — expected. **Fully reversible** |
+| 3 | Soak on one origin | Human | ◐ In progress | **Started 2026-08-24 ~08:10Z**, earliest finish **2026-08-26**. Vercel is now a single point of failure. ⚠️ `verify:stamp` stays red throughout — that is stage 2's expected result, not a fault |
 | 4 | Remove Pages from code, gates and docs | Claude | ☐ Not started | ⚠️ Includes `privacy.html` — the GitHub processor row and the analytics claim |
 | 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ Not started | Two dashboards, invisible to git |
 | 6 | Delete `pages.yml` | Claude | ☐ Not started | **After the soak, not with stage 4** |
@@ -393,11 +393,44 @@ homepage, a skill page, sign-in, and `/learning/` while signed in.
 
 **Tick as you go**
 
-- [ ] Actions → the workflow **disabled** — ⚠️ **first**, so no push can re-publish
-- [ ] Settings → Pages → **Unpublish site** — ⚠️ the red button, not a Source setting
-- [ ] Pages URL returns 404 logged-out
-- [ ] `amplifiedthinker.com` verified unaffected — homepage, a skill page, `/sign-in/`, `/learning/`
-- [ ] `npm run verify:stamp` re-run — the Pages arm now fails, and **that is the expected result**
+- [x] Actions → the workflow **disabled** — ⚠️ **first**, so no push can re-publish — 2026-08-24
+- [x] Settings → Pages → **Unpublish site** — ⚠️ the red button, not a Source setting — 2026-08-24
+- [x] Pages URL returns 404 logged-out
+- [x] `amplifiedthinker.com` verified unaffected — homepage, a skill page, `/sign-in/`, `/learning/`
+- [x] `npm run verify:stamp` re-run — the Pages arm now fails, and **that is the expected result**
+
+**Observed 2026-08-24 — the Pages origin is down and the apex is untouched.**
+
+Four paths on the retired origin, all `404`, including `build.json` — so it is genuinely unpublished
+rather than serving a stale copy:
+
+| `sing-chen.github.io/amplifiedthinker` | |
+|---|---|
+| `/`, `/index.html`, `/news.html`, `/build.json` | **404** |
+
+Twelve paths on `amplifiedthinker.com`, all `200`, spanning every kind of surface the site has —
+hand-written pages, an Astro auth surface, a skill page, the JSON the banner reads, both stylesheets
+and the build stamp:
+
+| `amplifiedthinker.com` | |
+|---|---|
+| `/`, `/future-skills.html`, `/news.html`, `/privacy.html` | 200 |
+| `/sign-in/`, `/account/`, `/learning/` | 200 |
+| `/skills/analytical-thinking/plan.html` | 200 |
+| `/news.json`, `/styles.css`, `/fonts.css`, `/build.json` | 200 |
+
+`npm run verify:stamp` now reads exactly as this stage predicted:
+
+```
+expecting c5b1ce4 (origin/main)
+  vercel  ok    c5b1ce4  built 2026-08-24T08:06:57.862Z  (vercel)
+  pages   FAIL  HTTP 404
+1 problem(s)
+```
+
+⚠️ **That `1 problem(s)` is the correct result and will stay red until stage 4 reduces the script to
+one origin.** It is the only red check in the tree for the next 48 hours. Do not let it become
+background noise, and do not fix it early — stage 4 is gated on the soak, not on tidiness.
 
 **Rollback:** re-enable the workflow and run it from **Actions → Deploy to GitHub Pages → Run
 workflow** (it carries `workflow_dispatch` for exactly this). A successful run re-publishes the site;
@@ -416,11 +449,15 @@ since Phase 2. From here, Vercel is a single point of failure. That is a deliber
 in `BACKLOG.md`, not a side effect — but it is worth feeling it for a couple of days while stage 2
 is still two clicks from reversal.
 
+**Clock started 2026-08-24, ~08:10Z** (stage 2 verified complete). **Earliest finish: 2026-08-26.**
+
 **Tick as you go**
 
 - [ ] 48h elapsed with no Vercel incident
 - [ ] At least one ordinary deploy to `main` made and verified during the soak
 - [ ] Nobody reported a broken link to the old origin
+- [ ] `npm run verify:published` **baseline retaken** — see stage 0; the committed one is stale twice
+      over and stage 4 wants a single-origin "before" to diff against
 
 **Observed:** _(dates, and anything that came up)_
 
