@@ -29,6 +29,7 @@ position it does not have.
 | 5 | Tabular figures, and the re-subset that made them real | 2026-08-23 | `b4c3cfa` |
 | 6 | Bring docs and auth email templates back in step | 2026-08-24 | `a7619ea` |
 | 7 | Retire the 52 `--teal` `rgba()` longhands — a verified no-op | 2026-08-24 | `1835753` |
+| 8 | Retire the 88 old-palette `rgba()` longhands — a real repaint | 2026-08-24 | `e82d1af` |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Measured outcomes, not estimates:
@@ -155,7 +156,7 @@ Recorded so these read as decisions rather than oversights. Each has a reason it
 | Item | Size | Why it is still open |
 |---|---|---|
 | Remaining AA contrast items | **52 elements** | Judgment calls, not bugs. Chiefly the deliberate "coming soon" dimming — `.scard.cs .ssum` at **2.24:1** — where the low contrast *is* the signal that the item is not ready. Fixing it means designing a different affordance, not picking a darker grey |
-| Old-palette `rgba()` longhands | **88** in 10 files | ⚠️ **Not a contrast problem, and not cosmetic either** — these spell out tokens that *moved*, so the site currently renders hairlines, hover borders and shadows in the July teal while everything else is on the new one. 24 `background`, 17 `border-bottom`, 16 `border-top`, 15 `box-shadow`, 7 `border-color`, 5 `border`, 2 `text-decoration-color`, 1 custom property, and exactly **1** `color` — the coming-soon dim above. See *Candidates* for what repainting them actually changes |
+| ~~Old-palette `rgba()` longhands~~ | ~~88~~ | ✅ **Done 2026-08-24, `e82d1af`.** The site now holds **no old-palette literal in any notation**, so the next palette move is a token edit rather than a hunt. Row kept because the reasoning is the general lesson — these were *not* cosmetic, and calling them so is the mistake recorded in the traps above |
 | ~~`--teal` `rgba()` longhands~~ | ~~52~~ | ✅ **Done 2026-08-24, `1835753`.** Verified inert across 201,380 comparisons. Row kept rather than deleted because *why* it was separable — `--teal` never moved — is the reasoning the remaining 88 turn on |
 | Thumbnail prompt terracotta | 1 value | `#C77B5F` was the real token until `2f92728` (2026-07-20) replaced it with `#8A4B2C`. Correcting the prompt alone makes skill eleven's artwork diverge from the ten already shipped — it needs one regeneration pass over the whole set, which is its own piece of work |
 | Prod auth email templates | 2 files | Pasted into both dev and prod, and **proven by a real send on dev only**. A localhost sign-up resolves to the dev project ([supabase-client.js:61](../public/supabase-client.js:61)), so the dev send cannot distinguish "both pasted" from "one forgotten". A password reset on `amplifiedthinker.com` closes it |
@@ -166,69 +167,47 @@ Recorded so these read as decisions rather than oversights. Each has a reason it
 
 Not a queue. Listed with what each would actually cost, so the choice is informed.
 
-- **Retire the `rgba()` longhands — but as TWO pieces, not one.** This was first written up here as
-  "mechanical, low risk, least interesting, highest leverage". ⚠️ **The first half of that was
-  wrong**, and it is worth understanding why before starting, because the mistake is easy to repeat:
-  a longhand is only a refactor if the token it spells out has not moved since.
+- ✅ **~~Retire the `rgba()` longhands~~ — DONE 2026-08-24, as two pieces (`1835753`, `e82d1af`).**
+  Kept here because the *reasoning* is the reusable part, and because the first version of this entry
+  got it wrong: it read "mechanical, low risk, least interesting, highest leverage". ⚠️ **The first
+  half of that was false.** A longhand is only a refactor if the token it spells out has not moved
+  since — and that is what split one job into two:
 
-  | | Count | Files | Token | Repainting it | |
-  |---|---|---|---|---|---|
-  | `rgba(91,167,159,…)` | **52** | 20 | `--teal`, never moved | **true no-op** | ✅ done `1835753` |
-  | `rgba(45,117,111,…)` | **83** | 10 | deep-teal, moved to `#26605B` | **changes the colour** | open |
-  | `rgba(139,138,133,…)` | **5** | 1 | warm-gray, moved to `#6E6D68` | **changes the colour** | open |
+  | | Count | Token | Repainting it | |
+  |---|---|---|---|---|
+  | `rgba(91,167,159,…)` | 52 | `--teal`, never moved | **true no-op** | `1835753` |
+  | `rgba(45,117,111,…)` | 83 | deep-teal, moved to `#26605B` | **a real repaint** | `e82d1af` |
+  | `rgba(139,138,133,…)` | 5 | warm-gray, moved to `#6E6D68` | **a real repaint** | `e82d1af` |
 
-  **Piece one — the 52. ✅ Shipped 2026-08-24 as `1835753`.** Replaced with
-  `color-mix(in srgb, var(--teal) N%, transparent)` — not a new dependency, the plan pages already
-  used `color-mix`. Verified inert across **201,380 comparisons**: 10,069 elements, 22 pages, 10
-  colour properties, both themes, 0 differing. ⚠️ Two measurement traps nearly produced a false
-  result and are now rules 5 and 6 of *How design work gets verified* — **read those before
-  attempting piece two**, because the same sweep is what will separate its intended 22 changes from
-  its 66 non-changes, and both traps fire harder there.
+  Both replaced with `color-mix(in srgb, var(--token) N%, transparent)` — not a new dependency, the
+  plan pages already used `color-mix`. ⚠️ **The `--token-rgb: 38,96,91` + `rgba(var(…),.35)`
+  alternative was rejected** despite wider support: it creates a second token holding the same colour
+  in a different notation, which is the exact drift being eliminated.
 
-  ⚠️ **Three things were checked before touching anything, and piece two needs the equivalent:**
-  `--teal` is `#5BA79F` in all eleven `:root` blocks and is **never** redefined under
-  `[data-theme="dark"]` (a dark override would have made these a visual change too); every page
-  loading `progress.js` has `--teal` in scope; and no site JS reads `getComputedStyle` at all, so
-  nothing consumes the changed serialization.
+  **Outcome: the site holds no old-palette literal in any notation.** The next palette move is a
+  token edit, not a hunt — which matters because `474a55e` had already replaced 63 literals
+  alongside the token definitions and still missed these 140.
 
-  **Piece two — the 88.** A visual change wearing a refactor's clothes. Alpha decides how visible;
-  RGB distance between the old and new composite:
+  **Piece one measured 0 differing** across 201,380 comparisons. **Piece two measured 331 changed
+  element-properties**, all of them the exact token move with alpha preserved — 331 rather than 88
+  because one rule paints many elements, and one `color` cascades into `border-color`,
+  `outline-color` and `text-decoration-color`, which all default to `currentColor`. Only five of its
+  28 rules were perceptible; the coming-soon summary text was much the largest (Δ35) and the only one
+  affecting legibility, improving **2.24:1 → 2.85:1**. Still failing AA, so it did not close that
+  item — and since the dimming is deliberate signalling, it was reviewed by eye for whether the
+  cards still read as not-ready.
 
-  ```
-  alpha < 0.15        x45 uses   distance  2-4    invisible
-  alpha 0.15 - 0.30   x21 uses   distance  6-8    subtle
-  alpha >= 0.30       x22 uses   distance 9-16    visible
-  ```
+  ⚠️ **Both pieces needed three checks before a single edit**, and any future token-to-literal sweep
+  needs the equivalent: is the token redefined under `[data-theme="dark"]` (an override makes a
+  "no-op" a visual change); is the token in scope in every file that uses the literal, remembering
+  the **eleven** `:root` blocks; and does any JS read `getComputedStyle` (nothing here does, so the
+  changed serialization has no consumer).
 
-  So **45 of 88 are imperceptible** — mostly `border-top`/`border-bottom` hairlines at `.08`. The
-  **22** that genuinely shift:
-
-  | | Where |
-  |---|---|
-  | 10 | `background` on the WebKit scrollbar thumb + hover, five plan pages — a 6px sliver |
-  | 6 | `border-color`, hover/active states on future-skills and index cards |
-  | 2 | `border-bottom` on future-skills and search |
-  | 2 | `text-decoration-color`, link underlines on about |
-  | 1 | `--tile-hover-line` in learning.css |
-  | 1 | `color` — the coming-soon dim, the only text use anywhere in the 88 |
-
-  Every one bar the last is a border, an underline, a shadow or a scrollbar. ⚠️ **Ship it as an
-  explicitly visual commit listing those 22**, so it is reviewed as a design change rather than
-  waved through as cleanup.
-
-  One free gain: the single text use, the coming-soon dim, improves from **2.24:1 to 2.85:1** on the
-  darker warm-gray. Still failing, so it does not close that item.
-
-  **Mechanism:** `color-mix(in srgb, var(--deep-teal) 35%, transparent)`. Not a new dependency — the
-  plan pages already use `color-mix` twice each. ⚠️ **Resist the `--deep-teal-rgb: 38,96,91` +
-  `rgba(var(...),.35)` alternative** despite its wider support: it creates a second token holding the
-  same colour in a different notation, which is the exact drift being eliminated. And remember any
-  new token lands in **eleven** `:root` blocks.
-
-  **Why bother at all:** this failure has already happened once. `474a55e` replaced 63 literals
-  alongside the token definitions and still missed these, which is why the site spent a day with its
-  hairlines in one teal and everything else in another. The next palette move repeats it unless the
-  longhands are gone.
+  ⚠️ **And the sweep has two blind spots — neither piece was fully covered by measurement.**
+  `:hover`/`:focus` rules are never triggered (15 in piece two alone), and
+  `::-webkit-scrollbar-thumb` is unreachable by `querySelectorAll` (10 more). Both were verified by
+  reading source and by eye instead. **Any claim of "N comparisons, 0 differing" silently excludes
+  every interactive state**, and should say so.
 - **Design a real "coming soon" affordance.** Retires the last text-contrast failure by removing the
   reason for it — a badge, a reduced-opacity *card* rather than reduced-opacity *text*, or moving
   unbuilt skills out of the list entirely. Closes an accessibility item with a design decision.
