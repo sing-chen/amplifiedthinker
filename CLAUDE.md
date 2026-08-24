@@ -18,6 +18,7 @@ The project has a written architecture and a phased plan. Read them rather than 
 | [docs/supabase-integration-plan.md](docs/supabase-integration-plan.md) | *What* gets built — architecture, data model, RLS design, decisions taken |
 | [docs/implementation-sequence.md](docs/implementation-sequence.md) | *In what order and why* — phase status, and a progress log of what each phase actually taught |
 | [docs/dev-workflow.md](docs/dev-workflow.md) | *How work happens* — branches, previews, both origins, environment settings, known traps |
+| [docs/design-modernisation.md](docs/design-modernisation.md) | The visual system, shipped in discrete pieces. ⚠️ **Deliberately not a phase** — no schema, no go-live step, no queue position. Holds the binding type and colour rules, what is knowingly still wrong, and how design work gets verified. Read it before changing a font, a token or a weight |
 | [docs/recovery.md](docs/recovery.md) | Rebuilding a working state on new hardware. A copy lives in the Drive backup folder, since that is where it is needed |
 | [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, the redirect allowlist, and the email SMTP runbook |
 | [docs/email-dns-baseline.md](docs/email-dns-baseline.md) | The DNS zone as it stood before Phase 4 touched it. Cloudflare keeps no history, so this is the only restore reference there is |

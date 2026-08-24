@@ -9,6 +9,12 @@ open, so a range of directions can be explored without any of them being wrong b
 Companion docs: [supabase-integration-plan.md](supabase-integration-plan.md) for the data model,
 [why-sign-up-account-copy.md](why-sign-up-account-copy.md) for how this page is sold to guests.
 
+⚠️ **Read [design-modernisation.md](design-modernisation.md) before designing to §2's brand row.**
+The type and colour system moved substantially on 2026-08-23 — one family, hierarchy from weight and
+tracking, two darkened tokens — and this brief was written against the old one. §2 has been
+corrected, but the *reasoning* behind each rule lives there, and a dashboard is exactly the kind of
+dense numeric surface those rules were tuned on.
+
 ---
 
 ## 1. What the page is for
