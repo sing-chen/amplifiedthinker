@@ -26,7 +26,7 @@
 
   /* ── HERO ── */
   .hero{background:#1B4A44;padding:80px 40px 72px;padding-top:calc(80px + 38px);position:relative;overflow:hidden}
-  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 80% 60%,rgba(91,167,159,.07) 0%,transparent 70%);pointer-events:none}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 80% 60%,color-mix(in srgb, var(--teal) 7%, transparent) 0%,transparent 70%);pointer-events:none}
   .hero-pattern{position:absolute;top:0;right:0;width:60%;height:100%;opacity:.07;pointer-events:none}
   .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
   .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
@@ -374,14 +374,14 @@
   [data-theme="dark"] .scard.cs .skill-pill.sp-technology{background:rgba(255,255,255,.08);color:var(--fg-2)}
   [data-theme="dark"] .scard.cs .ssum{color:rgba(255,255,255,.4)}
 
-  [data-theme="dark"] .ss-avail{background:rgba(91,167,159,.18);color:var(--teal)}
+  [data-theme="dark"] .ss-avail{background:color-mix(in srgb, var(--teal) 18%, transparent);color:var(--teal)}
   [data-theme="dark"] .ss-soon{background:rgba(255,255,255,.08);color:var(--fg-2)}
 
   [data-theme="dark"] .lcard{background:#33231A;border-color:rgba(201,122,74,.3)}
-  [data-theme="dark"] .lcard:hover{border-color:rgba(91,167,159,.4);background:#3A281D}
+  [data-theme="dark"] .lcard:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent);background:#3A281D}
   [data-theme="dark"] .lccta .lcc-icon{background:#1F3A34} [data-theme="dark"] .lccta .lcc-icon svg{stroke:#8FCFC3}
 
-  [data-theme="dark"] .ftab:hover{background:var(--bg-sunken);border-color:rgba(91,167,159,.4);color:var(--teal)}
+  [data-theme="dark"] .ftab:hover{background:var(--bg-sunken);border-color:color-mix(in srgb, var(--teal) 40%, transparent);color:var(--teal)}
 
   [data-theme="dark"] .sources-callout summary{background:var(--bg-sunken)}
   [data-theme="dark"] .sources-callout summary:hover{background:#16221F}

@@ -23,7 +23,7 @@
 <style>
   /* ── HERO ── */
   .hero{background:#1B4A44;padding:80px 40px 56px;position:relative;overflow:hidden}
-  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,rgba(91,167,159,.07) 0%,transparent 68%);pointer-events:none}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,color-mix(in srgb, var(--teal) 7%, transparent) 0%,transparent 68%);pointer-events:none}
   .hero-pattern{position:absolute;top:0;right:0;width:60%;height:100%;opacity:.07;pointer-events:none}
   .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
   .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
@@ -136,8 +136,8 @@
   [data-theme="dark"] .announce-link:hover{color:#EEDBC6}
   [data-theme="dark"] .announce-progress-dot{--announce-fill:#D9895D;--announce-track:rgba(217,137,93,.25)}
 
-  [data-theme="dark"] .scard-skills{background:#1C332E;border-color:rgba(91,167,159,.25)}
-  [data-theme="dark"] .scard-skills:hover{border-color:rgba(91,167,159,.45)}
+  [data-theme="dark"] .scard-skills{background:#1C332E;border-color:color-mix(in srgb, var(--teal) 25%, transparent)}
+  [data-theme="dark"] .scard-skills:hover{border-color:color-mix(in srgb, var(--teal) 45%, transparent)}
   [data-theme="dark"] .scard-skills .scard-icon{background:#0F211D}
   [data-theme="dark"] .scard-skills .scard-icon svg{stroke:#8FCFC3}
   [data-theme="dark"] .scard-skills .scard-title{color:#BFE0D4}

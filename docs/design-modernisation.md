@@ -28,6 +28,7 @@ position it does not have.
 | 4 | WCAG AA contrast pass | 2026-08-23 | `1b83276`, `474a55e` |
 | 5 | Tabular figures, and the re-subset that made them real | 2026-08-23 | `b4c3cfa` |
 | 6 | Bring docs and auth email templates back in step | 2026-08-24 | `a7619ea` |
+| 7 | Retire the 52 `--teal` `rgba()` longhands — a verified no-op | 2026-08-24 | `1835753` |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Measured outcomes, not estimates:
@@ -155,7 +156,7 @@ Recorded so these read as decisions rather than oversights. Each has a reason it
 |---|---|---|
 | Remaining AA contrast items | **52 elements** | Judgment calls, not bugs. Chiefly the deliberate "coming soon" dimming — `.scard.cs .ssum` at **2.24:1** — where the low contrast *is* the signal that the item is not ready. Fixing it means designing a different affordance, not picking a darker grey |
 | Old-palette `rgba()` longhands | **88** in 10 files | ⚠️ **Not a contrast problem, and not cosmetic either** — these spell out tokens that *moved*, so the site currently renders hairlines, hover borders and shadows in the July teal while everything else is on the new one. 24 `background`, 17 `border-bottom`, 16 `border-top`, 15 `box-shadow`, 7 `border-color`, 5 `border`, 2 `text-decoration-color`, 1 custom property, and exactly **1** `color` — the coming-soon dim above. See *Candidates* for what repainting them actually changes |
-| `--teal` `rgba()` longhands | **52** | Genuinely inert. `--teal` was deliberately **not** moved in `474a55e`, so `rgba(91,167,159,…)` and the token are the same pixels. Listed separately from the 88 because the two need completely different treatment |
+| ~~`--teal` `rgba()` longhands~~ | ~~52~~ | ✅ **Done 2026-08-24, `1835753`.** Verified inert across 201,380 comparisons. Row kept rather than deleted because *why* it was separable — `--teal` never moved — is the reasoning the remaining 88 turn on |
 | Thumbnail prompt terracotta | 1 value | `#C77B5F` was the real token until `2f92728` (2026-07-20) replaced it with `#8A4B2C`. Correcting the prompt alone makes skill eleven's artwork diverge from the ten already shipped — it needs one regeneration pass over the whole set, which is its own piece of work |
 | Prod auth email templates | 2 files | Pasted into both dev and prod, and **proven by a real send on dev only**. A localhost sign-up resolves to the dev project ([supabase-client.js:61](../public/supabase-client.js:61)), so the dev send cannot distinguish "both pasted" from "one forgotten". A password reset on `amplifiedthinker.com` closes it |
 
@@ -170,14 +171,25 @@ Not a queue. Listed with what each would actually cost, so the choice is informe
   wrong**, and it is worth understanding why before starting, because the mistake is easy to repeat:
   a longhand is only a refactor if the token it spells out has not moved since.
 
-  | | Count | Files | Token | Repainting it |
-  |---|---|---|---|---|
-  | `rgba(91,167,159,…)` | **52** | 20 | `--teal`, never moved | **true no-op** |
-  | `rgba(45,117,111,…)` | **83** | 10 | deep-teal, moved to `#26605B` | **changes the colour** |
-  | `rgba(139,138,133,…)` | **5** | 1 | warm-gray, moved to `#6E6D68` | **changes the colour** |
+  | | Count | Files | Token | Repainting it | |
+  |---|---|---|---|---|---|
+  | `rgba(91,167,159,…)` | **52** | 20 | `--teal`, never moved | **true no-op** | ✅ done `1835753` |
+  | `rgba(45,117,111,…)` | **83** | 10 | deep-teal, moved to `#26605B` | **changes the colour** | open |
+  | `rgba(139,138,133,…)` | **5** | 1 | warm-gray, moved to `#6E6D68` | **changes the colour** | open |
 
-  **Piece one — the 52.** Provably inert, 20 files. Verify it the way `897d7f9` was verified: sample
-  computed colour on every page before and after and assert 0 differing.
+  **Piece one — the 52. ✅ Shipped 2026-08-24 as `1835753`.** Replaced with
+  `color-mix(in srgb, var(--teal) N%, transparent)` — not a new dependency, the plan pages already
+  used `color-mix`. Verified inert across **201,380 comparisons**: 10,069 elements, 22 pages, 10
+  colour properties, both themes, 0 differing. ⚠️ Two measurement traps nearly produced a false
+  result and are now rules 5 and 6 of *How design work gets verified* — **read those before
+  attempting piece two**, because the same sweep is what will separate its intended 22 changes from
+  its 66 non-changes, and both traps fire harder there.
+
+  ⚠️ **Three things were checked before touching anything, and piece two needs the equivalent:**
+  `--teal` is `#5BA79F` in all eleven `:root` blocks and is **never** redefined under
+  `[data-theme="dark"]` (a dark override would have made these a visual change too); every page
+  loading `progress.js` has `--teal` in scope; and no site JS reads `getComputedStyle` at all, so
+  nothing consumes the changed serialization.
 
   **Piece two — the 88.** A visual change wearing a refactor's clothes. Alpha decides how visible;
   RGB distance between the old and new composite:
@@ -257,5 +269,33 @@ were really 4. Use `localStorage.setItem('theme','dark')` and reload.
 **4. Read paint-only properties across a frame boundary.** Reading them in the same tick as a theme
 switch returns the *previous* value. That cost one false bug report.
 
-**5. A human looks at it.** The 350-weight title passed every automated check and read thin to the
-only instrument that matters. Both Phase 1 defects were found the same way.
+**5. ⚠️ Normalise the colour before comparing computed values — never hash the raw string.** Modern
+CSS colour functions serialize in their own notation, and the same colour has more than one spelling:
+
+```
+rgba(91, 167, 159, 0.4)                        <- what a literal computes to
+color(srgb 0.356863 0.654902 0.623529 / 0.4)   <- what color-mix() computes to
+```
+
+Identical colour — `0.356863 x 255 = 91`. In `1835753` a string hash reported **11 of 22 pages
+changed** when nothing had. Convert to one canonical form first. ⚠️ And when converting, remember
+those channels are **0–1 floats, not 0–255**: misreading them as bytes once invented a "mystery grey
+`#777978`" that did not exist.
+
+**6. ⚠️ Kill transitions before sampling, or you measure a value mid-flight.** Setting `data-theme`
+does not swap colours instantly — anything with a `transition` on an affected property animates, and
+**CSS interpolates colour in `oklab`**, so a sample taken during the 200ms reads as
+`oklab(0.67709 -0.0762886 -0.00899804 / 0.25)` and matches nothing on either side. This survived
+rule 4 above: the value was stable across a frame boundary, it was just the wrong one. In `1835753`
+it left `index.html` as the last apparently-changed page after the serialization fix, because
+`.scard` carries `transition: border-color .2s` and `index.html:139` sets that border in dark. Inject
+this into the frame before switching theme:
+
+```css
+*, *::before, *::after { transition: none !important; animation: none !important }
+```
+
+**7. A human looks at it.** The 350-weight title passed every automated check and read thin to the
+only instrument that matters. Both Phase 1 defects were found the same way. ⚠️ **The exception that
+proves the rule:** a verified no-op like `1835753` is the one case where there is nothing for a human
+to see, which is precisely why it has to be proved by measurement instead.
