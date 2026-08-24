@@ -113,7 +113,7 @@
   .chart-modal-img{display:block;width:100%;height:auto;max-height:90vh;object-fit:contain;border-radius:8px;background:var(--off-white)}
   .chart-modal-close{position:fixed;top:20px;right:24px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(0,0,0,.15);color:var(--white);font-family:var(--font-body);font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s}
   .chart-modal-close:hover{background:rgba(255,255,255,.15)}
-  .chart-source a{color:var(--fg-2);text-decoration:none;border-bottom:1px solid rgba(139,138,133,.3);transition:color .15s}
+  .chart-source a{color:var(--fg-2);text-decoration:none;border-bottom:1px solid color-mix(in srgb, var(--warm-gray) 30%, transparent);transition:color .15s}
   .chart-source a:hover{color:var(--fg-heading)}
 
   /* ── ABOUT THE LIBRARY ── */
@@ -157,9 +157,9 @@
   /* ── SKILL CARDS ── */
   .skill-list{display:flex;flex-direction:column;gap:16px}
   .scard{background:var(--bg-surface);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s}
-  .scard.cs:hover{border-color:rgba(45,117,111,.3)}
-  .scard.active{border-color:rgba(45,117,111,.4);box-shadow:0 4px 24px rgba(27,74,68,.07)}
-  .scard.active:hover{border-color:rgba(45,117,111,.55);box-shadow:0 10px 30px rgba(27,74,68,.12);transform:translateY(-3px)}
+  .scard.cs:hover{border-color:color-mix(in srgb, var(--deep-teal) 30%, transparent)}
+  .scard.active{border-color:color-mix(in srgb, var(--deep-teal) 40%, transparent);box-shadow:0 4px 24px rgba(27,74,68,.07)}
+  .scard.active:hover{border-color:color-mix(in srgb, var(--deep-teal) 55%, transparent);box-shadow:0 10px 30px rgba(27,74,68,.12);transform:translateY(-3px)}
   .scard.active:hover .sstatus-strip{width:7px}
   .scard.active:hover .skill-icon{transform:scale(1.08)}
   .scard.cs{opacity:.68}
@@ -175,7 +175,7 @@
   .si-engagement{background:#E8F2E8;} .si-engagement svg{stroke:#3A6E3A;}
   .si-management{background:#EDE5C5;} .si-management svg{stroke:#8B6A1A;}
   .si-technology{background:#DCE3CC;} .si-technology svg{stroke:#55643A;}
-  .scard.cs .skill-icon{background:rgba(139,138,133,.08);} .scard.cs .skill-icon svg{stroke:var(--warm-gray);}
+  .scard.cs .skill-icon{background:color-mix(in srgb, var(--warm-gray) 8%, transparent);} .scard.cs .skill-icon svg{stroke:var(--warm-gray);}
   .shc{flex:1;display:flex;align-items:center;gap:16px;padding:18px 22px;flex-wrap:wrap}
   .stb{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px}
   .skill-pills{display:flex;flex-wrap:wrap;gap:5px}
@@ -188,15 +188,15 @@
   .scard.cs .skill-pill.sp-cognitive,
   .scard.cs .skill-pill.sp-self-efficacy,
   .scard.cs .skill-pill.sp-engagement,
-  .scard.cs .skill-pill.sp-technology{background:rgba(139,138,133,.1);color:var(--warm-gray)}
+  .scard.cs .skill-pill.sp-technology{background:color-mix(in srgb, var(--warm-gray) 10%, transparent);color:var(--warm-gray)}
   .sname{font-family:var(--font-display);letter-spacing:-.014em;font-size:16px;font-weight:600;color:var(--fg-heading);line-height:1.2}
   .scard.cs .sname{color:var(--text-muted)}
   .ssum{font-family:var(--font-body);font-size:13.5px;line-height:1.55;color:var(--text-muted);max-width:400px;flex:2}
-  .scard.cs .ssum{color:rgba(139,138,133,.7)}
+  .scard.cs .ssum{color:color-mix(in srgb, var(--warm-gray) 70%, transparent)}
   .ssum em{font-style:italic}
   .sstatus{font-family:var(--font-display);font-size:11px;font-weight:600;padding:4px 11px;border-radius:var(--radius-pill);white-space:nowrap;flex-shrink:0}
-  .ss-avail{background:rgba(45,117,111,.12);color:var(--mid-teal)}
-  .ss-soon{background:rgba(139,138,133,.1);color:var(--warm-gray)}
+  .ss-avail{background:color-mix(in srgb, var(--deep-teal) 12%, transparent);color:var(--mid-teal)}
+  .ss-soon{background:color-mix(in srgb, var(--warm-gray) 10%, transparent);color:var(--warm-gray)}
   .stoggle{display:flex;align-items:center;padding:0 18px;color:var(--text-muted);transition:transform .2s;flex-shrink:0}
   .stoggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .scard.open .stoggle{transform:rotate(180deg)}
@@ -211,7 +211,7 @@
   .ltitle{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
   .lcards{display:flex;flex-direction:column;gap:10px}
   .lcard{background:var(--warm-cream);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-lg);padding:14px 16px;text-decoration:none;display:block;transition:border-color .15s,background .15s,transform .1s}
-  .lcard:hover{border-color:rgba(45,117,111,.45);background:var(--bg-surface);transform:translateY(-1px)}
+  .lcard:hover{border-color:color-mix(in srgb, var(--deep-teal) 45%, transparent);background:var(--bg-surface);transform:translateY(-1px)}
   .lcard.primary{background:var(--deep-teal);border-color:transparent}
   .lcard.primary:hover{background:var(--teal)}
   .lctype{font-family:var(--font-display);letter-spacing:-.006em;font-size:13px;font-weight:600;color:var(--fg-heading);margin-bottom:4px;line-height:1.3}
@@ -234,7 +234,7 @@
   /* ── FILTER TABS ── */
   .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
   .ftab{font-family:var(--font-display);font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--radius-pill);border:1px solid rgba(172,196,182,.3);color:var(--text-muted);background:transparent;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
-  .ftab:hover{background:var(--light-sage);border-color:rgba(45,117,111,.3);color:var(--mid-teal)}
+  .ftab:hover{background:var(--light-sage);border-color:color-mix(in srgb, var(--deep-teal) 30%, transparent);color:var(--mid-teal)}
   .ftab.active{background:var(--mid-teal);border-color:transparent;color:var(--white)}
   .scard.hidden{display:none}
   .filter-empty{display:none;padding:32px 0;font-family:var(--font-body);font-size:14px;color:var(--text-muted)}
