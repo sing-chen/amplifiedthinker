@@ -36,7 +36,7 @@ prevent.
 | **A** | **Retire the Pages origin** | | | |
 | 0 | Baseline — what is true before you start | Claude + Human | ✅ Done | 2026-08-22, all three gates green, **no deviation from the state described below**. `verify:stamp` both origins current on `96f9b9d`, 9s apart; `verify:published` 79 files / 158 fetches / 0 not served; `verify:redirects` 12 assertions, every origin resolving to the project that owns it. ⚠️ Two findings: the `verify:published` baseline is **two-origin and cannot be retaken after stage 2**, and the Pages redirect entry must **move to `rejected`** rather than be deleted — stages 4 and 5 amended |
 | 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs**, which removes the stub step and its 3-month soak from stage 5. ⚠️ Point-in-time — re-run if Part A stalls for weeks |
-| 2 | Stop publishing to Pages | Human + Claude | ☐ Not started | Disable the workflow and unset the Pages source. **Fully reversible** |
+| 2 | Stop publishing to Pages | Human + Claude | ☐ Not started | ⚠️ **Disable the workflow first, then Unpublish site** — there is no "None" in the Source dropdown any more. **Fully reversible** |
 | 3 | Soak on one origin | Human | ☐ Not started | Vercel becomes a single point of failure here. Minimum 48h before stage 4 |
 | 4 | Remove Pages from code, gates and docs | Claude | ☐ Not started | ⚠️ Includes `privacy.html` — the GitHub processor row and the analytics claim |
 | 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ Not started | Two dashboards, invisible to git |
@@ -368,16 +368,24 @@ than trusting this row.
 
 The reversible half. Nothing is deleted here.
 
-**GitHub → the `amplifiedthinker` repository → Settings → Pages → Build and deployment.**
-Set **Source** to **None**. That unpublishes the site; the workflow file and every past run stay.
+⚠️ **There is no "None" in the Source dropdown.** An earlier revision of this stage said to set
+**Settings → Pages → Source** to *None*. GitHub has removed that option — the dropdown offers only
+**GitHub Actions** and **Deploy from a branch** (confirmed 2026-08-24). The control that actually
+unpublishes is the red **Unpublish site** button in the *"Your site is live at…"* box at the top of
+the same page.
 
-Then disable the workflow so it stops running and stops emailing about failures:
-**Actions → Deploy to GitHub Pages → the `⋯` menu → Disable workflow.**
+**Do these two things, in this order:**
 
-⚠️ **Do both.** Setting the source to None without disabling the workflow leaves it building on every
-push to `main` and failing at `actions/deploy-pages`, which produces a red X in an inbox for a thing
-that is working as intended. Disabling the workflow without unsetting the source leaves the last
-build published indefinitely, which is the opposite of retirement.
+1. **Actions → "Deploy to GitHub Pages" → the `⋯` menu → Disable workflow.** Stops it running and
+   stops it emailing about failures.
+2. **Settings → Pages → Unpublish site.** Takes the published site down. Source stays on *GitHub
+   Actions*; the workflow file and every past run stay.
+
+⚠️ **The order is load-bearing, and it is the reverse of what this stage said before.** Unpublishing
+while the workflow is still enabled leaves a window in which the next push to `main` simply
+re-publishes the site — quietly undoing the stage, with the runsheet ticked. Disabling first closes
+that window. Doing only step 1 leaves the last build served indefinitely, which is the opposite of
+retirement, so both are still required.
 
 **Verify:** in a logged-out browser, `https://sing-chen.github.io/amplifiedthinker/` should 404
 within a few minutes. Then confirm `https://amplifiedthinker.com/` is completely unaffected — the
@@ -385,14 +393,16 @@ homepage, a skill page, sign-in, and `/learning/` while signed in.
 
 **Tick as you go**
 
-- [ ] Settings → Pages → Source set to **None**
-- [ ] Actions → the workflow **disabled**
+- [ ] Actions → the workflow **disabled** — ⚠️ **first**, so no push can re-publish
+- [ ] Settings → Pages → **Unpublish site** — ⚠️ the red button, not a Source setting
 - [ ] Pages URL returns 404 logged-out
 - [ ] `amplifiedthinker.com` verified unaffected — homepage, a skill page, `/sign-in/`, `/learning/`
 - [ ] `npm run verify:stamp` re-run — the Pages arm now fails, and **that is the expected result**
 
-**Rollback:** set Source back to **GitHub Actions**, re-enable the workflow, re-run it. Roughly two
-minutes, and nothing in the repo changed.
+**Rollback:** re-enable the workflow and run it from **Actions → Deploy to GitHub Pages → Run
+workflow** (it carries `workflow_dispatch` for exactly this). A successful run re-publishes the site;
+Source never moved off *GitHub Actions*, so there is nothing to set back. Roughly two minutes, and
+nothing in the repo changed.
 
 ---
 
