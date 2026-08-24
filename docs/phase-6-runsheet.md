@@ -458,6 +458,19 @@ is still two clicks from reversal.
 - [ ] Nobody reported a broken link to the old origin
 - [ ] `npm run verify:published` **baseline retaken** — see stage 0; the committed one is stale twice
       over and stage 4 wants a single-origin "before" to diff against
+- [ ] ⚠️ **Anything committed during this stage is pushed** — `git push` before 2026-08-26 09:00Z
+
+⚠️ **Why that last box exists.** A scheduled reminder fires on 2026-08-26 at 10:00 BST
+([routine `trig_01CpuRAQ77uL4CVXCpLGwex4`](https://claude.ai/code/routines/trig_01CpuRAQ77uL4CVXCpLGwex4))
+and reads this file **from `origin/feat/news-db`, not from the working copy** — it is a cloud session
+and cannot see this machine. So a box ticked locally and left uncommitted, or committed and left
+unpushed, is invisible to it: the run would report stage 3 as untouched and re-ask for work already
+done.
+
+It does not break anything — the reminder's instructions are the same either way — but the point of
+the handoff table is that it *is* the state, and a state only half of the readers can see is not one.
+**Proven rather than assumed:** a test run on 2026-08-24 read this file off the branch correctly, and
+caught the prompt claiming three unticked boxes here when there are four.
 
 **Observed:** _(dates, and anything that came up)_
 
