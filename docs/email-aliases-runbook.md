@@ -30,7 +30,7 @@ prevent.
 | 3 | Gmail send-as for `contact@` | Human | ✅ Done | 2026-08-20. Relaying through Resend, *Treat as an alias* checked, **set as the account default**. Delivered message measured: `spf=pass` aligned, `dkim=pass header.s=resend`, `dmarc=pass` under `p=QUARANTINE`, `From:` clean with no "via". Delivered to a non-Google mailbox too. **Passes on both mechanisms — stronger than `singchen@` ever was through Brevo** |
 | 4 | Move the `singchen@` send-as off Brevo | Human + Claude | ✅ Done | 2026-08-20. **Scope changed mid-stage: repointed, not deleted** — `singchen@` stays as a personal outbound identity, and retiring the vendor never required retiring the address. Both send-as entries now relay through `smtp.resend.com` on one key; *Treat as an alias* fixed on `singchen@`, which had been *"Not an alias"*; `contact@` remains default. Delivered test measured identical to `contact@`. **Brevo now relays nothing for anybody.** Gate comment, `supabase/README.md` and `recovery.md` all amended from *must stay* to *retained pending teardown*. `verify:email` still 21/21 |
 | 5 | Swap the site over | Claude | ✅ Done | 2026-08-20, `4d28458`, live on both origins. 13 lines, 6 files, all `?subject=` values preserved. Resend's row in the privacy processor table widened to cover contact replies. Supabase templates pasted by hand. ⚠️ **Two pre-existing Astro collapsed-space defects found and fixed while verifying** — instances 3 and 4 of a trap a grep cannot detect. Promptly sibling **⊘ skipped by decision**, pre-launch, but still wrong at its launch |
-| 6 | Repoint DMARC reports | Human | ✅ Done | 2026-08-20. `rua` now `dmarc@amplifiedthinker.com`; `p=quarantine`, `adkim=r`, `aspf=r` untouched. Gate reads **20/20, no warnings** — ⚠️ **the count drops from 21 because the warning was itself a result entry.** This file predicted "21/21 with the warning gone", which cannot happen; corrected here and in stage 7, whose target is now **16/16**. First aggregate report expected within ~24h |
+| 6 | Repoint DMARC reports | Human | ✅ Done | 2026-08-20. `rua` now `dmarc@amplifiedthinker.com`; `p=quarantine`, `adkim=r`, `aspf=r` untouched. Gate reads **20/20, no warnings** — ⚠️ **the count drops from 21 because the warning was itself a result entry.** This file predicted "21/21 with the warning gone", which cannot happen; corrected here and in stage 7, whose target is now **16/16**. **First report received and read 2026-08-24, covering 20 Aug: two records, both `dkim=pass selector=resend` and `spf=pass` on `send.amplifiedthinker.com`, `disposition=none`.** ⚠️ It took **three days**, not the ~24h this file first predicted. Stage 6 is fully closed |
 | 7 | Brevo teardown **and account closure** | Human + Claude | ☐ Not started | **After a soak — see the stage.** Three parts now: 7a safe record deletions, 7b the apex SPF edit alone, 7c close the account last |
 
 **Statuses:** ☐ Not started · ◐ In progress · ✅ Done · ⊘ Skipped (say why)
@@ -580,7 +580,49 @@ signal. Reports are daily XML from each receiver; expect the first within about
 - [ ] `p=quarantine`, `adkim=r` and **`aspf=r`** all still present, unaltered
 - [x] `npm run verify:email` — **20/20, no warnings** (not 21/21 — see above). Confirmed 2026-08-20,
       `rua=mailto:dmarc@amplifiedthinker.com`, with `p=quarantine` and `aspf=r` unaltered
-- [ ] First aggregate report arrived at `dmarc@` (allow ~24 hours; it will be unreadable XML)
+- [x] First aggregate report arrived at `dmarc@` — landed **overnight 23–24 Aug 2026** from
+      `noreply-dmarc-support@google.com`, a zipped XML attachment. ⚠️ **Allow days, not ~24 hours.**
+      It was generated `Thu, 20 Aug 16:59:59 -0700` and took three days. Nothing was wrong; an empty
+      inbox at the 24-hour mark would have looked like a broken `rua` and is not
+- [x] The report's XML read, not merely received — **2026-08-24, all pass**
+
+**Reading a report, since receiving one proves less than it looks.** The payload is a zipped XML
+attachment named `<submitter>!<domain>!<window-start>!<window-end>.zip`, the two numbers being Unix
+timestamps for the reporting day. Save it and unzip:
+
+```bash
+python -c "import zipfile,sys; print(zipfile.ZipFile(sys.argv[1]).read(zipfile.ZipFile(sys.argv[1]).namelist()[0]).decode())" <file>.zip
+```
+
+What matters is each `<record>`: `<count>` messages from a `<source_ip>`, and whether `<spf>` and
+`<dkim>` under `<policy_evaluated>` say `pass` or `fail`. ⚠️ **A `fail` under `p=quarantine` means
+that mail went to spam** — which is the whole reason to receive these. An all-`pass` report is the
+boring outcome and the one to hope for.
+
+⚠️ **Each receiver reports separately, and almost all mail from this domain currently goes to
+Gmail.** So Google is effectively the only reporter, and its view is not the whole internet's. A
+selector broken only for some other provider would not appear here.
+
+**First report read in full, 2026-08-24, covering 20 August — everything passes.** Two records, one
+message each, from `54.240.3.23` and `54.240.6.245` (Amazon SES eu-west-1, i.e. Resend):
+
+| Field | Both records |
+|---|---|
+| `policy_evaluated` / `disposition` | `none` — no quarantine applied |
+| `dkim` | `pass`, `domain=amplifiedthinker.com`, `selector=resend` |
+| `spf` | `pass`, `domain=send.amplifiedthinker.com` |
+| `header_from` | `amplifiedthinker.com` |
+
+**The count is a real cross-check, not a formality.** Three test messages went out on 20 August —
+`contact@` to Gmail, `contact@` to a non-Google mailbox, `singchen@` to Gmail. Google reports only
+what Google received, so exactly **two** appear and the third is correctly absent. That turns the
+single-reporter limitation above from a caveat into an observed number. Equally: **no source IP
+appears that we did not send from.**
+
+⚠️ **`policy_published` will list `sp` and `np` that are not in the DNS record.** This report shows
+`<sp>quarantine</sp>` and `<np>quarantine</np>` while the zone's TXT sets only `p=quarantine`. Both
+default to `p` when unset and Google reports the *effective* policy. It is not drift, and it is not
+something to "fix" by adding them.
 
 **Rollback:** the previous value is in the block above, and in
 [email-dns-baseline.md](email-dns-baseline.md).
