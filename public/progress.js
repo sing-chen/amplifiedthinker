@@ -384,7 +384,7 @@
     // divider on a rail that is already a stack of full-width rows.
     '.nav-brand .ac-rail-done{display:inline-flex;align-items:center;gap:7px;' +
       'margin-top:14px;padding:5px 11px 5px 9px;border-radius:999px;' +
-      'background:rgba(91,167,159,.14);border:1px solid rgba(91,167,159,.38);' +
+      'background:color-mix(in srgb, var(--teal) 14%, transparent);border:1px solid color-mix(in srgb, var(--teal) 38%, transparent);' +
       "font-family:var(--font-display);font-size:12px;font-weight:600;" +
       'line-height:1.3;color:var(--light-sage,#D0E2D6);white-space:nowrap;' +
       // Backstop. The date format above is what keeps this inside the rail; this

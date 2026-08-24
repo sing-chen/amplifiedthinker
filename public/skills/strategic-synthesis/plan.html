@@ -161,7 +161,7 @@
     cursor: pointer;
   }
   .nav-link:hover { color: var(--off-white); background: rgba(255,255,255,0.06); }
-  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.2); }
+  .nav-link.active { color: var(--off-white); background: color-mix(in srgb, var(--teal) 20%, transparent); }
   .nav-link.visited { color: rgba(255,255,255,0.95); }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   /* Three states, told apart by shape as much as colour — at 8px two similar
@@ -185,7 +185,7 @@
   .nav-link.active .nav-dot {
     background: var(--teal);
     border-color:var(--fg-brand);
-    box-shadow: 0 0 0 3px rgba(91,167,159,0.45);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 45%, transparent);
   }
 
   /* ── PREV / NEXT ARROWS ─────────────────────── */
@@ -211,7 +211,7 @@
     transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
   .nav-arrow:hover {
-    background: rgba(91,167,159,0.28);
+    background: color-mix(in srgb, var(--teal) 28%, transparent);
     border-color:var(--fg-brand);
     color: #FFFFFF;
   }

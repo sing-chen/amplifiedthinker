@@ -141,7 +141,7 @@
     width: 100%; text-align: left;
   }
   .nav-link:hover  { color: var(--off-white); background: rgba(255,255,255,0.06); }
-  .nav-link.active { color: var(--off-white); background: rgba(91,167,159,0.22); }
+  .nav-link.active { color: var(--off-white); background: color-mix(in srgb, var(--teal) 22%, transparent); }
   .nav-link.visited { color: rgba(255,255,255,0.65); }
   .nav-num {
     font-family:var(--font-display);font-variant-numeric:tabular-nums;
@@ -178,7 +178,7 @@
   .nav-link.active .nav-dot {
     background: var(--teal);
     border-color:var(--fg-brand);
-    box-shadow: 0 0 0 3px rgba(91,167,159,0.45);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 45%, transparent);
   }
 
   /* ── SLIDE STAGE ────────────────────────────── */

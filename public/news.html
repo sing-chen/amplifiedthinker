@@ -23,7 +23,7 @@
 <style>
   /* ── HERO ── */
   .hero{background:#1B4A44;padding:76px 40px 56px;position:relative;overflow:hidden}
-  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,rgba(91,167,159,.07) 0%,transparent 68%);pointer-events:none}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,color-mix(in srgb, var(--teal) 7%, transparent) 0%,transparent 68%);pointer-events:none}
   .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
   .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:20px}
   .hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.6vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:16px;max-width:760px}
@@ -157,7 +157,7 @@
      plus one new neutral-gray family for "macro signals". */
   [data-theme="dark"] .filter-scroll-btn{border-color:var(--line)}
   [data-theme="dark"] .filter-chip{border-color:var(--line)}
-  [data-theme="dark"] .filter-chip:hover{border-color:rgba(91,167,159,.4)}
+  [data-theme="dark"] .filter-chip:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
   [data-theme="dark"] .headline-col{border-color:var(--line)}
   [data-theme="dark"] .headline-search-wrap{border-bottom-color:var(--line)}
   [data-theme="dark"] .headline-search-icon{color:var(--fg-2)}
@@ -172,7 +172,7 @@
   [data-theme="dark"] .story-source{color:var(--accent-warm)}
   [data-theme="dark"] .story-pinned-badge{color:var(--accent-warm)}
   [data-theme="dark"] .story-nav-btn{border-color:var(--line)}
-  [data-theme="dark"] .story-nav-btn:hover:not(:disabled){border-color:rgba(91,167,159,.4)}
+  [data-theme="dark"] .story-nav-btn:hover:not(:disabled){border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
   [data-theme="dark"] .story-title{color:var(--fg-heading)}
   [data-theme="dark"] .story-summary{color:var(--fg-2)}
   [data-theme="dark"] .story-implications{border-left-color:var(--line)}
@@ -181,7 +181,7 @@
   [data-theme="dark"] .story-share{border-top-color:var(--line)}
   [data-theme="dark"] .share-label{color:var(--fg-2)}
   [data-theme="dark"] .share-btn{border-color:var(--line)}
-  [data-theme="dark"] .share-btn:hover{border-color:rgba(91,167,159,.4)}
+  [data-theme="dark"] .share-btn:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
   [data-theme="dark"] .empty-state{color:var(--fg-2)}
 
   [data-theme="dark"] .theme-skills-development{--tag-bg:#1F3A34;--tag-text:#8FCFC3}
