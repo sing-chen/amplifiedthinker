@@ -247,7 +247,14 @@ for (const { name } of TABLES) {
 // assertion is now the stronger one. `authenticated` keeps EXECUTE, because RLS
 // policy expressions are evaluated with the querying role's privileges.
 console.log('\nSECURITY DEFINER functions (signed out) - all must be unreachable');
-for (const fn of ['is_admin', 'handle_new_user', 'profiles_guard_privileged_columns', 'rls_auto_enable']) {
+// user_news_single_pin is SECURITY INVOKER rather than DEFINER - deliberately,
+// since as DEFINER it would bypass the RLS that confines it to the caller's own
+// rows. It is asserted here anyway, because 20260817140000's own argument was
+// that being INCONSISTENT about hardening is worse than the risk: three trigger
+// functions revoked and checked, and a fourth revoked but never checked, is the
+// gap that reopens quietly.
+for (const fn of ['is_admin', 'handle_new_user', 'profiles_guard_privileged_columns',
+                  'user_news_single_pin', 'rls_auto_enable']) {
   const res = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     headers: { ...headers, 'Content-Type': 'application/json' },
