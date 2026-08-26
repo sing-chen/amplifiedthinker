@@ -27,6 +27,15 @@ public route to the site. Reading this as "move off GitHub" is a catastrophic mi
 
 ## Handoff — read this before doing anything
 
+⚠️ **AND `feat/news-db` IS THE COPY.** This file now exists on `main` too, because Part A and the
+adapter were merged there while Phase 6 is still open. **The copy on `main` is a snapshot taken at
+the last merge and goes stale the moment anything is ticked here** — it already did, within minutes:
+stage 7's `verify:published` box read *"owed after deploy"* on `main` while it was ticked and
+evidenced on the branch.
+
+**Read this file on `feat/news-db` until stage 17 merges the phase.** If you are on `main` and a box
+looks open, check the branch before acting on it — the work may be done and recorded.
+
 **This file is the state.** There is no other tracker. Whoever does a stage updates its status row
 in the same sitting, in this file, and says what they *observed* — not "done" but what the check
 printed. A stage left at `◐ In progress` with no note is the failure mode this section exists to
