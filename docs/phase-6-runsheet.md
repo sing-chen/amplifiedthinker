@@ -1894,7 +1894,12 @@ destroys. It now names the saved stories, the pin and the notes. The cascade was
    `begin/commit`, so one failed statement rolls the others back while the error names only
    itself. ⚠️ **Paste [supabase/verify/phase-6-stage-17.sql](../supabase/verify/phase-6-stage-17.sql)**,
    which states the expected answer for every check and has no check whose correct result is an
-   empty set. The short form:
+   empty set. ⚠️ **Run its two blocks SEPARATELY** — the SQL editor displays only the last
+   statement's result, so a multi-select file runs every check and shows one.
+
+   ✅ **Baseline: dev passed Block A 10/10 on 2026-08-26**, after all four migrations were
+   re-run there as a rehearsal. That is the answer sheet to hold prod against — a check nobody
+   has seen pass on something known to be right is not yet measuring anything. The short form:
 
 ```sql
 select conname, pg_get_constraintdef(oid) from pg_constraint
