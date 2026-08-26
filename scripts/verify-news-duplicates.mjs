@@ -124,10 +124,22 @@ async function main() {
 // make an archived story indistinguishable from one that never loaded — and
 // after a merge, "the row is archived" and "the row is missing" are the two
 // outcomes it most matters to tell apart.
-const res = await fetch(
-  `${url}/rest/v1/news_stories?select=slug,legacy_id,story_date,title,url,status,merged_into&limit=2000`,
-  { headers: { apikey: key, Authorization: `Bearer ${key}`, Prefer: 'count=exact' } }
-);
+const BASE = 'slug,legacy_id,story_date,title,url,status';
+const headers = { apikey: key, Authorization: `Bearer ${key}`, Prefer: 'count=exact' };
+const ask = (cols) => fetch(`${url}/rest/v1/news_stories?select=${cols}&limit=2000`, { headers });
+
+let res = await ask(`${BASE},merged_into`);
+let hasMergedInto = true;
+
+/* ⚠️ FALL BACK RATHER THAN 400 AT THE ONE MOMENT THIS IS MOST USED. Asking for
+   `merged_into` against a project that has not had 20260826180000 applied is a
+   PostgREST 42703, and the raw message names a column rather than the problem.
+   Stage 17 runs this against prod immediately BEFORE applying the migrations,
+   which is precisely when it would have been unreadable. */
+if (res.status === 400 && /merged_into/.test(await res.clone().text())) {
+  hasMergedInto = false;
+  res = await ask(BASE);
+}
 
 if (!res.ok) {
   console.error(`\n${target}: PostgREST answered ${res.status} — ${(await res.text()).slice(0, 200)}\n`);
@@ -225,7 +237,13 @@ for (const f of fileRows) {
    exists to prevent. It looks identical to a clean merge from every other
    angle: right row count, right statuses, no duplicates. */
 const publishedSlugs = new Set(dbRows.map((r) => r.slug));
-for (const r of dbArchived) {
+if (!hasMergedInto && dbArchived.length) {
+  warnings++;
+  console.log(`  ⚠️ ${dbArchived.length} archived row(s), but this project has no \`merged_into\` column.`);
+  console.log(`    Migration 20260826180000 has not been applied here, so every old link to an`);
+  console.log(`    archived story is a 404 — the merges are loaded but not wired up.\n`);
+}
+for (const r of hasMergedInto ? dbArchived : []) {
   if (!r.merged_into) {
     warnings++;
     console.log(`  ⚠️ archived with no merged_into — ${r.legacy_id}  ${r.slug}`);

@@ -1929,7 +1929,15 @@ migration down-script plus a code revert, and the two are not symmetric. Read
 - [ ] `npm run verify:stamp` — production serving the merge commit
 - [ ] ⚠️ 301 verified **on production**, against a real previously-shared URL
 - [ ] ⚠️ Reorder test re-run on production, same story, order restored
-- [ ] `npm run verify:rls` green with its updated expectation
+- [ ] `npm run verify:rls` green with its updated expectation — ⚠️ **24/24, not 23.** The
+      `news_stories` row now expects `published` **or** `archived`: it said `published` alone until
+      2026-08-26 and passed vacuously, because the table had no archived row to contradict it. The
+      first merge created two and it failed instantly. A second assertion was added alongside it
+      that the read returned any rows at all, since "no forbidden status came back" is trivially
+      true of zero
+- [ ] `npm run verify:news-dupes -- prod` — run it **after** the load, not before. Beforehand it
+      correctly reports an empty table as **"not a pass"**. Afterwards expect
+      `81 rows: 79 published, 2 archived` and no findings
 - [ ] Homepage banner checked by eye on production
 - [ ] ⚠️ **The two-account RLS proof** — deferred here from stage 14. See below
 

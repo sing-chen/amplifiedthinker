@@ -49,7 +49,22 @@ const TABLES = [
   { name: 'skill_progress', read: 'denied' },
   { name: 'user_news', read: 'denied' },
   { name: 'notes', read: 'denied' },
-  { name: 'news_stories', read: 'published' },
+  // ⚠️ `published` AND `archived`, AND THE SECOND IS NOT A LOOSENING. There are
+  // two permissive policies on this table and they OR: `news_stories_public_read`
+  // and `news_stories_archived_read`. The archived one is deliberate — a story
+  // withdrawn or merged keeps its row so a previously shared link still resolves,
+  // which is why withdrawal is a status flag rather than a DELETE. The initial
+  // migration says so explicitly and warns that an unfiltered select returns both.
+  //
+  // ⚠️ THIS ROW SAID `published` UNTIL 2026-08-26 AND PASSED THE WHOLE TIME —
+  // vacuously, because the table had no archived rows to contradict it. The first
+  // merge created two and the gate failed instantly. An expectation that no data
+  // can violate is not being tested; it is being recited. Same shape as an empty
+  // table reporting clean.
+  //
+  // `draft` is the status that must never appear: it is editorial work in
+  // progress, and it is the only one of the three nothing has ever exposed.
+  { name: 'news_stories', read: { statuses: ['published', 'archived'] } },
   { name: 'blog_posts', read: 'empty' },
   { name: 'blog_categories', read: 'empty' },
   { name: 'site_updates', read: 'empty' },
@@ -200,20 +215,32 @@ for (const { name, read } of TABLES) {
   if (read === 'denied') {
     const denied = status === 401 || status === 403;
     record(denied, `${name}: anon SELECT refused`, denied ? `HTTP ${status}` : `HTTP ${status}, body ${JSON.stringify(body)?.slice(0, 120)}`);
-  } else if (read === 'published') {
-    // Ask for `status` explicitly so the assertion can be made on the rows
-    // themselves. Anything not 'published' coming back here means the RLS
-    // predicate is not doing its job — which an empty table could never reveal.
+  } else if (read && read.statuses) {
+    // Ask for `status` explicitly so the assertion is made on the rows
+    // themselves. A status outside the allowed set means the RLS predicate is
+    // not doing its job — which an empty table could never reveal.
+    const allowed = read.statuses;
     const { status: st, body: rows } = await readTable(name, 'status');
-    const ok = st === 200 && Array.isArray(rows) &&
-               rows.every((r) => r && r.status === 'published');
     const kinds = Array.isArray(rows) ? [...new Set(rows.map((r) => r?.status))] : null;
+    const leaked = kinds ? kinds.filter((k) => !allowed.includes(k)) : null;
+    const ok = st === 200 && Array.isArray(rows) && leaked && leaked.length === 0;
     record(
       ok,
-      `${name}: anon SELECT returns only published rows`,
+      `${name}: anon SELECT returns only ${allowed.join(' or ')} rows`,
       ok
         ? `HTTP 200, ${rows.length} row(s), status ${JSON.stringify(kinds)}`
-        : `HTTP ${st}, statuses ${JSON.stringify(kinds)} - a non-published row is visible to anon`
+        : `HTTP ${st}, statuses ${JSON.stringify(kinds)} - ${JSON.stringify(leaked)} visible to anon`
+    );
+
+    // ⚠️ A SECOND, NARROWER ASSERTION, BECAUSE THE ONE ABOVE CAN PASS ON AN
+    // EMPTY SET. "No forbidden status came back" is trivially true of zero rows.
+    // This says the table actually had something to show, so a load that
+    // published nothing cannot read as a policy that is working.
+    const populated = st === 200 && Array.isArray(rows) && rows.length > 0;
+    record(
+      populated,
+      `${name}: anon SELECT actually returned rows to judge`,
+      populated ? `${rows.length} row(s)` : 'zero rows - the check above proved nothing'
     );
   } else {
     const empty = status === 200 && Array.isArray(body) && body.length === 0;
