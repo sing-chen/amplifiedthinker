@@ -371,7 +371,7 @@
     link('index.html',         'Home',          'home'),
     link('future-skills.html', 'Future Skills', 'future-skills'),
     link('my-people.html',     'My People',     'my-people'),
-    link('news.html',          'News',          'news'),
+    link('news/',          'News',          'news'),
     link('about.html',         'About',         'about'),
     '  </ul>',
     '  <a href="' + root('search.html') + '" class="snav-search' + searchActiveCls + '" aria-label="Search">',

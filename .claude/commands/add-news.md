@@ -3,8 +3,25 @@ description: Turn a pasted "Daily workforce digest" output (or a bare URL) into 
 argument-hint: [paste the full daily digest text, paste a URL, or leave blank and paste/attach it in the next message]
 ---
 
-You are helping curate the News page at [news.html](public/news.html), backed by
-[news.json](public/news.json).
+> ## ⚠️ STOP — THIS COMMAND NO LONGER PUBLISHES ANYTHING
+>
+> **On `feat/news-db` it is already dead.** Phase 6 moved news into the database:
+> `/news/` and `/news/<slug>` render from `news_stories`, and `public/news.html` — the page this
+> command was written to feed — **was deleted at stage 11**. `news.json` is still in the tree and
+> this command will still edit it happily, **and nothing it writes will reach the site.**
+>
+> ⚠️ **No gate catches this.** The three `prebuild` checks are `verify:catalogue`, `verify:signin-return`
+> and `verify:encoding` — none of them reads `news.json`. A run here passes every check, commits,
+> deploys green and publishes nothing.
+>
+> **On `main` it still works** until Phase 6 merges at stage 17. After that merge it is dead there too.
+>
+> To add news, see the interim route recorded in
+> [docs/phase-6-runsheet.md](../../docs/phase-6-runsheet.md) §Stage 16. Do not follow the steps below
+> on a branch where `public/news.html` is absent.
+
+You are helping curate the News page — historically `public/news.html`, **deleted at Phase 6
+stage 11** — backed by [news.json](public/news.json).
 
 ## File locations
 

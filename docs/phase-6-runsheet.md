@@ -55,12 +55,12 @@ prevent.
 | 7 | The adapter decision | Claude + Human | ✅ Done | 2026-08-26, deployed as `2c9685c`. `@astrojs/vercel` 11.0.8, **`output` stays `'static'`** — ⚠️ `hybrid` was removed from Astro and `static` is what it became. Build output byte-identical with and without the adapter (88/89, the 89th a timestamp), and the live differential came back **3 changed / 0 not served**, all three the comment-only files. ⚠️ **`vercel.json`'s `outputDirectory: dist` removed** — it would have silently served stage 10's server routes as frozen static. `service_role`: **still no home** |
 | 8 | Write the migration script — slugs and `legacy_id` | Claude | ✅ Done | 2026-08-26. `scripts/build-news-seed.mjs` → `supabase/seed/news_seed.sql`, **81 stories / 27 groups / 1 pinned** derived from the file, not hardcoded. **All 81 `legacy_id`s round-tripped through `middleware.js`'s own `findStory()`, 0 mismatches.** ⚠️ Emits SQL rather than inserting: the table is admin-write and `service_role` is ruled out, so the dashboard SQL editor is the only route left  **Loaded and verified in stage 9 on 2026-08-26**, which is what closes this row |
 | 9 | Load dev, verify the data | Claude | ✅ Done | 2026-08-26. **81 rows on dev**, 81 distinct slugs and `legacy_id`s, one pinned matching `news.json`, statuses `["published"]` — all verified with the anon key from outside the dashboard. ⚠️ **All 81 stories compared field-by-field against the source, 0 differences**, rather than the five-title eyeball the stage asked for; em dashes read correctly in Postgres. `verify:rls` moved from `empty` to **`published`** — asserting the RLS predicate rather than the absence of data — and passes **22/22** |
-| 10 | `/news` and `/news/:slug`, server-rendered | Claude | ◐ Built and measured; **one box owed** | 2026-08-26. Both routes live on the branch, `prerender = false`, **81 story links in the index's response body** and the story text in `/news/<slug>`'s — no user-agent sniffing anywhere. Unknown slug **404 + noindex**; unreadable feed **503**, not an empty page. `sitemap.xml` **generated** now (100 URLs) and `public/sitemap.xml` deleted — a static file cannot list 81 URLs and stay right. Server and browser render from **one shared module**, so the two cannot drift. ⚠️ **Two defects found by measuring the rendered page, both also present in `news.html`**: `scrollIntoView` scrolled the whole document on load, and `.story-panel` kept a near-white border in dark mode. ⏭️ **The by-eye check is owed** — screenshots were unavailable, so every visual claim is a measurement. ⚠️ **The cutoff for `/add-news`** once this merges: the command still succeeds and publishes nothing. Breakage map under stage 16 |
-| 11 | The 301 endpoint for legacy URLs | Claude | ☐ Not started | This is the one the done-when tests |
+| 10 | `/news` and `/news/:slug`, server-rendered | Claude | ✅ Done | 2026-08-26, committed `6f23385`. Both routes live on the branch, `prerender = false`, **81 story links in the index's response body** and the story text in `/news/<slug>`'s — no user-agent sniffing anywhere. Unknown slug **404 + noindex**; unreadable feed **503**, not an empty page. `sitemap.xml` **generated** now (100 URLs) and `public/sitemap.xml` deleted — a static file cannot list 81 URLs and stay right. Server and browser render from **one shared module**, so the two cannot drift. ⚠️ **Two defects found by measuring the rendered page, both also present in `news.html`**: `scrollIntoView` scrolled the whole document on load, and `.story-panel` kept a near-white border in dark mode. **Checked by eye by the site owner and confirmed** — screenshots were unavailable, so every other visual claim here is a measurement. ⚠️ **The cutoff for `/add-news`** once this merges: the command still succeeds and publishes nothing. Breakage map under stage 16 |
+| 11 | The 301 endpoint for legacy URLs | Claude | ✅ Done | 2026-08-26. `/news.html?story=<date>-<index>` → **301** → `/news/<slug>`, resolved through the stored `legacy_id`. ⚠️ **`public/news.html` deleted and `/news.html` is a route now** — Vercel runs `handle: filesystem` before any route, so a static file at that path would have shadowed the endpoint entirely; there was no arrangement where both work. ⚠️ **`middleware.js` deleted here, not at stage 15**: its matcher is `/news.html` and it runs *before* the route, so for a social crawler it would have served the old shell **instead of the 301** — and `curl` could never have caught that. Unknown id → **404** (the old page showed the *pinned* story with a 200); failed lookup → **503, never a redirect**, because browsers cache 301s. **13 internal links** moved to `/news/`. ⚠️ **Reorder test PASSED**: with 14 August's two stories swapped on dev, the page order flipped and both redirects stayed put — `2026-08-14-0` still resolves to `ai-employment-gap`, which under the old positional scheme would by then have meant a different article |
 | 12 | Switch the banner's news source | Claude | ☐ Not started | Forced by the phase. Visitors must see no difference |
 | 13 | `search-index.json` → `/api/search-index.json` | Claude | ☐ Not started | |
 | 14 | Favourites, pins and notes | Claude | ☐ Not started | ⚠️ First user-authored free text on the site |
-| 15 | Retire `middleware.js` | Claude | ☐ Not started | Retire, not port |
+| 15 | Retire `middleware.js` | Claude | ◐ **Deleted at stage 11**; verification owed | The file is gone. It was pulled forward because at stage 11 it stopped being merely redundant and started **intercepting the very URLs the 301 answers**. What remains of this stage is the go-live check: a story URL in a link-preview debugger, which needs production and so cannot happen before stage 17 | Retire, not port |
 | 16 | Copy, privacy, and the obsolete command | Claude | ☐ Not started | ⚠️ Same-commit rule. `/add-news` dies here |
 | 17 | Go live — prod migration, then merge | Human + Claude | ☐ Not started | Migration **immediately before** the merge, never after |
 | 18 | Announce | Human + Claude | ☐ Not started | Banner and `updates.json` in the same sitting |
@@ -1130,7 +1130,7 @@ before merging, and do the real `curl` verification against production at stage 
 - [x] The pinned story surfaces the way it does today
 - [x] `sitemap.xml` includes the new URLs
 - [x] Nav and footer correct — ⚠️ `<footer class="site-footer">`, or it renders unstyled and nothing fails
-- [ ] Checked by eye in both themes, desktop and mobile — **owed, and it is the human's box**
+- [x] Checked by eye in both themes, desktop and mobile — **confirmed by the site owner, 2026-08-26**
 
 **Observed, 2026-08-26 — against `astro dev` on localhost, reading the DEV project**
 
@@ -1170,11 +1170,12 @@ The cause is logged server-side; a 503 nobody can diagnose is barely better than
    result, and **only a computed-style read finds it**. ⚠️ **`news.html` has the same bug and it is
    live today** — fixed in both files in the same commit.
 
-⚠️ **The last box is not one an automated check can close, so it is left open.** Screenshots were
-unavailable this session (the Browser pane was not compositing), so every visual claim above is a
-*measurement* — computed colours, computed `display`, element counts, scroll offsets. That is what
-caught both defects, and it is still not the same as looking at the page. Both of Phase 1's defects
-were found by a human in a browser and neither was catchable by the passing test.
+⚠️ **The last box was closed by a human, not by a check.** Screenshots were unavailable this session
+(the Browser pane was not compositing), so every claim in the table above is a *measurement* —
+computed colours, computed `display`, element counts, scroll offsets. That is what caught both
+defects, and it is still not the same as looking at the page. **The site owner checked it by eye
+and confirmed it on 2026-08-26**, which is the only thing that could close that box: both of
+Phase 1's defects were found by a human in a browser and neither was catchable by the passing test.
 
 **What this stage changed beyond the two routes**
 
@@ -1222,11 +1223,113 @@ forever".
 
 **Tick as you go**
 
-- [ ] Endpoint resolves `legacy_id` → `slug` and issues a **301**, not a 302
-- [ ] Spot-checked against three real shared URLs from different dates
-- [ ] ⚠️ Reorder test: `sort_order` changed on dev, redirect re-run, **same story**
-- [ ] An unknown `story=` id gives a sensible 404 or falls back to `/news`, deliberately chosen
-- [ ] `news.html:516`'s share URL updated to emit the new format — nothing breaks if this is missed, which is why it is easy to miss
+- [x] Endpoint resolves `legacy_id` → `slug` and issues a **301**, not a 302
+- [x] Spot-checked against three real shared URLs from different dates
+- [x] ⚠️ Reorder test: `sort_order` changed on dev, redirect re-run, **same story** — **passed 2026-08-26, evidence below**
+- [x] An unknown `story=` id gives a sensible 404 or falls back to `/news`, deliberately chosen
+- [x] ~~`news.html:516`'s share URL~~ — **N/A: the file is gone.** The share bar it sat in had been commented out since before this phase, so nothing was emitting the old format. ⏭️ `/news/<slug>` ships with **no share controls at all** — not a regression, but a real gap, and it belongs to whoever re-enables sharing
+
+**Observed, 2026-08-26**
+
+⚠️ **`public/news.html` was DELETED and `/news.html` is now a route, because there was no
+arrangement in which both could exist.** Vercel runs `handle: filesystem` **before** any route, so a
+static `news.html` wins every time and an endpoint at that path would never execute. The runsheet
+already calls for keeping the path alive "as a redirecting surface" — this is that, and it is not a
+choice between the two.
+
+```
+2026-08-14-0   301 -> /news/2026-08-14-ai-employment-gap-for-young-workers-widens-to-19
+2026-08-25-0   301 -> /news/2026-08-25-the-great-flattening-is-shrinking-management-without
+2026-07-02-0   301 -> /news/2026-07-02-canaries-in-the-coal-mine-six-facts-about-the-recent
+/news.html     301 -> /news/
+unknown id     404
+```
+
+All three land on the story `news.json` holds at that date and index, checked against the file.
+
+⚠️ **`middleware.js` was deleted here rather than at stage 15, because by stage 11 it is not
+merely redundant — it is in the way.** Its matcher is `/news.html` and it runs *before* the route,
+so for a social crawler with `?story=` it would have returned the old meta-tag shell **instead of
+the 301** — leaving the exact audience whose shared links this stage exists to fix parked on the
+old URL. ⚠️ **`curl` would not have caught it**: no bot user-agent, no interception, a clean 301
+every time. Stage 15 is now a verification-only step at go-live.
+
+⚠️ **An unknown id is a 404, and that is an improvement on what `news.html` did.** The old page
+fell back to `pickDefaultStory()`, so a mistyped or withdrawn id rendered the **pinned** story under
+a URL claiming to be a different one, with a `200`. The endpoint `rewrite`s to the same not-found
+page `/news/<unknown-slug>` serves, so the reader keeps the URL they clicked and gets the site's
+chrome and a link back to the feed.
+
+⚠️ **A failed lookup returns 503 and does NOT redirect.** A 301 issued during an outage would
+permanently repoint a real shared link at the wrong place, and browsers cache 301s — the damage
+would outlive the outage that caused it.
+
+**13 internal links moved from `news.html` to `news/`** across nine pages plus `nav.js`,
+`updates.json` and `BaseLayout` — so the site does not link to a redirect from every footer.
+Verified as *rendered*, not as source: `nav.js` resolves `../../news/` → `/news/` from a skill page
+two levels down. Every file is one line in, one line out in `git diff --numstat`, which is the
+round-trip-damage tell. ⏭️ Two references deliberately left: `index.html`'s banner link (stage 12)
+and `search-index.json` (stage 13) — both emit the old form and both now 301 correctly.
+
+⚠️ **`/add-news` now names a file that does not exist**, so it carries a stop banner at the top
+of the command. It was already publishing nothing after stage 10; what changed is that the lie is
+now visible rather than silent. Fifth instance of the orphaned-command trap.
+
+### The reorder test — owed, and it needs the dashboard
+
+This is **the one thing in Phase 6 that cannot be verified after the fact**, and the anon key cannot
+write to an admin-write table, so it is a paste into the dev SQL editor.
+
+Before, on dev:
+
+| `sort_order` | `legacy_id` | story |
+|---|---|---|
+| 0 | `2026-08-14-0` | AI Employment Gap for Young Workers Widens to 19% |
+| 1 | `2026-08-14-1` | Buried in OpenAI's Own Research: No Correlation Between AI Use and Revenue per Employee |
+
+**Swap them** (dev project, SQL editor):
+
+```sql
+update public.news_stories set sort_order = 99 where legacy_id = '2026-08-14-0';
+update public.news_stories set sort_order = 0  where legacy_id = '2026-08-14-1';
+update public.news_stories set sort_order = 1  where legacy_id = '2026-08-14-0';
+```
+
+Then `2026-08-14-0` **must still redirect to `…ai-employment-gap…`**, even though it is no longer
+that day's first story. If it follows the position instead, positional ids were never really
+retired and every link shared before this phase is a time bomb.
+
+**Restore afterwards:**
+
+```sql
+update public.news_stories set sort_order = 99 where legacy_id = '2026-08-14-1';
+update public.news_stories set sort_order = 0  where legacy_id = '2026-08-14-0';
+update public.news_stories set sort_order = 1  where legacy_id = '2026-08-14-1';
+```
+
+⚠️ The detour through `99` is not superstition: `sort_order` has no unique constraint, so a direct
+swap would work — but leaving both rows on the same value mid-way is exactly how a half-applied
+edit becomes an ambiguous order nobody notices.
+
+**Result — PASSED, 2026-08-26.** The swap was applied on dev and both halves were read back:
+
+```
+DISPLAY ORDER on /news/   ...buried-in-openais...      <- now first
+                          ...ai-employment-gap...      <- now second
+
+REDIRECT  2026-08-14-0 ->  ...ai-employment-gap...     <- UNMOVED
+          2026-08-14-1 ->  ...buried-in-openais...     <- UNMOVED
+```
+
+⚠️ **The two halves disagreeing is the evidence, not a discrepancy.** The page order flipped, so
+the reorder genuinely took effect and the `select` was not lying; the redirect did not, so it is
+resolving through the stored `legacy_id` and not through position. Under the old scheme
+`2026-08-14-0` would now open the OpenAI story — **a link shared weeks earlier silently pointing at
+a different article, with no error anywhere.**
+
+⚠️ **Checking the display order was not padding.** Had only the redirect been re-run, a swap that
+never applied would have produced an identical PASS — the test would have proved nothing and looked
+green. `sort_order` was restored afterwards.
 
 ---
 
@@ -1307,18 +1410,27 @@ state should invite rather than block.
 
 ## Stage 15 — Retire `middleware.js` · Owner: Claude
 
-Its only job was faking meta tags for social scrapers because the real page rendered client-side
-after `fetch('news.json')`. Stage 10 makes the content genuinely server-rendered, so there is nothing
-left for it to do.
+⚠️ **DONE EARLY — the file was deleted at stage 11, and that was not tidying-up.**
 
-**Retire, not port.** Confirm the social preview is still correct after deletion — the meta tags now
-come from the page itself, which is the whole improvement.
+Its only job was faking meta tags for social scrapers because the real page rendered client-side
+after `fetch('news.json')`. Stage 10 made the content genuinely server-rendered, which left it
+redundant. **Stage 11 made it actively harmful**: its matcher is `/news.html`, and Vercel runs
+middleware *before* routes — so a crawler following a shared `?story=` link would have been handed
+the old meta-tag shell **instead of the 301**, parking the exact audience this phase exists to serve
+on the URL it is trying to retire.
+
+⚠️ **Nothing would have reported that.** The redirect test is a `curl`, which carries no bot
+user-agent, so every check would have passed while the behaviour was wrong for LinkedIn, Slack and
+every other scraper. Same shape as the `[hidden]` and rendered-nav traps in CLAUDE.md: the test
+exercised a path the failure does not live on.
+
+**Retire, not port.** The meta tags now come from the page itself, which is the whole improvement.
 
 **Tick as you go**
 
-- [ ] `middleware.js` deleted from the repo root
-- [ ] A story URL checked in a link-preview debugger — title, description and image all present
-- [ ] Nothing else in the repo referenced it
+- [x] `middleware.js` deleted from the repo root — at stage 11
+- [ ] A story URL checked in a link-preview debugger — title, description and image all present. ⏭️ **Needs production**: previews are auth-walled, so no scraper can reach one. This is a **stage 17 go-live check**
+- [x] Nothing else in the repo referenced it — grepped; only its own header and the runsheet
 
 ---
 
@@ -1345,6 +1457,7 @@ Worked out 2026-08-26, before Part B started, so it is not re-derived at the poi
 | Stage | Effect on `/add-news` |
 |---|---|
 | **10** — `/news` server-rendered | ⚠️ **First break, and it is SILENT.** The command still succeeds and still writes `news.json`, but the news page now renders from the DB — so **nothing it writes reaches the site.** A green run that publishes nothing |
+| **11** — `news.html` becomes a redirect | ⚠️ **The command's own header now names a file that does not exist.** `public/news.html` was deleted, so the page it was written to feed is gone — but it still *runs*, because `news.json` and `search-index.json` are both still there. Not a hard break; a **visible** one, where stage 10 was invisible. A stop banner was added to the command here |
 | **12** — banner switches to the DB | The homepage banner stops reading `news.json` too. Both surfaces now ignore the file the command maintains |
 | **13** — `search-index.json` deleted | ❌ **First hard break.** Step 3a opens that file and gets `FileNotFoundError`. It fails **dirty**: step 3 has already written `news.json`, leaving a modified file and an unwritten index |
 | **16** — `news.json` deleted | ❌ **Total.** Step 3 fails at `json.load(open('public/news.json'))` |

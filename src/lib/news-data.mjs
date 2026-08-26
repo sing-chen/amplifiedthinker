@@ -74,6 +74,42 @@ function normalise(row) {
 }
 
 /**
+ * The slug a legacy `<date>-<index>` id points at, or null.
+ *
+ * ⚠️ THIS IS THE WHOLE REASON SLUGS REPLACED POSITIONAL IDS. `legacy_id` is
+ * stored, immutable and unique; the position it was derived from is not. Once
+ * an admin UI can reorder a day's stories, `2026-08-14-0` stops describing
+ * whichever story is first and keeps describing the one it was minted for —
+ * but only because this resolves through the stored column rather than
+ * recomputing the position.
+ *
+ * One row, one column: a redirect should not read the whole table.
+ */
+export async function slugForLegacyId(hostname, legacyId) {
+  const env = environmentFor(hostname);
+  const project = PROJECTS[env];
+  if (!project) throw new Error(`no Supabase project configured for "${env}"`);
+
+  const endpoint = `${project.url}/rest/v1/news_stories` +
+    `?select=slug&status=eq.published&legacy_id=eq.${encodeURIComponent(legacyId)}&limit=1`;
+
+  const res = await fetch(endpoint, {
+    headers: {
+      apikey: project.key,
+      Authorization: `Bearer ${project.key}`,
+      Accept: 'application/json'
+    }
+  });
+
+  if (!res.ok) {
+    throw new Error(`legacy_id lookup failed on ${env}: HTTP ${res.status} ${await res.text()}`);
+  }
+
+  const rows = await res.json();
+  return Array.isArray(rows) && rows[0] ? rows[0].slug : null;
+}
+
+/**
  * Every published story, newest first, with the pinned one still in date order
  * — the renderer lifts it to the top itself so both sides agree about where it
  * belongs.

@@ -4,14 +4,11 @@
  * learning.css follow: styles.css and nav.js are already paid for by every
  * page, and nothing outside /news/ needs a word of this.
  *
- * ⚠️ THIS IS A DELIBERATE NEAR-COPY OF THE <style> BLOCK IN public/news.html,
- * and the duplication is temporary by design. Both pages are live at once for
- * exactly two stages of Phase 6: news.html becomes a 301 at stage 11 and its
- * data source is deleted at stage 16, taking the original block with it. Until
- * then a visual change belongs in BOTH files — check news.html before editing
- * here, and delete this note when news.html goes.
+ * It began as a near-copy of the <style> block in public/news.html. That page
+ * was deleted at Phase 6 stage 11, when `/news.html` became a redirect, so this
+ * is now the only copy and there is nothing left to keep it in step with.
  *
- * What genuinely differs from that copy, rather than having been transcribed:
+ * What differed from that copy, rather than having been transcribed:
  * the headline rows, the back link and the Previous/Next controls are anchors
  * now instead of buttons, because they are real URLs. Anchors bring
  * `text-decoration` and an inherited link colour with them, so each carries an
@@ -30,7 +27,7 @@
 
 /* ── MAIN / FILTER BAR ──
    ⚠️ `.news-main`, not `main`. BaseLayout wraps every page's content in one
-   <main>, so the hero lives inside it here rather than beside it as it does in
+   <main>, so the hero lives inside it here rather than beside it as it did in
    news.html — and a max-width on `main` itself would cage the full-bleed hero
    band. The measure and the padding belong to the inner wrapper instead. */
 .news-main{max-width:var(--page-max);margin:0 auto;padding:32px 40px 88px}
@@ -173,8 +170,9 @@
    block without an override, so in dark mode it kept a near-white #D8E4DD
    outline while the headline column beside it wore a faint one — valid CSS,
    correct token name, wrong result. Found by reading the computed border
-   colour, which is the only way this shows up; the same line is missing from
-   news.html's copy and was fixed there in the same commit. */
+   colour, which is the only way this shows up. The same line was missing from
+   news.html, which was still live at the time and got the same fix; that page
+   has since been deleted. */
 [data-theme="dark"] .story-panel{border-color:var(--line)}
 [data-theme="dark"] .story-source{color:var(--accent-warm)}
 [data-theme="dark"] .story-pinned-badge{color:var(--accent-warm)}

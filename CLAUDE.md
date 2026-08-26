@@ -39,10 +39,9 @@ public/          the 20 hand-written pages, shipped byte-for-byte untouched by A
                    per request by src/pages/sitemap.xml.js. Putting a static one back would
                    SHADOW that route, because `handle: filesystem` runs first
                  — plus news-app.css, added 2026-08-26. ⚠️ /news/ and /news/<slug> ONLY, same
-                   scoping rule as auth-pages.css. It is a deliberate near-copy of the <style>
-                   block inside news.html and the duplication is TEMPORARY: both surfaces are
-                   live for two stages of Phase 6, so a visual change belongs in BOTH files
-                   until news.html goes at stage 16
+                   scoping rule as auth-pages.css. It began as a near-copy of the <style> block
+                   inside news.html; that page was deleted at stage 11, so this is now the ONLY
+                   copy and there is nothing left to keep it in step with
                  — plus fonts.css and fonts/, the self-hosted type (2026-08-23). ⚠️ fonts.css is
                    linked by ALL 20 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
                    primer/plan pages are self-contained and deliberately skip styles.css, so the
@@ -97,6 +96,12 @@ src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.a
                    published since. That is the exact failure server rendering was added to stop
                    news/index.astro     /news/ — the index
                    news/[slug].astro    /news/<slug> — one story, real text in the response body
+                   news.html.js         ⚠️ REPLACED public/news.html, which was DELETED. It is a
+                                        REDIRECT now: ?story=<date>-<index> resolves through the
+                                        stored legacy_id and 301s to /news/<slug>. 301 not 302 on
+                                        purpose — 302 leaves the query string canonical. A failed
+                                        lookup returns 503 and NEVER redirects, because browsers
+                                        cache 301s and the damage would outlive the outage
                    sitemap.xml.js       ⚠️ REPLACED public/sitemap.xml, which was DELETED. A
                                         static file cannot list 81 story URLs and stay right,
                                         and an incomplete sitemap fails nothing and looks
@@ -127,7 +132,15 @@ src/scripts/     news-app.js — filter, search, keyboard nav and in-place story
                  /news/ routes. Bundled by Astro (a module here is fine: it has no
                  document.currentScript and no inline handlers, which is what is:inline is for)
 src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages match old ones
-middleware.js    Vercel Edge Middleware, repo root. Serves social-preview meta tags to bots
+                 — ⚠️ news.html is NO LONGER HERE either. It was deleted 2026-08-26 and `/news.html`
+                   is now a redirecting route (src/pages/news.html.js) resolving `legacy_id` → slug.
+                   A static file could not coexist with it: `handle: filesystem` runs FIRST, so the
+                   static page wins every time and the endpoint never executes
+(middleware.js)  DELETED 2026-08-26. It served social-preview meta tags to bots for
+                 news.html?story=, because the page rendered client-side. ⚠️ Do not reintroduce it
+                 without reading why it went: /news/<slug> carries real meta tags now, and the
+                 middleware's matcher was `/news.html` — running BEFORE routes, it would hand a
+                 crawler the old shell instead of the 301, which no `curl` test can detect
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
                  the apply/verify runbook plus the dashboard settings SQL cannot reach
                  email-templates/ — the two auth emails. CONFIGURATION, not code: nothing
