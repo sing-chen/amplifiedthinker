@@ -21,8 +21,8 @@ identical but are not:
 
 | Kind | Example | Needs `public/`? |
 |---|---|---|
-| A file you read or write | `public/skills/[slug]/plan.html`, `public/nav.js`, `public/search-index.json` | **Yes** |
-| A URL inside a page's HTML | `../../nav.js`, `<img src="skills/[slug]/video-thumbnail.png">`, `url` values in `search-index.json` | **No — never** |
+| A file you read or write | `public/skills/[slug]/plan.html`, `public/nav.js`, `src/data/search-static.json` | **Yes** (⚠️ the search index lives under `src/data/`, NOT `public/` — it is no longer served directly) |
+| A URL inside a page's HTML | `../../nav.js`, `<img src="skills/[slug]/video-thumbnail.png">`, `url` values in `search-static.json` | **No — never** |
 
 Adding `public/` to a URL inside a page breaks it at runtime; omitting it from a file path writes to
 the wrong place, or fails. The instructions below are already correct on both counts — follow them
@@ -210,16 +210,18 @@ Rewrite that block to match the structure of an already-live card (e.g. `id="s-c
 
 Note the video-thumbnail.png referenced here won't exist yet (per Step 4's build rule 8, video is added later) — the `<img>` will show broken until that file is added. That's expected and matches how this site's build sequence already works; don't skip the `<img>` tag to avoid it unless the user says otherwise.
 
-**5c. Add the skill to search-index.json**
+**5c. Add the skill to the search index**
 
-[search-index.json](public/search-index.json) is a hand-maintained file that [search.html](public/search.html) fetches directly — it is NOT auto-generated from the skill pages, so a new skill is invisible to site search until it has an entry here. Add two entries (one `"type": "primer"`, one `"type": "plan"`) immediately after the pattern used by an existing skill (e.g. search for `"cr-primer"` / `"cr-plan"` and follow that shape exactly):
+⚠️ **THE FILE MOVED ON 2026-08-26.** `public/search-index.json` was **deleted** at Phase 6 stage 13. `search.html` now fetches `/api/search-index.json`, which joins the hand-authored entries in [src/data/search-static.json](src/data/search-static.json) to the news stories, derived from the database. **Editing the old path silently does nothing** — there is no file there and nothing reads one.
+
+[src/data/search-static.json](src/data/search-static.json) is still hand-maintained — the page, primer, plan and person entries are editorial and are NOT auto-generated from the skill pages, so a new skill is invisible to site search until it has an entry here. Only the 81 news entries were derived away. Add two entries (one `"type": "primer"`, one `"type": "plan"`) immediately after the pattern used by an existing skill (e.g. search for `"cr-primer"` / `"cr-plan"` and follow that shape exactly):
 - `id`: a short two-letter-ish prefix + `-primer` / `-plan` (e.g. `st-primer`)
 - `skill`, `title`, `description`: reuse the primer/plan's own `<title>`/meta description content, don't rephrase
 - `tags`: the skill name, each mental model name, key named frameworks/authors, plus `"primer"` or leave off for plan, and the skill's category (e.g. `"cognitive"`)
 - `slides` (primer) or `sections` (plan): the exact nav-rail labels from the built page, in order
 - `url`: `skills/[slug]/primer.html` or `skills/[slug]/plan.html` — a URL, so **no `public/` prefix**
 
-After editing, validate the file is still well-formed JSON before moving on (a trailing comma or missed brace here breaks site search entirely, not just this skill's entry).
+After editing, validate the file is still well-formed JSON before moving on. ⚠️ **A syntax error here now fails `npm run build`**, because the endpoint imports it — louder than the old failure mode, where a trailing comma broke site search at runtime and nothing reported it.
 
 ⚠️ **Edit it in place, and never through PowerShell.** "Hand-maintained" makes this the likeliest
 file in the repo to be round-tripped by whatever tool is nearest, and PowerShell 5.1 decodes as ANSI
@@ -348,7 +350,7 @@ feat: add [Skill Name] primer and learning plan
 - public/skills/[slug]/primer.html: [X]-slide primer covering [key topics]
 - public/skills/[slug]/plan.html: 14-section learning plan with [key structural notes]
 - public/nav.js, public/future-skills.html: register and activate the [Skill Name] card
-- public/search-index.json: add primer/plan entries so the skill surfaces in site search
+- src/data/search-static.json: add primer/plan entries so the skill surfaces in site search (⚠️ NOT public/search-index.json — deleted 2026-08-26)
 - public/updates.json, public/index.html: What's New entry and homepage banner item, same date
 - public/skills-catalogue.json, scripts/build-skills-catalogue.mjs: regenerated counts
 ```

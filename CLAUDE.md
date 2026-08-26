@@ -104,6 +104,18 @@ src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.a
                                         purpose — 302 leaves the query string canonical. A failed
                                         lookup returns 503 and NEVER redirects, because browsers
                                         cache 301s and the damage would outlive the outage
+                   api/search-index.json.js  ⚠️ REPLACED public/search-index.json, DELETED
+                                        2026-08-26. 81 of its 104 entries were a hand-maintained
+                                        COPY of news that lives in the DB — and that file is the
+                                        one found on main with 39 CP1252-decoded characters,
+                                        valid JSON, right count, all checks green, the only
+                                        symptom a result reading "Bren<e9> Brown". The other 23
+                                        are editorial and live in src/data/search-static.json.
+                                        ⚠️ A FAILED DB READ MUST DEGRADE, NOT 503: search.html
+                                        treats a failed index fetch as fatal and disables itself,
+                                        so failing hard would turn a DB outage into a dead search
+                                        page — a regression caused by the fix. It serves the 23
+                                        static entries and sets x-news-entries: 0
                    api/news/recent.json.js  the homepage banner's source. ⚠️ DELIBERATELY an
                                         endpoint rather than a browser query, though nav.js loads
                                         the Supabase client on every page. A signed-out visitor
@@ -118,6 +130,10 @@ src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.a
                                         exactly like a correct one — same shape as the
                                         catalogue trap. Serves the static half even if the
                                         story read fails
+src/data/        search-static.json — the hand-authored half of the search index (page, primer,
+                 plan, person). ⚠️ NOT under public/ and NOT served directly; the endpoint imports
+                 it, so a syntax error FAILS THE BUILD rather than breaking site search silently.
+                 /add-skill writes here now — editing public/search-index.json does nothing
 src/lib/         news-render.mjs  ⚠️ THE MARKUP, WRITTEN ONCE AND RUN IN TWO PLACES — the server
                                   builds the first paint from it and public's client script
                                   re-renders from the same functions. A server render and a

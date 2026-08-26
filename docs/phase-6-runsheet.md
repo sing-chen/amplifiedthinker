@@ -58,7 +58,7 @@ prevent.
 | 10 | `/news` and `/news/:slug`, server-rendered | Claude | ✅ Done | 2026-08-26, committed `6f23385`. Both routes live on the branch, `prerender = false`, **81 story links in the index's response body** and the story text in `/news/<slug>`'s — no user-agent sniffing anywhere. Unknown slug **404 + noindex**; unreadable feed **503**, not an empty page. `sitemap.xml` **generated** now (100 URLs) and `public/sitemap.xml` deleted — a static file cannot list 81 URLs and stay right. Server and browser render from **one shared module**, so the two cannot drift. ⚠️ **Two defects found by measuring the rendered page, both also present in `news.html`**: `scrollIntoView` scrolled the whole document on load, and `.story-panel` kept a near-white border in dark mode. **Checked by eye by the site owner and confirmed** — screenshots were unavailable, so every other visual claim here is a measurement. ⚠️ **The cutoff for `/add-news`** once this merges: the command still succeeds and publishes nothing. Breakage map under stage 16 |
 | 11 | The 301 endpoint for legacy URLs | Claude | ✅ Done | 2026-08-26. `/news.html?story=<date>-<index>` → **301** → `/news/<slug>`, resolved through the stored `legacy_id`. ⚠️ **`public/news.html` deleted and `/news.html` is a route now** — Vercel runs `handle: filesystem` before any route, so a static file at that path would have shadowed the endpoint entirely; there was no arrangement where both work. ⚠️ **`middleware.js` deleted here, not at stage 15**: its matcher is `/news.html` and it runs *before* the route, so for a social crawler it would have served the old shell **instead of the 301** — and `curl` could never have caught that. Unknown id → **404** (the old page showed the *pinned* story with a 200); failed lookup → **503, never a redirect**, because browsers cache 301s. **13 internal links** moved to `/news/`. ⚠️ **Reorder test PASSED**: with 14 August's two stories swapped on dev, the page order flipped and both redirects stayed put — `2026-08-14-0` still resolves to `ai-employment-gap`, which under the old positional scheme would by then have meant a different article |
 | 12 | Switch the banner's news source | Claude | ✅ Done | 2026-08-26. Reads **`/api/news/recent.json`**, a new endpoint on our own domain. ⚠️ **The stage's own question was answered the other way, and `privacy.html` is why**: the homepage *does* load the Supabase client, but a signed-out visitor currently contacts `supabase.co` **never**, so the processor table's "Account holders" is exactly true and §9 claims *no third party is involved in showing you the page*. A browser query would have broken both, on the most-visited page. **privacy.html checked and deliberately unchanged** — the design keeps it true rather than editing it to catch up. Selection rules stayed in `index.html`; both selections computed and compared — **same three stories, same order, only the links changed**. Failure branch tested by actually breaking the fetch. ⚠️ **`news.json` is now read by nothing the site serves** |
-| 13 | `search-index.json` → `/api/search-index.json` | Claude | ☐ Not started | |
+| 13 | `search-index.json` → `/api/search-index.json` | Claude | ✅ Done | 2026-08-26. **104 entries before, 104 after**, compared against the old file read out of git: same news set, same order, `tags` still omitted, 122 non-ASCII characters both sides and no mojibake. ⚠️ **Only 78% could be derived away** — the 23 page/primer/plan/person entries are editorial and moved to `src/data/search-static.json` unchanged, extracted by script rather than retyped. ⚠️ **The comparison caught a static entry I had not planned to touch**: the News *page*'s own result still pointed at `news.html`. ⚠️ **A failed read degrades rather than 503s** — `search.html` treats a failed fetch as fatal, so an endpoint that failed hard would have turned a DB outage into a dead search page, a regression caused by the fix. Tested by injecting a failure: 23 entries, `x-news-entries: 0`, search still working. `/add-skill` **repointed, not stripped** | |
 | 14 | Favourites, pins and notes | Claude | ☐ Not started | ⚠️ First user-authored free text on the site |
 | 15 | Retire `middleware.js` | Claude | ◐ **Deleted at stage 11**; verification owed | The file is gone. It was pulled forward because at stage 11 it stopped being merely redundant and started **intercepting the very URLs the 301 answers**. What remains of this stage is the go-live check: a story URL in a link-preview debugger, which needs production and so cannot happen before stage 17 | Retire, not port |
 | 16 | Copy, privacy, and the obsolete command | Claude | ☐ Not started | ⚠️ Same-commit rule. `/add-news` dies here |
@@ -1424,11 +1424,72 @@ touch it — but if the page is edited at all, do not unscope those rules.
 
 **Tick as you go**
 
-- [ ] `/api/search-index.json` returns page, person, primer, plan **and** news entries
-- [ ] News entries point at `/news/:slug`, not the old `news.html?story=` form
-- [ ] `search.html`'s fetch URL updated — one line
-- [ ] Search results verified by hand for a news term, a skill term and a person
-- [ ] `public/search-index.json` deleted, and `/add-skill` updated to stop maintaining it
+- [x] `/api/search-index.json` returns page, person, primer, plan **and** news entries
+- [x] News entries point at `/news/:slug`, not the old `news.html?story=` form
+- [x] `search.html`'s fetch URL updated — one line
+- [x] Search results verified by hand for a news term, a skill term and a person
+- [x] `public/search-index.json` deleted, and `/add-skill` updated — ⚠️ **repointed, not stripped**: 23 of the 104 entries are still hand-maintained
+
+**Observed, 2026-08-26**
+
+**104 entries before, 104 after.** The old file was read out of git and compared against what the
+endpoint serves:
+
+```
+by type before : {page:5, primer:5, plan:5, person:8, news:81}
+by type after  : {page:5, primer:5, plan:5, person:8, news:81}
+
+news title+summary set identical .. YES
+news order preserved .............. YES
+every news url is /news/<slug> .... YES
+news entries carrying tags ........ 0   (omitted, as they always were)
+non-ASCII: 122 before, 122 after .. mojibake patterns: none
+```
+
+⚠️ **ONLY 78% OF THAT FILE COULD BE DERIVED AWAY.** The 23 page/primer/plan/person entries carry
+editorial descriptions, tags, quotes and section lists that exist nowhere else, so they moved to
+`src/data/search-static.json` **unchanged**. They were extracted with a script rather than retyped:
+this is the file that sat on `main` with 39 CP1252-decoded characters in it, and retyping it would
+be a fresh chance at exactly that. Round trip proved identical before the old file was deleted.
+
+⚠️ **The comparison caught one thing I had not planned to change.** A *static* entry — the News
+page's own search result, `id: "news"` — still pointed at `news.html`. Every news **story** URL had
+been dealt with; the entry for the news **page** had not. Fixed, and then proved to be the only
+difference: a field-level diff across all 23 static entries reported **1 entry differing, 1 field**,
+`"news.html"` → `"/news/"`.
+
+**Verified in the browser, by reading rendered results rather than the index:**
+
+| query | result |
+|---|---|
+| `flattening` | News → `/news/2026-08-25-the-great-flattening-…` — **no redirect in the path any more** |
+| `systems thinking` | Skill Primer + Full Learning Plan, both `skills/systems-thinking/…` |
+| `Bren` | Person → **`Brené Brown`**, rendered correctly — the exact string the mojibake bug corrupted |
+
+⚠️ **THE REAL RISK IN THIS STAGE WAS TURNING AN OUTAGE INTO A DEAD SEARCH PAGE, AND IT WAS TESTED
+BY CAUSING ONE.** `search.html` treats a failed index fetch as fatal: it disables the input and
+shows *"Search unavailable"*. The index used to be a static file, so a database outage could not
+touch search at all — so an endpoint that 503s on a failed read would have been a **regression
+introduced by the change meant to stop the index drifting.** A failure was injected into the
+endpoint and the page reloaded:
+
+```
+HTTP/1.1 200 OK        x-news-entries: 0        cache-control: public, max-age=30
+entries: 23  {page:5, primer:5, plan:5, person:8}
+
+search input disabled .. false        error state .. none
+"systems thinking" ..... 2 results
+```
+
+Search stays alive on the static half and loses only the news entries. The `x-news-entries` header
+is there so a human can tell a degraded index from a healthy one without reading function logs, and
+the cache drops to 30s so a transient failure does not sit in the CDN behind a truncated index.
+
+⚠️ **`/add-skill` was repointed rather than having the step removed.** The step does not disappear —
+a new skill's primer and plan entries are still hand-written, they just live in `src/data/` now, and
+editing the deleted path would silently do nothing. One thing got **louder**: a syntax error in that
+file now fails `npm run build`, because the endpoint imports it, where before a trailing comma broke
+site search at runtime and nothing reported it.
 
 ---
 

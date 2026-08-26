@@ -739,7 +739,14 @@
   var initialQuery = urlParams.get('q') || '';
 
   /* ── LOAD INDEX & INIT FUSE ──────────────────────────────────────────────── */
-  fetch('./search-index.json')
+  /* ⚠️ `/api/search-index.json`, not a file. public/search-index.json was
+     deleted at Phase 6 stage 13: 81 of its 104 entries were a hand-maintained
+     copy of news that lives in the database, and that copy is the one that sat
+     on `main` with 39 CP1252-decoded characters in it. The endpoint assembles
+     the hand-authored 23 with the news half derived.
+     ⚠️ Root-absolute on purpose — `./` resolved against this page, and the
+     index is no longer this page's neighbour. */
+  fetch('/api/search-index.json')
     .then(function (res) {
       if (!res.ok) throw new Error('Index fetch failed: ' + res.status);
       return res.json();
