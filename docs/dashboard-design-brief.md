@@ -50,9 +50,10 @@ Non-negotiable. A design that breaks any of these cannot ship, whatever it looks
 
 ### Platform
 
-- **Must work with no server.** The GitHub Pages origin runs static files only, and both origins are
-  live. Everything on this page is fetched client-side by the browser after load. No server
-  rendering, no `/api/` dependency.
+- **Client-side fetch, but no longer forced.** ⚠️ **This constraint was lifted on 2026-08-26**, when
+  the static-only GitHub Pages origin was retired. Everything on this page is still fetched
+  client-side after load, which remains the simplest thing that works — but server rendering and
+  `/api/` are now available if they earn their place, where previously they were ruled out.
 - **Data arrives late and may not arrive at all.** Progress is fetched over the network after first
   paint. Every layout needs a loading state that does not reflow violently when data lands, and a
   failure state.

@@ -21,9 +21,11 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
+// One origin since 2026-08-26, when the GitHub Pages origin was retired. Its
+// entry is gone rather than commented out: this check fetches every published
+// path from every origin, so a dead entry would turn one 404 into hundreds.
 const ORIGINS = {
-  vercel: 'https://amplifiedthinker.com',
-  pages:  'https://sing-chen.github.io/amplifiedthinker'
+  vercel: 'https://amplifiedthinker.com'
 };
 
 const mode = process.argv[2] === 'after' ? 'after' : 'before';

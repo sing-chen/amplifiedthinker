@@ -109,12 +109,12 @@ Redirect URLs:  https://amplifiedthinker.com/**
                 http://localhost:4321/**
 ```
 
-Four lines, four reasons, none of them optional:
+Four lines, four reasons — three of them still current:
 
 | Line | Why it is there |
 |---|---|
-| `amplifiedthinker.com` | The primary origin. |
-| `sing-chen.github.io/amplifiedthinker` | **Required, not a nicety.** Some corporate networks block the custom domain under newly-registered-domain policies, and those users have no other route in. Omitting it means sign-in fails for exactly the people with no fallback. |
+| `amplifiedthinker.com` | The primary origin, and since 2026-08-26 the only one. |
+| `sing-chen.github.io/amplifiedthinker` | ⚠️ **STALE — remove it.** It was required while corporate NRD filtering left those users no other route in. That origin was retired on 2026-08-26 and 404s. See *Cleanup owed* below. |
 | `amplifiedthinker-git-*-singchen.vercel.app` | The stable per-branch preview alias. Without the wildcard, sign-in works in production and fails on every branch with no useful error. The per-commit URL cannot be listed — it changes on every push. |
 | `localhost:4321` | Astro's dev server port. |
 
@@ -372,7 +372,28 @@ against our signup endpoint. The split is what keeps that grant confined to a sc
 which is a second, independent reason for the dev project, beyond protecting user data.
 
 `sing-chen.github.io` is listed rather than `github.io`: the parent would authorise every GitHub
-Pages site in existence. It comes off the widget when that origin is retired.
+Pages site in existence. ⚠️ **That origin was retired on 2026-08-26 and the hostname is still on the
+widget** — see *Cleanup owed* below.
+
+#### Cleanup owed — two dashboard entries the Pages retirement left behind
+
+Both name `sing-chen.github.io`, which stopped serving the site on 2026-08-26. **Neither lives in
+this repository**, so no script in it can remove them and no check will go red while they stand —
+which is exactly why they are written down here.
+
+| Where | Entry | What it means while it stands |
+|---|---|---|
+| Supabase → prod → Auth → URL Configuration | `https://sing-chen.github.io/amplifiedthinker/**` | Production will honour an auth redirect to a host that now serves nothing. The destination is dead rather than hostile, but it is an allowlist entry pointing at an address this project no longer controls the content of. |
+| Cloudflare → Turnstile → `amplifiedthinker-prod` | hostname `sing-chen.github.io` | The prod sitekey will still render a challenge on that hostname. Nothing is served there to render it. |
+
+⚠️ **The second one is the one to think about.** A Turnstile hostname grant covers the hostname and
+its subdomains — and `sing-chen.github.io` is a **user-owned GitHub Pages domain**, so anything that
+account publishes there in future is inside the grant. That is fine while the account is the site
+owner's own, and stops being fine the moment it is not.
+
+After removing them: `npm run verify:redirects` still passes (the entry was dropped from its
+expectations on 2026-08-26), and the Turnstile change is verified by signing in on production —
+there is no automated check for the widget's hostname list.
 
 #### The gate — a criterion a bad outcome cannot satisfy
 
@@ -567,7 +588,7 @@ would mean a laptop could drive the production database through a redirect that 
 
 | | Site URL | Redirect URLs |
 |---|---|---|
-| **prod** | `https://amplifiedthinker.com` | `https://amplifiedthinker.com/**`<br>`https://sing-chen.github.io/amplifiedthinker/**` |
+| **prod** | `https://amplifiedthinker.com` | `https://amplifiedthinker.com/**`<br><s>`https://sing-chen.github.io/amplifiedthinker/**`</s> ⚠️ retired 2026-08-26, still in the dashboard — see *Cleanup owed* |
 | **dev** | `http://localhost:4321` | `http://localhost:4321/**`<br>`https://amplifiedthinker-git-*-singchen.vercel.app/**` |
 
 Verify each entry with the `/auth/v1/verify` probe documented above, **including the known-bad

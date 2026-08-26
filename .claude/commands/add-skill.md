@@ -231,7 +231,7 @@ JSON, right entry count, every check green — the only symptom was search resul
 the PowerShell trap in [CLAUDE.md](../../CLAUDE.md).
 
 Skill titles and descriptions here routinely contain em dashes and `·`, so this file is squarely in
-range. `npm run verify:encoding` catches it and runs as `prebuild` on both origins; `npm run
+range. `npm run verify:encoding` catches it and runs as `prebuild`, so it gates the deploy; `npm run
 fix:encoding` repairs it.
 
 **5d. Announce the skill in both places, in one sitting**
@@ -330,7 +330,7 @@ learns a plan or primer's length **for a skill nobody has opened** — the datab
 that, because a `skill_progress` row exists only once someone visits.
 
 ⚠️ **This is not optional and it is not deferrable.** `verify:catalogue` runs as npm's `prebuild`,
-so a stale catalogue **fails `npm run build`** — and both origins build with `npm run build`, so a
+so a stale catalogue **fails `npm run build`** — which is how production builds, so a
 new skill without this step does not deploy anywhere. That is deliberate: the alternative is a
 committed file quietly reporting the wrong denominator, which is what a `skills` table was rejected
 for. Add the new skill to the `SKILLS` array in

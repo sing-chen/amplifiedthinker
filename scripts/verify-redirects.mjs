@@ -49,9 +49,16 @@ function projects() {
 // can still drive the production database through a redirect that resolves.
 const EXPECTED = {
   prod: {
+    // ⚠️ `https://sing-chen.github.io/amplifiedthinker/` was here until
+    // 2026-08-26, when that origin was retired. It is dropped from this list
+    // because the origin no longer exists, NOT because the dashboard stopped
+    // allowing it — the Supabase prod allowlist still names it, and only the
+    // dashboard can remove it. Until someone does, prod will honour a redirect
+    // to a host that 404s. Listing it under `rejected` instead would fail this
+    // check every run until that happens, which is a judgement for whoever does
+    // the cleanup; the entry is tracked in supabase/README.md.
     allowed: [
-      'https://amplifiedthinker.com/',
-      'https://sing-chen.github.io/amplifiedthinker/'
+      'https://amplifiedthinker.com/'
     ],
     rejected: [
       'http://localhost:4321/sign-in/',

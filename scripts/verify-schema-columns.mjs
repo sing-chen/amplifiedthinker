@@ -44,7 +44,12 @@
 
 const HOSTS = [
   { label: 'prod', host: 'amplifiedthinker.com', note: 'what amplifiedthinker.com uses' },
-  { label: 'prod', host: 'sing-chen.github.io', note: 'what the Pages origin uses' },
+  // ⚠️ Kept after the Pages origin was retired on 2026-08-26. It is no longer a
+  // real host, and that is exactly what makes it the right case: it stands for
+  // ANY host not on the blocklist, which must map to prod. Replacing it with a
+  // second real hostname would test the blocklist's known entries twice and its
+  // fail-safe default not at all.
+  { label: 'prod', host: 'not-on-the-blocklist.example', note: 'any unlisted host must be prod' },
   { label: 'dev',  host: 'localhost',           note: 'what localhost and previews use' },
 ];
 
