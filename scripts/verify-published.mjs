@@ -1,4 +1,4 @@
-// Fingerprints every published file on BOTH live origins.
+// Fingerprints every published file on every live origin.
 //
 //   npm run verify:published          -> writes baseline-before.json
 //   npm run verify:published -- after -> writes baseline-after.json and diffs
@@ -53,7 +53,17 @@ async function fingerprint(base, path) {
 }
 
 const paths = publishedPaths();
-console.log(`${paths.length} published files, two origins\n`);
+
+// ⚠️ DERIVED FROM ORIGINS, NEVER HARDCODED. Both of these lines said "two" and
+// `* 2` until 2026-08-26, written when there were two origins and left behind
+// when the Pages entry was removed from the map above. The loop was already
+// correct, so the check did the right work and then OVERSTATED IT BY DOUBLE —
+// "170 fetches, 0 not served" for 85 real ones. A gate that misreports its own
+// coverage is worse than one that fails, because nobody goes looking.
+const originCount = Object.keys(ORIGINS).length;
+const originLabel = `${originCount} origin${originCount === 1 ? '' : 's'}`;
+
+console.log(`${paths.length} published files, ${originLabel}\n`);
 
 const record = { takenAt: new Date().toISOString(), mode, files: {} };
 let failures = 0;
@@ -72,7 +82,7 @@ for (const path of paths) {
 
 const file = join(REPO, `baseline-${mode}.json`);
 writeFileSync(file, JSON.stringify(record, null, 2));
-console.log(`\n${paths.length * 2} fetches, ${failures} not served. Written to ${file}`);
+console.log(`\n${paths.length * originCount} fetches, ${failures} not served. Written to ${file}`);
 
 // ── Compare, when running "after" ─────────────────────────────────────────
 if (mode === 'after') {
