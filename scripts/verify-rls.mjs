@@ -24,16 +24,32 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 //   'denied' - anon holds no SELECT grant at all, so PostgREST refuses before
 //              RLS is even consulted. This is the stronger of the two states and
 //              is what every user-owned table must return.
-//   'empty'  - anon may SELECT, and RLS plus the empty table yield []. From
-//              Phase 6 these tables legitimately return published rows, so this
-//              assertion is time-limited in a way the 'denied' ones are not.
+//   'empty'  - anon may SELECT, and RLS plus the empty table yield []. Still
+//              true for the tables nothing has filled yet, and still only an
+//              observation about emptiness rather than about security.
+//   'published' - anon may SELECT, and EVERY ROW RETURNED IS `status =
+//              'published'`. This is what 'empty' becomes once a content table
+//              is actually populated, and it is the stronger claim: it asserts
+//              the RLS predicate rather than the absence of data.
+//
+// ⚠️ THE 'empty' ASSERTION WAS ALWAYS TIME-LIMITED, AND news_stories REACHED
+// ITS LIMIT ON 2026-08-26 when Phase 6 stage 9 loaded 81 rows into dev. Left as
+// 'empty' it would simply have started failing on dev and kept passing on prod
+// — a gate that disagrees with itself depending on which project it is pointed
+// at, for a reason unrelated to security.
+//
+// ⚠️ 'published' passes whether the table is EMPTY OR FULL, deliberately. Prod
+// is not loaded until stage 17, and an expectation that cannot hold on prod
+// until then is the same mistake verify-redirects made when it dropped an
+// assertion rather than moving it. An empty table satisfies "everything
+// returned is published" trivially and truthfully.
 // ---------------------------------------------------------------------------
 const TABLES = [
   { name: 'profiles', read: 'denied' },
   { name: 'skill_progress', read: 'denied' },
   { name: 'user_news', read: 'denied' },
   { name: 'notes', read: 'denied' },
-  { name: 'news_stories', read: 'empty' },
+  { name: 'news_stories', read: 'published' },
   { name: 'blog_posts', read: 'empty' },
   { name: 'blog_categories', read: 'empty' },
   { name: 'site_updates', read: 'empty' },
@@ -145,8 +161,12 @@ function record(ok, label, detail) {
   console.log(`${ok ? '  PASS' : '  FAIL'}  ${label}${detail ? ` - ${detail}` : ''}`);
 }
 
-async function readTable(name) {
-  const res = await fetch(`${URL_BASE}/rest/v1/${name}?select=*&limit=5`, { headers });
+// `columns` narrows the projection. The 'published' check asks for `status`
+// alone so it can assert on the rows rather than on their absence; everything
+// else keeps `select=*`, which is what proves a denied table is denied on the
+// widest possible request.
+async function readTable(name, columns = '*') {
+  const res = await fetch(`${URL_BASE}/rest/v1/${name}?select=${columns}&limit=200`, { headers });
   let body;
   try {
     body = await res.json();
@@ -180,6 +200,21 @@ for (const { name, read } of TABLES) {
   if (read === 'denied') {
     const denied = status === 401 || status === 403;
     record(denied, `${name}: anon SELECT refused`, denied ? `HTTP ${status}` : `HTTP ${status}, body ${JSON.stringify(body)?.slice(0, 120)}`);
+  } else if (read === 'published') {
+    // Ask for `status` explicitly so the assertion can be made on the rows
+    // themselves. Anything not 'published' coming back here means the RLS
+    // predicate is not doing its job — which an empty table could never reveal.
+    const { status: st, body: rows } = await readTable(name, 'status');
+    const ok = st === 200 && Array.isArray(rows) &&
+               rows.every((r) => r && r.status === 'published');
+    const kinds = Array.isArray(rows) ? [...new Set(rows.map((r) => r?.status))] : null;
+    record(
+      ok,
+      `${name}: anon SELECT returns only published rows`,
+      ok
+        ? `HTTP 200, ${rows.length} row(s), status ${JSON.stringify(kinds)}`
+        : `HTTP ${st}, statuses ${JSON.stringify(kinds)} - a non-published row is visible to anon`
+    );
   } else {
     const empty = status === 200 && Array.isArray(body) && body.length === 0;
     record(

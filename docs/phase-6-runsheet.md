@@ -54,7 +54,7 @@ prevent.
 | **B** | **News into the DB** | | | |
 | 7 | The adapter decision | Claude + Human | ✅ Done | 2026-08-26, deployed as `2c9685c`. `@astrojs/vercel` 11.0.8, **`output` stays `'static'`** — ⚠️ `hybrid` was removed from Astro and `static` is what it became. Build output byte-identical with and without the adapter (88/89, the 89th a timestamp), and the live differential came back **3 changed / 0 not served**, all three the comment-only files. ⚠️ **`vercel.json`'s `outputDirectory: dist` removed** — it would have silently served stage 10's server routes as frozen static. `service_role`: **still no home** |
 | 8 | Write the migration script — slugs and `legacy_id` | Claude | ◐ **Written; load is stage 9** | 2026-08-26. `scripts/build-news-seed.mjs` → `supabase/seed/news_seed.sql`, **81 stories / 27 groups / 1 pinned** derived from the file, not hardcoded. **All 81 `legacy_id`s round-tripped through `middleware.js`'s own `findStory()`, 0 mismatches.** ⚠️ Emits SQL rather than inserting: the table is admin-write and `service_role` is ruled out, so the dashboard SQL editor is the only route left |
-| 9 | Load dev, verify the data | Claude | ☐ Not started | Dev project only. Prod waits for stage 16 |
+| 9 | Load dev, verify the data | Claude | ✅ Done | 2026-08-26. **81 rows on dev**, 81 distinct slugs and `legacy_id`s, one pinned matching `news.json`, statuses `["published"]` — all verified with the anon key from outside the dashboard. ⚠️ **All 81 stories compared field-by-field against the source, 0 differences**, rather than the five-title eyeball the stage asked for; em dashes read correctly in Postgres. `verify:rls` moved from `empty` to **`published`** — asserting the RLS predicate rather than the absence of data — and passes **22/22** |
 | 10 | `/news` and `/news/:slug`, server-rendered | Claude | ☐ Not started | ⚠️ **The cutoff for `/add-news`.** From here the command still succeeds and publishes nothing — no gate reads `news.json`. Breakage map under stage 16 |
 | 11 | The 301 endpoint for legacy URLs | Claude | ☐ Not started | This is the one the done-when tests |
 | 12 | Switch the banner's news source | Claude | ☐ Not started | Forced by the phase. Visitors must see no difference |
@@ -1026,11 +1026,37 @@ Dev project only (`yirsvthwffoetcrgbevj`). Prod waits for stage 17.
 
 **Tick as you go**
 
-- [ ] Loaded into dev, counts match
-- [ ] `legacy_id` and `slug` uniqueness confirmed by query
-- [ ] Exactly one pinned, and it is the right story
-- [ ] `anon` read returns published rows and nothing in `draft` or `archived`
-- [ ] ⚠️ `verify-rls.mjs` expectation for `news_stories` updated from "empty" to "serves published rows"
+- [x] Loaded into dev, counts match — **81 rows**, `Content-Range: 0-0/81` as anon
+- [x] `legacy_id` and `slug` uniqueness confirmed by query — **81 distinct of each**
+- [x] Exactly one pinned, and it is the right story — `2026-08-25-0`, matched against `news.json`
+- [x] `anon` read returns published rows and nothing in `draft` or `archived` — statuses returned:
+      `["published"]`
+- [x] ⚠️ `verify-rls.mjs` expectation for `news_stories` updated from "empty" to **`published`** —
+      gate **22/22**, reporting `81 row(s), status ["published"]`
+
+**Observed 2026-08-26:**
+
+**Verified from outside the dashboard, with the anon key**, so the checks are independent of the
+session that ran the load: 81 rows, 81 distinct slugs, 81 distinct `legacy_id`s, one pinned and it is
+the same story `news.json` pins.
+
+⚠️ **The encoding check was done properly rather than by eye.** The stage asked for five titles to be
+eyeballed; instead **all 81 stories were compared field by field against `news.json`** — title,
+summary, implications, source, url and tags — with a mojibake pattern applied to the database text.
+**0 differences.** The em dashes read as `—` in the database, not `â€"`. Eyeballing five rows would
+have covered 6% of the data for the one failure mode that no gate can see once the text is in
+Postgres.
+
+**The `verify:rls` change, and why it is not just a relabel.** `'empty'` asserted that a table was
+unpopulated, which was never a security property — it happened to hold. `'published'` asserts the RLS
+predicate itself: every row anon can see carries `status = 'published'`. ⚠️ **It passes whether the
+table is empty or full, deliberately** — prod is not loaded until stage 17, and an expectation that
+cannot hold there until then is the mistake `verify-redirects` made when it dropped an assertion
+rather than moving sides. An empty table satisfies "everything returned is published" truthfully.
+
+⚠️ **`readTable()` now takes a projection**, because asserting on rows needs `status` back.
+Everything else still requests `select=*`, which is what makes a denied table's refusal meaningful —
+it is refused on the widest request, not a narrow one.
 
 **Rollback:** `delete from news_stories` on dev. Free, and this is why prod is not touched yet.
 
