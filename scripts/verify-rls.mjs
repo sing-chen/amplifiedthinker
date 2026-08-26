@@ -117,6 +117,33 @@ function loadDotEnv() {
 
 loadDotEnv();
 
+/* ── `dev` / `prod`, overriding .env ──────────────────────────────────────────
+   ⚠️ WITHOUT THIS, THIS GATE SILENTLY CHECKS WHICHEVER PROJECT `.env` HAPPENS TO
+   NAME. It names dev, and has for the whole phase — so the stage 17 tick box
+   reading "verify:rls green" would have been satisfied by a run against dev,
+   passing confidently while saying nothing whatever about the database that had
+   just been migrated. A gate pointed at the wrong target does not fail; it
+   reports success about something nobody asked.
+
+   `npm run verify:rls -- prod` reads the project out of public/supabase-client.js,
+   the same file astro.config.mjs and verify-news-duplicates.mjs parse, so there
+   is no second copy of a URL to rotate. With no argument it falls back to .env
+   exactly as before. */
+const target = process.argv.slice(2).find((a) => a === 'dev' || a === 'prod');
+if (target) {
+  const client = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');
+  const segment = client.split(target + ':')[1] ?? '';
+  const url = (segment.match(/url:\s*'([^']+)'/) ?? [])[1];
+  const key = (segment.match(/(?:anonKey|key):\s*'([^']+)'/) ?? [])[1];
+  if (!url || !key) {
+    console.error(`\nCould not parse the ${target} project out of public/supabase-client.js.`);
+    process.exit(2);
+  }
+  process.env.SUPABASE_URL = url;
+  process.env.SUPABASE_ANON_KEY = key;
+  console.log(`\nTarget: ${target} (${url}) - from public/supabase-client.js, not .env`);
+}
+
 const URL_BASE = (process.env.SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
 const ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.PUBLIC_SUPABASE_ANON_KEY || '';
 

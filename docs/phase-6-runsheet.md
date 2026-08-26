@@ -1938,7 +1938,12 @@ migration down-script plus a code revert, and the two are not symmetric. Read
 - [ ] `npm run verify:stamp` — production serving the merge commit
 - [ ] ⚠️ 301 verified **on production**, against a real previously-shared URL
 - [ ] ⚠️ Reorder test re-run on production, same story, order restored
-- [ ] `npm run verify:rls` green with its updated expectation — ⚠️ **24/24, not 23.** The
+- [ ] `npm run verify:rls -- prod` green with its updated expectation — ⚠️ **`-- prod`, and it is
+      not optional.** `.env` names **dev** and has all phase, so a bare `npm run verify:rls` at this
+      step checks dev and passes, saying nothing whatever about the database just migrated. A gate
+      pointed at the wrong target does not fail; it reports success about something nobody asked.
+      ⚠️ **Run it AFTER the seed** — against an empty table it fails on *"zero rows — the check
+      above proved nothing"*, which is correct and is the ordering telling you so — ⚠️ **24/24, not 23.** The
       `news_stories` row now expects `published` **or** `archived`: it said `published` alone until
       2026-08-26 and passed vacuously, because the table had no archived row to contradict it. The
       first merge created two and it failed instantly. A second assertion was added alongside it
