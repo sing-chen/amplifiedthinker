@@ -59,7 +59,7 @@ prevent.
 | 11 | The 301 endpoint for legacy URLs | Claude | ✅ Done | 2026-08-26. `/news.html?story=<date>-<index>` → **301** → `/news/<slug>`, resolved through the stored `legacy_id`. ⚠️ **`public/news.html` deleted and `/news.html` is a route now** — Vercel runs `handle: filesystem` before any route, so a static file at that path would have shadowed the endpoint entirely; there was no arrangement where both work. ⚠️ **`middleware.js` deleted here, not at stage 15**: its matcher is `/news.html` and it runs *before* the route, so for a social crawler it would have served the old shell **instead of the 301** — and `curl` could never have caught that. Unknown id → **404** (the old page showed the *pinned* story with a 200); failed lookup → **503, never a redirect**, because browsers cache 301s. **13 internal links** moved to `/news/`. ⚠️ **Reorder test PASSED**: with 14 August's two stories swapped on dev, the page order flipped and both redirects stayed put — `2026-08-14-0` still resolves to `ai-employment-gap`, which under the old positional scheme would by then have meant a different article |
 | 12 | Switch the banner's news source | Claude | ✅ Done | 2026-08-26. Reads **`/api/news/recent.json`**, a new endpoint on our own domain. ⚠️ **The stage's own question was answered the other way, and `privacy.html` is why**: the homepage *does* load the Supabase client, but a signed-out visitor currently contacts `supabase.co` **never**, so the processor table's "Account holders" is exactly true and §9 claims *no third party is involved in showing you the page*. A browser query would have broken both, on the most-visited page. **privacy.html checked and deliberately unchanged** — the design keeps it true rather than editing it to catch up. Selection rules stayed in `index.html`; both selections computed and compared — **same three stories, same order, only the links changed**. Failure branch tested by actually breaking the fetch. ⚠️ **`news.json` is now read by nothing the site serves** |
 | 13 | `search-index.json` → `/api/search-index.json` | Claude | ✅ Done | 2026-08-26. **104 entries before, 104 after**, compared against the old file read out of git: same news set, same order, `tags` still omitted, 122 non-ASCII characters both sides and no mojibake. ⚠️ **Only 78% could be derived away** — the 23 page/primer/plan/person entries are editorial and moved to `src/data/search-static.json` unchanged, extracted by script rather than retyped. ⚠️ **The comparison caught a static entry I had not planned to touch**: the News *page*'s own result still pointed at `news.html`. ⚠️ **A failed read degrades rather than 503s** — `search.html` treats a failed fetch as fatal, so an endpoint that failed hard would have turned a DB outage into a dead search page, a regression caused by the fix. Tested by injecting a failure: 23 entries, `x-news-entries: 0`, search still working. `/add-skill` **repointed, not stripped** | |
-| 14 | Favourites, pins and notes | Claude | ◐ Built; **a signed-in pass is owed** | 2026-08-26, committed `bfa6d4f`. Save, per-reader pin and a private note on `/news/<slug>` — plus **a read surface the stage never listed**: a Saved filter chip and a Your pins group, because a favourite you cannot go and look at is a button that reports success into a void. Note panel split into **view and edit modes** so Save has somewhere to land; Delete belongs to the note, Clear to the text, both confirmed inline rather than via `confirm()`. Limit is **500 in the database and 500 in the UI** — browsers write to PostgREST directly, so `maxlength` is a courtesy and the constraint is the control. ⚠️ **Defect found by reading the loader**: `start()` read `AmplifiedAuth` once, but nav.js appends the auth stack with `async=false` which does not delay `DOMContentLoaded` — the layer would have stayed unpainted **for signed-in readers only**. Now polls, as `progress.js` does. ⚠️ **A coarse edit deleted three functions and `node --check` stayed green.** ⏭️ **Two-account RLS proof deferred to stage 17** | ⚠️ First user-authored free text on the site |
+| 14 | Favourites, pins and notes | Claude | ◐ Built; **a signed-in pass is owed** | 2026-08-26, committed `bfa6d4f`. Save, per-reader pin and a private note on `/news/<slug>` — plus **a read surface the stage never listed**: a Saved filter chip and a Your pins group, because a favourite you cannot go and look at is a button that reports success into a void. Note panel split into **view and edit modes** so Save has somewhere to land; Delete belongs to the note, Clear to the text, both confirmed inline rather than via `confirm()`. Limit is **500 in the database and 500 in the UI** — browsers write to PostgREST directly, so `maxlength` is a courtesy and the constraint is the control. ⚠️ **Defect found by reading the loader**: `start()` read `AmplifiedAuth` once, but nav.js appends the auth stack with `async=false` which does not delay `DOMContentLoaded` — the layer would have stayed unpainted **for signed-in readers only**. Now polls, as `progress.js` does. ⚠️ **A coarse edit deleted three functions and `node --check` stayed green.** **Four enhancements from review** followed on the same day: a `Has notes` chip, **one pin per reader** (trigger + partial unique index, `SECURITY INVOKER`), a replace prompt that names what it replaces, and **`Featured`** for the editorial pin — which until then shared an icon, a tint and the word "pinned" with the reader's own. `verify:rls` now **23/23**. ⏭️ **Two-account RLS proof deferred to stage 17** | ⚠️ First user-authored free text on the site |
 | 15 | Retire `middleware.js` | Claude | ◐ **Deleted at stage 11**; verification owed | The file is gone. It was pulled forward because at stage 11 it stopped being merely redundant and started **intercepting the very URLs the 301 answers**. What remains of this stage is the go-live check: a story URL in a link-preview debugger, which needs production and so cannot happen before stage 17 | Retire, not port |
 | 16 | Copy, privacy, and the obsolete command | Claude | ☐ Not started | ⚠️ Same-commit rule. `/add-news` dies here |
 | 17 | Go live — prod migration, then merge | Human + Claude | ☐ Not started | Migration **immediately before** the merge, never after |
@@ -1596,6 +1596,65 @@ console can create rows against target_ids that point at nothing. Every such row
 account. **Judged storage untidiness rather than a security hole and deliberately left open** — the
 reasoning is written into the migration header so the next reader meets the decision rather than
 rediscovering the gap.
+
+### Four enhancements from review, 2026-08-26
+
+Raised by the site owner after the first cut, and all four are the kind of thing only someone
+using the feature would ask.
+
+**A `Has notes` chip**, symmetric with `Saved`. Same rules: signed-in only, shown only when it can
+return something, and its own empty state — *"no notes yet"* and *"no stories match this filter"*
+are different facts. A failed notes read leaves the chip absent rather than the whole personal layer
+missing: losing one filter beats losing all of them.
+
+⚠️ **ONE PIN PER READER, AND THE REASON IS NOT TIDINESS.** With unlimited pins, Pin and Save are
+the same control wearing different icons — both booleans on the same row, both taking as many
+stories as you like. Made singular, each earns its place: **Save is a collection, Pin is the one
+thing you are keeping in front of you.**
+
+Enforced by a trigger **plus** a partial unique index, the same shape `news_stories_single_pinned_idx`
+already uses for the editorial pin. ⚠️ **A trigger rather than unpin-then-pin from the browser**,
+because that is two round trips and a failure on the second leaves the reader with **nothing**
+pinned having asked to *move* a pin. ⚠️ **`SECURITY INVOKER` is load-bearing** — as `DEFINER` the
+function would run as the owner and bypass RLS, leaving its own `where` clause as the only thing
+keeping it off other readers' rows. Verified on dev: `SECURITY INVOKER`, trigger present, index
+`(user_id) WHERE pinned`.
+
+**Replacing a pin asks first and names what it replaces**, because the trigger clears the old one
+whether or not anybody was told, and quietly discarding a choice the reader made is the thing this
+site keeps deciding not to do. Titles are cut on a word boundary and stripped of their own quotes:
+the first version produced a 100-character question with nested quotation marks, which is a prompt
+that gets dismissed unread.
+
+⚠️ **"FEATURED" — A COLLISION I INTRODUCED THAT MORNING AND FIXED THAT AFTERNOON.** The editorial
+pin and the reader's pin wore the same icon and the same warm tint, so a signed-in reader saw two
+identical-looking rows meaning different things: one everybody sees, one only they do. The schema
+carries a comment saying these two are trivially conflated — and the list is exactly where it
+happened. They are now separated by **word**, not only position: the editorial one is **Featured**
+everywhere (group header and story badge), and **Pinned** is the reader's alone.
+
+⏭️ **The Featured header shows for guests too, which is a deliberate change to the shared view.**
+A story sitting at the top of the list with a pin icon and no explanation is a small unanswered
+question on every visit; naming it answers one.
+
+**`why-sign-up.html` makes the deeper case**, and two things in it are worth recording:
+
+- ⚠️ **I had just made my own copy false.** *"Pin the ones that matter"* was plural on the day
+  pinning became singular — caught in the same sitting, which is the only reason it was caught.
+  Exactly the trap CLAUDE.md describes about copy that states a limit.
+- ⚠️ **An overclaim, corrected.** The page said notes are readable by *"nobody else, not even in
+  aggregate"*. `notes_own` is genuinely the ONLY policy on that table — there is no admin view, so
+  no account can read another's, and that is worth saying. But whoever runs a database can reach
+  what is stored in it, and the page where somebody decides whether to trust the site is the wrong
+  place to overstate. It now carries both halves and points at `privacy.html`.
+
+**Bulk note deletion parked**, in `BACKLOG.md`, as an `/account/` action rather than a per-story one
+— noting that the nuclear option already works: deleting the account cascades `notes` and
+`user_news` through their FKs.
+
+**`npm run verify:rls` is 23/23**, up from 22. The new trigger function is revoked from `anon` and
+`authenticated` like the other three, so it is asserted like the other three — 20260817140000's own
+argument was that being *inconsistent* about hardening is worse than the risk it carries.
 
 ⚠️ **A self-inflicted defect worth recording.** A coarse range replacement deleted `paint()`,
 `toggleFlag()` and `reflectFlag()` outright, and **`node --check` stayed green** — a call to a
