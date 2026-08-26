@@ -51,6 +51,15 @@ $$;
 -- because the trigger mechanism does not check EXECUTE on the invoking role.
 revoke all on function public.user_news_single_pin() from public, anon, authenticated;
 
+-- ⚠️ `drop ... if exists` FIRST, BECAUSE `create trigger` HAS NO SUCH GUARD.
+-- Every other statement in this file is re-runnable and this one was not, so a
+-- second run failed with `trigger "user_news_single_pin" already exists` —
+-- inside `begin; ... commit;`, which rolls back the WHOLE migration and takes
+-- the index with it while reporting only the trigger. That is the same shape as
+-- the 42710 that bit 20260826120000 on dev: a partially-applied migration whose
+-- error names the one thing that was already right.
+drop trigger if exists user_news_single_pin on public.user_news;
+
 create trigger user_news_single_pin
   before insert or update of pinned on public.user_news
   for each row execute function public.user_news_single_pin();

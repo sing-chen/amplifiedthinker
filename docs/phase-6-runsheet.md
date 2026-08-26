@@ -1890,7 +1890,11 @@ destroys. It now names the saved stories, the pin and the notes. The cascade was
    the whole transaction and silently taking the index with it.
 
    **Verify by reading the catalogue, not the success message.** DDL returns "Success. No rows
-   returned" whether or not it did what was intended:
+   returned" whether or not it did what was intended — and each migration is wrapped in
+   `begin/commit`, so one failed statement rolls the others back while the error names only
+   itself. ⚠️ **Paste [supabase/verify/phase-6-stage-17.sql](../supabase/verify/phase-6-stage-17.sql)**,
+   which states the expected answer for every check and has no check whose correct result is an
+   empty set. The short form:
 
 ```sql
 select conname, pg_get_constraintdef(oid) from pg_constraint
