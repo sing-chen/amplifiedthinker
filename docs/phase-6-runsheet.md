@@ -1958,9 +1958,13 @@ migration down-script plus a code revert, and the two are not symmetric. Read
       notes"* — `with check`, the half `using` does not cover. Probes 1–4 are conclusive because
       account A demonstrably had a note: an unfiltered select returned 0 rows and an update
       addressing that note's real id changed 0.
-      ⚠️ **Probe 5 (`user_news`) is only conclusive if account A has a saved or pinned story.**
-      Otherwise it returns empty whether the policy works or not — the empty-set trap this whole
-      phase kept running into. Confirm A has one before reading probe 5 as evidence. See below.
+      ⚠️ **Probe 5 (`user_news`) initially measured NOTHING and was caught rather than waved
+      through.** It returned `0 rows, 0 someone else's` — but account A had no saved story, so empty
+      was the answer whether the policy worked or not. The same empty-set trap as an unpopulated
+      table reporting clean, and it would have been recorded as a pass. Fixed the only way it could
+      be: a story was saved on A, and the probe re-run from B looking for **A's specific user_id**
+      rather than merely for "someone else's". PASS on the second run is evidence; the first was
+      not. See below.
       ⚠️ **Run [supabase/verify/two-account-rls-proof.js](../supabase/verify/two-account-rls-proof.js)**,
       which does all five probes and prints a verdict table. Probe 3 writes A's OWN body back
       rather than `'x'`: if the policy IS broken that probe succeeds, and a probe that
