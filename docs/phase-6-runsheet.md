@@ -1769,8 +1769,42 @@ finished code, not against their own file paths.
 **In this order, and the order is the whole point:**
 
 1. Final verification on the preview and on dev
-2. **Apply the migration and load the news data to prod** — immediately before the merge. Not after,
-   and not "straight after"
+2. **Apply the migrations and load the news data to prod** — immediately before the merge. Not
+   after, and not "straight after". ⚠️ **THREE MIGRATIONS, IN THIS ORDER**, all added during
+   stage 14 and all already applied to dev:
+
+   | order | file | what it does |
+   |---|---|---|
+   | 1 | `20260826120000_notes_body_length.sql` | a note is 1–500 characters; one note per news story |
+   | 2 | `20260826140000_user_news_single_pin.sql` | one pinned story per reader (trigger + partial unique index) |
+   | 3 | `20260826160000_notes_one_per_target_news_only.sql` | scopes #1's index to `target_type = 'news'` |
+
+   ⚠️ **APPLYING TWO OF THE THREE LEAVES A DATABASE THAT LOOKS FINE AND ENFORCES THE WRONG RULE.**
+   Stopping after #1 gives prod a `notes` index bound across the whole table — which is the state
+   dev was in for an hour, is invisible from the site, and only surfaces when somebody tries to
+   write a second note on a plan, months later. #3 is not optional tidying; it is #1 finished.
+
+   Each is re-runnable (`drop ... if exists` / `if not exists`) — written that way after #1 was
+   applied to dev at the wrong limit and a plain `add constraint` failed with 42710, rolling back
+   the whole transaction and silently taking the index with it.
+
+   **Verify by reading the catalogue, not the success message.** DDL returns "Success. No rows
+   returned" whether or not it did what was intended:
+
+```sql
+select conname, pg_get_constraintdef(oid) from pg_constraint
+ where conrelid = 'public.notes'::regclass and contype = 'c'
+union all
+select indexname, indexdef from pg_indexes
+ where schemaname = 'public' and tablename in ('notes', 'user_news')
+union all
+select proname, case when prosecdef then 'SECURITY DEFINER' else 'SECURITY INVOKER' end
+  from pg_proc where proname = 'user_news_single_pin';
+```
+
+   ⚠️ Two answers are worth actually looking at rather than counting rows: `user_news_single_pin`
+   must say **`SECURITY INVOKER`** (as `DEFINER` it would bypass the RLS that confines it to the
+   caller's own rows), and `notes_one_per_target_idx` must end **`WHERE (target_type = 'news')`**
 3. Merge `feat/news-db` to `main`
 4. `npm run verify:stamp` — confirm production is actually serving the new commit
 5. The done-when, against **production**:
@@ -1789,7 +1823,7 @@ migration down-script plus a code revert, and the two are not symmetric. Read
 **Tick as you go**
 
 - [ ] Preview verified; dev data correct
-- [ ] Prod migration applied and news loaded — record the row count observed
+- [ ] **All three** prod migrations applied **in order**, catalogue read back, and news loaded — record the row count observed
 - [ ] Merged to `main`
 - [ ] `npm run verify:stamp` — production serving the merge commit
 - [ ] ⚠️ 301 verified **on production**, against a real previously-shared URL
