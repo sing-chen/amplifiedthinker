@@ -27,7 +27,11 @@
   var NAV_H = 56;   // px — site nav bar height
   var SKILL_H = 40; // px — skill context bar height
 
-  /* ── Depth detection (works on file://, http://, and GitHub Pages subfolders)
+  /* ── Depth detection (works on file://, http://, and any sub-path deployment)
+     ⚠️ Kept after the GitHub Pages origin was retired on 2026-08-26. Pages was
+     one caller, not the reason: this also carries `file://` and the ten skill
+     pages sitting at three different depths. Do not flatten it to a leading
+     slash on the grounds that there is one origin now.
      Strategy: compare the directory of the current PAGE against the directory
      of THIS SCRIPT. nav.js always lives at the site root. The page may be
      0, 1, or 2 levels deep relative to that root.

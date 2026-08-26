@@ -23,9 +23,12 @@
 //      (The page it was verified on, /shell-test/, was deleted 2026-08-19;
 //      /sign-in/ and /account/ exercise the same thing on both origins.)
 //
-// Asset URLs go through `asset()` rather than a hardcoded leading slash, because
-// GitHub Pages serves this site from `/amplifiedthinker/` while Vercel serves from
-// `/`. See the `base` note in astro.config.mjs.
+// Asset URLs go through `asset()` rather than a hardcoded leading slash, so this
+// layout works at any `base`. GitHub Pages served the site from
+// `/amplifiedthinker/` until that origin was retired on 2026-08-26; `base` now
+// falls to `/` because nothing sets ASTRO_BASE. The indirection stays —
+// unpicking it is a change to live pages with nothing to gain. See the `base`
+// note in astro.config.mjs.
 
 interface Props {
   title: string;
@@ -40,9 +43,11 @@ interface Props {
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (path: string) => `${base}/${path}`;
 
-// Canonical must always point at amplifiedthinker.com, including in the GitHub Pages
-// build — matching what the 16 existing pages already do. The base prefix has to come
-// off the path first, or the Pages build emits `.com/amplifiedthinker/page/`.
+// Canonical must always point at amplifiedthinker.com, matching what the
+// hand-written pages already do. The base prefix has to come off the path first,
+// or a sub-path build emits `.com/amplifiedthinker/page/`. ⚠️ That was the
+// GitHub Pages build until 2026-08-26 and there is no sub-path deployment today
+// — but the strip is what makes the canonical independent of `base`, so it stays.
 const canonicalPath =
   base && Astro.url.pathname.startsWith(base)
     ? Astro.url.pathname.slice(base.length) || '/'

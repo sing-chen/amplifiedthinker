@@ -39,7 +39,7 @@ prevent.
 | 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs.** ⏭️ The skipped stubs are **deferred, not dismissed** — see the note under stage 1 for the three signals that would reopen it, and what reopening would cost now that stage 2 has gone in |
 | 2 | Stop publishing to Pages | Human + Claude | ✅ Done | 2026-08-24. Workflow disabled first, then **Unpublish site** — ⚠️ there is no "None" in the Source dropdown any more, and the order was corrected mid-stage. Pages origin **404 on all four paths checked incl. `build.json`**; apex **200 on all twelve**, spanning hand-written pages, Astro auth surfaces, a skill page, both stylesheets and the stamp. `verify:stamp`: `vercel ok c5b1ce4` / `pages FAIL HTTP 404` — expected. **Fully reversible** |
 | 3 | Soak on one origin | Human | ✅ Done | 2026-08-24 08:10Z → 2026-08-26 08:11Z, **48h01m**, all five boxes ticked. Nine commits reached `main`; production serving the tip; baseline retaken at **85 files / 1 origin / 0 not served**; **no broken-link reports**, confirmed by the site owner. ⚠️ Retaking the baseline found `verify-published.mjs` **overstating its own coverage by double** — fixed. ⚠️ This row was briefly marked ✅ with every box unticked before any of it was checked — see the stage's Observed note |
-| 4 | Remove Pages from code, gates and docs | Claude | ✅ Done | **2026-08-26, on `chore/retire-pages`, merged to `main` as `d7728f2` — NOT on this branch.** `astro.config.mjs`, `verify-published`, `verify-build-stamp`, `verify-schema-columns` all reduced to one origin; `privacy.html`'s GitHub processor row and mirror-analytics paragraph both gone. ⚠️ **One deliberate deviation from what this stage instructed — see the reconciliation note below** |
+| 4 | Remove Pages from code, gates and docs | Claude | ◐ **In progress — two boxes left** | **Bulk shipped 2026-08-26 on `chore/retire-pages`, merged as `d7728f2` — NOT on this branch.** Checked box by box against the tree the same day, which found three gaps: `nav.js`/`progress.js`/`BaseLayout.astro` still described Pages as live (**fixed here**), the `verify-redirects` assertion was **dropped rather than moved** (deferred into stage 5), and the **Promptly sibling has not been checked** — the one box nothing in this repo can answer. Two boxes struck out as deliberately not-done: `ASTRO_BASE` stays, and `settings.local.json` is machine-local |
 | 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ **Not started** | ⚠️ **The whole of what remains in Part A.** Authority is [supabase/README.md](../supabase/README.md) §*Cleanup owed*. **Turnstile first** — its hostname grant covers subdomains of a Pages domain the owner controls today, so anything published there could mint tokens prod accepts; the Supabase entry is merely a redirect to a dead host. ⚠️ Also restores the `rejected` assertion stage 4 dropped, and Turnstile has **no automated check** — signing in on production is the only verification |
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
@@ -611,18 +611,37 @@ All three prebuild gates must still pass — `verify:catalogue`, `verify:signin-
 
 **Tick as you go**
 
-- [ ] `astro.config.mjs` — `base` simplified, `GITHUB_SHA` arm dropped from the stamp
-- [ ] `verify-published.mjs`, `verify-build-stamp.mjs`, `verify-schema-columns.mjs` reduced to one origin
-- [ ] `verify-redirects.mjs` — ⚠️ Pages entry **moved from `allowed` to `rejected`** in prod, not deleted
-- [ ] `verify-signin-return.mjs` — **assertions kept**, fixture/comment updated only
-- [ ] `supabase-client.js` — **`environment()` untouched**, comment rewritten to keep the reasoning
-- [ ] `nav.js`, `progress.js`, `BaseLayout.astro` — comments updated, logic untouched
-- [ ] `about.html` comment updated
-- [ ] ⚠️ `privacy.html` — GitHub processor row **and** the mirror-analytics paragraph both removed
-- [ ] Promptly sibling checked for the same statements
-- [ ] `CLAUDE.md`, `dev-workflow.md`, `implementation-sequence.md`, `BACKLOG.md`, `recovery.md`, `supabase/README.md` rewritten as a retirement
-- [ ] `npm run build` passes, all three prebuild gates green
-- [ ] `.claude/settings.local.json` — stale `sing-chen.github.io` curl permissions cleaned up
+**Verified box by box on 2026-08-26 against the tree, not against the commit messages.**
+
+- [x] ~~`astro.config.mjs` — `base` simplified, `GITHUB_SHA` arm dropped~~ — ⊘ **deliberately NOT
+      done.** `ASTRO_BASE` stays: `BaseLayout` and `sign-in.astro` route every generated URL through
+      it, and unpicking that is a change to live pages with nothing to gain. `CLAUDE.md` records this
+      as a survivor of the retirement. The `GITHUB_SHA` arm of the stamp is inert and harmless
+- [x] `verify-published.mjs`, `verify-build-stamp.mjs`, `verify-schema-columns.mjs` reduced to one
+      origin — **0 references remaining in each**
+- [ ] ⚠️ `verify-redirects.mjs` — Pages entry **moved from `allowed` to `rejected`**, not deleted —
+      **NOT DONE, it was dropped.** Deferred into stage 5, where the dashboard change makes the
+      `rejected` assertion pass. See the reconciliation note under the handoff table
+- [x] `verify-signin-return.mjs` — **assertions kept**: 2 references retained on purpose, gate runs
+      **26 passed, 0 failed**
+- [x] `supabase-client.js` — **`environment()` byte-identical**, comment rewritten to keep the
+      blocklist reasoning and note where the Turnstile hostname actually lives
+- [x] `nav.js`, `progress.js`, `BaseLayout.astro` — comments updated 2026-08-26, **logic untouched**.
+      ⚠️ These were missed by the original stage-4 pass: all three still described Pages as live
+- [x] `about.html` comment updated
+- [x] ⚠️ `privacy.html` — GitHub processor row **and** the mirror-analytics paragraph both removed,
+      replaced with a dated note that the address was retired
+- [ ] ⬜ **Promptly sibling checked for the same statements** — ⚠️ **cannot be verified from this
+      repo; the site owner has to confirm.** It makes the same claims about the same person under
+      the same law
+- [x] `CLAUDE.md`, `dev-workflow.md`, `implementation-sequence.md`, `BACKLOG.md`, `recovery.md`,
+      `supabase/README.md` rewritten as a retirement — all six frame it historically rather than
+      deleting the passages
+- [x] `npm run build` passes, all three prebuild gates green
+- [x] `.claude/settings.local.json` — ⊘ **left alone deliberately.** It is **gitignored and
+      machine-local**, so it is not part of what this stage ships; the ten stale entries only mean a
+      permission prompt that will never fire again. Cleaning it is housekeeping on one laptop, not a
+      repo change
 
 **Rollback:** `git revert`. This stage is entirely in the repo.
 
