@@ -1,4 +1,4 @@
--- Seed for public.news_stories, GENERATED from public/news.json.
+-- Seed for public.news_stories, GENERATED from content/news.json.
 --
 --   npm run build:news-seed -- --write
 --
@@ -14,6 +14,9 @@
 -- is what the 301 endpoint resolves.
 --
 -- Generated from 81 stories across 27 date groups.
+
+update public.news_stories set pinned = false
+ where pinned and slug <> '2026-08-25-the-great-flattening-is-shrinking-management-without';
 
 insert into public.news_stories
   (slug, legacy_id, story_date, sort_order, title, source, url, summary, implications, tags, pinned, status)

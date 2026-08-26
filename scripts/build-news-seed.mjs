@@ -1,7 +1,24 @@
-// Turns public/news.json into a re-runnable SQL seed for public.news_stories.
+// Turns content/news.json into a re-runnable SQL seed for public.news_stories.
 //
-//   npm run build:news-seed            -> dry run: reports and prints samples
-//   npm run build:news-seed -- --write -> writes supabase/seed/news_seed.sql
+//   npm run build:news-seed             -> dry run: reports and prints samples
+//   npm run build:news-seed -- --write  -> writes supabase/seed/news_seed.sql
+//   npm run build:news-seed -- --only 2026-08-27 --write
+//                                       -> writes supabase/seed/news_add_2026-08-27.sql,
+//                                          containing just that day's stories
+//
+// ⚠️ `content/news.json` IS NO LONGER SERVED. It sat at `public/news.json` until
+// 2026-08-26, where the site fetched it directly. The site reads `news_stories`
+// now, so leaving it under `public/` published a stale public copy of database
+// content — the same shape of fault that put 39 mojibake characters into
+// `search-index.json` and left them live for days. It is an AUTHORING INPUT to
+// this script and nothing else.
+//
+// ⚠️ AND IT STOPS BEING THE SOURCE OF TRUTH THE DAY PHASE 7'S ADMIN UI SHIPS.
+// From that point the database is edited directly, this file is a frozen
+// historical copy, and a full `--write` regeneration would UPDATE IN PLACE over
+// whatever was edited there — silently, because the statement is idempotent on
+// `slug` and reports success either way. `--only` exists so the interim route
+// never emits a row it did not just author. See .claude/commands/add-news.md.
 //
 // ─────────────────────────────────────────────────────────────────────────────
 // ⚠️ WHY THIS EMITS SQL INSTEAD OF INSERTING ROWS ITSELF.
@@ -33,11 +50,23 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SOURCE = join(REPO, 'public', 'news.json');
+const SOURCE = join(REPO, 'content', 'news.json');
 const OUT_DIR = join(REPO, 'supabase', 'seed');
-const OUT = join(OUT_DIR, 'news_seed.sql');
 
 const write = process.argv.includes('--write');
+
+/* ── `--only <date>`, repeatable ───────────────────────────────────────────
+   ⚠️ NARROWS WHAT IS EMITTED, NEVER WHAT IS CHECKED. Every validation below
+   runs across ALL rows and only the final VALUES list is filtered — because the
+   thing most likely to be wrong about a story added today is that its slug
+   collides with one from two years ago, and a check that only looked at today
+   could not possibly see it. */
+const onlyDates = [];
+for (let i = 0; i < process.argv.length - 1; i++) {
+  if (process.argv[i] === '--only') onlyDates.push(process.argv[i + 1]);
+}
+const partial = onlyDates.length > 0;
+const OUT = join(OUT_DIR, partial ? 'news_add_' + onlyDates.join('_') + '.sql' : 'news_seed.sql');
 
 /* ── slugs ────────────────────────────────────────────────────────────────────
    `<date>-<slugified title>`, and IMMUTABLE once it ships: a slug is what a
@@ -89,7 +118,7 @@ function sqlTextArray(list) {
 
 const groups = JSON.parse(readFileSync(SOURCE, 'utf8'));
 if (!Array.isArray(groups)) {
-  console.error('news.json is not an array of date groups — aborting.');
+  console.error('content/news.json is not an array of date groups — aborting.');
   process.exit(1);
 }
 
@@ -154,7 +183,7 @@ if (pinned.length > 1) {
 
 /* ── report, always, from the file rather than from memory ────────────────── */
 
-console.log(`\nsource: public/news.json`);
+console.log(`\nsource: content/news.json`);
 console.log(`  ${groups.length} date groups`);
 console.log(`  ${rows.length} stories`);
 console.log(`  ${pinned.length} pinned${pinned.length ? ` — ${pinned[0].legacyId} "${pinned[0].title}"` : ''}`);
@@ -207,15 +236,40 @@ if (!write) {
   process.exit(0);
 }
 
-const values = rows.map((r) =>
+/* ── the emitted subset ──────────────────────────────────────────────── */
+
+const emit = partial ? rows.filter((r) => onlyDates.includes(r.storyDate)) : rows;
+
+// ⚠️ A --only DATE THAT MATCHES NOTHING IS A TYPO, NOT AN EMPTY DAY. Emitting a
+// zero-row file would produce SQL that runs, succeeds, and publishes nothing —
+// exactly the failure this whole stage exists to close.
+if (partial && emit.length === 0) {
+  console.error(`\n--only matched no stories: ${onlyDates.join(', ')}`);
+  console.error(`Most recent dates in content/news.json: ${[...new Set(groups.map((g) => g.date))].sort().slice(-3).reverse().join(', ')}\n`);
+  process.exit(1);
+}
+
+const emitPinned = emit.filter((r) => r.pinned);
+
+// ⚠️ A PARTIAL BATCH CANNOT SEE THE PIN IT IS ABOUT TO COLLIDE WITH. The full
+// seed carries every row, so `pinned = excluded.pinned` unpins the old one in
+// the same statement. A one-day batch does not contain the old one, so the
+// insert would hit `news_stories_single_pinned_idx` and roll back — with an
+// error naming an index rather than the problem. Clear it first, explicitly.
+const clearPin = emitPinned.length
+  ? 'update public.news_stories set pinned = false\n' +
+    ' where pinned and slug <> ' + sqlText(emitPinned[0].slug) + ';\n\n'
+  : '';
+
+const values = emit.map((r) =>
   `  (${sqlText(r.slug)}, ${sqlText(r.legacyId)}, ${sqlText(r.storyDate)}::date, ${r.sortOrder}, ` +
   `${sqlText(r.title)}, ${sqlText(r.source)}, ${sqlText(r.url)}, ${sqlText(r.summary)}, ` +
   `${sqlText(r.implications)}, ${sqlTextArray(r.tags)}, ${r.pinned}, 'published')`
 ).join(',\n');
 
-const sql = `-- Seed for public.news_stories, GENERATED from public/news.json.
+const sql = `-- ${partial ? 'PARTIAL load' : 'Seed'} for public.news_stories, GENERATED from content/news.json.
 --
---   npm run build:news-seed -- --write
+--   npm run build:news-seed --${partial ? ` --only ${onlyDates.join(' --only ')} --write` : ' --write'}
 --
 -- ⚠️ DO NOT HAND-EDIT. Regenerate instead; this file is an output.
 --
@@ -228,9 +282,9 @@ const sql = `-- Seed for public.news_stories, GENERATED from public/news.json.
 -- OLD positional \`<date>-<index>\` form that shared links still point at, and it
 -- is what the 301 endpoint resolves.
 --
--- Generated from ${rows.length} stories across ${groups.length} date groups.
-
-insert into public.news_stories
+-- Generated from ${emit.length} stor${emit.length === 1 ? 'y' : 'ies'}${partial ? ` for ${onlyDates.join(', ')}, out of ${rows.length} in the file` : ` across ${groups.length} date groups`}.
+${partial ? `--\n-- \u26a0\ufe0f PARTIAL. This touches ONLY the rows listed below. It is not a\n-- replacement for supabase/seed/news_seed.sql and does not reconcile\n-- anything it omits.\n` : ''}
+${clearPin}insert into public.news_stories
   (slug, legacy_id, story_date, sort_order, title, source, url, summary, implications, tags, pinned, status)
 values
 ${values}
@@ -248,14 +302,17 @@ on conflict (slug) do update set
   status       = excluded.status;
 
 -- Verification, to run in the same sitting:
---   select count(*) from public.news_stories;                        -- expect ${rows.length}
+${partial ? `--   select count(*) from public.news_stories
+--     where story_date in (${onlyDates.map((d) => `'${d}'`).join(', ')});  -- expect ${emit.length}
+--   select count(*) from public.news_stories where pinned;           -- expect at most 1`
+ : `--   select count(*) from public.news_stories;                        -- expect ${rows.length}
 --   select count(distinct slug), count(distinct legacy_id)
 --     from public.news_stories;                                      -- both ${rows.length}
---   select count(*) from public.news_stories where pinned;           -- expect ${pinned.length}
+--   select count(*) from public.news_stories where pinned;           -- expect ${pinned.length}`}
 --   select title from public.news_stories where title ~ '[^[:ascii:]]' limit 5;
 --     -- eyeball these: accented text must read correctly, not as mojibake
 `;
 
 mkdirSync(OUT_DIR, { recursive: true });
 writeFileSync(OUT, sql, 'utf8');
-console.log(`\nWrote ${OUT.replace(REPO, '.')} — ${rows.length} rows, ${sql.length} bytes\n`);
+console.log(`\nWrote ${OUT.replace(REPO, '.')} — ${emit.length} rows, ${sql.length} bytes\n`);

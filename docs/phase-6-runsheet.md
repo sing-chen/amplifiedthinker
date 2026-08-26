@@ -61,7 +61,7 @@ prevent.
 | 13 | `search-index.json` → `/api/search-index.json` | Claude | ✅ Done | 2026-08-26. **104 entries before, 104 after**, compared against the old file read out of git: same news set, same order, `tags` still omitted, 122 non-ASCII characters both sides and no mojibake. ⚠️ **Only 78% could be derived away** — the 23 page/primer/plan/person entries are editorial and moved to `src/data/search-static.json` unchanged, extracted by script rather than retyped. ⚠️ **The comparison caught a static entry I had not planned to touch**: the News *page*'s own result still pointed at `news.html`. ⚠️ **A failed read degrades rather than 503s** — `search.html` treats a failed fetch as fatal, so an endpoint that failed hard would have turned a DB outage into a dead search page, a regression caused by the fix. Tested by injecting a failure: 23 entries, `x-news-entries: 0`, search still working. `/add-skill` **repointed, not stripped** | |
 | 14 | Favourites, pins and notes | Claude | ✅ Done | 2026-08-26, committed `bfa6d4f`. Save, per-reader pin and a private note on `/news/<slug>` — plus **a read surface the stage never listed**: a Saved filter chip and a Your pins group, because a favourite you cannot go and look at is a button that reports success into a void. Note panel split into **view and edit modes** so Save has somewhere to land; Delete belongs to the note, Clear to the text, both confirmed inline rather than via `confirm()`. Limit is **500 in the database and 500 in the UI** — browsers write to PostgREST directly, so `maxlength` is a courtesy and the constraint is the control. ⚠️ **Defect found by reading the loader**: `start()` read `AmplifiedAuth` once, but nav.js appends the auth stack with `async=false` which does not delay `DOMContentLoaded` — the layer would have stayed unpainted **for signed-in readers only**. Now polls, as `progress.js` does. ⚠️ **A coarse edit deleted three functions and `node --check` stayed green.** **Four enhancements from review** followed on the same day: a `Has notes` chip, **one pin per reader** (trigger + partial unique index, `SECURITY INVOKER`), a replace prompt that names what it replaces, and **`Featured`** for the editorial pin — which until then shared an icon, a tint and the word "pinned" with the reader's own. `verify:rls` now **23/23**. ⏭️ **Two-account RLS proof deferred to stage 17** | ⚠️ First user-authored free text on the site |
 | 15 | Retire `middleware.js` | Claude | ◐ **Deleted at stage 11**; verification owed | The file is gone. It was pulled forward because at stage 11 it stopped being merely redundant and started **intercepting the very URLs the 301 answers**. What remains of this stage is the go-live check: a story URL in a link-preview debugger, which needs production and so cannot happen before stage 17 | Retire, not port |
-| 16 | Copy, privacy, and the obsolete command | Claude | ☐ Not started | ⚠️ Same-commit rule. `/add-news` dies here |
+| 16 | Copy, privacy, and the obsolete command | Claude | ✅ Done | 2026-08-26. `privacy.html` gained a §3 category (**what you save and what you write**, with a caution against putting sensitive personal information in a note), a §4 contract row, and corrections at §§11/12/13. ⚠️ **§13 also gained the honest limit** — `why-sign-up.html` was already telling readers *"Privacy says so plainly"* about administrative database access, **and privacy did not say it**. `terms.html` gained §4 *"So is anything you write"* and a §5 acceptable-use line, both following the Promptly sibling, which had the precedent for every part of this. `account.astro`'s deletion copy said *"your saved items"* and now names what it destroys; the cascade was checked against the migration rather than assumed. ⚠️ **`/add-news` was REWRITTEN, not deleted** — its curation half was never about the file format. `public/news.json` **moved** to `content/news.json`: under `public/` it was a stale public copy of database content served at `/news.json` and read by nothing. Route is now author → `build:news-seed -- --only <date> --write` → the SQL editor, with `--only` existing because a full regeneration after Phase 7 would silently overwrite admin-UI edits and report success | ⚠️ Same-commit rule. `/add-news` rewritten, and the interim route written down before the merge |
 | 17 | Go live — prod migration, then merge | Human + Claude | ☐ Not started | Migration **immediately before** the merge, never after |
 | 18 | Announce | Human + Claude | ☐ Not started | Banner and `updates.json` in the same sitting |
 
@@ -1758,7 +1758,7 @@ Worked out 2026-08-26, before Part B started, so it is not re-derived at the poi
 | **11** — `news.html` becomes a redirect | ⚠️ **The command's own header now names a file that does not exist.** `public/news.html` was deleted, so the page it was written to feed is gone — but it still *runs*, because `news.json` and `search-index.json` are both still there. Not a hard break; a **visible** one, where stage 10 was invisible. A stop banner was added to the command here |
 | **12** — banner switches to the DB | The homepage banner stops reading `news.json` too. Both surfaces now ignore the file the command maintains |
 | **13** — `search-index.json` deleted | ❌ **First hard break.** Step 3a opens that file and gets `FileNotFoundError`. It fails **dirty**: step 3 has already written `news.json`, leaving a modified file and an unwritten index |
-| **16** — `news.json` deleted | ❌ **Total.** Step 3 fails at `json.load(open('public/news.json'))` |
+| **16** — `news.json` moved to `content/` | ✅ **Repaired here, not broken.** The command was REWRITTEN: curation kept, the write half repointed at `content/news.json` → generated SQL → the dashboard. See The interim route below |
 
 ⚠️ **Nothing catches the stage 10 break.** The three prebuild gates are `verify:catalogue` (skills
 only), `verify:signin-return` and `verify:encoding` — **none of them reads `news.json`.** So a run
@@ -1793,16 +1793,74 @@ So the check here is **not** "do the paths still resolve". It is **"does this co
 the site"** — and Phase 6 changes what the site *is* for both commands. Read them against the
 finished code, not against their own file paths.
 
+### The interim route, settled 2026-08-26
+
+**`/add-news` was rewritten, not deleted.** Its first half — parsing a digest, shortlisting,
+duplicate-checking, shaping a story — was never about `news.json` and is still exactly right. Only
+its write half was dead. Deleting the whole command would have thrown away the curation to fix the
+plumbing.
+
+**The route:** author into `content/news.json` → `npm run build:news-seed -- --only <date> --write`
+→ paste the generated SQL into the Supabase SQL editor.
+
+⚠️ **`public/news.json` MOVED to `content/news.json` rather than being deleted, and the move is
+the point.** Under `public/` it was a stale public copy of database content, served at `/news.json`
+and read by nothing — the same shape of fault that left 39 mojibake characters live in
+`search-index.json` for days. Outside `public/` it stops being published and becomes what it
+actually is: an authoring input to the seed generator. `git mv`, so the history follows it.
+
+**Why not a script that inserts the rows directly.** `news_stories` is admin-write, `is_admin` is
+settable only where `auth.uid()` is null, the anon key is correctly refused by RLS, and stage 7
+settled that `service_role` gets no home in this phase. The dashboard SQL editor is the only route
+left, which is why the product is generated SQL a human pastes — the same arrangement the
+migrations already use.
+
+⚠️ **`--only` exists because of Phase 7, not because of convenience.** The full seed is idempotent
+on `slug`, so once the admin UI is writing to `news_stories` directly, a bare `--write` regeneration
+would **silently overwrite every story edited there** and report success. A partial load can only
+touch rows the command just authored. Three branches were exercised when it was built: a matching
+date, a typo date (exits non-zero rather than emitting an empty file — SQL that runs and publishes
+nothing is the exact failure this stage exists to close), and a batch containing the Featured pin,
+which needs an explicit `set pinned = false` because a one-day batch cannot see the pin it is about
+to collide with. Full-seed data rows came back byte-identical after the refactor.
+
+**And it has an end date.** Phase 7's admin UI retires both the command and `content/news.json`.
+That is written at the top of the command itself, not only here.
+
+### What the legal pages actually needed
+
+`privacy.html` gained a §3 category (**what you save and what you write**, with a caution against
+putting sensitive personal information in a note), a §4 contract row, and corrections to §11
+deletion, §12 rectification and §13 security. **§13 also gained the honest limit**:
+`why-sign-up.html` was already telling readers that *"whoever runs a database can always reach what
+is stored in it, and Privacy says so plainly"* — and privacy did not say it. A cross-reference to a
+claim the referenced page does not make is worse than no cross-reference.
+
+**Promptly had the precedent for all of it**, which is why the backlog watch item exists: a *"What
+you write — only if you sign up"* §3 paragraph carrying the same sensitive-data caution, a *"Your
+content stays yours"* terms section, and an acceptable-use line about unlawful or harassing stored
+content. Amplified Thinker's versions follow its structure. Nothing shared between the two sites —
+controller, contact, jurisdiction, the ICO route, the age threshold, transfer safeguards — moved,
+so the sibling needed no edit.
+
+`account.astro`'s deletion copy said *"and your saved items"*, which is vaguer than what it
+destroys. It now names the saved stories, the pin and the notes. The cascade was checked against
+`20260819080000_delete_own_account.sql` rather than assumed: `user_news` and `notes` are both
+`on delete cascade`.
+
 **Tick as you go**
 
-- [ ] `privacy.html` — `user_news` and `notes` added, with legal basis
-- [ ] Promptly sibling checked
-- [ ] `terms.html` — user-authored content needs an acceptable-use line where it had none
-- [ ] `why-sign-up.html` consistent with what actually shipped
-- [ ] `/add-news` deleted or rewritten, **and the interim route for adding news written down**
-- [ ] `/add-skill` — the `search-index.json` step removed
-- [ ] `public/news.json` and `public/search-index.json` deleted
-- [ ] Grep for the promise, not just the feature: any copy stating a limit that stage 14 makes untrue
+- [x] `privacy.html` — saves, pin and notes added at §3, with legal basis at §4; §§11/12/13 corrected
+- [x] Promptly sibling checked — it had the precedent; nothing shared between the sites changed
+- [x] `terms.html` — §4 *"So is anything you write"*, §5 acceptable-use line, stamp bumped
+- [x] `why-sign-up.html` consistent with what actually shipped — chip label now reads `Has Notes`
+- [x] `/add-news` **rewritten**, and the interim route written down — above, and in the command
+- [x] `/add-skill` — already repointed to `src/data/search-static.json` at stage 13; re-read whole
+      against the finished site (fonts, palette, `updates.json`) and it still describes it
+- [x] `public/search-index.json` deleted (stage 13); `public/news.json` **moved** to `content/` —
+      no longer served, which is what the box was for
+- [x] Grep for the promise, not just the feature — the one that had rotted was
+      `account.astro`'s *"your saved items"*, not a stated limit
 
 ---
 

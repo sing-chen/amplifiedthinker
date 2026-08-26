@@ -180,6 +180,22 @@ src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages mat
                  without reading why it went: /news/<slug> carries real meta tags now, and the
                  middleware's matcher was `/news.html` — running BEFORE routes, it would hand a
                  crawler the old shell instead of the 301, which no `curl` test can detect
+content/         news.json — the 81 stories as authored, in date groups. ⚠️ NOT SERVED, and it
+                 lived at public/news.json until 2026-08-26. Under public/ it was a stale PUBLIC
+                 copy of database content sitting at /news.json that nothing read — the same shape
+                 of fault that left 39 mojibake characters live in search-index.json for days.
+                 It is an authoring input to scripts/build-news-seed.mjs and nothing else reads it
+                 ⚠️ NEVER REORDER OR REMOVE A STORY INSIDE A DATE GROUP. legacy_id is
+                 `<date>-<array index>`, and that is what the /news.html?story= 301 endpoint
+                 resolves for every link shared before Phase 6. Array position is a PUBLISHED
+                 IDENTIFIER here, not formatting. Appending to a group is safe; inserting in the
+                 middle silently repoints every previously shared link for that day at a DIFFERENT
+                 story, and nothing reports it
+                 ⚠️ AND IT STOPS BEING THE SOURCE OF TRUTH WHEN PHASE 7'S ADMIN UI SHIPS. The full
+                 seed is idempotent on slug, so a bare `--write` regeneration after that point
+                 overwrites every story edited in the admin UI and reports success. Use
+                 `npm run build:news-seed -- --only <date> --write`, which can only touch rows just
+                 authored. See .claude/commands/add-news.md
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
                  the apply/verify runbook plus the dashboard settings SQL cannot reach
                  email-templates/ — the two auth emails. CONFIGURATION, not code: nothing
@@ -490,6 +506,17 @@ redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still n
   "do the paths still resolve" but "does this command still describe the site"** — brand values,
   face names and font links copied into a command rot exactly like the catalogue does, and none of
   them fails a build.
+  **Fifth instance, 2026-08-26, and the first where a path update could not have saved it:** Phase 6
+  moved news into the database, so `/add-news` was not pointing at a moved file — **the two files it
+  wrote had stopped being read by anything.** ⚠️ **It degraded SILENTLY first**: from stage 10 the
+  command still succeeded, still wrote `news.json`, still deployed green, and published nothing. No
+  gate could see it, because all three `prebuild` checks read skills, redirects and encoding — none
+  reads news. It only became *visible* at stage 13, when a deleted file finally threw.
+  **It was rewritten rather than deleted, and that is the point worth keeping.** Its curation half
+  — parsing a digest, shortlisting, duplicate-checking — was never about the file format and was
+  still exactly right; only its write half was dead. ⚠️ **Deleting a command with no successor
+  silently removes a working capability**, so the replacement route was written down *before* the
+  merge that killed the old one, not discovered after it.
 
 ---
 
