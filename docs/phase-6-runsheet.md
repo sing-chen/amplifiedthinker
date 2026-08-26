@@ -39,8 +39,8 @@ prevent.
 | 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs.** ⏭️ The skipped stubs are **deferred, not dismissed** — see the note under stage 1 for the three signals that would reopen it, and what reopening would cost now that stage 2 has gone in |
 | 2 | Stop publishing to Pages | Human + Claude | ✅ Done | 2026-08-24. Workflow disabled first, then **Unpublish site** — ⚠️ there is no "None" in the Source dropdown any more, and the order was corrected mid-stage. Pages origin **404 on all four paths checked incl. `build.json`**; apex **200 on all twelve**, spanning hand-written pages, Astro auth surfaces, a skill page, both stylesheets and the stamp. `verify:stamp`: `vercel ok c5b1ce4` / `pages FAIL HTTP 404` — expected. **Fully reversible** |
 | 3 | Soak on one origin | Human | ✅ Done | 2026-08-24 08:10Z → 2026-08-26 08:11Z, **48h01m**, all five boxes ticked. Nine commits reached `main`; production serving the tip; baseline retaken at **85 files / 1 origin / 0 not served**; **no broken-link reports**, confirmed by the site owner. ⚠️ Retaking the baseline found `verify-published.mjs` **overstating its own coverage by double** — fixed. ⚠️ This row was briefly marked ✅ with every box unticked before any of it was checked — see the stage's Observed note |
-| 4 | Remove Pages from code, gates and docs | Claude | ◐ **One box left, and it belongs to stage 5** | **Bulk shipped 2026-08-26 on `chore/retire-pages`, merged as `d7728f2` — NOT on this branch.** Checked box by box against the tree the same day, which found three gaps: `nav.js`/`progress.js`/`BaseLayout.astro` still described Pages as live (**fixed**), the Promptly sibling was unchecked (**checked by the owner, no changes needed**), and the `verify-redirects` assertion was **dropped rather than moved** — the one still open, deferred into stage 5 because only the dashboard change makes it pass. Two boxes struck out as deliberately not-done: `ASTRO_BASE` stays, and `settings.local.json` is machine-local |
-| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ **Not started** | ⚠️ **The whole of what remains in Part A.** Authority is [supabase/README.md](../supabase/README.md) §*Cleanup owed*. **Turnstile first** — its hostname grant covers subdomains of a Pages domain the owner controls today, so anything published there could mint tokens prod accepts; the Supabase entry is merely a redirect to a dead host. ⚠️ Also restores the `rejected` assertion stage 4 dropped, and Turnstile has **no automated check** — signing in on production is the only verification |
+| 4 | Remove Pages from code, gates and docs | Claude | ✅ Done | **Bulk shipped 2026-08-26 on `chore/retire-pages`, merged as `d7728f2` — NOT on this branch.** Checked box by box against the tree the same day, which found three gaps: `nav.js`/`progress.js`/`BaseLayout.astro` still described Pages as live (**fixed**), the Promptly sibling was unchecked (**checked by the owner, no changes needed**), and the `verify-redirects` assertion was **dropped rather than moved** — the one still open, deferred into stage 5 because only the dashboard change makes it pass. Two boxes struck out as deliberately not-done: `ASTRO_BASE` stays, and `settings.local.json` is machine-local |
+| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ◐ **One box left — the sign-in test** | 2026-08-26. Turnstile hostname removed **first**, then the Supabase entry; prod now holds **one** Redirect URL. `verify-redirects` restored to **13 assertions, green**, including `PASS rejected: sing-chen.github.io/amplifiedthinker/` — which also closes stage 4's last box. ⚠️ Found that `supabase/README.md` had listed **four** prod redirect URLs since Phase 5 when there is one — the doc contradicted the gate for weeks and nothing caught it. **Left: a real sign-in on production**, the only check Turnstile has |
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
 | 7 | The adapter decision | Claude + Human | ☐ Not started | ⚠️ **The plan puts this in Phase 8 and the plan is wrong.** Blocks 9–13 |
@@ -693,14 +693,42 @@ having been misdiagnosed once already — expect that shape rather than an obvio
 
 **Tick as you go**
 
-- [ ] ⚠️ **Turnstile `amplifiedthinker-prod` — `sing-chen.github.io` removed from Domains — FIRST**
-- [ ] Supabase prod redirect allowlist — Pages entry removed, others untouched
-- [ ] ⚠️ `verify-redirects.mjs` — Pages URL **added to prod `rejected`**, restoring the assertion
-      stage 4 dropped
-- [ ] `npm run verify:redirects` run — Pages URL now **rejected**, `amplifiedthinker.com` still allowed
-- [ ] A real sign-in tested end to end on `amplifiedthinker.com` after the widget change — the only
-      check the Turnstile half has
-- [ ] `supabase/README.md` §*Cleanup owed* updated to say both are done, with the date
+- [x] ⚠️ **Turnstile `amplifiedthinker-prod` — `sing-chen.github.io` removed from Hostnames — FIRST**
+      — done 2026-08-26
+- [x] Supabase prod redirect allowlist — Pages entry removed, others untouched — done 2026-08-26.
+      ⚠️ **Prod turned out to hold only ONE entry**, not four; see the note below
+- [x] ⚠️ `verify-redirects.mjs` — Pages URL **added to prod `rejected`**, restoring the assertion
+      stage 4 dropped. Permanent, not a one-off
+- [x] `npm run verify:redirects` run — **13 assertions, gate green**, including
+      `PASS rejected: https://sing-chen.github.io/amplifiedthinker/`
+- [ ] ⬜ **A real sign-in tested end to end on `amplifiedthinker.com`** — ⚠️ **the only check the
+      Turnstile half has, and it is the site owner's to run**
+- [x] `supabase/README.md` §*Cleanup owed* updated to say both are done, with the date — and two
+      other stale claims in the same file corrected, plus the comment in `supabase-client.js`
+
+**Observed 2026-08-26:**
+
+**Probed prod directly before touching the script**, using the token-free probe in
+`supabase/README.md`. All five test origins fell back to the Site URL, confirming the dashboard
+change had taken effect:
+
+| Probed | Result |
+|---|---|
+| `sing-chen.github.io/amplifiedthinker/` | **rejected** — the change worked |
+| `localhost:4321/sign-in/` · the preview alias | rejected — both belong to **dev** |
+| `example.com/nope` | rejected — the control |
+
+⚠️ **The gate found a documentation error that had stood since Phase 5.**
+`supabase/README.md` listed **four** Redirect URLs for prod and said *"three of them still
+current"* — but prod holds exactly one. The preview alias and `localhost` moved to **dev** when the
+projects split, and prod must *actively refuse* them; `verify-redirects.mjs` has asserted that all
+along. **The doc contradicted the gate for weeks and nothing caught it, because a doc cannot fail a
+build.** Corrected, and split into per-project blocks so the two cannot be conflated again.
+
+⚠️ **One probe cannot prove what it looks like it proves.** `https://amplifiedthinker.com/` is
+*also* the Site URL, so an allowed result and a fallback are the same string. The `allowed`
+assertion for the primary origin is unfalsifiable by this method — which is exactly why the
+known-bad control matters, and why it is run in the same batch every time.
 
 **Rollback:** re-add both entries. Immediate, but note the sign-in test — a wrong Turnstile domain
 list surfaces as a captcha failure, which [supabase/README.md](../supabase/README.md) records as

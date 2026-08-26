@@ -49,18 +49,26 @@ function projects() {
 // can still drive the production database through a redirect that resolves.
 const EXPECTED = {
   prod: {
-    // ⚠️ `https://sing-chen.github.io/amplifiedthinker/` was here until
-    // 2026-08-26, when that origin was retired. It is dropped from this list
-    // because the origin no longer exists, NOT because the dashboard stopped
-    // allowing it — the Supabase prod allowlist still names it, and only the
-    // dashboard can remove it. Until someone does, prod will honour a redirect
-    // to a host that 404s. Listing it under `rejected` instead would fail this
-    // check every run until that happens, which is a judgement for whoever does
-    // the cleanup; the entry is tracked in supabase/README.md.
     allowed: [
       'https://amplifiedthinker.com/'
     ],
     rejected: [
+      // ⚠️ THE ASSERTION MOVED SIDES; IT DID NOT DISAPPEAR — and for two days
+      // it had. `https://sing-chen.github.io/amplifiedthinker/` sat under
+      // `allowed` until the origin was retired on 2026-08-26, then was DROPPED
+      // from this file entirely rather than moved here, because the dashboard
+      // still allowed it and asserting `rejected` would have failed every run.
+      //
+      // Defensible as a stopgap, and dangerous as a resting state: for those two
+      // days nothing tested that host in EITHER direction, while prod still
+      // honoured a redirect to it. The dashboard entry was removed on
+      // 2026-08-26 and the assertion is restored here in the same sitting,
+      // which is what makes the drop temporary.
+      //
+      // It stays permanently. `sing-chen.github.io` did not stop existing when
+      // this site stopped using it — it fronts every project on that GitHub
+      // account, so "prod refuses it" is worth checking for ever, not just once.
+      'https://sing-chen.github.io/amplifiedthinker/',
       'http://localhost:4321/sign-in/',
       'https://amplifiedthinker-git-feat-auth-singchen.vercel.app/',
       'https://example.com/nope'

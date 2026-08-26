@@ -32,13 +32,17 @@
     prod: {
       url: 'https://spehmrgmcdenqdftkyrt.supabase.co',
       key: 'sb_publishable_6dH7WjyaE3Unj_q7C4PhIw_1ebh8auC',
-      // Widget `amplifiedthinker-prod`: amplifiedthinker.com — and still
-      // sing-chen.github.io, which was retired on 2026-08-26. ⚠️ That hostname
-      // is listed in the CLOUDFLARE DASHBOARD, not here, so removing it is a
-      // manual step nothing in this repo can do or verify. Tracked in
-      // supabase/README.md alongside the redirect allowlist.
-      // Never vercel.app — that is a public suffix, and listing it would let any
-      // site on it mint tokens for our signup endpoint.
+      // Widget `amplifiedthinker-prod`: amplifiedthinker.com, and nothing else.
+      // `sing-chen.github.io` was on that list until 2026-08-26 and was removed
+      // when the origin was retired.
+      // ⚠️ THE HOSTNAME LIST LIVES IN THE CLOUDFLARE DASHBOARD, NOT HERE, so
+      // nothing in this repo can read it, change it, or notice it drifting. A
+      // real sign-in on production is the only check there is, and a wrong list
+      // surfaces as a CAPTCHA failure rather than an obvious error.
+      // ⚠️ Never `*.github.io` and never `vercel.app`. Both are public suffixes
+      // hosting other people's content, and a Turnstile hostname grant covers
+      // subdomains — listing either lets any site on it mint tokens for our
+      // signup endpoint.
       turnstileSiteKey: '0x4AAAAAAET7pUAhEavY48Lf'
     },
     dev: {
