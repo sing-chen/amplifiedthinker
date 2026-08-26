@@ -372,10 +372,21 @@ import {
      When the Saved filter is open and the reader un-saves the last story, the
      list would be left empty with a filter that can no longer match anything -
      so fall back to All stories rather than leaving them staring at nothing. */
+  /* Normalised on the way in. The object is published by a DIFFERENT file, so
+     an older or partial one - no `noted` key, say - would throw inside the
+     renderer rather than simply omitting a chip. Defaulting here keeps that
+     failure impossible instead of merely unlikely. */
+  function normalisePersonal(p) {
+    if (!p || !p.enabled) return null;
+    return { enabled: true, favs: p.favs || {}, pins: p.pins || {}, noted: p.noted || {} };
+  }
+
   function adoptPersonal() {
-    var p = window.AmplifiedNewsPersonal;
-    state.personal = (p && p.enabled) ? p : null;
-    if (state.tag === 'saved' && (!state.personal || !Object.keys(state.personal.favs).length)) {
+    state.personal = normalisePersonal(window.AmplifiedNewsPersonal);
+    // A personal filter whose set has just emptied can no longer match anything,
+    // so fall back rather than leaving the reader on a dead view.
+    if ((state.tag === 'saved' || state.tag === 'noted') &&
+        (!state.personal || !Object.keys(state.personal[state.tag === 'saved' ? 'favs' : 'noted']).length)) {
       state.tag = 'all';
     }
     renderFilterBar();
@@ -390,9 +401,7 @@ import {
   // waste: it re-buckets the dates in the READER's timezone rather than the
   // server's, and it attaches the state the rest of this file reads.
   state.expanded = expandedFor(activeStory());
-  if (window.AmplifiedNewsPersonal && window.AmplifiedNewsPersonal.enabled) {
-    state.personal = window.AmplifiedNewsPersonal;
-  }
+  state.personal = normalisePersonal(window.AmplifiedNewsPersonal);
   renderFilterBar();
   renderHeadlines();
   renderStory(activeStory());

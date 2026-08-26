@@ -84,15 +84,15 @@
     return map;
   }
 
-  function publishPersonal(favs, pins) {
-    global.AmplifiedNewsPersonal = { enabled: true, favs: favs, pins: pins };
+  function publishPersonal(favs, pins, noted) {
+    global.AmplifiedNewsPersonal = { enabled: true, favs: favs, pins: pins, noted: noted };
     try {
       doc.dispatchEvent(new CustomEvent('amplified:news-personal'));
     } catch (e) { /* the controls still work; only the list ordering misses out */ }
   }
 
   function clearPersonal() {
-    global.AmplifiedNewsPersonal = { enabled: false, favs: {}, pins: {} };
+    global.AmplifiedNewsPersonal = { enabled: false, favs: {}, pins: {}, noted: {} };
     try { doc.dispatchEvent(new CustomEvent('amplified:news-personal')); } catch (e) {}
   }
 
@@ -102,21 +102,35 @@
     if (!sb || !uid) return;
 
     var map = idToSlug();
-    // Only rows that are actually set. A row exists as soon as either flag has
-    // ever been toggled, so `favorited=false` rows are common and must not
-    // count as saved.
-    sb.from('user_news').select('story_id,favorited,pinned').eq('user_id', uid)
-      .then(function (res) {
-        if (res.error || !Array.isArray(res.data)) return;
-        var favs = {}, pins = {};
-        res.data.forEach(function (r) {
-          var slug = map[r.story_id];
-          if (!slug) return;              // a story that is no longer published
-          if (r.favorited) favs[slug] = 1;
-          if (r.pinned) pins[slug] = 1;
-        });
-        publishPersonal(favs, pins);
+    // Two tables, two reads. `notes` is polymorphic - `target_id` is text with
+    // no FK - so there is nothing to join on even if one query were wanted.
+    //
+    // Only rows that are actually set count. A user_news row exists as soon as
+    // EITHER flag has ever been toggled, so `favorited = false` rows are common
+    // and must not read as saved.
+    Promise.all([
+      sb.from('user_news').select('story_id,favorited,pinned').eq('user_id', uid),
+      sb.from('notes').select('target_id').eq('user_id', uid).eq('target_type', 'news')
+    ]).then(function (res) {
+      var un = res[0], nt = res[1];
+      if (un.error || !Array.isArray(un.data)) return;
+      var favs = {}, pins = {}, noted = {};
+      un.data.forEach(function (r) {
+        var slug = map[r.story_id];
+        if (!slug) return;              // a story that is no longer published
+        if (r.favorited) favs[slug] = 1;
+        if (r.pinned) pins[slug] = 1;
       });
+      // A failed notes read leaves the Has notes chip absent rather than the
+      // whole personal layer missing: losing one filter beats losing all of it.
+      if (!nt.error && Array.isArray(nt.data)) {
+        nt.data.forEach(function (r) {
+          var slug = map[r.target_id];
+          if (slug) noted[slug] = 1;
+        });
+      }
+      publishPersonal(favs, pins, noted);
+    });
   }
 
   // Keep the published set in step with a toggle, so pinning a story visibly
@@ -124,9 +138,53 @@
   function updatePersonal(slug, field, on) {
     var p = global.AmplifiedNewsPersonal;
     if (!p || !p.enabled || !slug) return;
-    var bag = field === 'favorited' ? p.favs : p.pins;
+    var bag = field === 'favorited' ? p.favs : (field === 'noted' ? p.noted : p.pins);
     if (on) bag[slug] = 1; else delete bag[slug];
+
+    // ⚠️ ONE PIN PER READER, mirrored in the published set. The database
+    // enforces this with a trigger and a partial unique index, but the list
+    // renders from THIS object - so without clearing the old entry here the
+    // reader would briefly see two stories under "Your pins" and only find out
+    // which one really stuck by reloading.
+    if (field === 'pinned' && on) {
+      Object.keys(p.pins).forEach(function (k) { if (k !== slug) delete p.pins[k]; });
+    }
     try { doc.dispatchEvent(new CustomEvent('amplified:news-personal')); } catch (e) {}
+  }
+
+  // Which story the reader currently has pinned, if any. Used to NAME it in the
+  // replace prompt rather than asking about "your pinned story" in the abstract.
+  function currentPinSlug(exceptSlug) {
+    var p = global.AmplifiedNewsPersonal;
+    if (!p || !p.enabled) return null;
+    var keys = Object.keys(p.pins).filter(function (k) { return k !== exceptSlug; });
+    return keys.length ? keys[0] : null;
+  }
+
+  /* Shortened to something scannable. Headlines here run past 100 characters
+     and a prompt the reader has to READ to answer is a prompt they will dismiss
+     unread. Cut on a word boundary, never mid-word.
+
+     Straight quotes are stripped rather than escaped: several titles carry
+     their own, and wrapping one in the prompt's curly quotes produced a nest
+     that read as a typo. */
+  var TITLE_CAP = 58;
+
+  function titleForSlug(slug) {
+    var el = doc.getElementById('news-data');
+    if (!el || !slug) return null;
+    var title = null;
+    try {
+      var hit = JSON.parse(el.textContent).filter(function (s) { return s.slug === slug; })[0];
+      title = hit ? hit.title : null;
+    } catch (e) { return null; }
+    if (!title) return null;
+
+    title = title.replace(/["“”]/g, '').trim();
+    if (title.length <= TITLE_CAP) return title;
+    var cut = title.slice(0, TITLE_CAP);
+    var space = cut.lastIndexOf(' ');
+    return (space > 20 ? cut.slice(0, space) : cut).replace(/[\s—–,;:.]+$/, '') + '…';
   }
 
   /* ── reads ───────────────────────────────────────────────────────────────── */
@@ -374,12 +432,20 @@
     return true;
   }
 
+  // The slug of whatever story is open, read at call time rather than captured:
+  // a save can resolve after the reader has moved on.
+  function box2Slug() {
+    var box = container();
+    return box ? box.getAttribute('data-story-slug') : null;
+  }
+
   function doDelete(storyId) {
     setStatus('Deleting...');
     saveNote(storyId, '').then(function () {
       var st = cache[storyId] || {};
       st.note = '';
       cache[storyId] = st;
+      updatePersonal(box2Slug(), 'noted', false);
       // DELETING CLOSES THE PANEL. An empty editor left open after a delete
       // says nothing the status line has not already said, and reads as though
       // something failed to happen.
@@ -451,6 +517,57 @@
     });
   }
 
+  /* ⚠️ PINNING SOMETHING ELSE REPLACES YOUR PIN, SO IT ASKS FIRST AND NAMES
+     WHAT IT WILL REPLACE. The database enforces one pin per reader with a
+     trigger, which means the old pin is cleared whether or not anybody was
+     told - and silently discarding a choice the reader made is exactly the
+     kind of quiet loss this site keeps deciding not to do.
+
+     Unpinning never asks: it takes nothing away that is not the thing being
+     acted on. */
+  function requestPin(btn) {
+    var box = container();
+    if (!box) return;
+    var slug = box.getAttribute('data-story-slug');
+    var state = cache[box.getAttribute('data-story-id')] || {};
+
+    if (state.pinned) return toggleFlag(btn, 'pinned');   // unpinning
+
+    var current = currentPinSlug(slug);
+    if (!current) return toggleFlag(btn, 'pinned');       // nothing to replace
+
+    var title = titleForSlug(current);
+    askPinConfirm(
+      title
+        ? 'Replace your pinned story? \u201c' + title + '\u201d is pinned now.'
+        : 'Replace your pinned story?',
+      'Yes, replace'
+    );
+  }
+
+  /* The pin prompt cannot reuse askConfirm(): that one replaces the NOTE
+     toolbar, which does not exist unless the note panel is open. This one
+     replaces the actions row itself. */
+  function askPinConfirm(question, confirmLabel) {
+    var row = doc.querySelector('.story-actions-row');
+    if (!row) return;
+    row.setAttribute('data-restore', row.innerHTML);
+    row.innerHTML = '<span class="story-note-confirm">' + esc(question) + '</span>' +
+      '<button type="button" class="story-action-btn is-danger" data-action="pin-replace-yes">' +
+        esc(confirmLabel) + '</button>' +
+      '<button type="button" class="story-action-btn" data-action="pin-replace-no">Cancel</button>';
+    var yes = row.querySelector('[data-action="pin-replace-yes"]');
+    if (yes) yes.focus();
+  }
+
+  function cancelPinConfirm() {
+    var row = doc.querySelector('.story-actions-row');
+    if (!row || !row.hasAttribute('data-restore')) return false;
+    row.innerHTML = row.getAttribute('data-restore');
+    row.removeAttribute('data-restore');
+    return true;
+  }
+
   function reflectFlag(btn, field, on) {
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     var label = btn.querySelector('[data-label]');
@@ -468,7 +585,7 @@
     var storyId = box.getAttribute('data-story-id');
 
     if (action === 'favorite') return toggleFlag(btn, 'favorited');
-    if (action === 'pin') return toggleFlag(btn, 'pinned');
+    if (action === 'pin') return requestPin(btn);
 
     if (action === 'note') {
       var p = panel();
@@ -498,6 +615,13 @@
     if (action === 'note-delete') {
       return askConfirm('Delete this note permanently? It cannot be restored.', 'Yes, delete', 'delete');
     }
+    if (action === 'pin-replace-no') { cancelPinConfirm(); return; }
+    if (action === 'pin-replace-yes') {
+      cancelPinConfirm();
+      var pinBtn = doc.querySelector('[data-action="pin"]');
+      if (pinBtn) toggleFlag(pinBtn, 'pinned');
+      return;
+    }
     if (action === 'confirm-no') { cancelConfirm(); return; }
 
     if (action === 'confirm-yes') {
@@ -526,6 +650,7 @@
         var st = cache[storyId] || {};
         st.note = body;
         cache[storyId] = st;
+        updatePersonal(box2Slug(), 'noted', true);
         // Save LANDS in view mode, which is what stops the save-again loop.
         setNoteMode('view');
         var lbl = doc.querySelector('[data-action="note"] [data-label]');
@@ -541,7 +666,7 @@
   // Escape backs out of a confirmation before it backs out of anything else.
   doc.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    if (cancelConfirm()) e.stopPropagation();
+    if (cancelConfirm() || cancelPinConfirm()) e.stopPropagation();
   });
 
   doc.addEventListener('input', function (e) {

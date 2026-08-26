@@ -46,6 +46,7 @@ const THEME_ICON_PATHS = {
 const ALL_ICON_PATH = '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>';
 const PIN_ICON_PATH = '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/>';
 const CHEVRON_ICON_PATH = '<polyline points="6 9 12 15 18 9"/>';
+const NOTE_ICON_PATH = '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><polyline points="14 4 14 10 20 10"/>';
 const STAR_ICON_PATH = '<path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>';
 
 const TITLE_CASE_LOWER = { and: 1, or: 1, of: 1, the: 1, in: 1, on: 1 };
@@ -133,6 +134,8 @@ export function storyPath(slug) {
 export function matchesFilter(story, state) {
   if (state.tag === 'saved') {
     if (!state.personal || !state.personal.favs[story.slug]) return false;
+  } else if (state.tag === 'noted') {
+    if (!state.personal || !state.personal.noted[story.slug]) return false;
   } else if (state.tag && state.tag !== 'all' && (story.tags || []).indexOf(state.tag) === -1) {
     return false;
   }
@@ -198,8 +201,13 @@ export function filterBarHTML(stories, state) {
   // empty. It sits second, next to All stories, because it is a view of
   // everything rather than one theme.
   const personal = [];
-  if (state.personal && state.personal.enabled && Object.keys(state.personal.favs).length) {
-    personal.push({ key: 'saved', label: 'Saved', path: STAR_ICON_PATH });
+  if (state.personal && state.personal.enabled) {
+    if (Object.keys(state.personal.favs).length) {
+      personal.push({ key: 'saved', label: 'Saved', path: STAR_ICON_PATH });
+    }
+    if (Object.keys(state.personal.noted).length) {
+      personal.push({ key: 'noted', label: 'Has notes', path: NOTE_ICON_PATH });
+    }
   }
 
   const chips = [{ key: 'all', label: 'All stories', path: ALL_ICON_PATH }]
@@ -251,9 +259,21 @@ export function headlineListHTML(stories, state) {
     return matches.map((s) => headlineHTML(s, activeSlug)).join('');
   }
 
+  /* ⚠️ THE EDITORIAL PIN IS LABELLED "Featured" AND THE READER'S IS "Your pins",
+     because until 2026-08-26 both wore the same icon and the same warm tint and
+     a signed-in reader saw two identical-looking rows meaning different things:
+     one everybody sees, one only they do. The schema warns that these two are
+     trivially conflated; the list is exactly where it happened. Separating them
+     by WORD rather than only by position is what makes them unmistakable.
+
+     The header shows for guests too. A story sitting at the top of the list
+     with a pin icon and no explanation is a small unanswered question on every
+     visit; naming it answers it. */
   const pinned = findPinned(stories);
   const pinnedVisible = pinned && matchesFilter(pinned, state);
-  let html = pinnedVisible ? headlineHTML(pinned, activeSlug) : '';
+  let html = pinnedVisible
+    ? '<div class="headline-group-header">Featured</div>' + headlineHTML(pinned, activeSlug)
+    : '';
 
   // The reader's own pins, lifted out of their date buckets into one group at
   // the top — which is what makes pinning visibly DO something. Never collapsed
@@ -305,9 +325,13 @@ export function headlineListHTML(stories, state) {
   // filter yet" reads as a fault when the honest answer is that the reader has
   // not saved anything, and it is the only filter whose emptiness is the
   // reader's own doing rather than the feed's.
-  return state.tag === 'saved'
-    ? '<p class="empty-state">Nothing saved yet. Open a story and choose Save to keep it here.</p>'
-    : '<p class="empty-state">No stories match this filter yet.</p>';
+  if (state.tag === 'saved') {
+    return '<p class="empty-state">Nothing saved yet. Open a story and choose Save to keep it here.</p>';
+  }
+  if (state.tag === 'noted') {
+    return '<p class="empty-state">No notes yet. Open a story and add one \u2014 only you can see it.</p>';
+  }
+  return '<p class="empty-state">No stories match this filter yet.</p>';
 }
 
 export function storyHTML(story, prevSlug, nextSlug) {
@@ -322,7 +346,10 @@ export function storyHTML(story, prevSlug, nextSlug) {
   html += '<div class="story-meta">';
   html += '<div class="story-source">' + escapeHTML(fmtDateLong(story.date)) + '</div>';
   if (story.pinned) {
-    html += '<div class="story-pinned-badge">' + icon(PIN_ICON_PATH) + 'Pinned story</div>';
+    // "Featured", not "Pinned story" — see the note in headlineListHTML. This
+    // badge is the editorial pin; the reader's own pin is shown by the Pin
+    // button's own pressed state, and the two must not use one word.
+    html += '<div class="story-pinned-badge">' + icon(PIN_ICON_PATH) + 'Featured</div>';
   }
   html += '</div>';
   html += '<nav class="story-nav" aria-label="Story navigation">';

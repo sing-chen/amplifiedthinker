@@ -2047,3 +2047,18 @@ reads as "the rebuild failed" rather than "the doc is stale".
 **The rule, and it applies to deleting anything:** *grep the docs, not just the code.* A dead link in
 a reference is an inconvenience; a dead step in a recovery runbook is a false alarm at the worst
 possible moment.
+
+## Delete all my notes, from `/account/`
+
+Raised 2026-08-26 while building Phase 6 stage 14, and deliberately parked rather than built.
+
+A note is deleted one at a time from the story it belongs to, which is right for the common case
+and wrong for "I am done with all of this". That is an **account-level** action and belongs on
+`/account/` beside password change and delete-account, not on a news story.
+
+⚠️ **The nuclear option already exists and works**: deleting the account cascades `notes` and
+`user_news` through their FKs to `auth.users`. So this is a convenience for someone who wants to
+keep the account and drop the writing — not a gap in the right to erasure.
+
+Whatever ships must: say how many notes will go **before** asking, ask once and clearly, and
+⚠️ **change `privacy.html` in the same commit** if it alters what the page says about retention.
