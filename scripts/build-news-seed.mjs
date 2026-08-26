@@ -152,7 +152,18 @@ for (const group of groups) {
       summary: story.summary ?? null,
       implications: story.implications ?? null,
       tags: story.tags ?? [],
-      pinned: story.pinned === true
+      pinned: story.pinned === true,
+      // ⚠️ `archived` IS HOW A STORY IS WITHDRAWN, AND IT IS NEVER A DELETION.
+      // Removing the entry from the array instead would renumber every story
+      // after it in that date group, because `legacy_id` is `<date>-<index>` —
+      // silently repointing every link previously shared for them. So a merged
+      // or withdrawn story STAYS EXACTLY WHERE IT IS and changes status.
+      // `news_stories_archived_read` keeps the row readable on purpose.
+      status: story.status === 'archived' ? 'archived' : 'published',
+      // Not a column. It records which story this one was merged into, so the
+      // 301 endpoint can send an old link to the surviving story rather than a
+      // 404, and so a human reading the file can see why a row is archived.
+      mergedInto: story.mergedInto ?? null
     });
   });
 }
@@ -173,7 +184,30 @@ for (const r of rows) {
   byLegacy.set(r.legacyId, r);
 }
 
-const pinned = rows.filter((r) => r.pinned);
+/* ── archived rows, and the pointer they carry ─────────────────────────────── */
+
+const archived = rows.filter((r) => r.status === 'archived');
+const publishedSlugs = new Set(rows.filter((r) => r.status === 'published').map((r) => r.slug));
+
+for (const r of archived) {
+  // ⚠️ AN UNRESOLVABLE `mergedInto` IS WORSE THAN NONE. The 301 endpoint uses it
+  // to send an old shared link to the surviving story; pointing it at a slug
+  // that is absent, misspelled or itself archived turns a working redirect into
+  // a 404 — and nothing downstream can tell that apart from a story that simply
+  // never existed. Checked here because here is where both sides are in hand.
+  if (!r.mergedInto) continue;
+  if (!publishedSlugs.has(r.mergedInto)) {
+    problems.push(`${r.legacyId} is archived with mergedInto "${r.mergedInto}", which is not a published slug`);
+  }
+}
+
+// A pinned row that is not published would satisfy `news_stories_single_pinned_idx`
+// while showing up nowhere — a site-wide Featured story that cannot be seen.
+for (const r of archived) {
+  if (r.pinned) problems.push(`${r.legacyId} is archived AND pinned — the Featured story would be invisible`);
+}
+
+const pinned = rows.filter((r) => r.pinned && r.status === 'published');
 // The schema enforces this with a partial unique index, so a second pin would
 // fail the INSERT rather than land quietly. Catching it here says WHICH two.
 if (pinned.length > 1) {
@@ -185,7 +219,11 @@ if (pinned.length > 1) {
 
 console.log(`\nsource: content/news.json`);
 console.log(`  ${groups.length} date groups`);
-console.log(`  ${rows.length} stories`);
+console.log(`  ${rows.length} stories — ${rows.length - archived.length} published, ${archived.length} archived`);
+for (const r of archived) {
+  console.log(`      archived: ${r.legacyId}  ${r.slug}`);
+  if (r.mergedInto) console.log(`                -> merged into ${r.mergedInto}`);
+}
 console.log(`  ${pinned.length} pinned${pinned.length ? ` — ${pinned[0].legacyId} "${pinned[0].title}"` : ''}`);
 console.log(`  ${groups[groups.length - 1]?.date} .. ${groups[0]?.date}`);
 
@@ -264,7 +302,8 @@ const clearPin = emitPinned.length
 const values = emit.map((r) =>
   `  (${sqlText(r.slug)}, ${sqlText(r.legacyId)}, ${sqlText(r.storyDate)}::date, ${r.sortOrder}, ` +
   `${sqlText(r.title)}, ${sqlText(r.source)}, ${sqlText(r.url)}, ${sqlText(r.summary)}, ` +
-  `${sqlText(r.implications)}, ${sqlTextArray(r.tags)}, ${r.pinned}, 'published')`
+  `${sqlText(r.implications)}, ${sqlTextArray(r.tags)}, ${r.pinned}, ${sqlText(r.status)}, ` +
+  `${r.mergedInto ? sqlText(r.mergedInto) : 'null'})`
 ).join(',\n');
 
 const sql = `-- ${partial ? 'PARTIAL load' : 'Seed'} for public.news_stories, GENERATED from content/news.json.
@@ -285,7 +324,7 @@ const sql = `-- ${partial ? 'PARTIAL load' : 'Seed'} for public.news_stories, GE
 -- Generated from ${emit.length} stor${emit.length === 1 ? 'y' : 'ies'}${partial ? ` for ${onlyDates.join(', ')}, out of ${rows.length} in the file` : ` across ${groups.length} date groups`}.
 ${partial ? `--\n-- \u26a0\ufe0f PARTIAL. This touches ONLY the rows listed below. It is not a\n-- replacement for supabase/seed/news_seed.sql and does not reconcile\n-- anything it omits.\n` : ''}
 ${clearPin}insert into public.news_stories
-  (slug, legacy_id, story_date, sort_order, title, source, url, summary, implications, tags, pinned, status)
+  (slug, legacy_id, story_date, sort_order, title, source, url, summary, implications, tags, pinned, status, merged_into)
 values
 ${values}
 on conflict (slug) do update set
@@ -299,16 +338,32 @@ on conflict (slug) do update set
   implications = excluded.implications,
   tags         = excluded.tags,
   pinned       = excluded.pinned,
-  status       = excluded.status;
+  status       = excluded.status,
+  merged_into  = excluded.merged_into;
 
 -- Verification, to run in the same sitting:
 ${partial ? `--   select count(*) from public.news_stories
 --     where story_date in (${onlyDates.map((d) => `'${d}'`).join(', ')});  -- expect ${emit.length}
 --   select count(*) from public.news_stories where pinned;           -- expect at most 1`
- : `--   select count(*) from public.news_stories;                        -- expect ${rows.length}
+ : `--   ⚠️ ONE QUERY, AND IT ANSWERS THE ONLY QUESTION WORTH ASKING. A bare
+--   count(*) of ${rows.length} is satisfied by ${rows.length} rows in ANY state, so it would
+--   read as a pass on a load that silently published the archived ones.
+--
+--   select status, count(*) from public.news_stories group by status order by status;
+--        -- expect exactly:  archived  ${String(archived.length).padStart(2)}
+--        --                  published ${String(rows.length - archived.length).padStart(2)}
+--        -- and no 'draft' row at all
+--
 --   select count(distinct slug), count(distinct legacy_id)
 --     from public.news_stories;                                      -- both ${rows.length}
---   select count(*) from public.news_stories where pinned;           -- expect ${pinned.length}`}
+--   select count(*) from public.news_stories where pinned;           -- expect ${pinned.length}
+${archived.length ? `--
+--   -- every archived row must point at a story that is actually published;
+--   -- ${archived.length} row(s) expected, and a null or an empty result is a failed merge:
+--   select a.legacy_id, a.merged_into, t.status as target_status
+--     from public.news_stories a
+--     join public.news_stories t on t.slug = a.merged_into
+--    where a.status = 'archived';` : ''}`}
 --   select title from public.news_stories where title ~ '[^[:ascii:]]' limit 5;
 --     -- eyeball these: accented text must read correctly, not as mojibake
 `;

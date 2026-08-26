@@ -95,8 +95,13 @@ export async function slugForLegacyId(hostname, legacyId) {
   const project = PROJECTS[env];
   if (!project) throw new Error(`no Supabase project configured for "${env}"`);
 
+  // ⚠️ NOT FILTERED TO `published`, AND THAT IS THE POINT. An archived story is
+  // one that was merged into another or withdrawn — its row is deliberately
+  // kept so that a link shared before Phase 6 still resolves, which is the
+  // stated reason `news_stories` withdraws by status rather than by DELETE.
+  // Filtering here would 404 exactly the links the archive exists to protect.
   const endpoint = `${project.url}/rest/v1/news_stories` +
-    `?select=slug&status=eq.published&legacy_id=eq.${encodeURIComponent(legacyId)}&limit=1`;
+    `?select=slug,status,merged_into&legacy_id=eq.${encodeURIComponent(legacyId)}&limit=1`;
 
   const res = await fetch(endpoint, {
     headers: {
@@ -111,7 +116,32 @@ export async function slugForLegacyId(hostname, legacyId) {
   }
 
   const rows = await res.json();
-  return Array.isArray(rows) && rows[0] ? rows[0].slug : null;
+  const row = Array.isArray(rows) && rows[0] ? rows[0] : null;
+  if (!row) return null;
+
+  /* ⚠️ A MERGED STORY SENDS THE READER TO THE ONE IT WAS MERGED INTO, not to
+     itself. Two stories were found on 2026-08-26 to have been published twice
+     each, weeks apart, under different headlines against the same source URL.
+     Merging them means one row is archived — and the archived slug is NOT a
+     page anyone can read, because `/news/<slug>` renders from the published
+     list. Landing an old link there would be a 404 dressed as a redirect.
+
+     ⚠️ FOLLOWED EXACTLY ONE STEP, AND THE GUARD IS UPSTREAM, NOT HERE. The
+     database gives a foreign key to `slug`, a check that a row cannot point at
+     itself, and a check that only archived rows carry a pointer. It does NOT
+     enforce that the TARGET is published — a check constraint cannot read
+     another row — so a chain of archived rows is possible as far as Postgres is
+     concerned. `build-news-seed.mjs` rejects any `mergedInto` that is not a
+     published slug, which is what actually prevents one. Following a single
+     step therefore cannot loop in practice, and refusing to chain here means a
+     bad pointer degrades to a 404 rather than to a redirect loop. */
+  if (row.status === 'archived' && row.merged_into) return row.merged_into;
+
+  // Archived with nowhere to go — withdrawn rather than merged. Its own slug is
+  // not renderable, so this is a 404, and that is the honest answer.
+  if (row.status === 'archived') return null;
+
+  return row.slug;
 }
 
 /**

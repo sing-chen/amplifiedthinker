@@ -1870,7 +1870,7 @@ destroys. It now names the saved stories, the pin and the notes. The cascade was
 
 1. Final verification on the preview and on dev
 2. **Apply the migrations and load the news data to prod** — immediately before the merge. Not
-   after, and not "straight after". ⚠️ **THREE MIGRATIONS, IN THIS ORDER**, all added during
+   after, and not "straight after". ⚠️ **FOUR MIGRATIONS, IN THIS ORDER**, all added during
    stage 14 and all already applied to dev:
 
    | order | file | what it does |
@@ -1878,11 +1878,12 @@ destroys. It now names the saved stories, the pin and the notes. The cascade was
    | 1 | `20260826120000_notes_body_length.sql` | a note is 1–500 characters; one note per news story |
    | 2 | `20260826140000_user_news_single_pin.sql` | one pinned story per reader (trigger + partial unique index) |
    | 3 | `20260826160000_notes_one_per_target_news_only.sql` | scopes #1's index to `target_type = 'news'` |
+   | 4 | `20260826180000_news_stories_merged_into.sql` | `merged_into` on `news_stories`, so an archived story's old links reach the story it was merged into |
 
-   ⚠️ **APPLYING TWO OF THE THREE LEAVES A DATABASE THAT LOOKS FINE AND ENFORCES THE WRONG RULE.**
+   ⚠️ **APPLYING A PREFIX OF THESE LEAVES A DATABASE THAT LOOKS FINE AND ENFORCES THE WRONG RULE.**
    Stopping after #1 gives prod a `notes` index bound across the whole table — which is the state
    dev was in for an hour, is invisible from the site, and only surfaces when somebody tries to
-   write a second note on a plan, months later. #3 is not optional tidying; it is #1 finished.
+   write a second note on a plan, months later. #3 is not optional tidying; it is #1 finished. ⚠️ **And #4 must precede the news seed**, not follow it — the seed sets `merged_into`, and without the column the whole load fails on an unknown column rather than degrading.
 
    Each is re-runnable (`drop ... if exists` / `if not exists`) — written that way after #1 was
    applied to dev at the wrong limit and a plain `add constraint` failed with 42710, rolling back
@@ -1923,7 +1924,7 @@ migration down-script plus a code revert, and the two are not symmetric. Read
 **Tick as you go**
 
 - [ ] Preview verified; dev data correct
-- [ ] **All three** prod migrations applied **in order**, catalogue read back, and news loaded — record the row count observed
+- [ ] **All four** prod migrations applied **in order**, catalogue read back, and news loaded — record the row count observed
 - [ ] Merged to `main`
 - [ ] `npm run verify:stamp` — production serving the merge commit
 - [ ] ⚠️ 301 verified **on production**, against a real previously-shared URL

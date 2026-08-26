@@ -177,7 +177,9 @@
         "url": "https://www.kyndryl.com/us/en/insights/people-readiness-report-2026",
         "summary": "In a global study of 1,100 senior business and technology leaders across eight countries, only 23% say their workforce is ready for AI — down 6 points from 2025 — even as AI deployment climbed to 57% of enterprises. Leaders rate IT infrastructure readiness far higher (35%) than workforce readiness, governance/compliance, and culture (23–25%), and only 11% of enterprises say they're hitting their AI goals.",
         "implications": "The bottleneck on AI ROI is shifting from technical deployment to human and governance readiness — capability builders should prioritize readiness diagnostics over further tool rollout.",
-        "tags": ["workforce transformation", "research and insights"]
+        "tags": ["workforce transformation", "research and insights"],
+        "status": "archived",
+        "mergedInto": "2026-07-22-2026-people-readiness-report-the-ai-adoption-readiness-gap"
       }
     ]
   },
@@ -235,7 +237,9 @@
         "url": "https://www.cnbc.com/2026/07/01/employers-who-laid-off-workers-for-ai-are-reversing-their-decisions.html",
         "summary": "Ford is rehiring engineers after automated systems couldn't handle quality issues, CBA reversed customer-service cuts after an AI voice bot increased call volume, and IBM is tripling entry-level hiring after AI handled only 94% of routine HR requests. Industry data shows 32% of US hiring managers who cut a role for AI later rehired for it, and 55% of leaders who made AI-related redundancies now call those calls wrong.",
         "implications": "A concrete, named-company data point for the pilot-to-production failure pattern — leaders should treat AI-justified headcount cuts as reversible bets, not settled strategy, until task-level reliability is proven.",
-        "tags": ["workforce transformation", "leadership and culture"]
+        "tags": ["workforce transformation", "leadership and culture"],
+        "status": "archived",
+        "mergedInto": "2026-07-06-employers-who-laid-off-workers-citing-ai-are-already"
       },
       {
         "title": "The Elusiveness of Merit-Based Hiring",
@@ -479,8 +483,8 @@
         "title": "2026 People Readiness Report: The AI Adoption-Readiness Gap Widens",
         "source": "Kyndryl",
         "url": "https://www.kyndryl.com/us/en/insights/people-readiness-report-2026",
-        "summary": "Kyndryl's global survey of 1,100 senior business leaders across 8 countries finds only 23% believe their workforce is ready to use AI effectively, a 6-point drop from 2025, even as 77% report generative AI has scaled across multiple functions. A small \"Pacesetters\" cohort (9%) that paired role redesign, AI-specific change management, and workforce readiness was 1.5x more likely to report AI-driven revenue growth and twice as likely to report innovation gains.",
-        "implications": "Readiness is falling as adoption rises — a widening, not narrowing, gap that argues against \"wait and see\" capability-building approaches; the gap between deployment and readiness, not model capability, is now the central variable in AI ROI.",
+        "summary": "Kyndryl's global survey of 1,100 senior business and technology leaders across eight countries finds only 23% believe their workforce is ready to use AI effectively — a 6-point drop from 2025 — even as adoption climbed to 57% of enterprises and 77% report generative AI has scaled across multiple functions. Leaders rate their IT infrastructure readiness far higher than their people readiness, and a small \"Pacesetter\" cohort pulls away from the rest.",
+        "implications": "Readiness is falling as adoption rises — a widening rather than narrowing gap, which argues against \"wait and see\" capability-building. The bottleneck on AI return is shifting from technical deployment to human and governance readiness, so capability builders should prioritise readiness diagnostics over further tool rollout.",
         "tags": ["workforce transformation", "research and insights", "leadership and culture"]
       },
       {
@@ -690,8 +694,8 @@
         "title": "Employers who laid off workers citing AI are already starting to regret it",
         "source": "CNBC",
         "url": "https://www.cnbc.com/2026/07/01/employers-who-laid-off-workers-for-ai-are-reversing-their-decisions.html",
-        "summary": "Ford, Commonwealth Bank of Australia, and IBM are all reversing AI-driven layoffs after automation couldn't cover the full scope of the work: Ford rehired engineers for quality issues, CBA restored customer service staff after AI voice bots couldn't handle call volume, and IBM is tripling entry-level hiring after its AI handled only 94% of HR requests, missing the ethically complex 6%.",
-        "implications": "Concrete evidence that cutting headcount before building the human oversight layer is proving costly and reversible.",
+        "summary": "Ford, Commonwealth Bank of Australia and IBM are all reversing AI-driven layoffs after automation could not cover the full scope of the work: Ford is rehiring engineers after automated systems could not handle quality issues, CBA restored customer-service staff after an AI voice bot increased call volume rather than reducing it, and IBM is tripling entry-level hiring after AI handled only 94% of routine HR requests.",
+        "implications": "Concrete, named-company evidence for the pilot-to-production failure pattern: cutting headcount before building the human oversight layer is proving costly and reversible. Leaders should treat AI-justified headcount cuts as reversible bets rather than settled strategy, until task-level reliability is proven.",
         "tags": ["workforce transformation", "leadership and culture"]
       },
       {
