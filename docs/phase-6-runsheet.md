@@ -40,7 +40,7 @@ prevent.
 | 2 | Stop publishing to Pages | Human + Claude | ✅ Done | 2026-08-24. Workflow disabled first, then **Unpublish site** — ⚠️ there is no "None" in the Source dropdown any more, and the order was corrected mid-stage. Pages origin **404 on all four paths checked incl. `build.json`**; apex **200 on all twelve**, spanning hand-written pages, Astro auth surfaces, a skill page, both stylesheets and the stamp. `verify:stamp`: `vercel ok c5b1ce4` / `pages FAIL HTTP 404` — expected. **Fully reversible** |
 | 3 | Soak on one origin | Human | ✅ Done | 2026-08-24 08:10Z → 2026-08-26 08:11Z, **48h01m**, all five boxes ticked. Nine commits reached `main`; production serving the tip; baseline retaken at **85 files / 1 origin / 0 not served**; **no broken-link reports**, confirmed by the site owner. ⚠️ Retaking the baseline found `verify-published.mjs` **overstating its own coverage by double** — fixed. ⚠️ This row was briefly marked ✅ with every box unticked before any of it was checked — see the stage's Observed note |
 | 4 | Remove Pages from code, gates and docs | Claude | ✅ Done | **Bulk shipped 2026-08-26 on `chore/retire-pages`, merged as `d7728f2` — NOT on this branch.** Checked box by box against the tree the same day, which found three gaps: `nav.js`/`progress.js`/`BaseLayout.astro` still described Pages as live (**fixed**), the Promptly sibling was unchecked (**checked by the owner, no changes needed**), and the `verify-redirects` assertion was **dropped rather than moved** — the one still open, deferred into stage 5 because only the dashboard change makes it pass. Two boxes struck out as deliberately not-done: `ASTRO_BASE` stays, and `settings.local.json` is machine-local |
-| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ◐ **One box left — the sign-in test** | 2026-08-26. Turnstile hostname removed **first**, then the Supabase entry; prod now holds **one** Redirect URL. `verify-redirects` restored to **13 assertions, green**, including `PASS rejected: sing-chen.github.io/amplifiedthinker/` — which also closes stage 4's last box. ⚠️ Found that `supabase/README.md` had listed **four** prod redirect URLs since Phase 5 when there is one — the doc contradicted the gate for weeks and nothing caught it. **Left: a real sign-in on production**, the only check Turnstile has |
+| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ✅ Done | 2026-08-26. Turnstile hostname removed **first**, then the Supabase entry; prod now holds **one** Redirect URL. `verify-redirects` restored to **13 assertions, green**, including `PASS rejected: sing-chen.github.io/amplifiedthinker/` — which also closed stage 4's last box. **Sign-in verified working on production** after the widget change, the only check Turnstile has. ⚠️ Found that `supabase/README.md` had listed **four** prod redirect URLs since Phase 5 when there is one — the doc contradicted the gate for weeks and nothing caught it, because a doc cannot fail a build |
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
 | 7 | The adapter decision | Claude + Human | ☐ Not started | ⚠️ **The plan puts this in Phase 8 and the plan is wrong.** Blocks 9–13 |
@@ -701,8 +701,9 @@ having been misdiagnosed once already — expect that shape rather than an obvio
       stage 4 dropped. Permanent, not a one-off
 - [x] `npm run verify:redirects` run — **13 assertions, gate green**, including
       `PASS rejected: https://sing-chen.github.io/amplifiedthinker/`
-- [ ] ⬜ **A real sign-in tested end to end on `amplifiedthinker.com`** — ⚠️ **the only check the
-      Turnstile half has, and it is the site owner's to run**
+- [x] **A real sign-in tested end to end on `amplifiedthinker.com`** — confirmed working by the site
+      owner, 2026-08-26, after the hostname removal. ⚠️ The only check the Turnstile half has, and
+      not scriptable: this box closes on a person having actually signed in
 - [x] `supabase/README.md` §*Cleanup owed* updated to say both are done, with the date — and two
       other stale claims in the same file corrected, plus the comment in `supabase-client.js`
 
@@ -1157,9 +1158,34 @@ Two sessions have now contributed to this phase, so this is the list rather than
 
 | | What | Owner |
 |---|---|---|
-| **Stage 5** | Turnstile domain, Supabase allowlist, restore the `rejected` assertion. **All of Part A that is left** | Human |
+| ✅ **Part A** | **COMPLETE — all seven stages, 2026-08-26** | — |
 | **Stages 7–18** | Part B, unstarted. Stage 7 (the adapter) blocks 10–13 | Claude + Human |
 | ⏭️ Deferred | Redirect stubs, only if indexing turns out to have mattered | — |
 
-**Nothing else from Part A is outstanding.** Stages 0–4 and 6 are done and merged to `main`, verified
-against the tree on 2026-08-26 rather than taken from commit messages.
+## Part A closed — 2026-08-26
+
+**The GitHub Pages origin is retired**, four days after stage 0's baseline. Every stage verified
+against the tree or a live probe rather than taken from a commit message.
+
+**Four things this half of the phase actually taught, none of which were in the plan:**
+
+1. ⚠️ **A stage is not done because its surroundings look done.** Stages 3 and 4 were both marked ✅
+   with every checkbox untouched, an hour apart, by trusting commit messages over the boxes recording
+   the work. Checking box by box found three real gaps in stage 4 alone — three files whose comments
+   still described Pages as live, and an assertion that had been dropped rather than moved.
+2. ⚠️ **Two gates were quietly misreporting themselves**, and both were found by running them rather
+   than reading them. `verify-published` claimed *"two origins, 170 fetches"* after the map was cut
+   to one — overstating its coverage by double. `verify-redirects` had the retired host under
+   neither `allowed` nor `rejected` for two days, so nothing tested it in either direction while prod
+   still honoured a redirect to it.
+3. ⚠️ **A doc contradicted a gate for weeks and nothing noticed, because a doc cannot fail a build.**
+   `supabase/README.md` listed four prod redirect URLs where there is one. Found only because a human
+   opened the dashboard and said "there's only one here".
+4. **The evidence that closed two boxes was a person's word**, and could not have been anything else:
+   no broken-link reports, and a working sign-in. Both are recorded as such rather than dressed up —
+   and the sign-in is the *only* check the Turnstile half will ever have.
+
+**What is deliberately still true:** `ASTRO_BASE` survives in `astro.config.mjs`, the sub-path cases
+survive in `verify:signin-return`, and `nav.js`'s depth detection survives — each because the origin
+was one caller, not the reason. And `verify:redirects` now asserts prod **rejects**
+`sing-chen.github.io` permanently, because that hostname still fronts every project on that account.
