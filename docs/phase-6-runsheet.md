@@ -43,7 +43,7 @@ prevent.
 | 5 | Dashboard cleanup — Supabase and Turnstile | Human | ✅ Done | 2026-08-26. Turnstile hostname removed **first**, then the Supabase entry; prod now holds **one** Redirect URL. `verify-redirects` restored to **13 assertions, green**, including `PASS rejected: sing-chen.github.io/amplifiedthinker/` — which also closed stage 4's last box. **Sign-in verified working on production** after the widget change, the only check Turnstile has. ⚠️ Found that `supabase/README.md` had listed **four** prod redirect URLs since Phase 5 when there is one — the doc contradicted the gate for weeks and nothing caught it, because a doc cannot fail a build |
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
-| 7 | The adapter decision | Claude + Human | ◐ **Built; deploy check owed** | 2026-08-26. `@astrojs/vercel` 11.0.8 added, **`output` stays `'static'`** — ⚠️ `hybrid` was removed from Astro and `static` is what it became. Build output **byte-identical with and without the adapter**, 88/89 files, the 89th a timestamp. ⚠️ **`vercel.json`'s `outputDirectory: dist` removed** — it would have silently served stage 10's server routes as frozen static. `service_role`: **still no home**. **Left: `verify:published` after the deploy** |
+| 7 | The adapter decision | Claude + Human | ✅ Done | 2026-08-26, deployed as `2c9685c`. `@astrojs/vercel` 11.0.8, **`output` stays `'static'`** — ⚠️ `hybrid` was removed from Astro and `static` is what it became. Build output byte-identical with and without the adapter (88/89, the 89th a timestamp), and the live differential came back **3 changed / 0 not served**, all three the comment-only files. ⚠️ **`vercel.json`'s `outputDirectory: dist` removed** — it would have silently served stage 10's server routes as frozen static. `service_role`: **still no home** |
 | 8 | Write the migration script — slugs and `legacy_id` | Claude | ☐ Not started | Derive counts from the file; the documented 21/69 is stale |
 | 9 | Load dev, verify the data | Claude | ☐ Not started | Dev project only. Prod waits for stage 16 |
 | 10 | `/news` and `/news/:slug`, server-rendered | Claude | ☐ Not started | ⚠️ **The cutoff for `/add-news`.** From here the command still succeeds and publishes nothing — no gate reads `news.json`. Breakage map under stage 16 |
@@ -849,8 +849,8 @@ swap that changes nothing visible is exactly what this should be.
 - [x] `service_role` question answered in writing — **still no home in this phase**, see below
 - [x] Built and verified: **all 20 hand-written pages and the three auth surfaces present**, and the
       build output is **byte-identical with and without the adapter** bar one timestamp
-- [ ] ⬜ `npm run verify:published` clean across the adapter change — **owed after deploy**, not
-      runnable before it
+- [x] `npm run verify:published` clean across the adapter change — deployed as `2c9685c`,
+      **85 files, 0 not served, 3 changed** and the three are the comment-only files. See below
 - [x] `astro.config.mjs`'s Phase 8 comment corrected — it was wrong as written
 
 **Observed 2026-08-26:**
@@ -875,6 +875,29 @@ into `astro.config.mjs` beside the setting, because that is where someone will b
 **Also corrected while here:** the site has **20** hand-written pages, not 19 — `whats-new.html`
 joined on 2026-08-26. `CLAUDE.md` said 19 in two places, including the `fonts.css` note that names
 the count explicitly; verified by counting the pages that link it.
+
+**Deployed 2026-08-26 as `2c9685c`, live in ~45s. The differential is the proof this stage wanted:**
+
+```
+85 published files, 1 origin
+85 fetches, 0 not served
+changed: 3
+  ~ vercel /nav.js
+  ~ vercel /progress.js
+  ~ vercel /supabase-client.js
+no longer served: 0
+```
+
+**Three changed, and all three are the comment-only edits** made during stages 4 and 5 — verified
+comment-only by filtering the diff *and* by `node --check` on each, before the merge. **Nothing else
+moved, and nothing stopped being served.** An SSR adapter was added to the build and not one byte of
+served output changed, which is exactly the claim.
+
+**Functional spot checks, because byte-identical is not the same as working:** the homepage, both
+news pages, all three auth surfaces, a skill page, `exit-guard.js`, `news.json` and `build.json` all
+**200**; a nonexistent path still **404s** — that last one matters, because the adapter owns routing
+now and a broken catch-all would show up here rather than in a hash. `/sign-in/` returns real markup
+rather than an empty shell.
 
 ### `service_role` — the answer is still no
 
