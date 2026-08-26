@@ -247,7 +247,7 @@
       <div class="scard-cta">Meet them <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
     </a>
 
-    <a href="news.html" class="scard scard-news" role="listitem">
+    <a href="news/" class="scard scard-news" role="listitem">
       <div class="scard-icon">
         <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
       </div>
@@ -270,7 +270,7 @@
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href="my-people.html">My People</a>
         <span class="footer-sep" aria-hidden="true">·</span>
-        <a href="news.html">News</a>
+        <a href="news/">News</a>
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href="about.html">About</a>
         <span class="footer-sep" aria-hidden="true">·</span>
@@ -406,23 +406,35 @@
       .join('');
   }
 
+  /* Reads /api/news/recent.json, which is served from THIS domain and reads the
+     database on the server.
+
+     ⚠️ NOT the Supabase client, even though nav.js already loads it on this
+     page. A browser query would put every guest's first visit in touch with
+     supabase.co, which makes privacy.html's processor table wrong ("Account
+     holders") and breaks the §9 claim that no third party is involved in
+     showing you the page. See the header of src/pages/api/news/recent.json.js.
+
+     ⚠️ THE SELECTION RULES DID NOT MOVE. NEWS_MAX_AGE_DAYS and NEWS_MAX_COUNT
+     are still applied here, against a flat list ordered newest-first. That is
+     the same traversal the old grouped version did — a date group is contiguous
+     in that order, so stopping at the first story past the window stops at the
+     same place the group-level check did. Only the source and the link format
+     changed, which is what makes "visitors see no difference" checkable. */
   function newsItemsHTML() {
-    return fetch('news.json')
-      .then(function (r) { return r.json(); })
+    return fetch('/api/news/recent.json')
+      .then(function (r) { return r.ok ? r.json() : []; })
       .then(function (data) {
-        var digests = (data || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
         var stories = [];
-        digests.some(function (group) {
-          if (daysSince(group.date) > NEWS_MAX_AGE_DAYS) return true;
-          (group.stories || []).some(function (s, i) {
-            stories.push({ id: group.date + '-' + i, date: group.date, story: s });
-            return stories.length >= NEWS_MAX_COUNT;
-          });
+        (data || []).some(function (s) {
+          if (daysSince(s.date) > NEWS_MAX_AGE_DAYS) return true;
+          stories.push(s);
           return stories.length >= NEWS_MAX_COUNT;
         });
 
-        return stories.map(function (x) {
-          return itemHTML('story', x.date, escapeHTML(x.story.title || ''), 'news.html?story=' + encodeURIComponent(x.id), 'Read it');
+        return stories.map(function (s) {
+          return itemHTML('story', s.date, escapeHTML(s.title || ''),
+            '/news/' + encodeURIComponent(s.slug), 'Read it');
         }).join('');
       })
       .catch(function () { return ''; });

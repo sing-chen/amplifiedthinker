@@ -1,0 +1,275 @@
+/* Styling for the server-rendered news surfaces, /news/ and /news/<slug>.
+ *
+ * ⚠️ SCOPED TO THOSE TWO ROUTES ONLY, the same rule auth-pages.css and
+ * learning.css follow: styles.css and nav.js are already paid for by every
+ * page, and nothing outside /news/ needs a word of this.
+ *
+ * It began as a near-copy of the <style> block in public/news.html. That page
+ * was deleted at Phase 6 stage 11, when `/news.html` became a redirect, so this
+ * is now the only copy and there is nothing left to keep it in step with.
+ *
+ * What differed from that copy, rather than having been transcribed:
+ * the headline rows, the back link and the Previous/Next controls are anchors
+ * now instead of buttons, because they are real URLs. Anchors bring
+ * `text-decoration` and an inherited link colour with them, so each carries an
+ * explicit reset. A disabled anchor is not a thing, so the ends of the list
+ * render as `<span class="is-disabled">` and the old `:disabled` rule is a
+ * class rule here.
+ */
+
+/* ── HERO ── */
+.hero{background:#1B4A44;padding:76px 40px 56px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,color-mix(in srgb, var(--teal) 7%, transparent) 0%,transparent 68%);pointer-events:none}
+.hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
+.eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:20px}
+.hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.6vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:16px;max-width:760px}
+.hero-sub{font-family:var(--font-body);font-size:16px;line-height:1.7;color:rgba(255,255,255,.75);max-width:600px}
+
+/* ── MAIN / FILTER BAR ──
+   ⚠️ `.news-main`, not `main`. BaseLayout wraps every page's content in one
+   <main>, so the hero lives inside it here rather than beside it as it did in
+   news.html — and a max-width on `main` itself would cage the full-bleed hero
+   band. The measure and the padding belong to the inner wrapper instead. */
+.news-main{max-width:var(--page-max);margin:0 auto;padding:32px 40px 88px}
+.filter-bar-wrap{position:relative}
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;position:sticky;top:var(--site-total-offset,56px);background:var(--bg-page);padding:14px 0;z-index:10}
+.filter-scroll-btn{display:none;position:absolute;top:28px;transform:translateY(-50%);align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--bg-surface);border:1px solid rgba(31,77,74,.2);box-shadow:0 2px 8px rgba(27,74,68,.15);color:var(--fg-brand);cursor:pointer;z-index:11;padding:0}
+.filter-scroll-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+.filter-scroll-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.filter-scroll-prev{left:-4px}
+.filter-scroll-next{right:-4px}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.02em;padding:7px 14px;border-radius:var(--radius-pill);border:1px solid rgba(31,77,74,.2);background:var(--bg-surface);color:var(--fg-heading);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.filter-chip:hover{border-color:rgba(31,77,74,.4)}
+.filter-chip.active{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
+.filter-chip.themed{background:var(--tag-bg);color:var(--tag-text)}
+.filter-chip.themed.active{border-color:transparent;box-shadow:inset 0 0 0 2px currentColor}
+.filter-chip:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+/* Separates the two kinds of filter: by your relationship to a story, and by
+   subject. `align-self:stretch` rather than a fixed height so it always matches
+   whatever the chips beside it wrap to. `flex-shrink:0` because the bar scrolls
+   horizontally below 800px and a collapsed rule is worse than none — it would
+   read as a gap somebody forgot to close. */
+.filter-sep{flex-shrink:0;align-self:stretch;width:1px;background:rgba(31,77,74,.18);margin:2px 6px}
+
+.filter-chip svg{width:13px;height:13px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── THEME TINTS — shared by filter chips, story tags, and the story
+   source-link accent. Each .theme-* class sets --tag-bg/--tag-text;
+   consuming rules read them via var(). ── */
+.theme-skills-development{--tag-bg:#BFDACB;--tag-text:#1B4A44}
+.theme-workforce-transformation{--tag-bg:#DCE3CC;--tag-text:#2E3524}
+.theme-leadership-and-culture{--tag-bg:#EDE5C5;--tag-text:#6B5416}
+.theme-macro-signals{--tag-bg:#DADDD2;--tag-text:#4A4A3C}
+.theme-research-and-insights{--tag-bg:#EAD9C8;--tag-text:#4A2E1E}
+
+/* ── MASTER-DETAIL LAYOUT ── */
+.news-layout{display:grid;grid-template-columns:320px 1fr;gap:28px;align-items:start}
+
+/* ── HEADLINE PANEL (left) ── */
+.headline-col{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);display:flex;flex-direction:column;max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow:hidden}
+.headline-search-wrap{position:relative;flex-shrink:0;border-bottom:1px solid var(--light-sage);padding:10px}
+.headline-search-icon{position:absolute;left:20px;top:50%;transform:translateY(-50%);width:14px;height:14px;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.headline-search-input{width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:var(--font-body);font-size:13px;color:var(--fg-heading);background:var(--bg-page)}
+.headline-search-input:focus-visible,.headline-search-input:focus{outline:2px solid var(--mid-teal);outline-offset:1px}
+.headline-panel{border:none;border-radius:0;background:none;flex:1;max-height:none;overflow-y:auto;scrollbar-gutter:stable;padding:8px}
+.headline-group-header{position:sticky;top:0;z-index:1;background:var(--bg-surface);padding:10px 12px 4px;font-family:var(--font-display);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+.headline-date-prefix{color:var(--fg-brand);font-weight:600}
+.headline-pin-icon{display:inline-flex;vertical-align:-1px;color:var(--terracotta);margin-right:3px}
+.headline-pin-icon svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.headline-divider{height:1px;background:var(--light-sage);margin:6px 10px}
+/* `text-decoration:none` is the anchor reset — see the header note. */
+.headline-item{display:block;width:100%;text-align:left;background:none;border:none;border-left:3px solid transparent;border-radius:0 var(--radius) var(--radius) 0;padding:9px 12px 9px 10px;cursor:pointer;text-decoration:none;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--text-muted);transition:background .15s,color .15s,border-color .15s}
+.headline-item:hover{background:var(--bg-page);color:var(--fg-heading)}
+.headline-item:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
+.headline-item.active{background:var(--bg-page);border-left-color:var(--terracotta);color:var(--fg-heading);font-weight:600}
+.headline-item.pinned{background:rgba(138,75,44,.08)}
+.headline-item.pinned:hover{background:rgba(138,75,44,.14)}
+.headline-item.pinned.active{background:rgba(138,75,44,.16)}
+.headline-archive{margin-top:6px;border-top:1px solid var(--light-sage);padding-top:4px}
+.headline-archive-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;padding:10px 12px;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);cursor:pointer;border-radius:var(--radius)}
+.headline-archive-toggle:hover{background:var(--bg-page)}
+.headline-archive-toggle:focus-visible{outline:2px solid var(--mid-teal);outline-offset:-2px}
+.headline-archive-toggle svg{width:12px;height:12px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.headline-archive-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.headline-archive-body{display:none}
+.headline-archive.expanded .headline-archive-body{display:block}
+
+/* ── STORY PANEL (right) ── */
+.story-panel{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);padding:32px 36px}
+.story-back{display:none;align-items:center;gap:6px;background:none;border:none;padding:0 0 20px;text-decoration:none;font-family:var(--font-display);letter-spacing:-.006em;font-size:13px;font-weight:600;color:var(--fg-brand);cursor:pointer}
+.story-back:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
+.story-toprow{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:20px}
+.story-meta{display:flex;flex-direction:column;gap:6px}
+.story-source{font-family:var(--font-display);font-size:12px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--terracotta);white-space:nowrap}
+.story-pinned-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--terracotta);white-space:nowrap}
+.story-pinned-badge svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.story-nav{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.story-nav-btn{display:inline-flex;align-items:center;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.02em;background:none;border:1px solid rgba(31,77,74,.2);border-radius:var(--radius-pill);padding:5px 12px;text-decoration:none;color:var(--fg-brand);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
+.story-nav-btn:hover:not(.is-disabled){background:var(--bg-page);border-color:rgba(31,77,74,.4)}
+.story-nav-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+/* An anchor cannot be `:disabled`, so the end of the list renders as a <span>. */
+.story-nav-btn.is-disabled{opacity:.35;cursor:default}
+.story-title{font-family:var(--font-editorial);font-size:26px;font-weight:600;line-height:1.25;letter-spacing:-.024em;color:var(--navy);margin:0 0 14px}
+.story-summary{font-family:var(--font-body);font-size:15.5px;line-height:1.75;color:var(--text-muted);margin-bottom:22px}
+.story-implications{border-left:3px solid var(--light-sage);padding-left:14px;margin-bottom:22px}
+.story-implications-label{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:6px}
+.story-implications p{font-family:var(--font-body);font-size:14px;line-height:1.7;color:var(--text-muted);font-style:italic;margin:0}
+.story-source-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);letter-spacing:-.006em;font-size:13px;font-weight:600;color:var(--tag-text, var(--mid-teal));text-decoration:none;margin-bottom:22px}
+.story-source-link:hover{color:var(--terracotta)}
+.story-source-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
+.story-tags{display:flex;flex-wrap:wrap;gap:6px}
+.story-tag{font-family:var(--font-display);font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:var(--radius-pill);background:var(--tag-bg, var(--light-sage));color:var(--tag-text, var(--navy))}
+
+/* ── THE PERSONAL LAYER: save, pin, note ──────────────────────────────────────
+   Signed-in only. The server paints the invite; news-actions.js owns the slot.
+
+   ⚠️ THE TWO [hidden] RULES BELOW COME FIRST, AND THEY CARRY !important ON
+   PURPOSE. `[hidden]{display:none}` is a UA rule, so ANY author `display` beats
+   it — and both `.story-actions-row` and `.story-note` set one. That exact
+   shape has now cost this project three defects, the third of which shipped
+   past a check written by someone who had just read the warning, because the
+   test asserted `element.hidden` (which was correctly `true`) instead of
+   computed `display`. The next `display` added to this block would reopen it
+   silently, which is why these sit above rather than below. Assert computed
+   `display`, never `.hidden`. */
+.story-actions [hidden],
+.story-actions[hidden]{display:none !important}
+
+.story-actions{margin-top:24px;padding-top:20px;border-top:1px solid var(--light-sage)}
+.story-actions-slot{display:flex;flex-direction:column;gap:12px}
+.story-actions-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.story-actions-invite{font-family:var(--font-body);font-size:13.5px;line-height:1.6;color:var(--text-muted);margin:0}
+.story-action-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.02em;padding:7px 14px;border-radius:var(--radius-pill);border:1px solid rgba(31,77,74,.2);background:var(--bg-surface);color:var(--fg-heading);text-decoration:none;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.story-action-btn:hover{border-color:rgba(31,77,74,.4);background:var(--bg-page)}
+.story-action-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+.story-action-btn svg{width:14px;height:14px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* Pressed state: the icon fills in, so the difference is not colour alone. */
+.story-action-btn[aria-pressed="true"]{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
+.story-action-btn[aria-pressed="true"] svg{fill:currentColor}
+.story-action-btn.is-primary{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
+.story-action-btn.is-primary:hover{background:var(--deep-teal);border-color:var(--deep-teal)}
+.story-action-signin{align-self:flex-start}
+.story-action-status{font-family:var(--font-body);font-size:12.5px;color:var(--text-muted);min-height:1em}
+
+.story-note{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.story-note-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+.story-note-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:var(--font-body);font-size:14px;line-height:1.6;color:var(--fg-heading);background:var(--bg-page);resize:vertical}
+.story-note-input:focus-visible,.story-note-input:focus{outline:2px solid var(--mid-teal);outline-offset:1px}
+.story-note-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.story-note-count{font-family:var(--font-body);font-size:12px;color:var(--text-muted)}
+.story-note-count.is-near{color:var(--terracotta);font-weight:600}
+.story-note-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* ⚠️ A DISABLED BUTTON THAT LOOKS ENABLED IS WORSE THAN NO BUTTON. Save is
+   disabled whenever there is nothing to save — empty, or unchanged from what is
+   stored — and without this it stayed fully solid and simply did nothing when
+   pressed, which reads as a broken feature rather than a considered state. */
+.story-action-btn:disabled{opacity:.45;cursor:default}
+.story-action-btn:disabled:hover{border-color:rgba(31,77,74,.2);background:var(--bg-surface)}
+.story-action-btn.is-primary:disabled:hover{background:var(--mid-teal);border-color:var(--mid-teal)}
+
+/* Destructive answers wear the warm accent so "Yes, delete" is never the same
+   shape as "Cancel". Not red: this palette has no red, and inventing one for a
+   single button would be a new colour nothing else on the site uses. */
+.story-action-btn.is-danger{background:var(--terracotta);border-color:var(--terracotta);color:var(--white)}
+.story-action-btn.is-danger:hover{background:#6B3820;border-color:#6B3820}
+
+/* Read mode. `pre-wrap` because a note is what someone typed, and losing their
+   line breaks on the way back is a small betrayal of that. */
+.story-note-read{font-family:var(--font-body);font-size:14px;line-height:1.65;color:var(--fg-heading);white-space:pre-wrap;overflow-wrap:anywhere;padding:10px 12px;border:1px solid rgba(31,77,74,.14);border-left:3px solid var(--light-sage);border-radius:var(--radius);background:var(--bg-page)}
+
+.story-note-confirm{font-family:var(--font-body);font-size:13px;line-height:1.5;color:var(--fg-heading);margin-right:2px}
+
+
+.empty-state{font-family:var(--font-body);font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
+
+/* The feed could not be read at all. Distinct from .empty-state on purpose:
+   "nothing matches your filter" and "the database did not answer" are
+   different facts and must not look like the same one. */
+.news-error{max-width:640px;margin:0 auto;padding:48px 0;text-align:center}
+.news-error h2{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--fg-heading);margin:0 0 10px}
+.news-error p{font-family:var(--font-body);font-size:14.5px;line-height:1.7;color:var(--text-muted);margin:0}
+
+/* Footer rules live in styles.css under .site-footer. Only the responsive
+   padding is here, because the breakpoint is this page's own. */
+
+@media(max-width:800px){
+  .news-layout{grid-template-columns:1fr}
+  .headline-col{max-height:none}
+  .story-panel{display:none}
+  .story-back{display:inline-flex}
+  .news-layout.show-detail .headline-col{display:none}
+  .news-layout.show-detail .story-panel{display:block}
+  .story-panel{padding:24px 20px}
+  .story-title{font-size:20px}
+  .story-toprow{flex-wrap:wrap;gap:10px 12px}
+  .filter-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:34px;padding-right:34px;mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent)}
+  .filter-bar::-webkit-scrollbar{display:none}
+  .filter-chip{flex-shrink:0}
+  .filter-scroll-btn:not([hidden]){display:flex}
+}
+@media(max-width:700px){
+  .hero,.news-main{padding-left:20px;padding-right:20px}
+  .site-footer{padding-left:20px;padding-right:20px}
+}
+
+/* ── DARK MODE ──
+   Hero and footer are fixed dark brand bands already, unchanged in both
+   themes. The surfaces that adapt for free are the ones already sitting on
+   tokens whose light value exactly matches the original raw colour.
+   Everything below needed its own override because the raw colour it started
+   from (a sage-tinted border, terracotta, or text-muted) is not an exact match
+   for any single fg/line token. ── */
+[data-theme="dark"] .filter-scroll-btn{border-color:var(--line)}
+[data-theme="dark"] .filter-sep{background:var(--line)}
+[data-theme="dark"] .filter-chip{border-color:var(--line)}
+[data-theme="dark"] .filter-chip:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
+[data-theme="dark"] .headline-col{border-color:var(--line)}
+[data-theme="dark"] .headline-search-wrap{border-bottom-color:var(--line)}
+[data-theme="dark"] .headline-search-icon{color:var(--fg-2)}
+[data-theme="dark"] .headline-search-input{border-color:var(--line)}
+[data-theme="dark"] .headline-pin-icon{color:var(--accent-warm)}
+[data-theme="dark"] .headline-divider{background:var(--line)}
+[data-theme="dark"] .headline-item{color:var(--fg-2)}
+[data-theme="dark"] .headline-item.pinned{background:rgba(201,122,74,.12)}
+[data-theme="dark"] .headline-item.pinned:hover{background:rgba(201,122,74,.2)}
+[data-theme="dark"] .headline-item.pinned.active{background:rgba(201,122,74,.24)}
+[data-theme="dark"] .headline-archive{border-top-color:var(--line)}
+/* ⚠️ `--light-sage` does NOT flip. The story panel was the one surface in this
+   block without an override, so in dark mode it kept a near-white #D8E4DD
+   outline while the headline column beside it wore a faint one — valid CSS,
+   correct token name, wrong result. Found by reading the computed border
+   colour, which is the only way this shows up. The same line was missing from
+   news.html, which was still live at the time and got the same fix; that page
+   has since been deleted. */
+[data-theme="dark"] .story-panel{border-color:var(--line)}
+[data-theme="dark"] .story-source{color:var(--accent-warm)}
+[data-theme="dark"] .story-pinned-badge{color:var(--accent-warm)}
+[data-theme="dark"] .story-nav-btn{border-color:var(--line)}
+[data-theme="dark"] .story-nav-btn:hover:not(.is-disabled){border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
+[data-theme="dark"] .story-title{color:var(--fg-heading)}
+[data-theme="dark"] .story-summary{color:var(--fg-2)}
+[data-theme="dark"] .story-implications{border-left-color:var(--line)}
+[data-theme="dark"] .story-implications p{color:var(--fg-2)}
+[data-theme="dark"] .story-source-link:hover{color:var(--accent-warm)}
+[data-theme="dark"] .story-actions{border-top-color:var(--line)}
+[data-theme="dark"] .story-actions-invite{color:var(--fg-2)}
+[data-theme="dark"] .story-action-btn{border-color:var(--line)}
+[data-theme="dark"] .story-action-btn:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
+[data-theme="dark"] .story-action-status{color:var(--fg-2)}
+[data-theme="dark"] .story-note-input{border-color:var(--line)}
+[data-theme="dark"] .story-note-count{color:var(--fg-2)}
+[data-theme="dark"] .story-note-count.is-near{color:var(--accent-warm)}
+[data-theme="dark"] .story-action-btn:disabled:hover{border-color:var(--line);background:var(--bg-surface)}
+[data-theme="dark"] .story-action-btn.is-danger{background:var(--accent-warm);border-color:var(--accent-warm);color:#241A12}
+[data-theme="dark"] .story-action-btn.is-danger:hover{background:#D89468;border-color:#D89468}
+[data-theme="dark"] .story-note-read{color:var(--fg-1);border-color:var(--line);border-left-color:var(--line)}
+[data-theme="dark"] .story-note-confirm{color:var(--fg-1)}
+[data-theme="dark"] .empty-state{color:var(--fg-2)}
+[data-theme="dark"] .news-error p{color:var(--fg-2)}
+
+[data-theme="dark"] .theme-skills-development{--tag-bg:#1F3A34;--tag-text:#8FCFC3}
+[data-theme="dark"] .theme-workforce-transformation{--tag-bg:#25321E;--tag-text:#C9D9AE}
+[data-theme="dark"] .theme-leadership-and-culture{--tag-bg:#332712;--tag-text:#D9BB6E}
+[data-theme="dark"] .theme-macro-signals{--tag-bg:#2A2D28;--tag-text:#B8BBB0}
+[data-theme="dark"] .theme-research-and-insights{--tag-bg:#33231A;--tag-text:#E8C9AE}

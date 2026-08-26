@@ -1,0 +1,101 @@
+---
+// The news reader, shared by /news/ and /news/<slug>.
+//
+// The two routes differ in exactly three things — which story is open, what the
+// <head> claims, and whether a phone opens on the list or the story — so the
+// body lives here once rather than twice.
+//
+// ⚠️ THE MARKUP BELOW IS BUILT BY src/lib/news-render.mjs, THE SAME MODULE THE
+// BROWSER RUNS. Do not hand-write a headline row or a story body into this
+// file: the moment the two sides render the list differently, the page changes
+// shape when JS loads and nothing fails.
+
+import {
+  filterBarHTML, headlineListHTML, storyHTML,
+  navigableSlugs, bucketKey, daysAgo, findPinned
+} from '../lib/news-render.mjs';
+
+interface Props {
+  stories: any[];
+  active: any | null;
+  /** Below 800px the panels are alternatives; the slug route opens on the story. */
+  showDetail?: boolean;
+}
+
+const { stories, active, showDetail = false } = Astro.props;
+
+// Mirrors expandedFor() in the client script: open the archive group the current
+// story sits in, and only that one. Today is not collapsible and the pinned
+// story sits above the groups, so both mean "nothing expanded".
+const pinned = findPinned(stories);
+const expanded = (() => {
+  if (!active) return null;
+  if (pinned && active.slug === pinned.slug) return null;
+  const key = bucketKey(daysAgo(active.date));
+  return key === 'Today' ? null : key;
+})();
+
+const state = { tag: 'all', query: '', expanded, activeSlug: active ? active.slug : null };
+
+const slugs = active ? navigableSlugs(stories, state) : [];
+const at = active ? slugs.indexOf(active.slug) : -1;
+
+const filterBar = filterBarHTML(stories, state);
+const headlines = headlineListHTML(stories, state);
+const story = storyHTML(
+  active,
+  at > 0 ? slugs[at - 1] : null,
+  at !== -1 && at < slugs.length - 1 ? slugs[at + 1] : null
+);
+
+// ⚠️ Serialised for the browser instead of re-fetched there. The server has
+// already read these rows; a second read from the client would be a second
+// answer that could disagree with the HTML wrapped around it. `</script>` is
+// escaped because a story summary containing that text would otherwise close
+// this tag early — the tags are editorial free text and nothing stops it.
+const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
+---
+
+<section class="hero" aria-label="Introduction">
+  <div class="hi">
+    <p class="eyebrow">Amplified Thinker</p>
+    <h1 class="hero-hl">News</h1>
+    <p class="hero-sub">A curated feed of the skills and workplace shifts worth knowing about — from WEF, McKinsey, Deloitte, and other institutional sources.</p>
+  </div>
+</section>
+
+<div class="news-main">
+<div class="filter-bar-wrap" id="filter-bar-wrap">
+  <div class="filter-bar" id="filter-bar" role="group" aria-label="Filter stories" set:html={filterBar}></div>
+  <button type="button" class="filter-scroll-btn filter-scroll-prev" id="filter-scroll-prev" aria-label="Scroll filters left" hidden>
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button type="button" class="filter-scroll-btn filter-scroll-next" id="filter-scroll-next" aria-label="Scroll filters right" hidden>
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<div class:list={['news-layout', showDetail && 'show-detail']} id="news-layout" data-active-slug={active ? active.slug : null}>
+  <div class="headline-col">
+    <div class="headline-search-wrap">
+      <svg class="headline-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" id="headline-search" class="headline-search-input" placeholder="Filter headlines" aria-label="Filter headlines by title">
+    </div>
+    <nav class="headline-panel" id="headline-panel" aria-label="Story list" set:html={headlines}></nav>
+  </div>
+  <article class="story-panel" id="story-panel" set:html={story}></article>
+</div>
+</div>
+
+<script type="application/json" id="news-data" set:html={payload}></script>
+
+<script>
+  import '../scripts/news-app.js';
+</script>
+
+<!-- ⚠️ `is:inline`, and a plain <script> rather than an import. news-actions.js
+     is a classic script that hangs nothing off a module scope and reads
+     `window.AmplifiedAuth`, which nav.js injects as a plain script too. Bundled
+     as a module it would run before that exists on some loads and silently
+     leave every reader looking signed out. Same reasoning as BaseLayout's note. -->
+<script src="/news-actions.js" is:inline></script>

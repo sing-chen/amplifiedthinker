@@ -1,0 +1,57 @@
+---
+// /news/<slug> — one story, rendered on the server.
+//
+// This is the route the phase exists for. The story's title, summary and
+// "why it matters" are in the response body, so a crawler, a share preview and
+// a reader with JS off all see the same thing — with no user-agent sniffing
+// anywhere. Serving different content to a bot than to a person is cloaking,
+// and the whole point of rendering here is that no such trick is needed.
+//
+// ⚠️ `prerender = false` is load-bearing — see the note in ./index.astro.
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsView from '../../components/NewsView.astro';
+import NewsUnavailable from '../../components/NewsUnavailable.astro';
+import NotFound from '../../components/NewsNotFound.astro';
+import { fetchPublishedStories, hostnameFor } from '../../lib/news-data.mjs';
+
+const { slug } = Astro.params;
+
+let stories = [];
+let failure = null;
+try {
+  stories = await fetchPublishedStories(hostnameFor(Astro.request, Astro.url));
+} catch (err) {
+  failure = err;
+}
+
+const active = failure ? null : stories.find((s) => s.slug === slug) || null;
+
+// ⚠️ THREE OUTCOMES, THREE STATUS CODES, AND THEY ARE NOT INTERCHANGEABLE.
+// 503 says "ask again"; 404 says "this story does not exist, stop asking".
+// Answering an unknown slug with 200 and an empty panel would have search
+// engines index a page that says nothing, for every typo anyone ever shares.
+if (failure) Astro.response.status = 503;
+else if (!active) Astro.response.status = 404;
+
+const title = active ? `${active.title} · News · Amplified Thinker` : 'Story not found · News · Amplified Thinker';
+const canonical = active
+  ? `https://amplifiedthinker.com/news/${encodeURIComponent(active.slug)}`
+  : 'https://amplifiedthinker.com/news/';
+---
+
+<BaseLayout
+  title={title}
+  description={active ? (active.summary || '') : 'That story could not be found.'}
+  canonical={canonical}
+  ogType={active ? 'article' : 'website'}
+  noindex={!active}
+>
+  <link slot="head" rel="stylesheet" href="/news-app.css">
+  {failure
+    ? <NewsUnavailable />
+    : active
+      ? <NewsView stories={stories} active={active} showDetail={true} />
+      : <NotFound />}
+</BaseLayout>

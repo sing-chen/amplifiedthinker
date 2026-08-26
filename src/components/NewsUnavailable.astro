@@ -1,0 +1,23 @@
+---
+// Shown when the news feed could not be read at all.
+//
+// ⚠️ DELIBERATELY NOT AN EMPTY LIST. "There are no stories" and "the database
+// did not answer" are different facts, and rendering the second as the first
+// is how an outage becomes invisible — the page looks fine, the reader
+// concludes the feed is dead, and nothing anywhere reports a problem. The
+// routes pair this with a 503 for the same reason.
+---
+
+<section class="hero" aria-label="Introduction">
+  <div class="hi">
+    <p class="eyebrow">Amplified Thinker</p>
+    <h1 class="hero-hl">News</h1>
+  </div>
+</section>
+
+<div class="news-main">
+  <div class="news-error">
+    <h2>The news feed isn&rsquo;t loading</h2>
+    <p>Something went wrong fetching the stories. Try refreshing in a moment — everything else on the site is unaffected.</p>
+  </div>
+</div>

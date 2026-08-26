@@ -51,7 +51,7 @@
         "date": "2026-07-08",
         "type": "feature",
         "title": "News",
-        "html": "<a href=\"news.html\">News</a> section added — a curated, dated feed of workforce and skills stories."
+        "html": "<a href=\"news/\">News</a> section added — a curated, dated feed of workforce and skills stories."
     },
     {
         "date": "2026-07-06",

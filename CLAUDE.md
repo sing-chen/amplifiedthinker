@@ -23,6 +23,7 @@ The project has a written architecture and a phased plan. Read them rather than 
 | [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, the redirect allowlist, and the email SMTP runbook |
 | [docs/email-dns-baseline.md](docs/email-dns-baseline.md) | The DNS zone as it stood before Phase 4 touched it. Cloudflare keeps no history, so this is the only restore reference there is |
 | [docs/email-aliases-runbook.md](docs/email-aliases-runbook.md) | Moving the contact route to `contact@`, adding `dmarc@`, retiring Brevo. Staged, with a handoff table that **is** the state — update it in the same sitting as the work |
+| [docs/adding-news.md](docs/adding-news.md) | **How a story gets from a digest into the database.** ⚠️ Writing the file publishes NOTHING — the SQL step does, and a run that stops before it looks entirely successful. Read it before running `/add-news` |
 | [BACKLOG.md](BACKLOG.md) | Unscheduled ideas |
 
 `docs/` is excluded from the Vercel deploy but the repo is **public** — these are public documents.
@@ -32,11 +33,20 @@ The project has a written architecture and a phased plan. Read them rather than 
 ## Where things live
 
 ```
-public/          the 20 hand-written pages, shipped byte-for-byte untouched by Astro
-                 index/about/future-skills/my-people/news/search .html, skills/**,
-                 nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt, sitemap.xml
+public/          the 19 hand-written pages, shipped byte-for-byte untouched by Astro
+                 — 20 until 2026-08-26, when news.html was replaced by the server-rendered
+                   /news/ routes; see below
+                 index/about/future-skills/my-people/search .html, skills/**,
+                 nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt
+                 — ⚠️ sitemap.xml is NO LONGER HERE. It was deleted 2026-08-26 and is generated
+                   per request by src/pages/sitemap.xml.js. Putting a static one back would
+                   SHADOW that route, because `handle: filesystem` runs first
+                 — plus news-app.css, added 2026-08-26. ⚠️ /news/ and /news/<slug> ONLY, same
+                   scoping rule as auth-pages.css. It began as a near-copy of the <style> block
+                   inside news.html; that page was deleted at stage 11, so this is now the ONLY
+                   copy and there is nothing left to keep it in step with
                  — plus fonts.css and fonts/, the self-hosted type (2026-08-23). ⚠️ fonts.css is
-                   linked by ALL 20 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
+                   linked by ALL 19 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
                    primer/plan pages are self-contained and deliberately skip styles.css, so the
                    @font-face rules could not live there. That asymmetry is the whole reason it
                    is a separate file. The site is Inter and only Inter; Poppins and Source
@@ -78,12 +88,115 @@ public/          the 20 hand-written pages, shipped byte-for-byte untouched by A
                                        defect within a day: the library read completed_at and
                                        this read visited coverage, and one finished skill
                                        showed as COMPLETED on one page and 30% on the other
+                 — plus news-actions.js, added 2026-08-26. ⚠️ /news/ ONLY, same scoping rule as
+                   auth-pages.css. Save, per-reader pin and a private note, and the reader's
+                   whole saved/pinned set published for the LIST to render (the Saved chip and
+                   the Your pins group).
+                   ⚠️ user_news.pinned is ONE READER'S pin. news_stories.pinned is EDITORIAL,
+                   admin-set, one site-wide. Both render in the same list wearing the same icon,
+                   which is exactly where they get conflated. This file writes only the first
+                   ⚠️ IT POLLS FOR window.AmplifiedAuth AND MUST. nav.js appends the auth stack
+                   with async=false, which preserves order but does NOT delay DOMContentLoaded,
+                   so auth.js can land after any body script has run. Reading the global once and
+                   giving up leaves the personal layer unpainted FOR SIGNED-IN READERS ONLY —
+                   the entire audience for it. progress.js and learning.js poll for the same
+                   reason. Short-circuit on <html data-session="out"> so guests never poll
 src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.astro are live;
                  blog and admin still to come. Both scaffolds were deleted 2026-08-19 —
                  auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is
                  ever wanted back (auth-test holds RLS checks nothing has replaced)
+                 — plus the first SERVER-RENDERED routes, added 2026-08-26 (Phase 6 stage 10).
+                   ⚠️ Each declares `export const prerender = false`. WITHOUT IT the route is
+                   built once at deploy time and then serves a frozen snapshot for ever — it
+                   keeps working, keeps looking healthy, and quietly stops showing anything
+                   published since. That is the exact failure server rendering was added to stop
+                   news/index.astro     /news/ — the index
+                   news/[slug].astro    /news/<slug> — one story, real text in the response body
+                   news.html.js         ⚠️ REPLACED public/news.html, which was DELETED. It is a
+                                        REDIRECT now: ?story=<date>-<index> resolves through the
+                                        stored legacy_id and 301s to /news/<slug>. 301 not 302 on
+                                        purpose — 302 leaves the query string canonical. A failed
+                                        lookup returns 503 and NEVER redirects, because browsers
+                                        cache 301s and the damage would outlive the outage
+                   api/search-index.json.js  ⚠️ REPLACED public/search-index.json, DELETED
+                                        2026-08-26. 81 of its 104 entries were a hand-maintained
+                                        COPY of news that lives in the DB — and that file is the
+                                        one found on main with 39 CP1252-decoded characters,
+                                        valid JSON, right count, all checks green, the only
+                                        symptom a result reading "Bren<e9> Brown". The other 23
+                                        are editorial and live in src/data/search-static.json.
+                                        ⚠️ A FAILED DB READ MUST DEGRADE, NOT 503: search.html
+                                        treats a failed index fetch as fatal and disables itself,
+                                        so failing hard would turn a DB outage into a dead search
+                                        page — a regression caused by the fix. It serves the 23
+                                        static entries and sets x-news-entries: 0
+                   api/news/recent.json.js  the homepage banner's source. ⚠️ DELIBERATELY an
+                                        endpoint rather than a browser query, though nav.js loads
+                                        the Supabase client on every page. A signed-out visitor
+                                        contacts supabase.co NEVER — createClient makes no request
+                                        and auth.js reads localStorage — which is why privacy.html
+                                        can say Supabase affects "Account holders" and §9 can claim
+                                        no third party is involved in showing you the page. A
+                                        homepage query breaks both. Keep the server between them
+                   sitemap.xml.js       ⚠️ REPLACED public/sitemap.xml, which was DELETED. A
+                                        static file cannot list 81 story URLs and stay right,
+                                        and an incomplete sitemap fails nothing and looks
+                                        exactly like a correct one — same shape as the
+                                        catalogue trap. Serves the static half even if the
+                                        story read fails
+src/data/        search-static.json — the hand-authored half of the search index (page, primer,
+                 plan, person). ⚠️ NOT under public/ and NOT served directly; the endpoint imports
+                 it, so a syntax error FAILS THE BUILD rather than breaking site search silently.
+                 /add-skill writes here now — editing public/search-index.json does nothing
+src/lib/         news-render.mjs  ⚠️ THE MARKUP, WRITTEN ONCE AND RUN IN TWO PLACES — the server
+                                  builds the first paint from it and public's client script
+                                  re-renders from the same functions. A server render and a
+                                  client render of one list are two implementations of one thing
+                                  and they drift silently: the page looks right until JS takes
+                                  over. Pure string building, no DOM and no fetch, so it runs
+                                  unchanged in a serverless function and in a browser. Never
+                                  import `node:` anything into it
+                 news-data.mjs    the PostgREST read. SERVER ONLY. ⚠️ The project table is
+                                  parsed out of public/supabase-client.js by astro.config.mjs
+                                  and injected with `vite.define` — at BUILD time, because
+                                  public/ is not in a Vercel serverless bundle and a readFileSync
+                                  in the route would work in dev and find nothing in production.
+                                  The prod/dev choice is still per request, from the request's
+                                  own hostname, by the same BLOCKLIST rule the browser uses
+src/components/  NewsView.astro (the reader, shared by both routes), NewsUnavailable.astro (503),
+                 NewsNotFound.astro (404). ⚠️ An unreadable feed is a 503 with a page that says
+                 so, never an empty list — "no stories" and "the database did not answer" look
+                 identical once they reach HTML, and serving the second as the first tells a
+                 crawler the feed is genuinely empty
+src/scripts/     news-app.js — filter, search, keyboard nav and in-place story swapping for the
+                 /news/ routes. Bundled by Astro (a module here is fine: it has no
+                 document.currentScript and no inline handlers, which is what is:inline is for)
 src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages match old ones
-middleware.js    Vercel Edge Middleware, repo root. Serves social-preview meta tags to bots
+                 — ⚠️ news.html is NO LONGER HERE either. It was deleted 2026-08-26 and `/news.html`
+                   is now a redirecting route (src/pages/news.html.js) resolving `legacy_id` → slug.
+                   A static file could not coexist with it: `handle: filesystem` runs FIRST, so the
+                   static page wins every time and the endpoint never executes
+(middleware.js)  DELETED 2026-08-26. It served social-preview meta tags to bots for
+                 news.html?story=, because the page rendered client-side. ⚠️ Do not reintroduce it
+                 without reading why it went: /news/<slug> carries real meta tags now, and the
+                 middleware's matcher was `/news.html` — running BEFORE routes, it would hand a
+                 crawler the old shell instead of the 301, which no `curl` test can detect
+content/         news.json — the 81 stories as authored, in date groups. ⚠️ NOT SERVED, and it
+                 lived at public/news.json until 2026-08-26. Under public/ it was a stale PUBLIC
+                 copy of database content sitting at /news.json that nothing read — the same shape
+                 of fault that left 39 mojibake characters live in search-index.json for days.
+                 It is an authoring input to scripts/build-news-seed.mjs and nothing else reads it
+                 ⚠️ NEVER REORDER OR REMOVE A STORY INSIDE A DATE GROUP. legacy_id is
+                 `<date>-<array index>`, and that is what the /news.html?story= 301 endpoint
+                 resolves for every link shared before Phase 6. Array position is a PUBLISHED
+                 IDENTIFIER here, not formatting. Appending to a group is safe; inserting in the
+                 middle silently repoints every previously shared link for that day at a DIFFERENT
+                 story, and nothing reports it
+                 ⚠️ AND IT STOPS BEING THE SOURCE OF TRUTH WHEN PHASE 7'S ADMIN UI SHIPS. The full
+                 seed is idempotent on slug, so a bare `--write` regeneration after that point
+                 overwrites every story edited in the admin UI and reports success. Use
+                 `npm run build:news-seed -- --only <date> --write`, which can only touch rows just
+                 authored. See .claude/commands/add-news.md
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
                  the apply/verify runbook plus the dashboard settings SQL cannot reach
                  email-templates/ — the two auth emails. CONFIGURATION, not code: nothing
@@ -97,6 +210,11 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
                  verify-build-stamp.mjs (npm run verify:stamp) — asks production which commit it is
                  are built from. The ONLY check that distinguishes "deployed" from "quietly still
                  serving last week's build"; verify:published is differential and cannot
+                 verify-news-duplicates.mjs (npm run verify:news-dupes [dev|prod]) - compares
+                 content/news.json against what is actually PUBLISHED in news_stories. Reads with
+                 the anon key, never writes. Found two real duplicates on its first run, both
+                 re-publications 19 and 31 days apart, which /add-news's two-week file window could
+                 not see. An EMPTY table reports "not a pass", never clean
                  build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so
@@ -119,7 +237,7 @@ _originals/      full-resolution source images, gitignored — outside public/ o
 
 **Two files scoped to the auth pages on purpose.** `pwned.js` and `auth-pages.css` are loaded by
 `/sign-in/` and `/account/` and nowhere else. `styles.css` and `nav.js` are already paid for by all
-19 pages; nothing else needs either of these, and adding them to the shared files would put weight
+18 pages; nothing else needs either of these, and adding them to the shared files would put weight
 on every page to serve two.
 
 **Two kinds of path that look alike.** A file you read or write needs `public/`; a URL inside a page
@@ -273,6 +391,41 @@ redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still n
   `--fg-on-brand` does not flip on these pages either, so say it explicitly.
   The binding colour rules live in
   [docs/design-modernisation.md](docs/design-modernisation.md) — read it before adding a token.
+  ⚠️ **The other pages flip their semantic tokens, but not all of them — `--light-sage` does not.**
+  A rule using it needs an explicit `[data-theme="dark"]` counterpart like any raw colour. Found
+  2026-08-26: `.story-panel` was the one surface in news.html's dark block without one, so in dark
+  mode it wore a near-white `#D8E4DD` outline while the panel beside it wore a faint one. Valid CSS,
+  correct token name, and **only a computed-style read finds it** — it had been live for weeks.
+- ⚠️ **`node --check` PROVES SYNTAX, NOT THAT ANYTHING EXISTS.** A call to a function that has
+  been deleted parses perfectly and fails at runtime. On 2026-08-26 a coarse range replacement in
+  `news-actions.js` removed `paint()`, `toggleFlag()` and `reflectFlag()` outright — `node --check`
+  stayed green and the build passed, because dangling references are valid JavaScript. **After any
+  edit that replaces a RANGE rather than a known string, list the functions defined and the
+  functions called and compare them.** ⚠️ And calibrate that scan against a file known to be good
+  before trusting it: the first version flagged `var(`, `rgba(` and `calc(` out of embedded CSS and
+  buried the real finding in noise. A checker that has not been shown to pass on working code is
+  measuring nothing — same argument as the control probe in `verify-redirects`.
+- ⚠️ **`notes` holds the first user-authored free text on this site, and RLS is the ONLY thing
+  scoping it.** Two consequences that are easy to miss:
+  - **The application cannot detect a broken policy.** `news-actions.js` always sends
+    `.eq('user_id', uid)`, so if the policy were `using (true)` the site would look **exactly the
+    same** — your notes visible, nobody else's showing up, everything feeling right. The client
+    filter masks it completely, and `npm run verify:rls` never authenticates so it cannot see it
+    either. Proving it means deliberately making the request the app never makes, **from a second
+    account** — with one owner, "only mine" and "everything" are the same result.
+  - **A note is private today, which makes a stored payload self-XSS — and that stops being true
+    the moment anything renders notes ACROSS users.** Phase 7's admin UI is exactly that, and it
+    would turn self-XSS into stored XSS against the account holding `is_admin`. There is one render
+    path today (`esc()` into a `<textarea>`); any new one needs escaping on purpose, not by luck.
+- ⚠️ **`scrollIntoView` scrolls EVERY scrollable ancestor, the document included.** Bringing an item
+  into view inside a scrolling panel also moves the whole page. On `/news/` that meant the page
+  arrived **already scrolled past its own hero**, on load, before the reader touched anything — from
+  a call whose only intent was to reveal the selected headline in a 320px column. Adjust the panel's
+  own `scrollTop` instead, and pair it with `focus({preventScroll:true})`, because focusing an
+  off-screen element scrolls the page for the same reason. ⚠️ **`news.html` has carried the identical
+  call since it was written** and it is invisible there only because the panel happens to start at
+  the top of a shorter page — which is what makes this a trap rather than a typo: the bug is in
+  working code, and it moves the moment the code is reused somewhere taller.
 - ⚠️ **Test what the nav RENDERED, never the function that renders it.** Two defects in one
   afternoon, 2026-08-21, both in the sign-in `?next=` work, both passing every check at the time:
   1. `?next=` was wired into `nav.js`'s `paintAuthSlot` but not `auth.js`'s `renderNavAuth`. **Two
@@ -359,6 +512,17 @@ redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still n
   "do the paths still resolve" but "does this command still describe the site"** — brand values,
   face names and font links copied into a command rot exactly like the catalogue does, and none of
   them fails a build.
+  **Fifth instance, 2026-08-26, and the first where a path update could not have saved it:** Phase 6
+  moved news into the database, so `/add-news` was not pointing at a moved file — **the two files it
+  wrote had stopped being read by anything.** ⚠️ **It degraded SILENTLY first**: from stage 10 the
+  command still succeeded, still wrote `news.json`, still deployed green, and published nothing. No
+  gate could see it, because all three `prebuild` checks read skills, redirects and encoding — none
+  reads news. It only became *visible* at stage 13, when a deleted file finally threw.
+  **It was rewritten rather than deleted, and that is the point worth keeping.** Its curation half
+  — parsing a digest, shortlisting, duplicate-checking — was never about the file format and was
+  still exactly right; only its write half was dead. ⚠️ **Deleting a command with no successor
+  silently removes a working capability**, so the replacement route was written down *before* the
+  merge that killed the old one, not discovered after it.
 
 ---
 

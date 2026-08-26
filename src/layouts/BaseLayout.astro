@@ -36,6 +36,8 @@ interface Props {
   /** Absolute canonical URL. Defaults to this page's URL on `site`. */
   canonical?: string;
   ogImage?: string;
+  /** `article` for a single dated story; `website` for everything else. */
+  ogType?: string;
   /** Set true for pages that must stay out of search results. */
   noindex?: boolean;
 }
@@ -58,6 +60,7 @@ const {
   description = '',
   canonical = new URL(canonicalPath, Astro.site).href,
   ogImage = 'https://amplifiedthinker.com/images/og-cover.png',
+  ogType = 'website',
   noindex = false,
 } = Astro.props;
 ---
@@ -72,7 +75,7 @@ const {
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonical}>
 <link rel="icon" type="image/png" href={asset('images/favicon.png')}>
-<meta property="og:type" content="website">
+<meta property="og:type" content={ogType}>
 <meta property="og:site_name" content="Amplified Thinker">
 <meta property="og:title" content={title}>
 {description && <meta property="og:description" content={description} />}
@@ -116,9 +119,15 @@ const {
 <slot name="head" />
 </head>
 <body>
+<!-- The skip link and `id="main-content"` mirror the hand-written pages, which
+     have carried both since launch; `.skip-link` is already defined in
+     styles.css. It was missing here, so the three Astro surfaces made a
+     keyboard user tab the whole nav on every page. Added 2026-08-26 with the
+     news routes, which is where the gap showed up. -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
 <script src={asset('nav.js')} is:inline></script>
 
-<main>
+<main id="main-content">
   <slot />
 </main>
 
@@ -131,7 +140,7 @@ const {
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href={asset('my-people.html')}>My People</a>
         <span class="footer-sep" aria-hidden="true">·</span>
-        <a href={asset('news.html')}>News</a>
+        <a href={asset('news/')}>News</a>
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href={asset('about.html')}>About</a>
         <span class="footer-sep" aria-hidden="true">·</span>

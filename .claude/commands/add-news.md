@@ -1,20 +1,58 @@
 ---
-description: Turn a pasted "Daily workforce digest" output (or a bare URL) into curated news.json entries and deploy
+description: Turn a pasted "Daily workforce digest" output (or a bare URL) into news stories, and emit the SQL that loads them
 argument-hint: [paste the full daily digest text, paste a URL, or leave blank and paste/attach it in the next message]
 ---
 
-You are helping curate the News page at [news.html](public/news.html), backed by
-[news.json](public/news.json).
+You are helping curate the News page — `/news/` and `/news/<slug>`, server-rendered from the
+`news_stories` table — with [content/news.json](content/news.json) as the authoring file.
+
+⚠️ **The human-facing version of this is [docs/adding-news.md](docs/adding-news.md)** — same workflow,
+written to be read rather than executed. Keep the two in step; they describe one process.
+
+## ⚠️ How news actually gets published now, and why this changed
+
+**Phase 6 moved news into the database.** `public/news.html` and `public/search-index.json` were
+deleted; `/news/` renders from `news_stories`, the homepage banner reads `/api/news/recent.json`,
+and site search reads `/api/search-index.json`. Nothing serves a JSON file of stories any more.
+
+**`content/news.json` is no longer served either.** It moved out of `public/` on 2026-08-26 for
+that reason — under `public/` it was a public, stale copy of database content, which is the exact
+shape of the fault that left 39 mojibake characters live in `search-index.json` for days. It is an
+authoring input now, and the only thing that reads it is `scripts/build-news-seed.mjs`.
+
+⚠️ **SO WRITING THE FILE NO LONGER PUBLISHES ANYTHING.** Editing `content/news.json` and pushing
+changes nothing a reader can see. The change reaches the site only when the generated SQL is run in
+the Supabase SQL editor. **A run of this command that stops after step 3 has published nothing and
+will still look entirely successful** — green build, clean deploy, no story. Step 4 is the step
+that publishes.
+
+⚠️ **AND NO GATE CATCHES THAT.** The three `prebuild` checks are `verify:catalogue`,
+`verify:signin-return` and `verify:encoding`; none of them reads `content/news.json` or the
+database. Same shape as the `skills-catalogue.json` trap in CLAUDE.md — a wrong answer that fails
+no test.
+
+### Why SQL and not a script that just inserts the rows
+
+`news_stories` is admin-write: the policy requires `public.is_admin()`, and `is_admin` can only be
+set where `auth.uid()` is null — the dashboard SQL editor. The anon key is refused by RLS,
+correctly, and `service_role` was deliberately refused a home in this project because one line of it
+bypasses every policy in the schema. The SQL editor is the only route left, so this command's
+product is generated SQL that a human pastes. Nobody hand-writes the rows; the generator does.
+
+### This is the interim route, and it has an end date
+
+**Phase 7 ships an admin UI** that writes to `news_stories` directly. On that day this command and
+`content/news.json` both retire, and the file becomes a frozen historical copy.
+
+⚠️ **DO NOT RUN A FULL `--write` REGENERATION AFTER PHASE 7 SHIPS.** `supabase/seed/news_seed.sql`
+is idempotent on `slug`, so it would silently overwrite every story the admin UI had edited, report
+success, and look fine. That is why step 4 uses `--only`: a partial load can only touch rows this
+command just authored.
 
 ## File locations
 
-**Every site file lives under `public/`** since Phase 2 introduced the Astro build — `public/news.json`,
-`public/search-index.json`, `public/news.html`, and so on. Prose below names files without the prefix
-for readability, but every path you actually read or write needs it. Astro copies `public/` into the
-build untouched, so the served URLs are unchanged: `news.json` is still at `/news.json`.
-
-Pushing now triggers a build. A JSON edit cannot break it, but the site no longer updates
-unconditionally on push — if a deploy looks like it did nothing, check the Vercel build.
+Site files live under `public/`; `content/news.json` deliberately does not. Prose below names files
+without a prefix for readability, but every path you read or write needs the real one.
 
 ## Input
 
@@ -43,13 +81,37 @@ Parse every story in the digest. Reply with a compact numbered shortlist — hea
 Before converting, check for overlap in both directions and surface anything found (don't silently drop or merge without asking):
 
 - **Within the digest itself**: two entries drawing on the same underlying report/survey (shared source + shared stat or framing), even under different headlines.
-- **Against existing news.json**: read the last ~2 weeks of entries and flag any new story that reuses the same source report, same headline stat, or same core claim as something already published — not just exact `title`+`url` matches (that's only caught later, in Step 3, and only within the same date).
+- **Against existing content/news.json**: read the entries and flag any new story that reuses the same source report, same headline stat, or same core claim as something already published — not just exact `title`+`url` matches (that's only caught later, in Step 3, and only within the same date).
 
-If you find overlap, tell the user what you found and ask whether to: keep both, cut one, or merge multiple digest entries into a single news.json story (one `source`/`url`, one combined `summary`/`implications` referencing the multiple angles — see the McKinsey HR Monitor merge from 2026-07-10 in news.json for the pattern). Don't merge or cut unilaterally.
+  ⚠️ **Do not limit this to the last two weeks.** It used to say that, and the window was the bug: on 2026-08-26 a database-side check found **two source URLs each published twice** — the Kyndryl People Readiness Report on 22 July and again on 10 August, and a CNBC piece on AI-layoff reversals on 6 July and again on 6 August. Both re-publications were **19 and 31 days** after the original, so a two-week read could not have seen either. A story worth covering is worth re-covering when it resurfaces, which is exactly why the gap between the two runs is usually *longer* than the window.
+
+- **Against the database itself** — ⚠️ **the file is not the whole picture and will get worse**:
+
+```bash
+npm run verify:news-dupes -- dev
+```
+
+  Use `dev` before the Phase 6 merge and `prod` after it. It reads `news_stories` with the anon key
+  (`news_stories_public_read` already allows it, so there is no new credential) and never writes.
+  It reports three things: one URL published under two stories, a story in the file whose URL is
+  already live under a different slug, and rows in the database that are **not in the file at all**.
+
+  ⚠️ **That third one is why it exists.** Once Phase 7's admin UI ships, a story can reach
+  `news_stories` without ever touching `content/news.json` — and every file-based check above goes
+  blind while still reporting "no duplicates" confidently. **The database will not catch it either**:
+  the load ends `on conflict (slug) do update`, so the same story re-added under its original
+  headline silently *overwrites* the live row, and re-added under a reworded headline gets a
+  different slug and inserts a *second* one. Neither raises anything. A duplicate story is not a
+  duplicate slug.
+
+  ⚠️ **An empty table is reported as "not a pass", not as clean** — prod's is empty until the merge,
+  and with no rows every comparison would come back green.
+
+If you find overlap, tell the user what you found and ask whether to: keep both, cut one, or merge multiple digest entries into a single news.json story (one `source`/`url`, one combined `summary`/`implications` referencing the multiple angles — see the McKinsey HR Monitor merge from 2026-07-10 in content/news.json for the pattern). Don't merge or cut unilaterally.
 
 ## Step 2 — Convert selected stories
 
-For each story the user kept, build a JSON object matching the existing schema in news.json:
+For each story the user kept, build a JSON object matching the existing schema in content/news.json:
 
 ```json
 {
@@ -72,99 +134,95 @@ Rules:
   `skills development`, `workforce transformation`, `leadership and culture`, `macro signals`, `research and insights`.
 - `pinned`: optional boolean. Only present when the user has chosen to pin this story (see Step 4). Don't add it otherwise.
 
-## Step 3 — Merge into news.json
+## Step 3 — Merge into content/news.json
 
-Read [news.json](public/news.json). Determine the digest's date and convert to `YYYY-MM-DD`.
+Read [content/news.json](content/news.json). Determine the digest's date and convert to
+`YYYY-MM-DD`.
 
-- If a group with that `date` already exists, append the new stories to its `stories` array (don't duplicate a story with the same `title`+`url` already present).
-- If not, insert a new `{ "date": ..., "stories": [...] }` group. Order doesn't matter — news.html sorts newest-first on render — but keep the file's own entries in descending date order for readability when someone opens it by hand.
+- If a group with that `date` already exists, append the new stories to its `stories` array (don't
+  duplicate a story with the same `title`+`url` already present).
+- If not, insert a new `{ "date": ..., "stories": [...] }` group. Keep the file in descending date
+  order — the generator does not care, but a human opening it does.
+
+⚠️ **NEVER REORDER OR REMOVE A STORY INSIDE AN EXISTING DATE GROUP.** `legacy_id` is
+`<date>-<array index>`, and it is what the `/news.html?story=` 301 endpoint resolves for every link
+shared before Phase 6. Array position is not a detail of formatting here; it is a published
+identifier. Appending to the end of a group is safe. Inserting in the middle silently repoints every
+previously shared link for that day at a **different story**, and nothing reports it.
+
+⚠️ **Write it with a UTF-8-safe tool** — `python` or `node`, never PowerShell
+`Get-Content`/`Set-Content` or `ConvertTo-Json`. That is how 39 characters of mojibake reached
+`main` in the first place. `npm run verify:encoding` is a `prebuild` gate and will fail the build,
+but only after the damage is written.
 
 Show the user a short summary of what you're about to add (titles + date) before writing the file.
 
-## Step 3a — Update search-index.json
+## Step 4 — Generate the SQL and load it — ⚠️ **this is the step that publishes**
 
-[search.html](public/search.html) is a site-wide search page that reads [search-index.json](public/search-index.json). Each news story gets its own searchable entry there (`type: "news"`), so it must stay in sync whenever news.json changes.
+Dry run first. It validates the whole file, not just today's stories, and prints what it found:
 
-Story ids are positional (`<date>-<index within that date's stories array>`), so an insertion anywhere but the end of a date's array shifts every id after it. Don't try to append/patch individual entries — regenerate **all** `type: "news"` entries from the current news.json and replace them wholesale, leaving every other entry (`page`, `primer`, `plan`, `person`) untouched.
-
-Deliberately omit `tags` from news search entries — a story's `tags` are the same fixed theme vocabulary (skills development, workforce transformation, etc.) already exposed as filter pills on news.html. Indexing them for search would let a query like "macro signals" pull in every story tagged that way rather than ones actually about it; that filtering job belongs to the news page's pills, not search.
-
-Run this (adjust the python invocation to whatever's available — `python`, `python3`, or `py`):
-
-```python
-import json
-
-news = json.load(open('public/news.json', encoding='utf-8'))
-idx = json.load(open('public/search-index.json', encoding='utf-8'))
-
-idx = [e for e in idx if e.get('type') != 'news']
-
-news_entries = []
-for group in news:
-    date = group['date']
-    for i, s in enumerate(group.get('stories', [])):
-        sid = date + '-' + str(i)
-        news_entries.append({
-            'id': 'news-' + sid,
-            'type': 'news',
-            'title': s.get('title', ''),
-            'description': s.get('summary', ''),
-            'url': 'news.html?story=' + sid
-        })
-
-idx.extend(news_entries)
-
-with open('public/search-index.json', 'w', encoding='utf-8', newline='\n') as f:
-    json.dump(idx, f, indent=2, ensure_ascii=False)
-    f.write('\n')
-
-print('Rebuilt', len(news_entries), 'news entries. Total index size:', len(idx))
+```bash
+npm run build:news-seed
 ```
 
-If no python runtime is available, do the equivalent by hand: remove every existing `"type": "news"` object from search-index.json, then re-append one object per story across the whole news.json (not just the ones added this run), in the same shape as above.
+Check three things in that output before going further: the story count went up by what you added,
+there are **no problems reported**, and the non-ASCII sample lines read as real text rather than
+mojibake.
 
-⚠️ **Rewrite this file with python or node, never with PowerShell.** The snippet above is
-UTF-8-safe on purpose — `encoding='utf-8'`, `ensure_ascii=False`, `newline='\n'`. PowerShell 5.1
-decodes as ANSI on the way in and so re-encodes every non-ASCII character: `·` becomes `Â·`, `—`
-becomes `â€”`, `é` becomes `Ã©`. This is not hypothetical — on 2026-08-23 this exact file was found
-live on `main` with **39** such characters across four sequences, because it had been rewritten with
-`ConvertTo-Json` instead of the snippet above. The JSON stayed valid and every check passed; the only
-symptom was search results reading `Brené Brown`. See the PowerShell trap in
-[CLAUDE.md](../../CLAUDE.md).
+Then emit **only** the day you just authored:
 
-`npm run verify:encoding` now catches this, and it is wired as `prebuild`, so a corrupted index fails
-the build rather than shipping. If it ever fires: `npm run fix:encoding`, then find
-what wrote the file.
-
-⚠️ **Expect a whole-file reformat the first time the snippet is used.** The committed file is
-currently in `ConvertTo-Json`'s shape — 4-space indent, two spaces after each `:` — which
-`json.dump(indent=2)` does not produce. The first correct run reformats all ~1000 lines. That is the
-file converging on the documented tool, not damage; check it with `npm run verify:encoding` and
-confirm the parsed entry count is unchanged rather than reading the diffstat.
-
-## Step 4 — Pin (optional)
-
-Ask the user whether any of the stories just added should be pinned — pinning promotes a story to a dedicated "Pinned" section at the top of news.html regardless of date, and makes it the default story shown on load. Offer the shortlist of newly-added titles, or "none."
-
-If they pick one:
-- Scan the **entire** news.json (not just the newly-added stories) for any existing story with `"pinned": true` and remove that field from it — only one story can be pinned at a time.
-- Set `"pinned": true` on the chosen story.
-- Show a short before/after summary (previous pinned story cleared → new one set, or "no previous pin" if none existed) before writing the file.
-
-If they pick none, skip this step — don't touch the `pinned` field on any story.
-
-## Step 5 — Deploy
-
-After writing news.json, ask the user whether to deploy now. If yes, run:
-
-```
-deploy.bat "add news for <date>"
+```bash
+npm run build:news-seed -- --only <YYYY-MM-DD> --write
 ```
 
-This stages, builds, shows a diffstat, asks for confirmation, then pushes — confirm with the user
-first anyway, since it's a push to the live site, per standard practice. Don't run it unprompted.
+That writes `supabase/seed/news_add_<date>.sql`. ⚠️ **Use `--only`, not a bare `--write`.** A bare
+`--write` regenerates all 81+ rows, which is right for the stage 17 first load and wrong for every
+run after it — see the Phase 7 warning above. A `--only` date that matches nothing exits non-zero
+rather than emitting an empty file, because SQL that runs and publishes nothing is the failure this
+whole command is arranged around.
 
-Both files this command writes — `public/news.json` and `public/search-index.json` — are under
-`public/`, so they pass the script's second guard. Two ways it can legitimately refuse: you are not
-on `main`, or something outside `public/`/`docs/` is dirty. Neither is a fault in this command;
-resolve the tree and re-run rather than reaching for `--all`.
+**Then hand it to the user to run**, in the Supabase SQL editor. **You cannot run it** — the anon
+key is refused by RLS, correctly, and there is no service key. Say plainly that the story is not
+live until they do, and paste the verification queries from the foot of the generated file so they
+can confirm the row count themselves rather than trusting "Success. No rows returned".
+
+⚠️ **WHICH PROJECT DEPENDS ON WHETHER PHASE 6 HAS MERGED, AND GETTING IT WRONG IS SILENT BOTH
+WAYS.** Check `git log origin/main --oneline -1` if unsure.
+
+| when | where the SQL goes | why |
+|---|---|---|
+| **Before the stage 17 merge** | **dev**, and nowhere else | Prod is still serving the old site and its `news_stories` is empty by design. Loading a single day into prod would put one story on a page nothing links to yet. ⚠️ **Prod needs no dashboard step at all in this window** — the story is already in `content/news.json`, so stage 17's full seed picks it up on its own |
+| **After the stage 17 merge** | **prod** — and dev too, if you want them to match | Prod is the live site. This is the steady state |
+
+⚠️ **Do not run a partial against prod before the merge and then also let stage 17's full seed
+run.** Both are idempotent on `slug`, so nothing breaks and nothing warns — but the day's stories
+then exist because of a step nobody recorded, and the row count in the stage 17 checklist will not
+be the number that stage predicted.
+
+## Step 5 — Pin (optional)
+
+Ask whether any story just added should be **Featured** — the site-wide editorial pin, shown in its
+own band at the top of `/news/` and used as the default story on load. Offer the newly-added titles,
+or "none".
+
+⚠️ **"Featured" is the editorial pin and it is not the reader's pin.** `news_stories.pinned` is
+one, site-wide, admin-set. `user_news.pinned` is one per reader, private, and set by the reader.
+They render in the same list wearing the same icon, which is exactly where they get conflated. This
+command sets only the first.
+
+Set `"pinned": true` on the chosen story in `content/news.json` and remove it from whichever story
+had it. Do not hand-write an `update` statement: **regenerate the SQL after changing the file** —
+the generator emits the `set pinned = false` that clears the old one, and a partial load without it
+hits `news_stories_single_pinned_idx` and rolls the whole thing back with an error naming an index
+rather than the problem.
+
+If they pick none, leave every `pinned` field alone.
+
+## Step 6 — Commit
+
+`content/news.json` and the generated SQL are both outside `public/`, so **`deploy.bat` will refuse
+this commit** — its second guard rejects a dirty tree outside `public/`/`docs/`. That is the guard
+working, not a fault here. Commit with `git` directly, and ask the user first as always.
+
+Nothing about this commit affects what the site serves. The deploy is incidental; the SQL in step 4
+is the publication.

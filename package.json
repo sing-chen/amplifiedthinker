@@ -25,7 +25,9 @@
     "verify:schema": "node scripts/verify-schema-columns.mjs",
     "verify:completion": "node scripts/verify-completion.mjs",
     "specimen:completion": "node scripts/dev/build-completion-specimen.mjs",
-    "specimen:circles": "node scripts/dev/build-circle-specimen.mjs"
+    "specimen:circles": "node scripts/dev/build-circle-specimen.mjs",
+    "build:news-seed": "node scripts/build-news-seed.mjs",
+    "verify:news-dupes": "node scripts/verify-news-duplicates.mjs"
   },
   "devDependencies": {
     "astro": "^7.2.2"

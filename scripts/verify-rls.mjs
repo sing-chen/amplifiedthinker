@@ -24,16 +24,47 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 //   'denied' - anon holds no SELECT grant at all, so PostgREST refuses before
 //              RLS is even consulted. This is the stronger of the two states and
 //              is what every user-owned table must return.
-//   'empty'  - anon may SELECT, and RLS plus the empty table yield []. From
-//              Phase 6 these tables legitimately return published rows, so this
-//              assertion is time-limited in a way the 'denied' ones are not.
+//   'empty'  - anon may SELECT, and RLS plus the empty table yield []. Still
+//              true for the tables nothing has filled yet, and still only an
+//              observation about emptiness rather than about security.
+//   'published' - anon may SELECT, and EVERY ROW RETURNED IS `status =
+//              'published'`. This is what 'empty' becomes once a content table
+//              is actually populated, and it is the stronger claim: it asserts
+//              the RLS predicate rather than the absence of data.
+//
+// ⚠️ THE 'empty' ASSERTION WAS ALWAYS TIME-LIMITED, AND news_stories REACHED
+// ITS LIMIT ON 2026-08-26 when Phase 6 stage 9 loaded 81 rows into dev. Left as
+// 'empty' it would simply have started failing on dev and kept passing on prod
+// — a gate that disagrees with itself depending on which project it is pointed
+// at, for a reason unrelated to security.
+//
+// ⚠️ 'published' passes whether the table is EMPTY OR FULL, deliberately. Prod
+// is not loaded until stage 17, and an expectation that cannot hold on prod
+// until then is the same mistake verify-redirects made when it dropped an
+// assertion rather than moving it. An empty table satisfies "everything
+// returned is published" trivially and truthfully.
 // ---------------------------------------------------------------------------
 const TABLES = [
   { name: 'profiles', read: 'denied' },
   { name: 'skill_progress', read: 'denied' },
   { name: 'user_news', read: 'denied' },
   { name: 'notes', read: 'denied' },
-  { name: 'news_stories', read: 'empty' },
+  // ⚠️ `published` AND `archived`, AND THE SECOND IS NOT A LOOSENING. There are
+  // two permissive policies on this table and they OR: `news_stories_public_read`
+  // and `news_stories_archived_read`. The archived one is deliberate — a story
+  // withdrawn or merged keeps its row so a previously shared link still resolves,
+  // which is why withdrawal is a status flag rather than a DELETE. The initial
+  // migration says so explicitly and warns that an unfiltered select returns both.
+  //
+  // ⚠️ THIS ROW SAID `published` UNTIL 2026-08-26 AND PASSED THE WHOLE TIME —
+  // vacuously, because the table had no archived rows to contradict it. The first
+  // merge created two and the gate failed instantly. An expectation that no data
+  // can violate is not being tested; it is being recited. Same shape as an empty
+  // table reporting clean.
+  //
+  // `draft` is the status that must never appear: it is editorial work in
+  // progress, and it is the only one of the three nothing has ever exposed.
+  { name: 'news_stories', read: { statuses: ['published', 'archived'] } },
   { name: 'blog_posts', read: 'empty' },
   { name: 'blog_categories', read: 'empty' },
   { name: 'site_updates', read: 'empty' },
@@ -85,6 +116,33 @@ function loadDotEnv() {
 }
 
 loadDotEnv();
+
+/* ── `dev` / `prod`, overriding .env ──────────────────────────────────────────
+   ⚠️ WITHOUT THIS, THIS GATE SILENTLY CHECKS WHICHEVER PROJECT `.env` HAPPENS TO
+   NAME. It names dev, and has for the whole phase — so the stage 17 tick box
+   reading "verify:rls green" would have been satisfied by a run against dev,
+   passing confidently while saying nothing whatever about the database that had
+   just been migrated. A gate pointed at the wrong target does not fail; it
+   reports success about something nobody asked.
+
+   `npm run verify:rls -- prod` reads the project out of public/supabase-client.js,
+   the same file astro.config.mjs and verify-news-duplicates.mjs parse, so there
+   is no second copy of a URL to rotate. With no argument it falls back to .env
+   exactly as before. */
+const target = process.argv.slice(2).find((a) => a === 'dev' || a === 'prod');
+if (target) {
+  const client = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');
+  const segment = client.split(target + ':')[1] ?? '';
+  const url = (segment.match(/url:\s*'([^']+)'/) ?? [])[1];
+  const key = (segment.match(/(?:anonKey|key):\s*'([^']+)'/) ?? [])[1];
+  if (!url || !key) {
+    console.error(`\nCould not parse the ${target} project out of public/supabase-client.js.`);
+    process.exit(2);
+  }
+  process.env.SUPABASE_URL = url;
+  process.env.SUPABASE_ANON_KEY = key;
+  console.log(`\nTarget: ${target} (${url}) - from public/supabase-client.js, not .env`);
+}
 
 const URL_BASE = (process.env.SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
 const ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.PUBLIC_SUPABASE_ANON_KEY || '';
@@ -145,8 +203,12 @@ function record(ok, label, detail) {
   console.log(`${ok ? '  PASS' : '  FAIL'}  ${label}${detail ? ` - ${detail}` : ''}`);
 }
 
-async function readTable(name) {
-  const res = await fetch(`${URL_BASE}/rest/v1/${name}?select=*&limit=5`, { headers });
+// `columns` narrows the projection. The 'published' check asks for `status`
+// alone so it can assert on the rows rather than on their absence; everything
+// else keeps `select=*`, which is what proves a denied table is denied on the
+// widest possible request.
+async function readTable(name, columns = '*') {
+  const res = await fetch(`${URL_BASE}/rest/v1/${name}?select=${columns}&limit=200`, { headers });
   let body;
   try {
     body = await res.json();
@@ -180,6 +242,33 @@ for (const { name, read } of TABLES) {
   if (read === 'denied') {
     const denied = status === 401 || status === 403;
     record(denied, `${name}: anon SELECT refused`, denied ? `HTTP ${status}` : `HTTP ${status}, body ${JSON.stringify(body)?.slice(0, 120)}`);
+  } else if (read && read.statuses) {
+    // Ask for `status` explicitly so the assertion is made on the rows
+    // themselves. A status outside the allowed set means the RLS predicate is
+    // not doing its job — which an empty table could never reveal.
+    const allowed = read.statuses;
+    const { status: st, body: rows } = await readTable(name, 'status');
+    const kinds = Array.isArray(rows) ? [...new Set(rows.map((r) => r?.status))] : null;
+    const leaked = kinds ? kinds.filter((k) => !allowed.includes(k)) : null;
+    const ok = st === 200 && Array.isArray(rows) && leaked && leaked.length === 0;
+    record(
+      ok,
+      `${name}: anon SELECT returns only ${allowed.join(' or ')} rows`,
+      ok
+        ? `HTTP 200, ${rows.length} row(s), status ${JSON.stringify(kinds)}`
+        : `HTTP ${st}, statuses ${JSON.stringify(kinds)} - ${JSON.stringify(leaked)} visible to anon`
+    );
+
+    // ⚠️ A SECOND, NARROWER ASSERTION, BECAUSE THE ONE ABOVE CAN PASS ON AN
+    // EMPTY SET. "No forbidden status came back" is trivially true of zero rows.
+    // This says the table actually had something to show, so a load that
+    // published nothing cannot read as a policy that is working.
+    const populated = st === 200 && Array.isArray(rows) && rows.length > 0;
+    record(
+      populated,
+      `${name}: anon SELECT actually returned rows to judge`,
+      populated ? `${rows.length} row(s)` : 'zero rows - the check above proved nothing'
+    );
   } else {
     const empty = status === 200 && Array.isArray(body) && body.length === 0;
     record(
@@ -212,7 +301,14 @@ for (const { name } of TABLES) {
 // assertion is now the stronger one. `authenticated` keeps EXECUTE, because RLS
 // policy expressions are evaluated with the querying role's privileges.
 console.log('\nSECURITY DEFINER functions (signed out) - all must be unreachable');
-for (const fn of ['is_admin', 'handle_new_user', 'profiles_guard_privileged_columns', 'rls_auto_enable']) {
+// user_news_single_pin is SECURITY INVOKER rather than DEFINER - deliberately,
+// since as DEFINER it would bypass the RLS that confines it to the caller's own
+// rows. It is asserted here anyway, because 20260817140000's own argument was
+// that being INCONSISTENT about hardening is worse than the risk: three trigger
+// functions revoked and checked, and a fourth revoked but never checked, is the
+// gap that reopens quietly.
+for (const fn of ['is_admin', 'handle_new_user', 'profiles_guard_privileged_columns',
+                  'user_news_single_pin', 'rls_auto_enable']) {
   const res = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     headers: { ...headers, 'Content-Type': 'application/json' },

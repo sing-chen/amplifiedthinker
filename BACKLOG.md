@@ -2047,3 +2047,98 @@ reads as "the rebuild failed" rather than "the doc is stale".
 **The rule, and it applies to deleting anything:** *grep the docs, not just the code.* A dead link in
 a reference is an inconvenience; a dead step in a recovery runbook is a false alarm at the worst
 possible moment.
+
+## Delete all my notes, from `/account/`
+
+Raised 2026-08-26 while building Phase 6 stage 14, and deliberately parked rather than built.
+
+A note is deleted one at a time from the story it belongs to, which is right for the common case
+and wrong for "I am done with all of this". That is an **account-level** action and belongs on
+`/account/` beside password change and delete-account, not on a news story.
+
+⚠️ **The nuclear option already exists and works**: deleting the account cascades `notes` and
+`user_news` through their FKs to `auth.users`. So this is a convenience for someone who wants to
+keep the account and drop the writing — not a gap in the right to erasure.
+
+Whatever ships must: say how many notes will go **before** asking, ask once and clearly, and
+⚠️ **change `privacy.html` in the same commit** if it alters what the page says about retention.
+
+## Notes on primers and plans — reuse the news architecture, do not rebuild it
+
+The one remaining `Soon` row on [why-sign-up.html](public/why-sign-up.html). Raised 2026-08-26,
+straight after notes on news stories shipped in Phase 6 stage 14.
+
+⚠️ **BUILD IT ON WHAT IS THERE.** Notes on a plan section and notes on a news story are the same
+feature pointed at a different thing, and writing a second implementation is how the two end up
+disagreeing about what a note is — the same trap `news-render.mjs` exists to avoid on the news
+page, and the same one the `learning.js` header warns about for completion rules.
+
+**What already works for both, with no change at all:**
+
+- ⚠️ **The table is ALREADY polymorphic and always was.** `notes.target_type` is
+  `check (target_type in ('news', 'skill'))` and `target_id` is `text` precisely so a skill can be
+  addressed by slug where a story is addressed by uuid. **No migration is needed to store them.**
+- `notes_body_length` — 1 to 500 characters, enforced in the database because signed-in browsers
+  write to PostgREST directly.
+- `notes_one_per_target_idx` — unique on `(user_id, target_type, target_id)`.
+- `notes_own` — the only policy on the table. No admin view, deliberately.
+
+### The shape, decided 2026-08-26
+
+⚠️ **MANY NOTES PER PLAN, NOT ONE PER SECTION — AND THE REASON IS HOW PEOPLE ACTUALLY READ.** A
+reader is in step 7 when the thought about step 3 arrives. Requiring them to navigate back to
+step 3 to write it down is asking them to interrupt the reading to file the note, and the note is
+the thing that gets abandoned. So a note is written wherever the reader is, and *optionally says
+what it is about*.
+
+That also settles the length question. **500 characters stays** — the limit is per note, and a plan
+does not need a longer note, it needs more of them. Raising the cap for skills would give two
+surfaces two different definitions of a note for no gain.
+
+**What this requires that news did not:**
+
+- ⚠️ **`notes_one_per_target_idx` MUST NOT APPLY TO SKILL ROWS.** It is unique on
+  `(user_id, target_type, target_id)`, so with `target_id` set to a plan it would allow exactly one
+  note per plan — the opposite of this. Scope it `where target_type = 'news'`. That rule was only
+  ever reasoned about for stories; applying it to a half of the table nobody had designed yet was
+  accidental reach, not intent.
+- **A nullable column for what the note is about** — `anchor`, holding a section id, `null` for a
+  note about the plan as a whole. It cannot be folded into `target_id`: that would make it one note
+  per section again, and would leave unattached notes with nowhere to live.
+- **`target_id` has to distinguish a primer from a plan**, because the same skill has both.
+  `skill_progress` already solved this with a separate `content_type` column; notes cannot, so the
+  value needs to carry it — `analytical-thinking:plan`.
+- **Editing addresses a note by its `id`**, not by an upsert on a conflict target. `notes.id` is
+  already a uuid primary key, so nothing new is needed — but the news code path upserts, and that
+  is one of the places the two diverge rather than share.
+- **An order to display them in.** `created_at` exists. Decide whether the list reads oldest-first
+  (the order they were thought) or newest-first (the order news uses), and say which — they are
+  different claims about what the list is for.
+
+**What has to be lifted out of `public/news-actions.js` rather than copied** — noting that a
+one-note surface and a many-note surface share the editor, not the container:
+
+- the view/edit state machine — no note → edit, note → view, Save lands in view and closes
+- inline confirmation for Clear and Delete, and Escape backing out of it
+- the counter, the `is-near` threshold, and Save disabled when empty *or* unchanged
+- ⚠️ the status line held **outside** the DOM and re-applied after a repaint — without that, a
+  save that triggers any re-render tells the reader nothing
+
+**Two constraints specific to the skill pages, and neither applies on `/news/`:**
+
+- ⚠️ **They deliberately skip `styles.css`.** The ten primer/plan pages are self-contained, which
+  is the whole reason `fonts.css` exists separately. A notes panel there needs its styles delivered
+  some other way — `news-app.css` is scoped to `/news/` and must stay that way.
+- ⚠️ **Their semantic tokens do not flip in dark mode.** `--bg-surface` is still `#FFFFFF` under
+  `[data-theme="dark"]`; dark is a parallel `--d-*` set applied per component. A panel styled only
+  with semantic tokens renders its LIGHT appearance on a dark page and nothing fails. See the trap
+  in [CLAUDE.md](CLAUDE.md).
+
+**And the thing that changes the security picture:** ⚠️ a note is private today, which is what makes
+a stored payload self-XSS rather than stored XSS. **That stops being true the moment anything
+renders notes across users** — Phase 7's admin UI, or a "all my notes for this plan" view that
+aggregates. There is one escaped render path today; a second one needs escaping on purpose.
+
+Also update `why-sign-up.html` when this lands: it is the **last** `Soon` row, and the page's own
+comment says that when it goes, the whole third state — the CSS, the legend and the paragraph
+introducing it — goes with it, or the page keeps explaining a marker nothing carries.
