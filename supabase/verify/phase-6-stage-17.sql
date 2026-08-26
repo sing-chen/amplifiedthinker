@@ -1,123 +1,209 @@
 -- Reads back what the four Phase 6 stage-14/16 migrations were supposed to do.
 --
--- Run it in the Supabase SQL editor AFTER applying all four, against the same
--- project you applied them to. It only reads catalogue tables.
+-- ⚠️ TWO QUERIES, RUN THEM SEPARATELY. The Supabase SQL editor shows only the
+-- LAST statement's result, so a file of ten `select`s runs all ten and displays
+-- one — every earlier check passes or fails invisibly. That is exactly the
+-- failure this file exists to prevent, and the first version of it had the bug.
+-- Each block below is therefore ONE query returning one row per check.
 --
--- ⚠️ DDL RETURNS "Success. No rows returned" WHETHER OR NOT IT DID WHAT WAS
--- INTENDED, and each of these migrations is wrapped in begin/commit — so one
--- failed statement rolls back the others while the error names only itself.
--- That already happened once on dev: a 42710 on a constraint took the index
--- with it, and the message mentioned the constraint alone. Reading the
--- catalogue is the only way to know which of the four actually landed.
+-- ⚠️ AND THAT IS WHY "Success. No rows returned" IS NOT EVIDENCE. All four
+-- migrations report it whether or not they did what was intended, and each is
+-- wrapped in begin/commit — so one failed statement rolls the others back while
+-- the error names only itself.
 --
--- Every answer below is stated. A query returning nothing is a FAILURE, not a
--- pass — there is no check here whose correct result is an empty set.
+-- Every row has a verdict. Read the FAIL column, not the row count.
 
 
--- ── 1 · 20260826120000 — a note is 1–500 characters ─────────────────────────
--- EXPECT exactly one row:
---   notes_body_length | CHECK (((char_length(body) >= 1) AND (char_length(body) <= 500)))
--- ⚠️ If it says 2000, an older version of this migration was applied. Re-run it;
---    it drops the constraint before adding it, so it is safe.
-select conname, pg_get_constraintdef(oid) as definition
-  from pg_constraint
- where conrelid = 'public.notes'::regclass
-   and contype = 'c';
+-- ════════════════════════════════════════════════════════════════════════════
+-- BLOCK A · SCHEMA — run after the four migrations. Select and run alone.
+-- ════════════════════════════════════════════════════════════════════════════
 
+with c(ord, label, ok, detail) as (
 
--- ── 2 · indexes on notes and user_news ──────────────────────────────────────
--- EXPECT exactly these three, and NOT notes_user_target_idx:
+  select 1, '#1 notes_body_length is 1-500',
+    coalesce((select strpos(pg_get_constraintdef(oid), 'char_length(body) >= 1') > 0
+                 and strpos(pg_get_constraintdef(oid), '500') > 0
+              from pg_constraint
+              where conrelid = 'public.notes'::regclass and conname = 'notes_body_length'), false),
+    coalesce((select pg_get_constraintdef(oid) from pg_constraint
+              where conrelid = 'public.notes'::regclass and conname = 'notes_body_length'),
+             'CONSTRAINT ABSENT')
+
+  union all
+  select 2, '#3 notes index is UNIQUE and scoped to news',
+    coalesce((select strpos(indexdef, 'UNIQUE') > 0
+                 and strpos(indexdef, 'target_type = ''news''') > 0
+              from pg_indexes
+              where schemaname = 'public' and indexname = 'notes_one_per_target_idx'), false),
+    coalesce((select indexdef from pg_indexes
+              where schemaname = 'public' and indexname = 'notes_one_per_target_idx'),
+             'INDEX ABSENT')
+
+  union all
+  select 3, '#1 redundant notes_user_target_idx is gone',
+    not exists (select 1 from pg_indexes
+                where schemaname = 'public' and indexname = 'notes_user_target_idx'),
+    case when exists (select 1 from pg_indexes
+                      where schemaname = 'public' and indexname = 'notes_user_target_idx')
+         then 'still present - migration #1 did not finish' else 'dropped' end
+
+  union all
+  select 4, '#2 user_news_single_pin_idx is UNIQUE where pinned',
+    coalesce((select strpos(indexdef, 'UNIQUE') > 0 and strpos(indexdef, 'pinned') > 0
+              from pg_indexes
+              where schemaname = 'public' and indexname = 'user_news_single_pin_idx'), false),
+    coalesce((select indexdef from pg_indexes
+              where schemaname = 'public' and indexname = 'user_news_single_pin_idx'),
+             'INDEX ABSENT')
+
+  union all
+  select 5, '#2 user_news_single_pin() is SECURITY INVOKER',
+    coalesce((select not prosecdef from pg_proc
+              where pronamespace = 'public'::regnamespace
+                and proname = 'user_news_single_pin'), false),
+    coalesce((select case when prosecdef then 'DEFINER - bypasses the RLS that confines it'
+                          else 'INVOKER' end
+              from pg_proc
+              where pronamespace = 'public'::regnamespace
+                and proname = 'user_news_single_pin'), 'FUNCTION ABSENT')
+
+  union all
+  select 6, '#2 the trigger itself exists',
+    exists (select 1 from pg_trigger
+            where tgrelid = 'public.user_news'::regclass
+              and tgname = 'user_news_single_pin' and not tgisinternal),
+    case when exists (select 1 from pg_trigger
+                      where tgrelid = 'public.user_news'::regclass
+                        and tgname = 'user_news_single_pin' and not tgisinternal)
+         then 'present' else 'TRIGGER ABSENT - the index would turn a silent replace into an error' end
+
+  union all
+  select 7, '#4 news_stories.merged_into exists, text, nullable',
+    exists (select 1 from information_schema.columns
+            where table_schema = 'public' and table_name = 'news_stories'
+              and column_name = 'merged_into' and data_type = 'text'
+              and is_nullable = 'YES'),
+    coalesce((select data_type || ', nullable ' || is_nullable
+              from information_schema.columns
+              where table_schema = 'public' and table_name = 'news_stories'
+                and column_name = 'merged_into'), 'COLUMN ABSENT')
+
+  union all
+  select 8, '#4 foreign key to news_stories(slug)',
+    exists (select 1 from pg_constraint
+            where conrelid = 'public.news_stories'::regclass
+              and contype = 'f' and strpos(pg_get_constraintdef(oid), 'merged_into') > 0),
+    coalesce((select pg_get_constraintdef(oid) from pg_constraint
+              where conrelid = 'public.news_stories'::regclass
+                and contype = 'f' and strpos(pg_get_constraintdef(oid), 'merged_into') > 0),
+             'FOREIGN KEY ABSENT')
+
+  union all
+  select 9, '#4 check: cannot point at itself',
+    exists (select 1 from pg_constraint
+            where conrelid = 'public.news_stories'::regclass
+              and conname = 'news_stories_merged_into_not_self'),
+    coalesce((select pg_get_constraintdef(oid) from pg_constraint
+              where conrelid = 'public.news_stories'::regclass
+                and conname = 'news_stories_merged_into_not_self'), 'CHECK ABSENT')
+
+  union all
+  select 10, '#4 check: only archived rows carry a pointer',
+    exists (select 1 from pg_constraint
+            where conrelid = 'public.news_stories'::regclass
+              and conname = 'news_stories_merged_into_archived_only'),
+    coalesce((select pg_get_constraintdef(oid) from pg_constraint
+              where conrelid = 'public.news_stories'::regclass
+                and conname = 'news_stories_merged_into_archived_only'), 'CHECK ABSENT')
+)
+select ord           as "#",
+       case when ok then 'PASS' else '>>> FAIL' end as verdict,
+       label,
+       detail
+  from c
+ order by ord;
+
+-- EXPECT 10 rows, all PASS.
 --
---   notes      notes_one_per_target_idx    UNIQUE ... (user_id, target_type, target_id)
---                                          WHERE (target_type = 'news'::text)   <-- #3 did this
---   user_news  user_news_pkey              PRIMARY KEY ... (user_id, story_id)
---   user_news  user_news_single_pin_idx    UNIQUE ... (user_id) WHERE pinned    <-- #2 did this
+-- ⚠️ The two that look healthy from the site when they fail:
+--   #2  the notes index without `target_type = 'news'` — behaves identically
+--       today, and only surfaces when someone writes a second note on a plan.
+--   #5  SECURITY DEFINER — the function would run as its owner and bypass the
+--       RLS confining it to the caller's own rows, so one reader's pin could
+--       clear another's.
+
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- BLOCK B · DATA — run AFTER supabase/seed/news_seed.sql. Select and run alone.
+-- ⚠️ Before the seed the table is empty and every row here fails correctly.
+-- ════════════════════════════════════════════════════════════════════════════
+
+with d(ord, label, ok, detail) as (
+
+  select 1, 'row count and status split',
+    (select count(*) = 81 from public.news_stories)
+    and (select count(*) = 79 from public.news_stories where status = 'published')
+    and (select count(*) = 2  from public.news_stories where status = 'archived'),
+    (select coalesce(string_agg(status || ' ' || n, ', ' order by status), 'TABLE EMPTY')
+       from (select status, count(*) as n from public.news_stories group by status) s)
+
+  union all
+  select 2, 'no draft rows are present',
+    not exists (select 1 from public.news_stories where status = 'draft'),
+    (select coalesce(count(*)::text || ' draft row(s)', '0')
+       from public.news_stories where status = 'draft')
+
+  union all
+  select 3, 'slug and legacy_id are both unique across 81',
+    (select count(distinct slug) = 81 and count(distinct legacy_id) = 81
+       from public.news_stories),
+    (select count(distinct slug) || ' slugs, ' || count(distinct legacy_id) || ' legacy_ids'
+       from public.news_stories)
+
+  union all
+  select 4, 'every archived row points at a PUBLISHED story',
+    (select count(*) = 2 from public.news_stories a
+       join public.news_stories t on t.slug = a.merged_into
+      where a.status = 'archived' and t.status = 'published'),
+    (select coalesce(string_agg(a.legacy_id || ' -> ' || coalesce(t.status, 'DANGLING'), ', '
+                                order by a.legacy_id), 'no archived rows')
+       from public.news_stories a
+       left join public.news_stories t on t.slug = a.merged_into
+      where a.status = 'archived')
+
+  union all
+  select 5, 'exactly one site-wide Featured story',
+    (select count(*) = 1 from public.news_stories where pinned),
+    (select coalesce(string_agg(slug, ', '), 'NONE') from public.news_stories where pinned)
+
+  union all
+  select 6, 'accented titles survived the load',
+    not exists (select 1 from public.news_stories
+                where title ~ 'Ã|â€|Â'),
+    (select coalesce(string_agg(left(title, 60), ' | '), 'no mojibake found')
+       from public.news_stories where title ~ 'Ã|â€|Â')
+)
+select ord           as "#",
+       case when ok then 'PASS' else '>>> FAIL' end as verdict,
+       label,
+       detail
+  from d
+ order by ord;
+
+-- EXPECT 6 rows, all PASS.
 --
--- ⚠️ TWO FAILURES HIDE HERE AND BOTH LOOK HEALTHY:
---   · notes_one_per_target_idx present but WITHOUT the WHERE clause means #3 did
---     not run. The site behaves identically; the damage appears months later
---     when someone tries to write a second note on a plan.
---   · notes_user_target_idx still present means #1 did not finish. Harmless to
---     reads, but it is a second B-tree maintained on every write for nothing.
-select tablename, indexname, indexdef
-  from pg_indexes
- where schemaname = 'public'
-   and tablename in ('notes', 'user_news')
- order by tablename, indexname;
-
-
--- ── 3 · 20260826140000 — the single-pin trigger ─────────────────────────────
--- EXPECT one row: user_news_single_pin | INVOKER
--- ⚠️ `DEFINER` IS A SECURITY FAILURE, NOT A STYLE ONE. As DEFINER the function
---    runs as its owner and bypasses the RLS that confines it to the caller's own
---    rows — so one reader's pin could clear another's.
-select proname,
-       case when prosecdef then 'DEFINER  <-- WRONG' else 'INVOKER' end as security
-  from pg_proc
- where pronamespace = 'public'::regnamespace
-   and proname = 'user_news_single_pin';
-
--- EXPECT one row: user_news_single_pin
--- The index above is the structural guarantee; this is what keeps the data
--- correct in the first place. The index without the trigger turns a silent
--- replace into an error the reader sees.
-select tgname
-  from pg_trigger
- where tgrelid = 'public.user_news'::regclass
-   and not tgisinternal;
-
-
--- ── 4 · 20260826180000 — merged_into on news_stories ────────────────────────
--- EXPECT one row: merged_into | text | YES
-select column_name, data_type, is_nullable
-  from information_schema.columns
- where table_schema = 'public'
-   and table_name = 'news_stories'
-   and column_name = 'merged_into';
-
--- EXPECT three rows — one foreign key and two checks:
---   news_stories_merged_into_fkey            FOREIGN KEY (merged_into)
---                                              REFERENCES news_stories(slug) ON DELETE SET NULL
---   news_stories_merged_into_not_self        CHECK (merged_into IS NULL OR merged_into <> slug)
---   news_stories_merged_into_archived_only   CHECK (merged_into IS NULL OR status = 'archived')
-select conname, pg_get_constraintdef(oid) as definition
-  from pg_constraint
- where conrelid = 'public.news_stories'::regclass
-   and conname like '%merged_into%'
- order by conname;
-
-
--- ── 5 · after the news seed, not before ─────────────────────────────────────
--- ⚠️ RUN THIS ONLY ONCE supabase/seed/news_seed.sql HAS BEEN APPLIED. Before
---    that the table is empty and every row below is legitimately absent.
+-- ⚠️ Check #1 replaces `select count(*)`, which is satisfied by 81 rows in ANY
+--    status and so reads as a pass on a load that published the archived ones.
+-- ⚠️ Check #6 looks for the CP1252 signatures rather than for correct text: a
+--    title reading `Brené` is valid JSON with the right row count and every
+--    other check green.
 --
--- EXPECT exactly:  archived   2
---                  published 79
--- and NO 'draft' row.
--- ⚠️ Do not substitute `select count(*)` — 81 is satisfied by 81 rows in any
---    status, so it reads as a pass on a load that published the archived ones.
-select status, count(*)
-  from public.news_stories
- group by status
- order by status;
-
--- EXPECT 2 rows, both with target_status = 'published'.
--- An empty result means the merge pointers did not land: those two stories are
--- then invisible in the feed AND unreachable by their old links, which is the
--- one outcome archiving exists to prevent.
-select a.legacy_id, a.merged_into, t.status as target_status
-  from public.news_stories a
-  join public.news_stories t on t.slug = a.merged_into
- where a.status = 'archived'
- order by a.legacy_id;
-
--- EXPECT 1 row — exactly one site-wide Featured story.
-select slug from public.news_stories where pinned;
-
--- EXPECT a handful of rows, all reading as correct accented text.
--- ⚠️ Eyeball these. `Brené` here means the load carried CP1252-decoded UTF-8,
---    which is valid JSON, the right row count, and every other check green.
-select title
-  from public.news_stories
- where title ~ '[^[:ascii:]]'
- limit 5;
+-- ⚠️ AND CHECK #6 CAN BE DISARMED BY THE VERY FAULT IT LOOKS FOR. Its pattern is
+--    written as literal mojibake, so if THIS FILE is ever re-encoded the pattern
+--    becomes something else and the check quietly passes everything. That is why
+--    scripts/verify-encoding.mjs builds its equivalent list with
+--    String.fromCharCode and keeps its own source pure ASCII. SQL has no such
+--    escape hatch, so the mitigation is procedural: this file is pasted, never
+--    round-tripped through an editor that rewrites encodings, and `npm run
+--    verify:encoding` covers it in the repo. If check #6 ever passes on a load
+--    you have reason to doubt, read a title with your eyes before trusting it.
