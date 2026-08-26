@@ -36,11 +36,11 @@ prevent.
 |---|---|---|---|---|
 | **A** | **Retire the Pages origin** | | | |
 | 0 | Baseline — what is true before you start | Claude + Human | ✅ Done | 2026-08-22, all three gates green, **no deviation from the state described below**. `verify:stamp` both origins current on `96f9b9d`, 9s apart; `verify:published` 79 files / 158 fetches / 0 not served; `verify:redirects` 12 assertions, every origin resolving to the project that owns it. ⚠️ Two findings: the `verify:published` baseline is **two-origin and cannot be retaken after stage 2**, and the Pages redirect entry must **move to `rejected`** rather than be deleted — stages 4 and 5 amended |
-| 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs**, which removes the stub step and its 3-month soak from stage 5. ⚠️ Point-in-time — re-run if Part A stalls for weeks |
+| 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs.** ⏭️ The skipped stubs are **deferred, not dismissed** — see the note under stage 1 for the three signals that would reopen it, and what reopening would cost now that stage 2 has gone in |
 | 2 | Stop publishing to Pages | Human + Claude | ✅ Done | 2026-08-24. Workflow disabled first, then **Unpublish site** — ⚠️ there is no "None" in the Source dropdown any more, and the order was corrected mid-stage. Pages origin **404 on all four paths checked incl. `build.json`**; apex **200 on all twelve**, spanning hand-written pages, Astro auth surfaces, a skill page, both stylesheets and the stamp. `verify:stamp`: `vercel ok c5b1ce4` / `pages FAIL HTTP 404` — expected. **Fully reversible** |
 | 3 | Soak on one origin | Human | ✅ Done | Ran 2026-08-24 ~08:10Z to 2026-08-26. No Vercel incident, no report of a broken link to the old origin. Deploys to `main` happened throughout and were verified |
 | 4 | Remove Pages from code, gates and docs | Claude | ✅ Done | **2026-08-26, on `chore/retire-pages`, merged to `main` as `d7728f2` — NOT on this branch.** `astro.config.mjs`, `verify-published`, `verify-build-stamp`, `verify-schema-columns` all reduced to one origin; `privacy.html`'s GitHub processor row and mirror-analytics paragraph both gone. ⚠️ **One deliberate deviation from what this stage instructed — see the reconciliation note below** |
-| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ **Not started** | ⚠️ **Still outstanding, and now load-bearing.** The Supabase prod allowlist still names `sing-chen.github.io`, so prod will honour a redirect to a host that 404s; the Turnstile prod widget still lists it as a domain. Both confirmed still open by comments left in `verify-redirects.mjs` and `supabase-client.js` |
+| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ **Not started** | ⚠️ **The whole of what remains in Part A.** Authority is [supabase/README.md](../supabase/README.md) §*Cleanup owed*. **Turnstile first** — its hostname grant covers subdomains of a Pages domain the owner controls today, so anything published there could mint tokens prod accepts; the Supabase entry is merely a redirect to a dead host. ⚠️ Also restores the `rejected` assertion stage 4 dropped, and Turnstile has **no automated check** — signing in on production is the only verification |
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
 | 7 | The adapter decision | Claude + Human | ☐ Not started | ⚠️ **The plan puts this in Phase 8 and the plan is wrong.** Blocks 9–13 |
@@ -386,9 +386,33 @@ public URL without a redirect.
 with it, and the follow-up to delete the stubs afterwards. Stage 5 is unchanged and stage 6 can
 delete `pages.yml` as soon as stage 3's soak is done.
 
-⚠️ **This is a point-in-time answer with a short shelf life.** The origin is still live and still
-crawlable as this is written. If Part A stalls for weeks, re-run the search before stage 2 rather
-than trusting this row.
+⚠️ **This was a point-in-time answer, and the point has now passed.** The origin was still live and
+crawlable when the search ran; it 404s from 2026-08-24. The decision stands on the evidence that
+existed, and cannot be re-taken on the same terms — a `site:` search now returns nothing because the
+pages are gone, not because they were never indexed.
+
+### ⏭️ Deferred: the redirect stubs, if indexing turns out to have mattered
+
+**Carried in from another session, 2026-08-26.** Stage 1 chose deletion over stubs because all three
+engines returned nothing. That was the right call on the evidence — but it was a judgement about
+*absence*, and absence is the weakest thing a search index can tell you.
+
+**Reopen this if any of these happens:**
+
+- Someone reports a dead `sing-chen.github.io/amplifiedthinker` link they reached from a search result
+- A `site:` query on any engine starts returning that host again (a stale index can outlive the pages
+  by weeks, so this is not impossible)
+- Analytics or logs show referrals arriving from a search engine to the retired origin
+
+**What reopening would mean.** GitHub Pages would have to be re-enabled to serve stubs, which undoes
+stage 2 — so this is not a small change and should not be done on a hunch. The cheaper first move is
+to establish that the traffic is real: one report is an anecdote, a pattern in referrers is evidence.
+
+⚠️ **The canonical tags are the reason this is unlikely, and also the reason it is not impossible.**
+Nine hand-written pages and `BaseLayout` point `rel="canonical"` at the apex, which is a strong hint —
+but `robots.txt` on that origin said `Allow: /`, so crawling was never blocked, only de-duplicated,
+and Google is free to ignore a canonical. Stage 1 said exactly this before the search was run; it
+remains the honest summary of the residual risk.
 
 ---
 
@@ -564,19 +588,24 @@ All three prebuild gates must still pass — `verify:catalogue`, `verify:signin-
 ## Stage 5 — Dashboard cleanup: Supabase and Turnstile · Owner: Human
 
 Two dashboards, neither visible to git, both currently trusting a host that no longer serves the
-site.
+site. **This is the whole of what remains in Part A.**
 
-**Supabase → project `spehmrgmcdenqdftkyrt` (prod) → Authentication → URL Configuration →
-Redirect URLs.** Remove `https://sing-chen.github.io/amplifiedthinker/**`. Leave every other entry.
+📖 **[supabase/README.md](../supabase/README.md) §*Cleanup owed* is the authority on these two
+entries** — it holds the exact dashboard paths, what each one means while it stands, and how to
+verify the change. Read it rather than working from the summary here; one owner for one answer, and
+that file is where a future reader of the Supabase config will look.
 
-**Cloudflare → Turnstile → widget `amplifiedthinker-prod` → Domains.** Remove
-`sing-chen.github.io`, leaving `amplifiedthinker.com`.
+**Do the Turnstile one FIRST.** Not because it is quicker, but because it is the one with a
+security dimension, and the reason is sharper than "that origin is retired":
 
-⚠️ **The Turnstile one matters more than it looks.** `sing-chen.github.io` hosts *every* project of
-that GitHub account at one origin. Leaving it on the widget's domain list means any page published
-by any repo on that account can mint captcha tokens the production signup endpoint will accept.
-Retiring the site's use of the origin does not remove the origin, so this entry is the one piece of
-stage 5 that is a small security improvement rather than tidiness.
+⚠️ **A Turnstile hostname grant covers the hostname *and its subdomains*, and
+`sing-chen.github.io` is a user-owned GitHub Pages domain.** Anything that account publishes there
+in future sits inside the grant and can mint captcha tokens the production signup endpoint will
+accept. That is fine while the account is the site owner's own — and stops being fine the moment it
+is not. The Supabase entry, by contrast, points at a destination that is merely *dead*: a redirect
+to a host serving nothing, which is untidy rather than dangerous.
+
+Order follows blast radius, not effort.
 
 **Verify:**
 
@@ -584,22 +613,32 @@ stage 5 that is a small security improvement rather than tidiness.
 npm run verify:redirects
 ```
 
-It must now show the Pages URL **rejected** by prod and falling back to the Site URL. This only
-passes if stage 4's edit to the expected list and this dashboard change agree — which is the point
-of doing them close together.
+⚠️ **This passes either way now, so it proves nothing on its own.** Stage 4 *dropped* the Pages
+entry from the script's expectations rather than moving it to `rejected` — see the reconciliation
+note under the handoff table. So `verify:redirects` is green today with the dashboard entry still
+in place, and will be green afterwards too.
 
-⚠️ **The assertion moves sides; it does not disappear.** Before stage 5 the gate proves prod
-*accepts* `https://sing-chen.github.io/amplifiedthinker/` (verified 2026-08-22). After it, the gate
-must prove prod *refuses* it. Deleting the line instead would leave the shared GitHub origin
-untested against production auth for ever — and it is a host that keeps existing after the site
-stops using it.
+**Restoring that assertion is part of this stage, not a follow-up.** Add
+`https://sing-chen.github.io/amplifiedthinker/` to the prod `rejected` list in
+`scripts/verify-redirects.mjs` in the same sitting, and re-run. It must now fall back to the Site
+URL. That is what turns a temporary drop into a permanent, checked fact — and until it is done,
+nothing anywhere tests that host in either direction.
+
+⚠️ **Turnstile has no automated check at all.** No script in this repo can read a widget's hostname
+list, so the only verification is **signing in on production** after the change. A wrong domain
+list surfaces as a *captcha* failure, which [supabase/README.md](../supabase/README.md) records as
+having been misdiagnosed once already — expect that shape rather than an obvious error.
 
 **Tick as you go**
 
+- [ ] ⚠️ **Turnstile `amplifiedthinker-prod` — `sing-chen.github.io` removed from Domains — FIRST**
 - [ ] Supabase prod redirect allowlist — Pages entry removed, others untouched
-- [ ] Turnstile `amplifiedthinker-prod` — `sing-chen.github.io` removed from Domains
-- [ ] `npm run verify:redirects` run — Pages URL now rejected, `amplifiedthinker.com` still allowed
-- [ ] A real sign-in tested end to end on `amplifiedthinker.com` after the widget change
+- [ ] ⚠️ `verify-redirects.mjs` — Pages URL **added to prod `rejected`**, restoring the assertion
+      stage 4 dropped
+- [ ] `npm run verify:redirects` run — Pages URL now **rejected**, `amplifiedthinker.com` still allowed
+- [ ] A real sign-in tested end to end on `amplifiedthinker.com` after the widget change — the only
+      check the Turnstile half has
+- [ ] `supabase/README.md` §*Cleanup owed* updated to say both are done, with the date
 
 **Rollback:** re-add both entries. Immediate, but note the sign-in test — a wrong Turnstile domain
 list surfaces as a captcha failure, which [supabase/README.md](../supabase/README.md) records as
@@ -1016,3 +1055,21 @@ assuming it, because the mechanism underneath it changed in this same phase.
 - **It does not add a contact form.** `BACKLOG.md` notes that retiring Pages changes its architecture
   and unlocks the better version. True, and out of scope here.
 - **It does not resolve the leaderboard or events-table questions** deferred out of Phase 9.
+- **It does not publish redirect stubs for the retired origin.** Deferred rather than dismissed —
+  the trigger conditions and what reopening would cost are under stage 1. Re-enabling Pages to serve
+  stubs would undo stage 2, so it is a real change rather than a tidy-up.
+
+---
+
+## Everything still open, in one place
+
+Two sessions have now contributed to this phase, so this is the list rather than the scroll:
+
+| | What | Owner |
+|---|---|---|
+| **Stage 5** | Turnstile domain, Supabase allowlist, restore the `rejected` assertion. **All of Part A that is left** | Human |
+| **Stages 7–18** | Part B, unstarted. Stage 7 (the adapter) blocks 10–13 | Claude + Human |
+| ⏭️ Deferred | Redirect stubs, only if indexing turns out to have mattered | — |
+
+**Nothing else from Part A is outstanding.** Stages 0–4 and 6 are done and merged to `main`, verified
+against the tree on 2026-08-26 rather than taken from commit messages.
