@@ -38,7 +38,7 @@ prevent.
 | 0 | Baseline — what is true before you start | Claude + Human | ✅ Done | 2026-08-22, all three gates green, **no deviation from the state described below**. `verify:stamp` both origins current on `96f9b9d`, 9s apart; `verify:published` 79 files / 158 fetches / 0 not served; `verify:redirects` 12 assertions, every origin resolving to the project that owns it. ⚠️ Two findings: the `verify:published` baseline is **two-origin and cannot be retaken after stage 2**, and the Pages redirect entry must **move to `rejected`** rather than be deleted — stages 4 and 5 amended |
 | 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs.** ⏭️ The skipped stubs are **deferred, not dismissed** — see the note under stage 1 for the three signals that would reopen it, and what reopening would cost now that stage 2 has gone in |
 | 2 | Stop publishing to Pages | Human + Claude | ✅ Done | 2026-08-24. Workflow disabled first, then **Unpublish site** — ⚠️ there is no "None" in the Source dropdown any more, and the order was corrected mid-stage. Pages origin **404 on all four paths checked incl. `build.json`**; apex **200 on all twelve**, spanning hand-written pages, Astro auth surfaces, a skill page, both stylesheets and the stamp. `verify:stamp`: `vercel ok c5b1ce4` / `pages FAIL HTTP 404` — expected. **Fully reversible** |
-| 3 | Soak on one origin | Human | ◐ **In progress — one box left** | 2026-08-24 08:10Z → 2026-08-26 08:11Z, **48h01m**. Nine commits reached `main`; production serving the tip; baseline retaken at **85 files / 1 origin / 0 not served**. ⚠️ Retaking it found `verify-published.mjs` **overstating its own coverage by double** — fixed. **Left: has anyone reported a broken link to the old origin?** Only the site owner can answer that. ⚠️ This row was briefly marked ✅ with every box unticked — see the stage's Observed note |
+| 3 | Soak on one origin | Human | ✅ Done | 2026-08-24 08:10Z → 2026-08-26 08:11Z, **48h01m**, all five boxes ticked. Nine commits reached `main`; production serving the tip; baseline retaken at **85 files / 1 origin / 0 not served**; **no broken-link reports**, confirmed by the site owner. ⚠️ Retaking the baseline found `verify-published.mjs` **overstating its own coverage by double** — fixed. ⚠️ This row was briefly marked ✅ with every box unticked before any of it was checked — see the stage's Observed note |
 | 4 | Remove Pages from code, gates and docs | Claude | ✅ Done | **2026-08-26, on `chore/retire-pages`, merged to `main` as `d7728f2` — NOT on this branch.** `astro.config.mjs`, `verify-published`, `verify-build-stamp`, `verify-schema-columns` all reduced to one origin; `privacy.html`'s GitHub processor row and mirror-analytics paragraph both gone. ⚠️ **One deliberate deviation from what this stage instructed — see the reconciliation note below** |
 | 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ **Not started** | ⚠️ **The whole of what remains in Part A.** Authority is [supabase/README.md](../supabase/README.md) §*Cleanup owed*. **Turnstile first** — its hostname grant covers subdomains of a Pages domain the owner controls today, so anything published there could mint tokens prod accepts; the Supabase entry is merely a redirect to a dead host. ⚠️ Also restores the `rejected` assertion stage 4 dropped, and Turnstile has **no automated check** — signing in on production is the only verification |
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
@@ -508,8 +508,8 @@ is still two clicks from reversal.
 - [x] 48h elapsed with no Vercel incident — **2026-08-26 08:11Z**, 48h01m after the clock started
 - [x] At least one ordinary deploy to `main` made and verified during the soak — **nine commits**,
       and `verify:stamp` confirms production serving the current tip
-- [ ] ⬜ **Nobody reported a broken link to the old origin** — ⚠️ **only the site owner can answer
-      this; it is not derivable from the repo**
+- [x] **Nobody reported a broken link to the old origin** — confirmed by the site owner, 2026-08-26.
+      ⚠️ Not derivable from the repo; this box closes on a person's word and nothing else
 - [x] `npm run verify:published` **baseline retaken** — 85 files, 1 origin, 85 fetches, 0 not served
 - [x] ⚠️ **Anything committed during this stage is pushed** — `git push` before 2026-08-26 09:00Z
 
@@ -559,8 +559,15 @@ entry from `ORIGINS`. The loop was already correct, so the check did the right w
 **overstated its own coverage by double**. Now derived from `Object.keys(ORIGINS).length`. A gate that
 misreports what it covered is worse than one that fails, because nobody goes looking.
 
-**Still open:** whether anyone reported a broken link to the retired origin. Nothing in the repo can
-answer that, and it is the one box the site owner has to tick.
+**No broken-link reports** — confirmed by the site owner on 2026-08-26, which closes the stage.
+
+⚠️ **That is the weakest evidence in this runsheet, and it is still the right evidence.** The old
+origin's audience was colleagues behind an NRD block that lifted on 2026-08-18, and the URL was never
+shared outside one organisation — so "nobody complained" is being asked of an audience already
+measured at approximately zero. It confirms nothing surprising happened; it does not prove nobody hit
+a dead link and shrugged. Both the deliberate absence of redirect stubs (stage 1) and this box rest
+on the same assumption about who was using that origin. If that assumption is ever falsified, both
+decisions reopen together — see the deferred-stubs note under stage 1.
 
 ---
 
