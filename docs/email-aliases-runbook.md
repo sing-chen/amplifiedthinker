@@ -515,9 +515,15 @@ concrete case for the standing rule that automated checks are never sufficient f
 npm run build
 ```
 
-Then, after deploy: load `/privacy/`, `/terms/`, `/about/` and `/sign-in/` on **both origins** and
-click a `mailto:` link on each page — confirming the address *and* that the subject line survived.
-Grep is not verification here; a correct `href` with broken markup around it still passes a grep.
+Then, after deploy: load `/privacy/`, `/terms/`, `/about/` and `/sign-in/` on **`amplifiedthinker.com`**
+and click a `mailto:` link on each page — confirming the address *and* that the subject line
+survived. Grep is not verification here; a correct `href` with broken markup around it still passes
+a grep.
+
+⚠️ **This said "both origins" until 2026-08-26**, when the GitHub Pages origin was retired and
+`sing-chen.github.io/amplifiedthinker` began returning 404. It was correct when stage 5 ran on the
+20th — the tick list below records a genuine two-origin check — but there is now one origin, and
+anything in this file still saying otherwise is describing the world before that date.
 
 **Tick as you go**
 
