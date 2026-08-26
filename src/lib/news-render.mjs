@@ -199,14 +199,17 @@ export function filterBarHTML(stories, state) {
   // they can return something. Showing either to a guest would advertise a
   // filter that can only ever come back empty, and showing one at zero would
   // look broken rather than empty.
+  /* ⚠️ COUNTED, because these two are the only chips whose contents the reader
+     controls. A theme chip's size is a fact about the feed and not worth
+     stating; "Saved (3)" tells you something you might have been about to click
+     to find out. The archive toggles below already number themselves the same
+     way, so the shape is the page's own rather than a new one. */
   const personal = [];
   if (state.personal && state.personal.enabled) {
-    if (Object.keys(state.personal.favs).length) {
-      personal.push({ key: 'saved', label: 'Saved', path: STAR_ICON_PATH });
-    }
-    if (Object.keys(state.personal.noted).length) {
-      personal.push({ key: 'noted', label: 'Has notes', path: NOTE_ICON_PATH });
-    }
+    const favCount = Object.keys(state.personal.favs).length;
+    const noteCount = Object.keys(state.personal.noted).length;
+    if (favCount) personal.push({ key: 'saved', label: 'Saved (' + favCount + ')', path: STAR_ICON_PATH });
+    if (noteCount) personal.push({ key: 'noted', label: 'Has Notes (' + noteCount + ')', path: NOTE_ICON_PATH });
   }
 
   const render = (c) => {

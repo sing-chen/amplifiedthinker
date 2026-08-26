@@ -21,12 +21,27 @@
 -- abandoned. With `target_id` set to a plan, the old index permits exactly one.
 -- See BACKLOG.md §Notes on primers and plans.
 --
--- ⚠️ NOTHING ABOUT NEWS CHANGES. The client upserts on
--- `user_id,target_type,target_id`, and a partial index still serves that
--- conflict target for the rows it covers — every row the news path writes has
--- `target_type = 'news'`. The 500-character `notes_body_length` is untouched and
--- applies to both halves; a plan does not need a longer note, it needs more of
--- them.
+-- ⚠️ THIS BREAKS ANY `ON CONFLICT (user_id, target_type, target_id)` UPSERT,
+-- AND AN EARLIER VERSION OF THIS COMMENT CLAIMED IT DID NOT. It said "a partial
+-- index still serves that conflict target for the rows it covers". That is
+-- false. Postgres can only INFER a partial unique index for ON CONFLICT if the
+-- statement carries the index's own WHERE predicate, and PostgREST does not
+-- emit one — so through supabase-js a partial index cannot serve an upsert at
+-- all, not even for rows inside the predicate. The symptom is immediate and
+-- clear:
+--
+--     there is no unique or exclusion constraint matching
+--     the ON CONFLICT specification
+--
+-- `public/news-actions.js` was changed in the same sitting to update-then-insert
+-- instead, which is why this index no longer has a client depending on its
+-- inferability. ⚠️ Do not reintroduce an upsert against it.
+--
+-- `user_news` is unaffected: its upsert conflicts on `(user_id, story_id)`,
+-- which is the PRIMARY KEY and not partial.
+--
+-- The 500-character `notes_body_length` is untouched and applies to both halves;
+-- a plan does not need a longer note, it needs more of them.
 
 begin;
 

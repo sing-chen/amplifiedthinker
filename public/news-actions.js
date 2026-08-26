@@ -259,13 +259,47 @@
         .then(function (r) { if (r.error) throw r.error; });
     }
 
-    // Upserts on `notes_one_per_target_idx`, which is why that index exists:
-    // without it every save would insert another row and the page would show
-    // whichever one came back first.
-    return sb.from('notes').upsert(
-      { user_id: uid, target_type: 'news', target_id: storyId, body: body },
-      { onConflict: 'user_id,target_type,target_id' }
-    ).then(function (r) { if (r.error) throw r.error; });
+    /* ⚠️ UPDATE FIRST, INSERT ONLY IF NOTHING MATCHED — DELIBERATELY NOT UPSERT.
+       This used `.upsert(..., { onConflict: 'user_id,target_type,target_id' })`
+       and broke the moment `notes_one_per_target_idx` was scoped to
+       `where target_type = 'news'`:
+
+           there is no unique or exclusion constraint matching
+           the ON CONFLICT specification
+
+       Postgres can only INFER a PARTIAL unique index for ON CONFLICT if the
+       statement carries the index's own WHERE predicate, and PostgREST does not
+       emit one. So a partial index cannot serve an upsert through this client at
+       all — not for the rows it covers, not ever.
+
+       Doing it in two steps also removes the coupling that caused this: the way
+       the client writes no longer depends on which indexes happen to exist. An
+       edit costs one round trip, a first note costs two.
+
+       The index still does its job. It is what stops two tabs both finding
+       nothing and both inserting — the second insert is rejected, and the retry
+       below turns that into the update it should always have been. */
+    return sb.from('notes')
+      .update({ body: body })
+      .eq('user_id', uid).eq('target_type', 'news').eq('target_id', storyId)
+      .select('id')
+      .then(function (r) {
+        if (r.error) throw r.error;
+        if (r.data && r.data.length) return r;
+
+        return sb.from('notes')
+          .insert({ user_id: uid, target_type: 'news', target_id: storyId, body: body })
+          .then(function (ins) {
+            if (!ins.error) return ins;
+            // 23505: someone else got there between the update and the insert.
+            // The row exists now, so the write that was wanted is an update.
+            if (String(ins.error.code) !== '23505') throw ins.error;
+            return sb.from('notes')
+              .update({ body: body })
+              .eq('user_id', uid).eq('target_type', 'news').eq('target_id', storyId)
+              .then(function (again) { if (again.error) throw again.error; return again; });
+          });
+      });
   }
 
   /* ── markup ──────────────────────────────────────────────────────────────── */
