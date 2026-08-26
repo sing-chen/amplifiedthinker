@@ -113,6 +113,67 @@
 .story-tags{display:flex;flex-wrap:wrap;gap:6px}
 .story-tag{font-family:var(--font-display);font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:var(--radius-pill);background:var(--tag-bg, var(--light-sage));color:var(--tag-text, var(--navy))}
 
+/* ── THE PERSONAL LAYER: save, pin, note ──────────────────────────────────────
+   Signed-in only. The server paints the invite; news-actions.js owns the slot.
+
+   ⚠️ THE TWO [hidden] RULES BELOW COME FIRST, AND THEY CARRY !important ON
+   PURPOSE. `[hidden]{display:none}` is a UA rule, so ANY author `display` beats
+   it — and both `.story-actions-row` and `.story-note` set one. That exact
+   shape has now cost this project three defects, the third of which shipped
+   past a check written by someone who had just read the warning, because the
+   test asserted `element.hidden` (which was correctly `true`) instead of
+   computed `display`. The next `display` added to this block would reopen it
+   silently, which is why these sit above rather than below. Assert computed
+   `display`, never `.hidden`. */
+.story-actions [hidden],
+.story-actions[hidden]{display:none !important}
+
+.story-actions{margin-top:24px;padding-top:20px;border-top:1px solid var(--light-sage)}
+.story-actions-slot{display:flex;flex-direction:column;gap:12px}
+.story-actions-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.story-actions-invite{font-family:var(--font-body);font-size:13.5px;line-height:1.6;color:var(--text-muted);margin:0}
+.story-action-btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.02em;padding:7px 14px;border-radius:var(--radius-pill);border:1px solid rgba(31,77,74,.2);background:var(--bg-surface);color:var(--fg-heading);text-decoration:none;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.story-action-btn:hover{border-color:rgba(31,77,74,.4);background:var(--bg-page)}
+.story-action-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
+.story-action-btn svg{width:14px;height:14px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* Pressed state: the icon fills in, so the difference is not colour alone. */
+.story-action-btn[aria-pressed="true"]{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
+.story-action-btn[aria-pressed="true"] svg{fill:currentColor}
+.story-action-btn.is-primary{background:var(--mid-teal);border-color:var(--mid-teal);color:var(--white)}
+.story-action-btn.is-primary:hover{background:var(--deep-teal);border-color:var(--deep-teal)}
+.story-action-signin{align-self:flex-start}
+.story-action-status{font-family:var(--font-body);font-size:12.5px;color:var(--text-muted);min-height:1em}
+
+.story-note{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.story-note-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+.story-note-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:var(--font-body);font-size:14px;line-height:1.6;color:var(--fg-heading);background:var(--bg-page);resize:vertical}
+.story-note-input:focus-visible,.story-note-input:focus{outline:2px solid var(--mid-teal);outline-offset:1px}
+.story-note-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.story-note-count{font-family:var(--font-body);font-size:12px;color:var(--text-muted)}
+.story-note-count.is-near{color:var(--terracotta);font-weight:600}
+.story-note-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* ⚠️ A DISABLED BUTTON THAT LOOKS ENABLED IS WORSE THAN NO BUTTON. Save is
+   disabled whenever there is nothing to save — empty, or unchanged from what is
+   stored — and without this it stayed fully solid and simply did nothing when
+   pressed, which reads as a broken feature rather than a considered state. */
+.story-action-btn:disabled{opacity:.45;cursor:default}
+.story-action-btn:disabled:hover{border-color:rgba(31,77,74,.2);background:var(--bg-surface)}
+.story-action-btn.is-primary:disabled:hover{background:var(--mid-teal);border-color:var(--mid-teal)}
+
+/* Destructive answers wear the warm accent so "Yes, delete" is never the same
+   shape as "Cancel". Not red: this palette has no red, and inventing one for a
+   single button would be a new colour nothing else on the site uses. */
+.story-action-btn.is-danger{background:var(--terracotta);border-color:var(--terracotta);color:var(--white)}
+.story-action-btn.is-danger:hover{background:#6B3820;border-color:#6B3820}
+
+/* Read mode. `pre-wrap` because a note is what someone typed, and losing their
+   line breaks on the way back is a small betrayal of that. */
+.story-note-read{font-family:var(--font-body);font-size:14px;line-height:1.65;color:var(--fg-heading);white-space:pre-wrap;overflow-wrap:anywhere;padding:10px 12px;border:1px solid rgba(31,77,74,.14);border-left:3px solid var(--light-sage);border-radius:var(--radius);background:var(--bg-page)}
+
+.story-note-confirm{font-family:var(--font-body);font-size:13px;line-height:1.5;color:var(--fg-heading);margin-right:2px}
+
+
 .empty-state{font-family:var(--font-body);font-size:14px;color:var(--text-muted);padding:40px 0;text-align:center}
 
 /* The feed could not be read at all. Distinct from .empty-state on purpose:
@@ -183,6 +244,19 @@
 [data-theme="dark"] .story-implications{border-left-color:var(--line)}
 [data-theme="dark"] .story-implications p{color:var(--fg-2)}
 [data-theme="dark"] .story-source-link:hover{color:var(--accent-warm)}
+[data-theme="dark"] .story-actions{border-top-color:var(--line)}
+[data-theme="dark"] .story-actions-invite{color:var(--fg-2)}
+[data-theme="dark"] .story-action-btn{border-color:var(--line)}
+[data-theme="dark"] .story-action-btn:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
+[data-theme="dark"] .story-action-status{color:var(--fg-2)}
+[data-theme="dark"] .story-note-input{border-color:var(--line)}
+[data-theme="dark"] .story-note-count{color:var(--fg-2)}
+[data-theme="dark"] .story-note-count.is-near{color:var(--accent-warm)}
+[data-theme="dark"] .story-action-btn:disabled:hover{border-color:var(--line);background:var(--bg-surface)}
+[data-theme="dark"] .story-action-btn.is-danger{background:var(--accent-warm);border-color:var(--accent-warm);color:#241A12}
+[data-theme="dark"] .story-action-btn.is-danger:hover{background:#D89468;border-color:#D89468}
+[data-theme="dark"] .story-note-read{color:var(--fg-1);border-color:var(--line);border-left-color:var(--line)}
+[data-theme="dark"] .story-note-confirm{color:var(--fg-1)}
 [data-theme="dark"] .empty-state{color:var(--fg-2)}
 [data-theme="dark"] .news-error p{color:var(--fg-2)}
 

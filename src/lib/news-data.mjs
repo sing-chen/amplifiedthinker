@@ -24,6 +24,10 @@ import { THEME_ORDER } from './news-render.mjs';
 const PROJECTS = __SUPABASE_PROJECTS__;
 
 const COLUMNS = [
+  // ⚠️ `id` is the uuid `user_news.story_id` is a FK to, so favourites and
+  // per-user pins cannot work without it. It is not secret — RLS, not
+  // obscurity, is what governs who may write a row against it.
+  'id',
   'slug', 'legacy_id', 'story_date', 'sort_order', 'title',
   'source', 'url', 'summary', 'implications', 'tags', 'pinned'
 ].join(',');
@@ -53,6 +57,7 @@ export function hostnameFor(request, url) {
 function normalise(row) {
   const tags = Array.isArray(row.tags) ? row.tags : [];
   return {
+    id: row.id,
     slug: row.slug,
     legacyId: row.legacy_id || null,
     date: row.story_date,

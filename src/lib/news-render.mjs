@@ -46,6 +46,7 @@ const THEME_ICON_PATHS = {
 const ALL_ICON_PATH = '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>';
 const PIN_ICON_PATH = '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/>';
 const CHEVRON_ICON_PATH = '<polyline points="6 9 12 15 18 9"/>';
+const STAR_ICON_PATH = '<path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>';
 
 const TITLE_CASE_LOWER = { and: 1, or: 1, of: 1, the: 1, in: 1, on: 1 };
 
@@ -121,10 +122,33 @@ export function storyPath(slug) {
 
 /* ── selection ───────────────────────────────────────────────────────────── */
 
+/* `state.personal` is the signed-in reader's own layer:
+     { enabled, favs: {slug:1}, pins: {slug:1} }
+   It is absent for guests and for anyone whose rows have not loaded yet, so
+   every read of it is guarded. ⚠️ `personal.pins` is `user_news.pinned` — one
+   reader's pin. It is NOT `news_stories.pinned`, which is editorial, admin-set
+   and one site-wide. The two are different tables and different concepts, and
+   this file renders both in the same list, which is exactly where they would
+   get conflated. */
 export function matchesFilter(story, state) {
-  if (state.tag && state.tag !== 'all' && (story.tags || []).indexOf(state.tag) === -1) return false;
+  if (state.tag === 'saved') {
+    if (!state.personal || !state.personal.favs[story.slug]) return false;
+  } else if (state.tag && state.tag !== 'all' && (story.tags || []).indexOf(state.tag) === -1) {
+    return false;
+  }
   if (state.query && (story.title || '').toLowerCase().indexOf(state.query) === -1) return false;
   return true;
+}
+
+// The reader's own pins, in date order, minus the editorial one — which already
+// sits at the very top and must not appear twice.
+export function userPinned(stories, state) {
+  if (!state.personal) return [];
+  const editorial = findPinned(stories);
+  return stories.filter((s) =>
+    state.personal.pins[s.slug] &&
+    matchesFilter(s, state) &&
+    !(editorial && s.slug === editorial.slug));
 }
 
 export function findPinned(stories) {
@@ -137,10 +161,20 @@ export function findPinned(stories) {
 export function navigableSlugs(stories, state) {
   if (state.query) return stories.filter((s) => matchesFilter(s, state)).map((s) => s.slug);
   const pinned = findPinned(stories);
+  const mine = userPinned(stories, state);
+  const mineSet = {};
+  mine.forEach((s) => { mineSet[s.slug] = 1; });
+
+  // ⚠️ THE SAME ORDER headlineListHTML PAINTS: editorial pin, the reader's own
+  // pins, then everything else newest-first. Previous/Next walks this list, so
+  // if the two ever disagree the buttons skip stories the reader can see and
+  // visit ones they cannot.
   const slugs = [];
   if (pinned && matchesFilter(pinned, state)) slugs.push(pinned.slug);
+  mine.forEach((s) => slugs.push(s.slug));
   stories.forEach((s) => {
     if (pinned && s.slug === pinned.slug) return;
+    if (mineSet[s.slug]) return;
     if (matchesFilter(s, state)) slugs.push(s.slug);
   });
   return slugs;
@@ -158,11 +192,21 @@ export function pickDefault(stories, state) {
 export function filterBarHTML(stories, state) {
   const inUse = {};
   stories.forEach((s) => (s.tags || []).forEach((t) => { inUse[t] = true; }));
-  const chips = [{ key: 'all', label: 'All stories', path: ALL_ICON_PATH }].concat(
-    THEME_ORDER.filter((t) => inUse[t]).map((t) => ({
+  // ⚠️ The Saved chip appears only for a signed-in reader with at least one
+  // saved story. Showing it to a guest would advertise a filter that can only
+  // ever return nothing, and showing it at zero would look broken rather than
+  // empty. It sits second, next to All stories, because it is a view of
+  // everything rather than one theme.
+  const personal = [];
+  if (state.personal && state.personal.enabled && Object.keys(state.personal.favs).length) {
+    personal.push({ key: 'saved', label: 'Saved', path: STAR_ICON_PATH });
+  }
+
+  const chips = [{ key: 'all', label: 'All stories', path: ALL_ICON_PATH }]
+    .concat(personal)
+    .concat(THEME_ORDER.filter((t) => inUse[t]).map((t) => ({
       key: t, label: THEME_LABELS[t] || titleCase(t), path: THEME_ICON_PATHS[t]
-    }))
-  );
+    })));
   return chips.map((c) => {
     let cls = 'filter-chip' + (c.key === (state.tag || 'all') ? ' active' : '');
     if (THEMED_TAGS[c.key]) cls += ' themed ' + themeClass(c.key);
@@ -175,12 +219,16 @@ export function filterBarHTML(stories, state) {
 // follow and a reader can middle-click — which is the whole reason this stage
 // exists. The client script intercepts a plain left-click and swaps the panel
 // in place; anything else is left to the browser.
-function headlineHTML(story, activeSlug) {
+function headlineHTML(story, activeSlug, mine) {
+  // ⚠️ `story.pinned` is the EDITORIAL pin; `mine` is this reader's. Both get
+  // the pin icon and the warm tint because both mean "kept in sight", but they
+  // come from different tables and only one of them is visible to anyone else.
+  const isPinned = Boolean(story.pinned || mine);
   const cls = 'headline-item' +
     (story.slug === activeSlug ? ' active' : '') +
-    (story.pinned ? ' pinned' : '');
+    (isPinned ? ' pinned' : '');
   const prefix =
-    (story.pinned ? '<span class="headline-pin-icon">' + icon(PIN_ICON_PATH) + '</span>' : '') +
+    (isPinned ? '<span class="headline-pin-icon">' + icon(PIN_ICON_PATH) + '</span>' : '') +
     '<span class="headline-date-prefix">' + escapeHTML(fmtDatePrefix(story.date)) + ':</span> ';
   return '<a class="' + cls + '" href="' + escapeHTML(storyPath(story.slug)) + '"' +
     ' data-slug="' + escapeHTML(story.slug) + '"' +
@@ -207,11 +255,23 @@ export function headlineListHTML(stories, state) {
   const pinnedVisible = pinned && matchesFilter(pinned, state);
   let html = pinnedVisible ? headlineHTML(pinned, activeSlug) : '';
 
+  // The reader's own pins, lifted out of their date buckets into one group at
+  // the top — which is what makes pinning visibly DO something. Never collapsed
+  // behind an archive toggle: a pin is a request to keep something in sight.
+  const mine = userPinned(stories, state);
+  const mineSet = {};
+  mine.forEach((s) => { mineSet[s.slug] = 1; });
+  const pinsHTML = mine.length
+    ? '<div class="headline-group-header">Your pins</div>' +
+      mine.map((s) => headlineHTML(s, activeSlug, true)).join('')
+    : '';
+
   const buckets = { Today: '', Yesterday: '', 'This Week': '', Older: '' };
   const counts = { Today: 0, Yesterday: 0, 'This Week': 0, Older: 0 };
 
   stories.forEach((s) => {
     if (pinned && s.slug === pinned.slug) return;
+    if (mineSet[s.slug]) return;          // already shown under Your pins
     if (!matchesFilter(s, state)) return;
     const key = bucketKey(daysAgo(s.date, state.now));
     buckets[key] += headlineHTML(s, activeSlug);
@@ -235,10 +295,19 @@ export function headlineListHTML(stories, state) {
       '</div>';
   });
 
-  if (pinnedVisible && rest) html += '<div class="headline-divider"></div>';
+  if (pinnedVisible && (pinsHTML || rest)) html += '<div class="headline-divider"></div>';
+  html += pinsHTML;
+  if (pinsHTML && rest) html += '<div class="headline-divider"></div>';
   html += rest;
 
-  return html || '<p class="empty-state">No stories match this filter yet.</p>';
+  if (html) return html;
+  // ⚠️ The Saved filter needs its own empty state. "No stories match this
+  // filter yet" reads as a fault when the honest answer is that the reader has
+  // not saved anything, and it is the only filter whose emptiness is the
+  // reader's own doing rather than the feed's.
+  return state.tag === 'saved'
+    ? '<p class="empty-state">Nothing saved yet. Open a story and choose Save to keep it here.</p>'
+    : '<p class="empty-state">No stories match this filter yet.</p>';
 }
 
 export function storyHTML(story, prevSlug, nextSlug) {
@@ -282,5 +351,36 @@ export function storyHTML(story, prevSlug, nextSlug) {
       escapeHTML(THEME_LABELS[t] || titleCase(t)) + '</span>';
   });
   html += '</div>';
+  html += actionsHTML(story);
   return html;
+}
+
+/* ── the personal layer's slot ────────────────────────────────────────────────
+   ⚠️ THE SERVER RENDERS THE SIGNED-OUT STATE, ALWAYS, AND THAT IS DELIBERATE.
+   It has no session to read — the browser holds it — so the honest first paint
+   is the guest one, and `news-actions.js` takes the slot over the moment
+   `AmplifiedAuth` is ready. This is the same arrangement nav.js and auth.js
+   already use for the nav auth control: one side pre-paints, the other owns it.
+
+   ⚠️ It also means a crawler and a signed-out reader see identical HTML, which
+   is what keeps this page free of anything resembling cloaking.
+
+   `data-story-id` is the uuid `user_news.story_id` references. It is here
+   rather than fetched again because the row it keys is per-reader, and RLS —
+   not the absence of the id — is what stops anyone writing against someone
+   else's. */
+function actionsHTML(story) {
+  return '<div class="story-actions" data-story-id="' + escapeHTML(story.id || '') + '"' +
+    ' data-story-slug="' + escapeHTML(story.slug) + '">' +
+    '<div class="story-actions-slot" data-actions-slot>' +
+    '<p class="story-actions-invite">Save this story, pin it to the top of your feed, or keep a private note on it.</p>' +
+    // ⚠️ `data-signin-return` opts this link into nav.js's activation-time href
+    // refresh. The `?next=` MUST be computed when the link is activated, not
+    // when it is painted: this panel is painted at load with the scroll offset
+    // at 0, and a reader who scrolls and then clicks would otherwise be sent
+    // back to the top of a page they were partway down. The href below is the
+    // safe fallback if that never fires — it signs them in, it just forgets
+    // where they were.
+    '<a class="story-action-btn story-action-signin" href="/sign-in/" data-signin-return>Sign in</a>' +
+    '</div></div>';
 }

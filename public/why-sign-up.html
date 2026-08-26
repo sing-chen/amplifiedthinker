@@ -102,12 +102,15 @@
   .yes svg,.no svg,.soon svg{width:14px;height:14px;stroke-width:2.5;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
   /* ── THE THIRD STATE ──
-     ⚠️ A DELIBERATELY DIFFERENT SHAPE, not a paler tick. Notes and saved news
-     have tables waiting for them in the schema and nothing writing to them yet,
-     so a tick would be a promise the site cannot keep today — and this page is
+     ⚠️ A DELIBERATELY DIFFERENT SHAPE, not a paler tick. A feature with a table
+     waiting for it in the schema and nothing writing to it yet cannot carry a
+     tick — that would be a promise the site cannot keep today, and this page is
      the one place a reader is deciding whether to trust it.
      (The progress page was the third of these until 2026-08-21, when it shipped
-     and its row became a plain Yes. ⚠️ When the last Soon row goes, this whole
+     and its row became a plain Yes. Saved news stories were the second until
+     2026-08-26. ⚠️ EXACTLY ONE ROW IS LEFT — notes on a PLAN SECTION. Notes on
+     a news story ship today; notes on a plan do not, and the two are easy to
+     collapse into "notes" and mark done. ⚠️ When the last Soon row goes, this whole
      state — the CSS, the legend below the table and the paragraph introducing
      it — goes with it, or the page keeps explaining a marker nothing carries.)
 
@@ -232,12 +235,15 @@
 
     <p><strong>That record is also the foundation for what comes next</strong>, and it is worth being straight about which parts are built and which are not.</p>
 
+    <p><strong>The news worth keeping is built.</strong> On any story you can save it, pin the ones that matter, and write a private line about why — so it is still there when you need it. Nobody else can read your note, and you can change or delete it whenever you like.</p>
+
+    <p>One thing is still coming, and it is worth being straight about which:</p>
+
     <ul class="doc-list">
-      <li><strong>Notes as you go.</strong> Capture a thought against a plan section while it is fresh, then read it back in place or alongside every other note for that plan. Yours to edit or delete at any time.</li>
-      <li><strong>The news worth keeping.</strong> Save a story, pin the ones that matter, and write a line about why — so it is still there when you need it.</li>
+      <li><strong>Notes as you go, on a plan.</strong> Capture a thought against a plan section while it is fresh, then read it back in place or alongside every other note for that plan. Notes on news stories work today; notes on plan sections do not yet.</li>
     </ul>
 
-    <p>These are <strong>marked <span class="soon">Soon</span> in the table below rather than counted as reasons to sign up today.</strong> They are being built on top of the same record an account is already keeping, which is why signing up now means having something to look at when they land.</p>
+    <p>That one is <strong>marked <span class="soon">Soon</span> in the table below rather than counted as a reason to sign up today.</strong> It is being built on top of the same record an account is already keeping, which is why signing up now means having something to look at when it lands.</p>
 
     <details class="doc-disclosure">
       <summary>
@@ -300,7 +306,7 @@
           <tr>
             <th scope="row">Saved news stories, with your own note against each</th>
             <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
-            <td><span class="soon">Soon</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
           </tr>
           <tr>
             <th scope="row">Told when new skills and features land</th>

@@ -54,7 +54,11 @@ import {
     query: '',
     rawQuery: '',
     expanded: null,
-    activeSlug: layoutEl.getAttribute('data-active-slug') || null
+    activeSlug: layoutEl.getAttribute('data-active-slug') || null,
+    // The signed-in reader's own layer, published by public/news-actions.js.
+    // Absent for guests, and absent until their rows load - every read of it in
+    // news-render.mjs is guarded for exactly that reason.
+    personal: null
   };
 
   /* ── the one archive group that is open ────────────────────────────────────
@@ -103,6 +107,7 @@ import {
   function renderStory(story) {
     if (!story) {
       storyPanel.innerHTML = storyHTML(null);
+      announceStory(null);
       return;
     }
     var slugs = navigableSlugs(stories, state);
@@ -112,6 +117,23 @@ import {
       i > 0 ? slugs[i - 1] : null,
       i !== -1 && i < slugs.length - 1 ? slugs[i + 1] : null
     );
+    announceStory(story);
+  }
+
+  /* ⚠️ Replacing the panel's innerHTML DESTROYS whatever the personal layer had
+     painted into it — the save/pin buttons and any open note. news-actions.js
+     cannot see that happen, so this says so.
+
+     A CustomEvent rather than a direct call: news-actions.js is a plain script
+     that may not have loaded, may be absent on a page that does not want it,
+     and must never be something this file depends on. Same shape as
+     `amplified:nav-injected`, which auth.js already listens for. */
+  function announceStory(story) {
+    try {
+      document.dispatchEvent(new CustomEvent('amplified:story-rendered', {
+        detail: { slug: story ? story.slug : null, id: story ? story.id : null }
+      }));
+    } catch (e) { /* a browser without CustomEvent still gets the story itself */ }
   }
 
   function renderFilterBar() {
@@ -341,12 +363,36 @@ import {
     }
   });
 
+  /* ── the personal layer ────────────────────────────────────────────
+     news-actions.js owns the reader's saved/pinned set and announces it. Two
+     entry points on purpose: the event for when it arrives later, and a direct
+     read at startup for when it arrived first. Neither script may assume it
+     loaded before the other.
+
+     When the Saved filter is open and the reader un-saves the last story, the
+     list would be left empty with a filter that can no longer match anything -
+     so fall back to All stories rather than leaving them staring at nothing. */
+  function adoptPersonal() {
+    var p = window.AmplifiedNewsPersonal;
+    state.personal = (p && p.enabled) ? p : null;
+    if (state.tag === 'saved' && (!state.personal || !Object.keys(state.personal.favs).length)) {
+      state.tag = 'all';
+    }
+    renderFilterBar();
+    reconcileSelection();
+  }
+
+  document.addEventListener('amplified:news-personal', adoptPersonal);
+
   /* ── first paint ─────────────────────────────────────────────────────────── */
 
   // The server already rendered all of this. Re-rendering once on load is not
   // waste: it re-buckets the dates in the READER's timezone rather than the
   // server's, and it attaches the state the rest of this file reads.
   state.expanded = expandedFor(activeStory());
+  if (window.AmplifiedNewsPersonal && window.AmplifiedNewsPersonal.enabled) {
+    state.personal = window.AmplifiedNewsPersonal;
+  }
   renderFilterBar();
   renderHeadlines();
   renderStory(activeStory());

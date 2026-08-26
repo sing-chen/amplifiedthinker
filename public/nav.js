@@ -649,7 +649,12 @@
   function refreshSignInHref(e) {
     try {
       var t = e.target;
-      var a = t && t.closest ? t.closest('.snav-auth-signin') : null;
+      /* ⚠️ TWO SELECTORS, ONE REFRESHER. `[data-signin-return]` lets any surface
+         opt a sign-in link into this without a second copy of the logic living
+         somewhere else — /news/<slug> uses it. The lesson this whole function
+         exists for is that when two files maintain one control they drift, so
+         the answer to a third caller is a wider selector, not another handler. */
+      var a = t && t.closest ? t.closest('.snav-auth-signin, [data-signin-return]') : null;
       if (!a) return;
       a.setAttribute('href', root('sign-in/') + returnParam());
     } catch (err) { /* leave the existing href — it still signs them in */ }

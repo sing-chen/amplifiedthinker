@@ -92,3 +92,10 @@ const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
 <script>
   import '../scripts/news-app.js';
 </script>
+
+<!-- ⚠️ `is:inline`, and a plain <script> rather than an import. news-actions.js
+     is a classic script that hangs nothing off a module scope and reads
+     `window.AmplifiedAuth`, which nav.js injects as a plain script too. Bundled
+     as a module it would run before that exists on some loads and silently
+     leave every reader looking signed out. Same reasoning as BaseLayout's note. -->
+<script src="/news-actions.js" is:inline></script>
