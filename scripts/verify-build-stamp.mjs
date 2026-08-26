@@ -1,7 +1,7 @@
-// Asks both live origins which commit they are built from.
+// Asks production which commit it is built from.
 //
-//   npm run verify:stamp              -> compares both origins against origin/main
-//   npm run verify:stamp -- <sha>     -> compares both origins against that commit
+//   npm run verify:stamp              -> compares production against origin/main
+//   npm run verify:stamp -- <sha>     -> compares production against that commit
 //
 // ⚠️ This answers the one question `npm run verify:published` cannot. That check
 // is differential -- it hashes served bytes before and after a change -- so a
@@ -19,10 +19,12 @@
 
 import { execSync } from 'node:child_process';
 
+// One origin since 2026-08-26. The GitHub Pages origin was retired that day and
+// its entry removed from here — it 404s now, and a check that reports a failure
+// nobody intends to fix is a check people learn to ignore. The shape stays a map
+// because the multi-origin case is the reason this script exists at all.
 const ORIGINS = {
   vercel: 'https://amplifiedthinker.com/build.json',
-  // ⚠️ Pages serves from a subpath, so the stamp is NOT at the domain root.
-  pages: 'https://sing-chen.github.io/amplifiedthinker/build.json',
 };
 
 function expectedSha() {
@@ -78,13 +80,14 @@ for (const [name, url] of Object.entries(ORIGINS)) {
   );
 }
 
-// The two origins disagreeing is its own finding, separate from either being
-// stale: Pages has lagged Vercel by ~2 minutes before, diagnosed by hand as a
-// build still finishing. This turns that judgement call into a fact.
-if (seen.length === 2 && seen[0].sha !== seen[1].sha) {
-  console.log('\n  ⚠️  the two origins are built from DIFFERENT commits');
-  console.log('      Pages has lagged Vercel by ~2 min before -- re-run before concluding.');
+// Origins disagreeing is its own finding, separate from either being stale --
+// when there were two, Pages lagged Vercel by ~2 minutes on a build still
+// finishing, and this turned that judgement call into a fact. Kept against
+// ORIGINS growing again; with one entry it simply never fires.
+if (seen.length > 1 && seen.some((s) => s.sha !== seen[0].sha)) {
+  console.log('\n  ⚠️  the origins are built from DIFFERENT commits');
+  console.log('      one may still be building -- re-run before concluding.');
 }
 
-console.log(failures ? `\n${failures} problem(s)` : '\nboth origins current');
+console.log(failures ? `\n${failures} problem(s)` : '\nall origins current');
 process.exitCode = failures ? 1 : 0;

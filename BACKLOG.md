@@ -1500,7 +1500,15 @@ Cloudflare Pages could host this, but it means an Astro adapter swap, rewriting 
 losing per-branch preview URLs, and re-proving the deployment. One vendor saved, a working system
 disturbed, during the phases that finally ship user-visible features.
 
-#### Retiring the GitHub Pages origin — **decided, not scheduled**
+#### Retiring the GitHub Pages origin — ✅ **DONE 2026-08-26**
+
+**Pages is switched off for the repository and `.github/workflows/pages.yml` is deleted.**
+`sing-chen.github.io/amplifiedthinker` 404s at the root. The reasoning below is kept as written
+because it is why the decision was made; what actually happened is recorded at the end of the
+section, including the one step that was skipped.
+
+Everything from here to *What actually happened* is the note as it stood while this was still a
+decision, not a fact.
 
 Unlike the two candidates above, this one is settled in principle: **the Pages origin will be
 retired.** What is deferred is when and how, not whether. `CLAUDE.md`, `dev-workflow.md` and the
@@ -1534,6 +1542,31 @@ are for *search indexing*, not for people — the origin is public with a `sitem
 may have found it without anyone sharing it. Check `site:sing-chen.github.io/amplifiedthinker`
 first; if nothing is indexed, deleting outright is fine and the handful of colleagues with bookmarks
 can simply be told.
+
+**What actually happened — 2026-08-26.** Pages was switched off in the repository settings and the
+workflow disabled, some time after its last successful run on 2026-08-24 (`c5b1ce4`). It was noticed
+from the outside: `npm run verify:stamp` reported `pages FAIL HTTP 404` after an unrelated deploy,
+and the workflow-runs API showed the deploy had not fired for the three commits before it either.
+
+⚠️ **The redirect-stub step above was skipped.** The origin serves nothing at all rather than
+redirecting, so anything a crawler had indexed under `sing-chen.github.io/amplifiedthinker` is now a
+dead end rather than a pointer to the live page. The `site:` search that would have told us whether
+that matters was never run, and cannot be run retrospectively in a way that distinguishes "nothing
+was indexed" from "it was indexed and has since been dropped". If this turns out to matter, the fix
+is not on this repo: Pages would have to be re-enabled to serve stubs.
+
+**The code sweep followed on 2026-08-26** in `chore/retire-pages`: the workflow deleted, `pages`
+dropped from `verify:stamp` and `verify:published`, the github.io entry dropped from
+`verify:redirects`, GitHub removed as a processor in `privacy.html`, and the framing corrected in
+`CLAUDE.md`, `dev-workflow.md` and `supabase/README.md`. Three things were deliberately **kept**,
+each documented where it lives: `ASTRO_BASE` (inert, but `BaseLayout` and `sign-in.astro` route
+through it), the sub-path cases in `verify:signin-return` (they still cover base-aware containment
+in the shipped `safeNext()`), and the unlisted-host case in `verify:schema-columns` (it tests the
+blocklist's fail-safe default, which needs a host that is *not* real).
+
+⚠️ **Two dashboard entries outlived the origin**, neither reachable from this repo: the Supabase
+prod redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still name
+`sing-chen.github.io`. Tracked in [supabase/README.md](supabase/README.md).
 
 #### What retirement unlocks: the contact form
 

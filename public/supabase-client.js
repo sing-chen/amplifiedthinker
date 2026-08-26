@@ -32,7 +32,11 @@
     prod: {
       url: 'https://spehmrgmcdenqdftkyrt.supabase.co',
       key: 'sb_publishable_6dH7WjyaE3Unj_q7C4PhIw_1ebh8auC',
-      // Widget `amplifiedthinker-prod`: amplifiedthinker.com, sing-chen.github.io.
+      // Widget `amplifiedthinker-prod`: amplifiedthinker.com — and still
+      // sing-chen.github.io, which was retired on 2026-08-26. ⚠️ That hostname
+      // is listed in the CLOUDFLARE DASHBOARD, not here, so removing it is a
+      // manual step nothing in this repo can do or verify. Tracked in
+      // supabase/README.md alongside the redirect allowlist.
       // Never vercel.app — that is a public suffix, and listing it would let any
       // site on it mint tokens for our signup endpoint.
       turnstileSiteKey: '0x4AAAAAAET7pUAhEavY48Lf'
@@ -49,14 +53,17 @@
   // `isProd = /amplifiedthinker\.com$/.test(hostname)`.
   //
   // It looks correct and it is the shape about.html originally used, but it
-  // classifies the GitHub Pages origin as non-production — so every user who
-  // reaches the site there would read and write the DEV database. Their
+  // classified the GitHub Pages origin as non-production — so every user who
+  // reached the site there would have read and written the DEV database. Their
   // progress would appear to save and then be missing from the real site.
   //
-  // Allowlisting production means every new production origin is a bug waiting
-  // to happen. Blocklisting non-production fails safe: a forgotten preview host
-  // reading production data is far less damaging than a real user writing to a
-  // scratch database. Phase 0 caught this five phases before it could bite.
+  // ⚠️ THAT ORIGIN WAS RETIRED ON 2026-08-26, AND THE RULE DOES NOT RELAX WITH
+  // IT. The example is gone; the reasoning is not. Allowlisting production
+  // means every new production origin is a bug waiting to happen. Blocklisting
+  // non-production fails safe: a forgotten preview host reading production data
+  // is far less damaging than a real user writing to a scratch database. Phase 0
+  // caught this five phases before it could bite, and the next origin — a custom
+  // domain, a staging host — arrives with the same trap already disarmed.
   function environment() {
     var host = global.location.hostname;
     var isNonProd = /\.vercel\.app$/.test(host) ||

@@ -73,11 +73,12 @@ This document originally assumed a single origin. It does not have one.
 some corporate networks blocked `amplifiedthinker.com` under newly-registered-domain policies, and
 those users had no other route in.
 
-**⚠️ Updated 2026-08-18: that block lifted, and the origin is slated for retirement.** It was never
-shared outside the owner's organisation, so its audience was exactly the colleagues behind the
-block, and is now zero. It has not been retired yet and both origins are still verified — but the
-constraint below is temporary, and features should not be contorted to satisfy it. What retires is
-the published URL; the repository and its workflows stay on GitHub. See [../BACKLOG.md](../BACKLOG.md).
+**⚠️ Updated 2026-08-26: THE ORIGIN IS RETIRED AND THIS CONSTRAINT NO LONGER EXISTS.** The block
+lifted on 2026-08-18; the origin was never shared outside the owner's organisation, so its audience
+was exactly the colleagues behind that block and was already zero. Pages is now switched off, the
+workflow is deleted, and the URL 404s. **The paragraph below is history — the site has one origin,
+and it runs code.** What retired is the published URL; the repository and its remaining workflow stay
+on GitHub. See [../BACKLOG.md](../BACKLOG.md).
 
 GitHub Pages serves files but runs no code, so the Astro split has a second dimension beyond
 old-page/new-page: **client-side or prerendered, versus server-rendered.** The former reaches both

@@ -72,16 +72,20 @@ Phase 0 established that the site has **two supported production origins**, not 
 | Origin | Runs code? |
 |---|---|
 | `amplifiedthinker.com` (Vercel) | Yes — server rendering and `/api/` endpoints |
-| `sing-chen.github.io/amplifiedthinker` (Pages) | **No** — static files only |
+| ~~`sing-chen.github.io/amplifiedthinker` (Pages)~~ | ~~**No** — static files only~~ · retired 2026-08-26 |
 
 The GitHub origin exists because some corporate networks blocked the custom domain under
 newly-registered-domain policies, leaving those users no alternative route.
 
-**⚠️ This constraint now has an end date, and that changes how to design against it.** The block
-lifted on 2026-08-18, and the Pages URL was never shared outside the owner's organisation — so the
-origin's audience is zero and **it is slated for retirement**. It has not been retired yet, and both
-origins are live, so changes are still verified on both. What retires is the published URL; the
-repository, the history and the Actions workflows stay on GitHub.
+**⚠️ THIS CONSTRAINT IS GONE — the origin was retired on 2026-08-26.** The block lifted on
+2026-08-18, and the Pages URL was never shared outside the owner's organisation, so the origin's
+audience was already zero. Pages is switched off, the workflow is deleted, and the URL 404s. Changes
+are verified on production and nowhere else. What retired is the published URL; the repository, the
+history and the remaining Actions workflow stay on GitHub.
+
+**Everything in the next three paragraphs is superseded.** It is kept because Phases 6–8 were
+*scoped* under it, so it explains why they are shaped the way they are — not because any of it still
+binds. Nothing needs to avoid a server any more.
 
 **The consequence for every phase from 6 onward, while it lasts:** anything requiring a server is
 unavailable to that audience. Client-side features carry over fine — auth, progress sync, favourites,

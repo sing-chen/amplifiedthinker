@@ -17,7 +17,7 @@ The project has a written architecture and a phased plan. Read them rather than 
 |---|---|
 | [docs/supabase-integration-plan.md](docs/supabase-integration-plan.md) | *What* gets built — architecture, data model, RLS design, decisions taken |
 | [docs/implementation-sequence.md](docs/implementation-sequence.md) | *In what order and why* — phase status, and a progress log of what each phase actually taught |
-| [docs/dev-workflow.md](docs/dev-workflow.md) | *How work happens* — branches, previews, both origins, environment settings, known traps |
+| [docs/dev-workflow.md](docs/dev-workflow.md) | *How work happens* — branches, previews, the deploy, environment settings, known traps |
 | [docs/design-modernisation.md](docs/design-modernisation.md) | The visual system, shipped in discrete pieces. ⚠️ **Deliberately not a phase** — no schema, no go-live step, no queue position. Holds the binding type and colour rules, what is knowingly still wrong, and how design work gets verified. Read it before changing a font, a token or a weight |
 | [docs/recovery.md](docs/recovery.md) | Rebuilding a working state on new hardware. A copy lives in the Drive backup folder, since that is where it is needed |
 | [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, the redirect allowlist, and the email SMTP runbook |
@@ -48,7 +48,7 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    npm run build:catalogue. It holds counts only — display names, categories and
                    copy are editorial and deliberately stay out
                  — plus three added 2026-08-19, hand-written for the same reasons the
-                   other 16 are: static content, no auth logic, identical on both origins
+                   other 16 are: static content, no auth logic, nothing the build needs to touch
                    privacy.html        UK GDPR / DPA 2018. ⚠️ Says what the site ACTUALLY
                                        does — changing analytics, fonts, storage or any
                                        processor means changing this page in the same commit
@@ -94,13 +94,13 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
                  verify-redirects.mjs (npm run verify:redirects) — the redirect allowlist, both
                  projects, no email sent. Run it FIRST whenever an auth link lands in the wrong place
                  keepalive.mjs — one read a day, or the free project pauses itself
-                 verify-build-stamp.mjs (npm run verify:stamp) — asks both origins which commit they
+                 verify-build-stamp.mjs (npm run verify:stamp) — asks production which commit it is
                  are built from. The ONLY check that distinguishes "deployed" from "quietly still
                  serving last week's build"; verify:published is differential and cannot
                  build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so
-                 a stale catalogue FAILS `npm run build` on both origins. Deliberate: see below
+                 a stale catalogue FAILS `npm run build`, so it cannot deploy. Deliberate: see below
                  verify-encoding.mjs (npm run verify:encoding) — ⚠️ also `prebuild`. Fails on UTF-8
                  decoded as CP1252 anywhere in the tree. `npm run fix:encoding` repairs in place.
                  Its source is deliberately pure ASCII, and its allowlist of the few files that
@@ -114,7 +114,7 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
 _originals/      full-resolution source images, gitignored — outside public/ on purpose
 .env             gitignored; shape in .env.example. Needed ONLY by npm run verify:rls.
                  There are deliberately no Supabase env vars in Vercel or pages.yml —
-                 anything that must work on both origins decides at runtime instead
+                 anything environment-dependent decides at runtime instead
 ```
 
 **Two files scoped to the auth pages on purpose.** `pwned.js` and `auth-pages.css` are loaded by
@@ -128,35 +128,45 @@ how a skill page references it.
 
 ---
 
-## Two production origins, and one of them runs no code
+## One production origin
 
 | Origin | |
 |---|---|
 | `amplifiedthinker.com` (Vercel) | Full build. Server rendering and `/api/` endpoints work |
-| `sing-chen.github.io/amplifiedthinker` (GitHub Pages) | **Static files only.** No server, ever |
 
-**Both are live today, so verify changes on both.** Client-side features work on either (Supabase JS
-runs in the browser); anything server-rendered reaches Vercel only.
+That is the whole list. **A change is verified there and nowhere else.** Anything written before
+2026-08-26 that says "both origins", "either origin" or "verify on both" is describing the world
+before that date — see below.
 
-Pages is built by [.github/workflows/pages.yml](.github/workflows/pages.yml) with
-`ASTRO_BASE=/amplifiedthinker`, since it serves from a subpath.
+### The GitHub Pages origin was retired on 2026-08-26
 
-### The Pages origin is slated for retirement — decided 2026-08-18, not yet done
-
-It existed because corporate networks blocked the custom domain under newly-registered-domain
+`sing-chen.github.io/amplifiedthinker` is gone. GitHub Pages is switched off for the repository and
+[.github/workflows/pages.yml](.github/workflows/pages.yml) was deleted; the origin now 404s at the
+root. It existed because corporate networks blocked the custom domain under newly-registered-domain
 policies, leaving those users no other route in. **That block lifted on 2026-08-18**, 43 days after
 registration, and the origin was **never shared outside the owner's organisation** — so its entire
-audience was colleagues behind that block, and is now zero.
+audience was colleagues behind that block, and had been zero for a week when it went.
 
-⚠️ **This retires a published URL, not GitHub.** The repository, the git history and the Actions
-workflows all stay exactly where they are. "Retiring GitHub" would be a catastrophic misreading;
-what goes is `sing-chen.github.io/amplifiedthinker` as a way for the public to reach the site.
+⚠️ **This retired a published URL, not GitHub.** The repository, the git history and the Actions
+workflows are all exactly where they were, and `keepalive.yml` still runs daily. "Retiring GitHub"
+would be a catastrophic misreading; what went is one way for the public to reach the site.
 
-**What this means while it is still live:** keep verifying both origins, but do not deepen the
-dependency. Prefer designs that get *simpler* when Pages goes, and treat "this would need a server,
-so it cannot work on Pages" as a scheduling question rather than a hard constraint — retiring the
-origin first is a legitimate answer. Timing, staging, and what falls away with it are in
-[BACKLOG.md](BACKLOG.md).
+**What this means now.** There is no second origin to keep a design portable for, so "this would
+need a server, so it cannot work on Pages" is no longer a constraint on anything. Server rendering
+and `/api/` endpoints are available wherever they help. Two mechanisms survive the origin
+deliberately and should not be torn out as dead code:
+
+- **`ASTRO_BASE` in [astro.config.mjs](astro.config.mjs).** Nothing sets it any more, so `base`
+  falls to `/`. It stays because `BaseLayout` and `sign-in.astro` route every generated URL through
+  it, and unpicking that is a change to live pages with nothing to gain. ⚠️ The **Git Bash env-var
+  trap below still applies** to anyone who sets it by hand.
+- **The sub-path cases in `verify:signin-return`.** They were written for the Pages base and now
+  read as a synthetic sub-path deployment, because they still exercise base-aware containment in the
+  real `safeNext()`. Deleting them would drop open-redirect coverage the shipped code still needs.
+
+⚠️ **Two dashboard entries outlived the origin and are not in this repo.** The Supabase prod
+redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still name
+`sing-chen.github.io`. Neither can be changed from here — see [supabase/README.md](supabase/README.md).
 
 ---
 
@@ -202,7 +212,7 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   corrupted bytes *were* the baseline. Nothing else caught it: valid JSON, right entry count, all
   checks green, and the whole symptom was a search result reading `Brené Brown`.
   **So the rule is now enforced rather than written down**: `npm run verify:encoding` (a third
-  `prebuild`, gating both origins) fails the build on any CP1252-decoded UTF-8, and
+  `prebuild`) fails the build on any CP1252-decoded UTF-8, and
   `npm run fix:encoding` repairs it. A prose warning was not enough — it had been in this file for
   two days when the second instance shipped.
 - **A new table lands with *no* grants, and that looks exactly like a broken policy.** The Phase 3

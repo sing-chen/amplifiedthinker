@@ -6,9 +6,10 @@ REM  deploy.bat  --  stage, commit and push a content update to main.
 REM
 REM  Usage:  deploy "your commit message"  [--all] [--yes] [--no-build]
 REM
-REM  Despite the name this deploys nothing itself. Both origins publish on a
-REM  push to main -- Vercel through its git integration, GitHub Pages through
-REM  .github/workflows/pages.yml -- so all this does is get the commit there.
+REM  Despite the name this deploys nothing itself. Production publishes on a
+REM  push to main, through Vercel's git integration, so all this does is get the
+REM  commit there. (Until 2026-08-26 a GitHub Pages workflow published a second
+REM  origin from the same push; that origin was retired and the workflow deleted.)
 REM
 REM  !! IT CANNOT PUSH AN ALREADY-COMMITTED CHANGE. Guard 2 exits 0 on a clean
 REM     tree ("Nothing to commit"), which is BEFORE the push at the bottom -- so

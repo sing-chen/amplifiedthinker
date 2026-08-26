@@ -93,9 +93,14 @@ for (const [input, expected, why] of cases) {
   console.log(`  ${ok ? 'ok  ' : 'FAIL'}  ${String(JSON.stringify(input)).padEnd(38)} -> ${JSON.stringify(got).padEnd(46)} ${why}`);
 }
 
-// ⚠️ The Pages origin hosts EVERY project of this account at one origin, so a
-// same-origin check alone is not enough there.
-console.log('\norigin: sing-chen.github.io   base: /amplifiedthinker/\n');
+// ⚠️ A SYNTHETIC SUB-PATH DEPLOYMENT, and deliberately kept after the origin it
+// was written for went away. These cases came from GitHub Pages, which hosted
+// every project of this account at one origin — so a same-origin check alone was
+// not enough there. That origin was retired on 2026-08-26 and `ASTRO_BASE` is
+// now never set, but `safeNext()` still contains its base-awareness, and this is
+// the only thing testing it. Deleting these because "we don't deploy there any
+// more" would drop open-redirect coverage for code that still ships.
+console.log('\norigin: sub-path deployment   base: /amplifiedthinker/\n');
 const pages = makeSafeNext(PAGES_ORIGIN, '/amplifiedthinker/sign-in/');
 const pagesCases = [
   ['/amplifiedthinker/future-skills.html', '/amplifiedthinker/future-skills.html', 'this site'],
