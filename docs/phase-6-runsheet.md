@@ -1932,13 +1932,13 @@ migration down-script plus a code revert, and the two are not symmetric. Read
 
 **Tick as you go**
 
-- [ ] Preview verified; dev data correct
-- [ ] **All four** prod migrations applied **in order**, catalogue read back, and news loaded — record the row count observed
-- [ ] Merged to `main`
-- [ ] `npm run verify:stamp` — production serving the merge commit
-- [ ] ⚠️ 301 verified **on production**, against a real previously-shared URL
-- [ ] ⚠️ Reorder test re-run on production, same story, order restored
-- [ ] `npm run verify:rls -- prod` green with its updated expectation — ⚠️ **`-- prod`, and it is
+- [x] Preview verified; dev data correct — all four migrations re-run on dev as a rehearsal first
+- [x] **All four** prod migrations applied **in order**, catalogue read back, and news loaded — **81 rows: 79 published, 2 archived.** Block A 10/10 and Block B 6/6 on prod, both identical to dev's
+- [x] Merged to `main` — `ee680a5`, 31 commits, 34 files. Trialled on a throwaway branch first: `main` was 1 ahead (a runsheet-only merge commit) and it resolved clean
+- [x] `npm run verify:stamp` — production serving `ee680a5`
+- [x] ⚠️ 301 verified **on production** — four real ids, including both merged-away stories, which land on their **survivors**. The baseline inverted as expected: `/news/` 404→200, `/news.json` and `/search-index.json` 200→404, sitemap and search both 79
+- [x] ⚠️ Reorder test re-run on production — `2026-08-14`'s display order flipped, **both redirects stayed put**, order restored and re-verified. `legacy_id` is resolved from a stored column, not recomputed from position
+- [x] `npm run verify:rls -- prod` — **24/24**. It failed before the seed on *"zero rows — the check above proved nothing"*, which is the ordering working rather than luck — ⚠️ **`-- prod`, and it is
       not optional.** `.env` names **dev** and has all phase, so a bare `npm run verify:rls` at this
       step checks dev and passes, saying nothing whatever about the database just migrated. A gate
       pointed at the wrong target does not fail; it reports success about something nobody asked.
@@ -1949,9 +1949,8 @@ migration down-script plus a code revert, and the two are not symmetric. Read
       first merge created two and it failed instantly. A second assertion was added alongside it
       that the read returned any rows at all, since "no forbidden status came back" is trivially
       true of zero
-- [ ] `npm run verify:news-dupes -- prod` — run it **after** the load, not before. Beforehand it
-      correctly reports an empty table as **"not a pass"**. Afterwards expect
-      `81 rows: 79 published, 2 archived` and no findings
+- [x] `npm run verify:news-dupes -- prod` — **81 rows: 79 published, 2 archived**, matches the
+      file, no duplicates and no drift. Re-run after the reorder test's writes, still clean
 - [ ] Homepage banner checked by eye on production
 - [ ] ⚠️ **The two-account RLS proof** — deferred here from stage 14. See below
 
