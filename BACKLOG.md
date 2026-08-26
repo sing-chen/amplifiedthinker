@@ -2062,3 +2062,57 @@ keep the account and drop the writing — not a gap in the right to erasure.
 
 Whatever ships must: say how many notes will go **before** asking, ask once and clearly, and
 ⚠️ **change `privacy.html` in the same commit** if it alters what the page says about retention.
+
+## Notes on primers and plans — reuse the news architecture, do not rebuild it
+
+The one remaining `Soon` row on [why-sign-up.html](public/why-sign-up.html). Raised 2026-08-26,
+straight after notes on news stories shipped in Phase 6 stage 14.
+
+⚠️ **BUILD IT ON WHAT IS THERE.** Notes on a plan section and notes on a news story are the same
+feature pointed at a different thing, and writing a second implementation is how the two end up
+disagreeing about what a note is — the same trap `news-render.mjs` exists to avoid on the news
+page, and the same one the `learning.js` header warns about for completion rules.
+
+**What already works for both, with no change at all:**
+
+- ⚠️ **The table is ALREADY polymorphic and always was.** `notes.target_type` is
+  `check (target_type in ('news', 'skill'))` and `target_id` is `text` precisely so a skill can be
+  addressed by slug where a story is addressed by uuid. **No migration is needed to store them.**
+- `notes_body_length` — 1 to 500 characters, enforced in the database because signed-in browsers
+  write to PostgREST directly.
+- `notes_one_per_target_idx` — unique on `(user_id, target_type, target_id)`.
+- `notes_own` — the only policy on the table. No admin view, deliberately.
+
+**The one design decision that is NOT already made:** ⚠️ *one note per plan, or one note per
+SECTION?* The unique index says one per `target_id`, so the answer is whatever goes in that column.
+`why-sign-up.html` currently promises *"a thought against a plan section"*, which means
+`target_id` has to carry the section — something like `analytical-thinking#step-3` — not just the
+slug. **Decide that before the first row is written**, because `target_id` is what every existing
+note is addressed by and changing the scheme afterwards orphans them.
+
+**What has to be lifted out of `public/news-actions.js` rather than copied:**
+
+- the view/edit state machine — no note → edit, note → view, Save lands in view and closes
+- inline confirmation for Clear and Delete, and Escape backing out of it
+- the counter, the `is-near` threshold, and Save disabled when empty *or* unchanged
+- ⚠️ the status line held **outside** the DOM and re-applied after a repaint — without that, a
+  save that triggers any re-render tells the reader nothing
+
+**Two constraints specific to the skill pages, and neither applies on `/news/`:**
+
+- ⚠️ **They deliberately skip `styles.css`.** The ten primer/plan pages are self-contained, which
+  is the whole reason `fonts.css` exists separately. A notes panel there needs its styles delivered
+  some other way — `news-app.css` is scoped to `/news/` and must stay that way.
+- ⚠️ **Their semantic tokens do not flip in dark mode.** `--bg-surface` is still `#FFFFFF` under
+  `[data-theme="dark"]`; dark is a parallel `--d-*` set applied per component. A panel styled only
+  with semantic tokens renders its LIGHT appearance on a dark page and nothing fails. See the trap
+  in [CLAUDE.md](CLAUDE.md).
+
+**And the thing that changes the security picture:** ⚠️ a note is private today, which is what makes
+a stored payload self-XSS rather than stored XSS. **That stops being true the moment anything
+renders notes across users** — Phase 7's admin UI, or a "all my notes for this plan" view that
+aggregates. There is one escaped render path today; a second one needs escaping on purpose.
+
+Also update `why-sign-up.html` when this lands: it is the **last** `Soon` row, and the page's own
+comment says that when it goes, the whole third state — the CSS, the legend and the paragraph
+introducing it — goes with it, or the page keeps explaining a marker nothing carries.
