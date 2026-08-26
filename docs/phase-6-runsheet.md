@@ -46,7 +46,7 @@ prevent.
 | 7 | The adapter decision | Claude + Human | ☐ Not started | ⚠️ **The plan puts this in Phase 8 and the plan is wrong.** Blocks 9–13 |
 | 8 | Write the migration script — slugs and `legacy_id` | Claude | ☐ Not started | Derive counts from the file; the documented 21/69 is stale |
 | 9 | Load dev, verify the data | Claude | ☐ Not started | Dev project only. Prod waits for stage 16 |
-| 10 | `/news` and `/news/:slug`, server-rendered | Claude | ☐ Not started | |
+| 10 | `/news` and `/news/:slug`, server-rendered | Claude | ☐ Not started | ⚠️ **The cutoff for `/add-news`.** From here the command still succeeds and publishes nothing — no gate reads `news.json`. Breakage map under stage 16 |
 | 11 | The 301 endpoint for legacy URLs | Claude | ☐ Not started | This is the one the done-when tests |
 | 12 | Switch the banner's news source | Claude | ☐ Not started | Forced by the phase. Visitors must see no difference |
 | 13 | `search-index.json` → `/api/search-index.json` | Claude | ☐ Not started | |
@@ -924,6 +924,11 @@ needed.
 Match the existing `news.html` presentation closely enough that the change reads as a URL change
 rather than a redesign.
 
+⚠️ **This stage silently breaks `/add-news`, and nothing will tell you.** From here the news page
+renders from the DB, so the command still succeeds, still writes `public/news.json`, and publishes
+nothing. No gate reads that file. **Treat this stage as the cutoff for using it** — the full
+breakage map is under stage 16.
+
 **Verify:**
 
 ```bash
@@ -1081,6 +1086,36 @@ each, and it is now wrong until it mentions `user_news` and `notes`. Check the P
 same commit. Nothing in Part B reaches production until stage 17 and the branch lands as one — the
 rule exists so a *deployed* site never has code and privacy page disagreeing. So this stage may be
 days after stage 14. It may not be after stage 17. See **Pacing** above.
+
+### When `/add-news` stops working — the breakage map
+
+Worked out 2026-08-26, before Part B started, so it is not re-derived at the point it bites.
+
+**On `main`, it works normally right up to the stage 17 merge.** Stages 7–16 all land on
+`feat/news-db`, so nothing touches `main` until then. At that merge it dies outright.
+
+**On the branch it degrades in three steps, and the first one is the dangerous one:**
+
+| Stage | Effect on `/add-news` |
+|---|---|
+| **10** — `/news` server-rendered | ⚠️ **First break, and it is SILENT.** The command still succeeds and still writes `news.json`, but the news page now renders from the DB — so **nothing it writes reaches the site.** A green run that publishes nothing |
+| **12** — banner switches to the DB | The homepage banner stops reading `news.json` too. Both surfaces now ignore the file the command maintains |
+| **13** — `search-index.json` deleted | ❌ **First hard break.** Step 3a opens that file and gets `FileNotFoundError`. It fails **dirty**: step 3 has already written `news.json`, leaving a modified file and an unwritten index |
+| **16** — `news.json` deleted | ❌ **Total.** Step 3 fails at `json.load(open('public/news.json'))` |
+
+⚠️ **Nothing catches the stage 10 break.** The three prebuild gates are `verify:catalogue` (skills
+only), `verify:signin-return` and `verify:encoding` — **none of them reads `news.json`.** So a run
+after stage 10 passes every check, commits, deploys green and publishes nothing. Same shape as the
+`skills-catalogue.json` trap in CLAUDE.md: a wrong answer that fails no test.
+
+**Treat stage 10 as the cutoff.** Add any news that is wanted *before* Part B reaches it, and do not
+run `/add-news` on this branch afterwards.
+
+⚠️ **The real gap is scheduling, not tooling.** This stage deletes the command; the admin UI that
+replaces it is **Phase 7**. Between the stage 17 merge and Phase 7 shipping there is **no way to add
+news at all** — so the interim route below has to be decided *before* the merge, not discovered
+after it. The obvious shape is a small script inserting into `news_stories` and reusing stage 8's
+slug and `legacy_id` logic rather than a second implementation of either.
 
 ⚠️ **`/add-news` is dead, not stale.** The command is written end-to-end around editing
 `public/news.json` and regenerating `search-index.json` positionally. Both files are gone by the end
