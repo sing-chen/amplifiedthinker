@@ -768,10 +768,28 @@ file — close that half of the item and leave the `keepalive.yml` half open.
 - [x] `BACKLOG.md` retirement entry moved from "decided, not scheduled" to done, with the date —
       now reads **✅ DONE 2026-08-26**, with the original reasoning kept as the record of *why*
 
-⚠️ **One thing that is not ours and cannot be deleted from here.** The GitHub API still lists a
-`pages-build-deployment` workflow as `state=active`. That is GitHub's own built-in Pages workflow,
-created automatically when Pages was enabled — it is not in `.github/workflows/` and never was.
-With the site unpublished it has nothing to build. Do not go looking for a file to delete.
+### `pages-build-deployment` shows as `state=active` — **do nothing**
+
+The GitHub API lists a `pages-build-deployment` workflow as `state=active`. **No action is needed,
+now or later.** Checked 2026-08-26:
+
+| Check | Result |
+|---|---|
+| `GET /repos/sing-chen/amplifiedthinker/pages` | **404** — Pages is *disabled*, not merely unpublished |
+| Runs of that workflow | **none** |
+| `sing-chen.github.io/amplifiedthinker/` | **404** |
+
+It is GitHub's own built-in Pages workflow, created automatically when Pages was enabled. It is not
+in `.github/workflows/`, never was, and cannot be deleted from this repository. `state=active` means
+only *"not manually disabled"* — it is a dormant registry entry, and with Pages off at the repo level
+it has nothing to trigger it.
+
+⚠️ **Do not try to disable it in the Actions tab either.** It is GitHub-managed; turning it off
+achieves nothing that disabling Pages has not already achieved, and it may reappear on its own.
+
+⚠️ **The one case where it stops being dormant:** re-enabling Pages. That is exactly what publishing
+the deferred redirect stubs would require — see the deferred-stubs note under stage 1. If that ever
+happens, this workflow becomes live again, which is a feature rather than a surprise.
 
 **Rollback:** `git revert`, then redo stage 2 in reverse. Cheap in git, but the Pages source has to
 be re-enabled by hand.
