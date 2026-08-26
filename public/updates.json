@@ -1,5 +1,11 @@
 [
     {
+        "date": "2026-08-26",
+        "type": "improvement",
+        "title": "What's New has its own page",
+        "html": "This log used to sit in a collapsible block at the foot of the <a href=\"about.html\">About</a> page. It is now a page of its own, grouped into a card for each month with the most recent one open, and every entry labelled by the kind of change it was."
+    },
+    {
         "date": "2026-08-21",
         "type": "feature",
         "title": "Your learning",
