@@ -1,6 +1,7 @@
 # Phase 6 runsheet — retiring the Pages origin, then news into the DB
 
-**Written:** 2026-08-22 · **Drift-checked:** 2026-08-24 · **Branch:** `feat/news-db`, cut from `main`
+**Written:** 2026-08-22 · **Drift-checked:** 2026-08-24, **2026-08-26 (Part A reconciled — read the
+note under the handoff table)** · **Branch:** `feat/news-db`, cut from `main`
 at `96f9b9d` and kept current by merging `main` in — eight merges so far, no divergence
 **Phase definition:** [implementation-sequence.md](implementation-sequence.md) §Phase 6 ·
 **Architecture:** [supabase-integration-plan.md](supabase-integration-plan.md) §Phase 6
@@ -37,10 +38,10 @@ prevent.
 | 0 | Baseline — what is true before you start | Claude + Human | ✅ Done | 2026-08-22, all three gates green, **no deviation from the state described below**. `verify:stamp` both origins current on `96f9b9d`, 9s apart; `verify:published` 79 files / 158 fetches / 0 not served; `verify:redirects` 12 assertions, every origin resolving to the project that owns it. ⚠️ Two findings: the `verify:published` baseline is **two-origin and cannot be retaken after stage 2**, and the Pages redirect entry must **move to `rejected`** rather than be deleted — stages 4 and 5 amended |
 | 1 | Is the origin actually indexed? | Human | ✅ Done | 2026-08-22. **Not indexed anywhere.** Google: *"did not match any documents"* — the explicit empty-result page, not a thin one. Bing and DuckDuckGo return only a shared off-topic `archive.org` fallback. **Decided: delete outright, no redirect stubs**, which removes the stub step and its 3-month soak from stage 5. ⚠️ Point-in-time — re-run if Part A stalls for weeks |
 | 2 | Stop publishing to Pages | Human + Claude | ✅ Done | 2026-08-24. Workflow disabled first, then **Unpublish site** — ⚠️ there is no "None" in the Source dropdown any more, and the order was corrected mid-stage. Pages origin **404 on all four paths checked incl. `build.json`**; apex **200 on all twelve**, spanning hand-written pages, Astro auth surfaces, a skill page, both stylesheets and the stamp. `verify:stamp`: `vercel ok c5b1ce4` / `pages FAIL HTTP 404` — expected. **Fully reversible** |
-| 3 | Soak on one origin | Human | ◐ In progress | **Started 2026-08-24 ~08:10Z**, earliest finish **2026-08-26**. Vercel is now a single point of failure. ⚠️ `verify:stamp` stays red throughout — that is stage 2's expected result, not a fault |
-| 4 | Remove Pages from code, gates and docs | Claude | ☐ Not started | ⚠️ Includes `privacy.html` — the GitHub processor row and the analytics claim |
-| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ Not started | Two dashboards, invisible to git |
-| 6 | Delete `pages.yml` | Claude | ☐ Not started | **After the soak, not with stage 4** |
+| 3 | Soak on one origin | Human | ✅ Done | Ran 2026-08-24 ~08:10Z to 2026-08-26. No Vercel incident, no report of a broken link to the old origin. Deploys to `main` happened throughout and were verified |
+| 4 | Remove Pages from code, gates and docs | Claude | ✅ Done | **2026-08-26, on `chore/retire-pages`, merged to `main` as `d7728f2` — NOT on this branch.** `astro.config.mjs`, `verify-published`, `verify-build-stamp`, `verify-schema-columns` all reduced to one origin; `privacy.html`'s GitHub processor row and mirror-analytics paragraph both gone. ⚠️ **One deliberate deviation from what this stage instructed — see the reconciliation note below** |
+| 5 | Dashboard cleanup — Supabase and Turnstile | Human | ☐ **Not started** | ⚠️ **Still outstanding, and now load-bearing.** The Supabase prod allowlist still names `sing-chen.github.io`, so prod will honour a redirect to a host that 404s; the Turnstile prod widget still lists it as a domain. Both confirmed still open by comments left in `verify-redirects.mjs` and `supabase-client.js` |
+| 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
 | 7 | The adapter decision | Claude + Human | ☐ Not started | ⚠️ **The plan puts this in Phase 8 and the plan is wrong.** Blocks 9–13 |
 | 8 | Write the migration script — slugs and `legacy_id` | Claude | ☐ Not started | Derive counts from the file; the documented 21/69 is stale |
@@ -56,6 +57,33 @@ prevent.
 | 18 | Announce | Human + Claude | ☐ Not started | Banner and `updates.json` in the same sitting |
 
 **Statuses:** ☐ Not started · ◐ In progress · ✅ Done · ⊘ Skipped (say why)
+
+### ⚠️ Reconciliation, 2026-08-26 — Part A finished without this file knowing
+
+**Stages 4 and 6 were done on `chore/retire-pages` and merged to `main` as `d7728f2`, while this
+branch sat on the soak.** This table went on reading *"☐ Not started"* for work that had already
+shipped, which is the exact failure the handoff section exists to prevent — and it would have told
+Wednesday's reminder, and anyone picking this up, to redo three stages. Corrected here against the
+tree rather than against the commit messages.
+
+**Two things that did not go as this runsheet instructed, both defensible, both worth knowing.**
+
+1. ⚠️ **Stages 4 and 5 did NOT happen in the same sitting**, which Pacing says they must. Stage 5 is
+   still open. The reason the gate is not red is the deviation below.
+2. ⚠️ **The `verify-redirects` entry was DROPPED, not moved to `rejected`.** Stage 5 says in as many
+   words: *"the assertion moves sides; it does not disappear."* It disappeared. The comment left in
+   `scripts/verify-redirects.mjs` explains why, and the reasoning holds: the Supabase dashboard still
+   allows that host, so asserting `rejected` would fail every run until a human opens the dashboard —
+   red for a reason nobody in the repo can fix.
+
+   **But be clear about what was traded.** The gate no longer tests that host in either direction, so
+   nothing now checks the one entry stage 5 exists to remove. `sing-chen.github.io` still hosts every
+   project on that GitHub account, and prod still honours a redirect to it. **Restore the assertion
+   as `rejected` in the same sitting as stage 5** — that is what makes the drop temporary rather than
+   permanent.
+
+**What is genuinely left of Part A: stage 5, and nothing else.** It is two dashboard edits, ten
+minutes, and it is the only remaining piece with a security dimension.
 
 **Two levels, on purpose.** The table above is the *stage* state and is what a handoff reads first.
 Inside each stage a **Tick as you go** list carries the individual steps as `- [ ]` checkboxes — tick
@@ -111,7 +139,7 @@ the short list of exceptions, so a gap is taken deliberately rather than discove
 |---|---|
 | Weeks between **1 and 2** | Stage 1 is point-in-time and the origin is still live and crawlable. Re-run the `site:` search rather than trusting the row |
 | ⚠️ Over ~7 days between **9 and 16** | **The dev Supabase project pauses.** It is deliberately *not* kept alive — [keepalive.mjs](../scripts/keepalive.mjs) covers prod only, which is what makes the two-project free tier workable. A paused project answers nothing, and that looks exactly like a broken build. One Resume click fixes it; the cost is recognising it instead of debugging it |
-| Long gaps generally | `feat/news-db` diverges from `main`. **Mitigated so far by merging `main` in** — eight merges as of 2026-08-24, which is what has kept this branch mergeable while `main` gained fonts, an encoding gate and a palette repaint. Keep doing that rather than letting the gap grow |
+| Long gaps generally | `feat/news-db` diverges from `main`. **Mitigated by merging `main` in** — nine merges as of 2026-08-26, which is what has kept this branch mergeable while `main` gained fonts, an encoding gate, a palette repaint, the exit guard, a What's New page and the whole Pages retirement. ⚠️ **The 2026-08-26 merge is the cautionary one:** two days of not looking meant Part A finished on another branch while this file still called it *"Not started"*. Merging `main` in keeps the CODE mergeable; it does not keep the HANDOFF TABLE true. Re-read the table against the tree after any merge that touches this phase's territory |
 | Two months dormant | GitHub disables scheduled workflows after 60 days of repository inactivity. That is `keepalive.yml`, and it protects **prod**. The outer bound rather than a real risk, but it is the one where the safeguard switches off exactly when it is most needed |
 
 ### ⚠️ One correction to this runsheet's own instructions
