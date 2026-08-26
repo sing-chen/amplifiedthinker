@@ -1951,8 +1951,13 @@ migration down-script plus a code revert, and the two are not symmetric. Read
       true of zero
 - [x] `npm run verify:news-dupes -- prod` — **81 rows: 79 published, 2 archived**, matches the
       file, no duplicates and no drift. Re-run after the reorder test's writes, still clean
-- [ ] Homepage banner checked by eye on production
-- [ ] ⚠️ **The two-account RLS proof** — deferred here from stage 14. See below
+- [x] Homepage banner checked by eye on production — the ticker below the hero, all three news
+      items showing, links in the new `/news/<slug>` shape
+- [ ] ⚠️ **The two-account RLS proof** — deferred here from stage 14. See below.
+      ⚠️ **Run [supabase/verify/two-account-rls-proof.js](../supabase/verify/two-account-rls-proof.js)**,
+      which does all five probes and prints a verdict table. Probe 3 writes A's OWN body back
+      rather than `'x'`: if the policy IS broken that probe succeeds, and a probe that
+      demonstrates a security hole by corrupting someone's note is a bad probe
 
 ### The two-account RLS proof — deferred from stage 14
 
