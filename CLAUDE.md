@@ -54,6 +54,16 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                                        processor means changing this page in the same commit
                    terms.html          Scots law. Mirrors the sibling Promptly site
                    why-sign-up.html    guest vs account. Carries BOTH halves and shows one
+                 — plus whats-new.html, added 2026-08-26. The What's New log, split out of
+                   about.html into its own page and rebuilt as one expandable card per month
+                   (most recent open), entries newest-first inside it. ⚠️ It renders
+                   updates.json's `type` pill, `title` and `html` and NEVER the day — `date`
+                   decides the month and the ordering only. ⚠️ `type` shares three of its keys
+                   (`skill`, `feature`, `story`) and their labels with index.html's
+                   ANNOUNCEMENTS/PILL_LABELS, so one update announced in both places says the
+                   same word twice; `improvement` and `milestone` are this page's alone.
+                   about.html keeps `id="updates"` as a pointer,
+                   because every footer linked to `about.html#updates` for two months
                  — plus the Phase 5 auth stack, all plain scripts loaded by <script>:
                    supabase.min.js     vendored library, not a CDN link
                    supabase-client.js  picks dev or prod BY HOSTNAME at runtime — no env vars
@@ -320,6 +330,9 @@ origin first is a legitimate answer. Timing, staging, and what falls away with i
   ⚠️ **the expiry did not cause the error, it made the error unfalsifiable**, because by the time
   anyone could compare the two only the permanent one was still on screen. Write the pair in the same
   sitting and take the date from the commit. `expiryDays` on an item overrides the type default.
+  ⚠️ **Since 2026-08-26 the permanent side no longer shows the day at all** — `whats-new.html` groups
+  by month — so a one- or two-day disagreement is now invisible on *both* surfaces rather than one.
+  The date still decides which month an entry lands in, which is the only way a wrong one shows.
 - **Structural changes orphan `.claude/commands/`.** Both `/add-news` and `/add-skill` reference
   concrete file paths. Phase 1 broke them by adding `progress.js`; Phase 2 broke them again by moving
   everything into `public/`. Check them after any move or new shared module. **Third instance,
