@@ -78,7 +78,31 @@ Parse every story in the digest. Reply with a compact numbered shortlist — hea
 Before converting, check for overlap in both directions and surface anything found (don't silently drop or merge without asking):
 
 - **Within the digest itself**: two entries drawing on the same underlying report/survey (shared source + shared stat or framing), even under different headlines.
-- **Against existing content/news.json**: read the last ~2 weeks of entries and flag any new story that reuses the same source report, same headline stat, or same core claim as something already published — not just exact `title`+`url` matches (that's only caught later, in Step 3, and only within the same date).
+- **Against existing content/news.json**: read the entries and flag any new story that reuses the same source report, same headline stat, or same core claim as something already published — not just exact `title`+`url` matches (that's only caught later, in Step 3, and only within the same date).
+
+  ⚠️ **Do not limit this to the last two weeks.** It used to say that, and the window was the bug: on 2026-08-26 a database-side check found **two source URLs each published twice** — the Kyndryl People Readiness Report on 22 July and again on 10 August, and a CNBC piece on AI-layoff reversals on 6 July and again on 6 August. Both re-publications were **17 and 31 days** after the original, so a two-week read could not have seen either. A story worth covering is worth re-covering when it resurfaces, which is exactly why the gap between the two runs is usually *longer* than the window.
+
+- **Against the database itself** — ⚠️ **the file is not the whole picture and will get worse**:
+
+```bash
+npm run verify:news-dupes -- dev
+```
+
+  Use `dev` before the Phase 6 merge and `prod` after it. It reads `news_stories` with the anon key
+  (`news_stories_public_read` already allows it, so there is no new credential) and never writes.
+  It reports three things: one URL published under two stories, a story in the file whose URL is
+  already live under a different slug, and rows in the database that are **not in the file at all**.
+
+  ⚠️ **That third one is why it exists.** Once Phase 7's admin UI ships, a story can reach
+  `news_stories` without ever touching `content/news.json` — and every file-based check above goes
+  blind while still reporting "no duplicates" confidently. **The database will not catch it either**:
+  the load ends `on conflict (slug) do update`, so the same story re-added under its original
+  headline silently *overwrites* the live row, and re-added under a reworded headline gets a
+  different slug and inserts a *second* one. Neither raises anything. A duplicate story is not a
+  duplicate slug.
+
+  ⚠️ **An empty table is reported as "not a pass", not as clean** — prod's is empty until the merge,
+  and with no rows every comparison would come back green.
 
 If you find overlap, tell the user what you found and ask whether to: keep both, cut one, or merge multiple digest entries into a single news.json story (one `source`/`url`, one combined `summary`/`implications` referencing the multiple angles — see the McKinsey HR Monitor merge from 2026-07-10 in content/news.json for the pattern). Don't merge or cut unilaterally.
 

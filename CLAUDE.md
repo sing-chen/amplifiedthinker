@@ -209,6 +209,11 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
                  verify-build-stamp.mjs (npm run verify:stamp) — asks production which commit it is
                  are built from. The ONLY check that distinguishes "deployed" from "quietly still
                  serving last week's build"; verify:published is differential and cannot
+                 verify-news-duplicates.mjs (npm run verify:news-dupes [dev|prod]) - compares
+                 content/news.json against what is actually PUBLISHED in news_stories. Reads with
+                 the anon key, never writes. Found two real duplicates on its first run, both
+                 re-publications 17 and 31 days apart, which /add-news's two-week file window could
+                 not see. An EMPTY table reports "not a pass", never clean
                  build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so
