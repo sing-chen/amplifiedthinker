@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel';
 import { writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 
@@ -51,24 +52,52 @@ function buildStamp() {
   };
 }
 
-// The 16 existing hand-written pages live in `public/` and are copied into the build
+// The 20 existing hand-written pages live in `public/` and are copied into the build
 // byte-for-byte untouched. Nothing about them is processed, bundled, or rewritten —
 // that is the whole reason for the split. New surfaces (blog, admin, dashboard) get
 // built properly from `src/pages/`.
 //
-// `output` stays static for Phase 2. No adapter, so Vercel and GitHub Pages consume
-// an identical build, which is what keeps the second origin cheap to support. An SSR
-// adapter arrives with the blog in Phase 8, where rendering on request is the point.
+// ─────────────────────────────────────────────────────────────────────────────
+// ⚠️ `output` STAYS 'static' EVEN THOUGH THIS BUILD NOW HAS AN SSR ADAPTER.
+// That reads like a contradiction and is not. Read this before changing it.
 //
-// `base` is driven by an env var because the two origins serve from different paths:
-// Vercel serves from `/`, GitHub Pages from `/amplifiedthinker/`. The existing pages
-// don't care — they use relative links throughout — but anything generated from
-// `src/` must respect it, so layouts read `import.meta.env.BASE_URL` rather than
-// hardcoding `/`.
+// This comment used to say an adapter "arrives with the blog in Phase 8, where
+// rendering on request is the point." That was written when Phase 6 was a
+// sketch, and it did not survive the phase's actual activity list: `/news/:slug`
+// rendered for crawlers, the 301 endpoint that resolves `legacy_id`, and
+// `/api/search-index.json` are three SERVER surfaces. The adapter is a Phase 6
+// dependency, and it is added here (stage 7) on its own commit.
+//
+// In Astro 5+ `output: 'static'` no longer means "no server". It means
+// PRERENDER BY DEFAULT, and any route can opt out with:
+//
+//     export const prerender = false;
+//
+// `output: 'hybrid'` — which is what that used to be called — was REMOVED. The
+// schema rejects it by name: "The `output: "hybrid"` option has been removed.
+// Use `output: "static"` (the default) instead, which now behaves the same way."
+//
+// So the choice here is only which way round the default runs, and 'static' is
+// right for this site: 20 hand-written pages plus three auth surfaces are all
+// prerendered, and each server route is a deliberate opt-out rather than
+// everything being on-demand and needing to be marked back. Switching to
+// 'server' would invert that and mean editing every existing page for the same
+// end state.
+//
+// ⚠️ A NEW ROUTE THAT READS THE DATABASE MUST DECLARE `prerender = false`.
+// Without it the route is built once at deploy time and then serves a frozen
+// snapshot — which looks perfectly healthy and is the exact failure
+// server-rendering was added to prevent.
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// `base` reads an env var that nothing now sets, so it falls to '/'. It stays
+// because BaseLayout and sign-in.astro route every generated URL through it; see
+// the ASTRO_BASE note in CLAUDE.md for why unpicking it has nothing to gain.
 export default defineConfig({
   site: process.env.ASTRO_SITE || 'https://amplifiedthinker.com',
   base: process.env.ASTRO_BASE || '/',
   output: 'static',
+  adapter: vercel(),
   devToolbar: { enabled: false },
   integrations: [buildStamp()],
 });

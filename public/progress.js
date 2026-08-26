@@ -156,8 +156,9 @@
     // save did not happen, which is the most persuasive moment there is — and
     // also the moment someone is most entitled to ask what an account would
     // actually cost them. Sending them straight to the form answers only the
-    // first question. `root()` again, because ten pages sit at three depths and
-    // the Pages origin adds a subpath on top of that.
+    // first question. `root()` again, because ten pages sit at three depths.
+    // (Until 2026-08-26 the Pages origin added a sub-path on top of that; the
+    // three depths are reason enough on their own.)
     var whyHref = nav && nav.root ? nav.root('why-sign-up.html') : '/why-sign-up.html';
 
     // Reuses the resume banner's own classes, so it inherits that styling from

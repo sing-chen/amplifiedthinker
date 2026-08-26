@@ -100,23 +100,41 @@ SQL cannot reach these. All of them are Auth configuration.
 [../docs/dev-workflow.md](../docs/dev-workflow.md) before the project existed,
 specifically so they would not be invented under pressure now:
 
+⚠️ **This section described a single four-line list until 2026-08-26, and it had been wrong since
+Phase 5 split the projects.** Three of those four lines are not prod's at all — the preview alias and
+localhost moved to **dev**, and prod must *actively refuse* them, which is what
+`scripts/verify-redirects.mjs` has asserted all along. The block below contradicted the gate for
+weeks and nothing caught it, because a doc cannot fail a build. Corrected after the stage 5 cleanup
+found prod holding exactly one entry.
+
+**PROD — `spehmrgmcdenqdftkyrt`**
+
 ```
 Site URL:       https://amplifiedthinker.com
-
 Redirect URLs:  https://amplifiedthinker.com/**
-                https://sing-chen.github.io/amplifiedthinker/**
-                https://amplifiedthinker-git-*-singchen.vercel.app/**
-                http://localhost:4321/**
 ```
 
-Four lines, four reasons — three of them still current:
+**One line, and that is the whole list.** `sing-chen.github.io/amplifiedthinker/**` was removed on
+2026-08-26 when that origin was retired; nothing replaced it.
 
-| Line | Why it is there |
-|---|---|
-| `amplifiedthinker.com` | The primary origin, and since 2026-08-26 the only one. |
-| `sing-chen.github.io/amplifiedthinker` | ⚠️ **STALE — remove it.** It was required while corporate NRD filtering left those users no other route in. That origin was retired on 2026-08-26 and 404s. See *Cleanup owed* below. |
-| `amplifiedthinker-git-*-singchen.vercel.app` | The stable per-branch preview alias. Without the wildcard, sign-in works in production and fails on every branch with no useful error. The per-commit URL cannot be listed — it changes on every push. |
-| `localhost:4321` | Astro's dev server port. |
+**DEV — `yirsvthwffoetcrgbevj`**
+
+```
+Site URL:       http://localhost:4321
+Redirect URLs:  http://localhost:4321/**
+                https://amplifiedthinker-git-*-singchen.vercel.app/**
+```
+
+| Line | Why it is there | Whose |
+|---|---|---|
+| `amplifiedthinker.com` | The primary origin, and since 2026-08-26 the only public one. | **prod** |
+| `amplifiedthinker-git-*-singchen.vercel.app` | The stable per-branch preview alias. Without the wildcard, sign-in works in production and fails on every branch with no useful error. The per-commit URL cannot be listed — it changes on every push. | **dev** |
+| `localhost:4321` | Astro's dev server port. | **dev** |
+| ~~`sing-chen.github.io/amplifiedthinker`~~ | ⊘ **Removed 2026-08-26.** Required while corporate NRD filtering left those users no other route in; that origin is retired and 404s. `verify:redirects` now asserts prod **rejects** it, permanently — the hostname still fronts every project on that GitHub account. | — |
+
+⚠️ **The separation is the point, not tidiness.** A laptop that could drive the *production*
+database through a redirect that resolves is the failure this split exists to prevent. Prod refusing
+`localhost` is a feature.
 
 #### Testing the allowlist without sending a single email
 
@@ -375,25 +393,36 @@ which is a second, independent reason for the dev project, beyond protecting use
 Pages site in existence. ⚠️ **That origin was retired on 2026-08-26 and the hostname is still on the
 widget** — see *Cleanup owed* below.
 
-#### Cleanup owed — two dashboard entries the Pages retirement left behind
+#### Cleanup owed — ✅ **DONE 2026-08-26.** Both dashboard entries removed
 
-Both name `sing-chen.github.io`, which stopped serving the site on 2026-08-26. **Neither lives in
-this repository**, so no script in it can remove them and no check will go red while they stand —
-which is exactly why they are written down here.
+Both named `sing-chen.github.io`, which stopped serving the site on 2026-08-26. **Neither lived in
+this repository**, so no script could remove them and no check went red while they stood — which is
+why they were written down here rather than tracked in code.
 
-| Where | Entry | What it means while it stands |
+| Where | Entry | Status |
 |---|---|---|
-| Supabase → prod → Auth → URL Configuration | `https://sing-chen.github.io/amplifiedthinker/**` | Production will honour an auth redirect to a host that now serves nothing. The destination is dead rather than hostile, but it is an allowlist entry pointing at an address this project no longer controls the content of. |
-| Cloudflare → Turnstile → `amplifiedthinker-prod` | hostname `sing-chen.github.io` | The prod sitekey will still render a challenge on that hostname. Nothing is served there to render it. |
+| Cloudflare → Turnstile → `amplifiedthinker-prod` → Hostnames | `sing-chen.github.io` | ✅ **Removed 2026-08-26**, first, because it was the one with a security dimension |
+| Supabase → prod → Auth → URL Configuration | `https://sing-chen.github.io/amplifiedthinker/**` | ✅ **Removed 2026-08-26.** Prod now holds exactly one Redirect URL |
 
-⚠️ **The second one is the one to think about.** A Turnstile hostname grant covers the hostname and
-its subdomains — and `sing-chen.github.io` is a **user-owned GitHub Pages domain**, so anything that
-account publishes there in future is inside the grant. That is fine while the account is the site
-owner's own, and stops being fine the moment it is not.
+⚠️ **The Turnstile one was the one that mattered, and the reason outlives the cleanup.** A Turnstile
+hostname grant covers the hostname *and its subdomains*, and `sing-chen.github.io` is a **user-owned
+GitHub Pages domain** — so anything that account published there sat inside the grant and could mint
+tokens production accepts. Fine while the account is the site owner's own; not fine the moment it is
+not. **Do not re-add it**, and treat any request to add a `*.github.io` hostname to a production
+widget as the same decision again.
 
-After removing them: `npm run verify:redirects` still passes (the entry was dropped from its
-expectations on 2026-08-26), and the Turnstile change is verified by signing in on production —
-there is no automated check for the widget's hostname list.
+**Verified, and the two halves are not equally strong:**
+
+- **Supabase — checked.** `npm run verify:redirects` now asserts prod **rejects** that URL, and it
+  passes. That assertion is permanent, not a one-off: the hostname still fronts every project on
+  that account, so "prod refuses it" is worth checking for ever.
+  ⚠️ It had been *dropped* from the expectations for two days rather than moved to `rejected`, so
+  nothing tested that host in either direction during the gap. Restored in the same sitting as the
+  dashboard change, which is what made the drop temporary.
+- **Turnstile — no automated check exists.** Nothing in this repo can read a widget's hostname list.
+  The only verification is a real sign-in on production, and a wrong list surfaces as a **captcha**
+  failure rather than an obvious error — a shape already misdiagnosed once in this file. If sign-in
+  breaks after a widget change, suspect the hostname list before anything else.
 
 #### The gate — a criterion a bad outcome cannot satisfy
 
@@ -588,7 +617,7 @@ would mean a laptop could drive the production database through a redirect that 
 
 | | Site URL | Redirect URLs |
 |---|---|---|
-| **prod** | `https://amplifiedthinker.com` | `https://amplifiedthinker.com/**`<br><s>`https://sing-chen.github.io/amplifiedthinker/**`</s> ⚠️ retired 2026-08-26, still in the dashboard — see *Cleanup owed* |
+| **prod** | `https://amplifiedthinker.com` | `https://amplifiedthinker.com/**` — **one entry, and that is the whole list.** <s>`https://sing-chen.github.io/amplifiedthinker/**`</s> removed from the dashboard 2026-08-26; `verify:redirects` now asserts prod **rejects** it |
 | **dev** | `http://localhost:4321` | `http://localhost:4321/**`<br>`https://amplifiedthinker-git-*-singchen.vercel.app/**` |
 
 Verify each entry with the `/auth/v1/verify` probe documented above, **including the known-bad
