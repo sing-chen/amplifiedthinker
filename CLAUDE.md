@@ -32,11 +32,11 @@ The project has a written architecture and a phased plan. Read them rather than 
 ## Where things live
 
 ```
-public/          the 19 hand-written pages, shipped byte-for-byte untouched by Astro
+public/          the 20 hand-written pages, shipped byte-for-byte untouched by Astro
                  index/about/future-skills/my-people/news/search .html, skills/**,
                  nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt, sitemap.xml
                  — plus fonts.css and fonts/, the self-hosted type (2026-08-23). ⚠️ fonts.css is
-                   linked by ALL 19 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
+                   linked by ALL 20 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
                    primer/plan pages are self-contained and deliberately skip styles.css, so the
                    @font-face rules could not live there. That asymmetry is the whole reason it
                    is a separate file. The site is Inter and only Inter; Poppins and Source

@@ -43,7 +43,7 @@ prevent.
 | 5 | Dashboard cleanup — Supabase and Turnstile | Human | ✅ Done | 2026-08-26. Turnstile hostname removed **first**, then the Supabase entry; prod now holds **one** Redirect URL. `verify-redirects` restored to **13 assertions, green**, including `PASS rejected: sing-chen.github.io/amplifiedthinker/` — which also closed stage 4's last box. **Sign-in verified working on production** after the widget change, the only check Turnstile has. ⚠️ Found that `supabase/README.md` had listed **four** prod redirect URLs since Phase 5 when there is one — the doc contradicted the gate for weeks and nothing caught it, because a doc cannot fail a build |
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
-| 7 | The adapter decision | Claude + Human | ☐ Not started | ⚠️ **The plan puts this in Phase 8 and the plan is wrong.** Blocks 9–13 |
+| 7 | The adapter decision | Claude + Human | ◐ **Built; deploy check owed** | 2026-08-26. `@astrojs/vercel` 11.0.8 added, **`output` stays `'static'`** — ⚠️ `hybrid` was removed from Astro and `static` is what it became. Build output **byte-identical with and without the adapter**, 88/89 files, the 89th a timestamp. ⚠️ **`vercel.json`'s `outputDirectory: dist` removed** — it would have silently served stage 10's server routes as frozen static. `service_role`: **still no home**. **Left: `verify:published` after the deploy** |
 | 8 | Write the migration script — slugs and `legacy_id` | Claude | ☐ Not started | Derive counts from the file; the documented 21/69 is stale |
 | 9 | Load dev, verify the data | Claude | ☐ Not started | Dev project only. Prod waits for stage 16 |
 | 10 | `/news` and `/news/:slug`, server-rendered | Claude | ☐ Not started | ⚠️ **The cutoff for `/add-news`.** From here the command still succeeds and publishes nothing — no gate reads `news.json`. Breakage map under stage 16 |
@@ -807,17 +807,28 @@ does not survive contact with Phase 6's actual activity list: `/news/:slug` serv
 redirect endpoint, and `/api/search-index.json` are **three server surfaces**, and the phase's
 stated purpose for the first is "real HTML for crawlers". The adapter is a Phase 6 dependency.
 
-Nothing about this is difficult — `output: 'static'` becomes `output: 'server'` or `'hybrid'`, and
-`@astrojs/vercel` gets added. What matters is that it is decided and done *before* stages 10–13
-rather than discovered halfway through one of them.
+⚠️ **CORRECTED 2026-08-26: `hybrid` does not exist any more, and the change is smaller than this
+stage originally said.** Astro 7.2.2's config schema rejects it outright —
+*"The `output: \"hybrid\"` option has been removed. Use `output: \"static\"` (the default) instead,
+which now behaves the same way."* Checked in `node_modules/astro/dist/core/config/schemas/base.js`,
+not assumed from docs.
 
-**Two things to settle here:**
+So `output` **does not change at all**. The only real choice is which way round the default runs:
 
-1. **`server` or `hybrid`.** The 19 hand-written pages in `public/` are copied byte-for-byte and are
-   unaffected either way. The question is only whether the handful of `src/pages/` surfaces default
-   to prerendered or to on-demand. `hybrid` — prerender by default, opt in per route — keeps
-   `/sign-in/`, `/account/` and `/learning/` exactly as fast as they are today and makes each server
-   route a deliberate choice.
+| Mode | Default | Opt out per route |
+|---|---|---|
+| **`static`** *(current, and what `hybrid` became)* | prerendered | `export const prerender = false` |
+| `server` | on demand | `export const prerender = true` |
+
+**Decision: stay on `output: 'static'` and add the adapter.** This site is overwhelmingly static —
+19 hand-written pages copied byte-for-byte, plus three auth surfaces — so the default should stay
+prerendered and each server route should be a deliberate opt-out. Switching to `server` would invert
+that and require marking every existing page, which is more edits for the same result.
+
+**What this stage actually does, then:** add `@astrojs/vercel`, leave `output` alone, and correct the
+comment that says an adapter arrives in Phase 8.
+
+**The other thing to settle here:**
 2. **Whether this is the moment `service_role` gets a home.** [CLAUDE.md](../CLAUDE.md) says it has
    no home at all until a server endpoint exists in Phase 6 — and after this stage, one does. Nothing
    in Phase 6 *needs* it: news reads are public and the personalisation writes are the user's own
@@ -829,12 +840,56 @@ swap that changes nothing visible is exactly what this should be.
 
 **Tick as you go**
 
-- [ ] `server` vs `hybrid` decided, with the reason written down
-- [ ] `@astrojs/vercel` added, `astro.config.mjs` updated
-- [ ] `service_role` question answered in writing — expected answer is "still no home in this phase"
-- [ ] Deployed alone and verified: the 19 pages and the three auth surfaces unchanged
-- [ ] `npm run verify:published` clean across the adapter change
-- [ ] `astro.config.mjs`'s Phase 8 comment corrected — it is wrong as written
+- [x] ~~`server` vs `hybrid` decided~~ — ⊘ **`hybrid` was removed from Astro.** Verified against
+      the installed schema, not the docs. Staying on `output: 'static'`, which is what `hybrid`
+      became; reason recorded above
+- [x] `@astrojs/vercel` **11.0.8** added, `astro.config.mjs` updated — `output` left on `'static'`
+- [x] ⚠️ **`vercel.json`'s `outputDirectory: dist` REMOVED** — see the note below; this was the one
+      real risk in the stage
+- [x] `service_role` question answered in writing — **still no home in this phase**, see below
+- [x] Built and verified: **all 20 hand-written pages and the three auth surfaces present**, and the
+      build output is **byte-identical with and without the adapter** bar one timestamp
+- [ ] ⬜ `npm run verify:published` clean across the adapter change — **owed after deploy**, not
+      runnable before it
+- [x] `astro.config.mjs`'s Phase 8 comment corrected — it was wrong as written
+
+**Observed 2026-08-26:**
+
+**The adapter changes nothing, proven rather than asserted.** Built the tree with and without it and
+hashed every file: **88 of 89 identical.** The 89th is `build.json`, whose `builtAt` moves between
+any two builds — `sha`, `short`, `source` and `base` were the same. `.vercel/output/server` is
+**empty**, because no route declares `prerender = false` yet, so the Build Output is currently pure
+static.
+
+⚠️ **`vercel.json` had `outputDirectory: dist`, and that had to go with this change.** The adapter
+emits `.vercel/output/` — the Build Output API, with its own `config.json` and a `server/` directory
+— while `outputDirectory` names a plain static folder. Both would work *today*, because there are no
+functions yet. **The failure would have surfaced at stage 10** as a server route quietly serving
+prerendered content: healthy-looking, and the exact failure this adapter exists to prevent. Removed
+now, while the change is isolated and one variable, rather than at stage 10 as one of several.
+
+⚠️ **`prerender = false` is now load-bearing on every DB-backed route.** Under `output: 'static'` a
+route without it is built once at deploy time and then serves a frozen snapshot for ever. Written
+into `astro.config.mjs` beside the setting, because that is where someone will be when it matters.
+
+**Also corrected while here:** the site has **20** hand-written pages, not 19 — `whats-new.html`
+joined on 2026-08-26. `CLAUDE.md` said 19 in two places, including the `fonts.css` note that names
+the count explicitly; verified by counting the pages that link it.
+
+### `service_role` — the answer is still no
+
+[CLAUDE.md](../CLAUDE.md) says it has no home until a server endpoint exists in Phase 6. One now can,
+so the question is live rather than theoretical. **It still gets no home in this phase:**
+
+- **News reads are public.** `news_stories` has a public-read policy for published rows; a server
+  route reading them needs no more privilege than a browser.
+- **The personalisation writes in stage 14 are the user's own rows**, governed by
+  `user_id = auth.uid()` on `user_news` and `notes`. Using `service_role` there would bypass the
+  policy that makes them safe — the opposite of what is wanted.
+
+⚠️ **The reason to write this down is that stage 10–14 will each have a moment where it looks
+convenient.** It is not needed, and reaching for it undoes every policy in the migration in one line.
+The first genuine candidate is the contact form in `BACKLOG.md`, which is not this phase.
 
 **Rollback:** `git revert`. Do this stage on its own commit precisely so that is true.
 
