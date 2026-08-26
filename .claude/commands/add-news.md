@@ -154,10 +154,23 @@ run after it — see the Phase 7 warning above. A `--only` date that matches not
 rather than emitting an empty file, because SQL that runs and publishes nothing is the failure this
 whole command is arranged around.
 
-**Then hand it to the user to run**, in the Supabase SQL editor for the **prod** project. You cannot
-run it; the anon key is refused by RLS and there is no service key. Tell them plainly that the story
-is not live until they do, and paste the verification queries from the foot of the generated file so
-they can confirm the row count themselves rather than trusting "Success. No rows returned".
+**Then hand it to the user to run**, in the Supabase SQL editor. **You cannot run it** — the anon
+key is refused by RLS, correctly, and there is no service key. Say plainly that the story is not
+live until they do, and paste the verification queries from the foot of the generated file so they
+can confirm the row count themselves rather than trusting "Success. No rows returned".
+
+⚠️ **WHICH PROJECT DEPENDS ON WHETHER PHASE 6 HAS MERGED, AND GETTING IT WRONG IS SILENT BOTH
+WAYS.** Check `git log origin/main --oneline -1` if unsure.
+
+| when | where the SQL goes | why |
+|---|---|---|
+| **Before the stage 17 merge** | **dev**, and nowhere else | Prod is still serving the old site and its `news_stories` is empty by design. Loading a single day into prod would put one story on a page nothing links to yet. ⚠️ **Prod needs no dashboard step at all in this window** — the story is already in `content/news.json`, so stage 17's full seed picks it up on its own |
+| **After the stage 17 merge** | **prod** — and dev too, if you want them to match | Prod is the live site. This is the steady state |
+
+⚠️ **Do not run a partial against prod before the merge and then also let stage 17's full seed
+run.** Both are idempotent on `slug`, so nothing breaks and nothing warns — but the day's stories
+then exist because of a step nobody recorded, and the row count in the stage 17 checklist will not
+be the number that stage predicted.
 
 ## Step 5 — Pin (optional)
 
