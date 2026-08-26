@@ -195,11 +195,10 @@ export function pickDefault(stories, state) {
 export function filterBarHTML(stories, state) {
   const inUse = {};
   stories.forEach((s) => (s.tags || []).forEach((t) => { inUse[t] = true; }));
-  // ⚠️ The Saved chip appears only for a signed-in reader with at least one
-  // saved story. Showing it to a guest would advertise a filter that can only
-  // ever return nothing, and showing it at zero would look broken rather than
-  // empty. It sits second, next to All stories, because it is a view of
-  // everything rather than one theme.
+  // ⚠️ Both personal chips appear only for a signed-in reader, and only when
+  // they can return something. Showing either to a guest would advertise a
+  // filter that can only ever come back empty, and showing one at zero would
+  // look broken rather than empty.
   const personal = [];
   if (state.personal && state.personal.enabled) {
     if (Object.keys(state.personal.favs).length) {
@@ -210,17 +209,30 @@ export function filterBarHTML(stories, state) {
     }
   }
 
-  const chips = [{ key: 'all', label: 'All stories', path: ALL_ICON_PATH }]
-    .concat(personal)
-    .concat(THEME_ORDER.filter((t) => inUse[t]).map((t) => ({
-      key: t, label: THEME_LABELS[t] || titleCase(t), path: THEME_ICON_PATHS[t]
-    })));
-  return chips.map((c) => {
+  const render = (c) => {
     let cls = 'filter-chip' + (c.key === (state.tag || 'all') ? ' active' : '');
     if (THEMED_TAGS[c.key]) cls += ' themed ' + themeClass(c.key);
     return '<button type="button" class="' + cls + '" data-tag="' + escapeHTML(c.key) + '">' +
       icon(c.path) + escapeHTML(c.label) + '</button>';
-  }).join('');
+  };
+
+  /* ⚠️ TWO KINDS OF FILTER, READING AS ONE ROW OF EQUALS. `All stories`,
+     `Saved` and `Has notes` narrow by YOUR RELATIONSHIP to a story; the rest
+     narrow by SUBJECT. Undifferentiated, the row invites the reading that Saved
+     is a theme like any other — and therefore that Saved and Skills Development
+     might combine, which they cannot: choosing one replaces the other.
+
+     A rule rather than a second row: the bar scrolls horizontally below 800px,
+     and a second row would either scroll independently of the first or wrap
+     unpredictably. */
+  const scope = [{ key: 'all', label: 'All stories', path: ALL_ICON_PATH }].concat(personal);
+  const themes = THEME_ORDER.filter((t) => inUse[t]).map((t) => ({
+    key: t, label: THEME_LABELS[t] || titleCase(t), path: THEME_ICON_PATHS[t]
+  }));
+
+  return scope.map(render).join('') +
+    (themes.length ? '<span class="filter-sep" role="separator" aria-orientation="vertical"></span>' : '') +
+    themes.map(render).join('');
 }
 
 // ⚠️ An <a>, not a <button>. Every headline is now a real URL a crawler can
@@ -271,8 +283,23 @@ export function headlineListHTML(stories, state) {
      visit; naming it answers it. */
   const pinned = findPinned(stories);
   const pinnedVisible = pinned && matchesFilter(pinned, state);
+
+  /* ⚠️ WHEN THE READER PINS THE FEATURED STORY, IT APPEARS ONCE, NOT TWICE.
+     `userPinned()` already excludes the editorial story, so the row was never
+     duplicated — but the reader was left looking for a pin that had apparently
+     not taken. One row, one header, both facts stated.
+
+     Featured is transient and a pin is durable: the REASON to pin the featured
+     story is that it will stop being featured. So the row stays in this group
+     while both are true and drops into the reader's own group by itself the
+     moment the editorial pick moves on — nothing to remember, and no special
+     case to re-render. It falls out of the ordering. */
+  const alsoMine = Boolean(pinned && state.personal && state.personal.pins[pinned.slug]);
+  const featuredLabel = alsoMine ? 'Featured · pinned by you' : 'Featured';
+
   let html = pinnedVisible
-    ? '<div class="headline-group-header">Featured</div>' + headlineHTML(pinned, activeSlug)
+    ? '<div class="headline-group-header">' + featuredLabel + '</div>' +
+      headlineHTML(pinned, activeSlug, alsoMine)
     : '';
 
   // The reader's own pins, lifted out of their date buckets into one group at
@@ -281,8 +308,10 @@ export function headlineListHTML(stories, state) {
   const mine = userPinned(stories, state);
   const mineSet = {};
   mine.forEach((s) => { mineSet[s.slug] = 1; });
+  // Singular: `user_news_single_pin_idx` makes more than one impossible, so a
+  // plural header would describe a state the database refuses to hold.
   const pinsHTML = mine.length
-    ? '<div class="headline-group-header">Your pins</div>' +
+    ? '<div class="headline-group-header">Your pin</div>' +
       mine.map((s) => headlineHTML(s, activeSlug, true)).join('')
     : '';
 

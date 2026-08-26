@@ -350,9 +350,21 @@
 
   /* ── painting ────────────────────────────────────────────────────────────── */
 
+  /* ⚠️ THE STATUS LINE HAS TO SURVIVE A REPAINT, AND IT DID NOT.
+     Saving a note updates the published personal set, which re-renders the
+     list, which re-renders the story panel, which calls paint() and replaces
+     this slot's HTML — wiping "Note saved." before anyone could read it. The
+     save worked and the reader was told nothing, which is the worst of both.
+
+     Held here rather than in the DOM, and re-applied after every paint. Cleared
+     when the story changes, so a message about one story can never surface
+     against another. */
+  var statusText = '';
+
   function setStatus(text) {
+    statusText = text || '';
     var el = doc.querySelector('.story-action-status');
-    if (el) el.textContent = text || '';
+    if (el) el.textContent = statusText;
   }
 
   function updateCount(ta) {
@@ -465,6 +477,8 @@
     if (!box || !target) return;
 
     var storyId = box.getAttribute('data-story-id');
+    // A message belongs to the story it was raised on. Moving on discards it.
+    if (storyId !== currentId) statusText = '';
     currentId = storyId;
 
     var a = auth();
@@ -485,6 +499,7 @@
       target2.innerHTML = signedInHTML(state);
       updateCount(doc.getElementById('story-note-body'));
       if (state.degraded) setStatus('Could not load your saved state.');
+      else if (statusText) setStatus(statusText);   // survive the repaint
     });
   }
 
@@ -651,8 +666,15 @@
         st.note = body;
         cache[storyId] = st;
         updatePersonal(box2Slug(), 'noted', true);
-        // Save LANDS in view mode, which is what stops the save-again loop.
+        /* ⚠️ SAVING CLOSES THE PANEL. Landing in view mode was already better
+           than staying in an editor, but it still left the reader looking at
+           something they had finished with and had to dismiss themselves. The
+           status line says it saved and the toolbar button now says "View
+           note", so it is one click away if they want it. Setting the mode to
+           `view` BEFORE closing is what makes that click open the note rather
+           than an editor. */
         setNoteMode('view');
+        openNote(false);
         var lbl = doc.querySelector('[data-action="note"] [data-label]');
         if (lbl) lbl.textContent = 'View note';
         setStatus('Note saved.');
