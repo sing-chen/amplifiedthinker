@@ -6,6 +6,9 @@ argument-hint: [paste the full daily digest text, paste a URL, or leave blank an
 You are helping curate the News page — `/news/` and `/news/<slug>`, server-rendered from the
 `news_stories` table — with [content/news.json](content/news.json) as the authoring file.
 
+⚠️ **The human-facing version of this is [docs/adding-news.md](docs/adding-news.md)** — same workflow,
+written to be read rather than executed. Keep the two in step; they describe one process.
+
 ## ⚠️ How news actually gets published now, and why this changed
 
 **Phase 6 moved news into the database.** `public/news.html` and `public/search-index.json` were
@@ -80,7 +83,7 @@ Before converting, check for overlap in both directions and surface anything fou
 - **Within the digest itself**: two entries drawing on the same underlying report/survey (shared source + shared stat or framing), even under different headlines.
 - **Against existing content/news.json**: read the entries and flag any new story that reuses the same source report, same headline stat, or same core claim as something already published — not just exact `title`+`url` matches (that's only caught later, in Step 3, and only within the same date).
 
-  ⚠️ **Do not limit this to the last two weeks.** It used to say that, and the window was the bug: on 2026-08-26 a database-side check found **two source URLs each published twice** — the Kyndryl People Readiness Report on 22 July and again on 10 August, and a CNBC piece on AI-layoff reversals on 6 July and again on 6 August. Both re-publications were **17 and 31 days** after the original, so a two-week read could not have seen either. A story worth covering is worth re-covering when it resurfaces, which is exactly why the gap between the two runs is usually *longer* than the window.
+  ⚠️ **Do not limit this to the last two weeks.** It used to say that, and the window was the bug: on 2026-08-26 a database-side check found **two source URLs each published twice** — the Kyndryl People Readiness Report on 22 July and again on 10 August, and a CNBC piece on AI-layoff reversals on 6 July and again on 6 August. Both re-publications were **19 and 31 days** after the original, so a two-week read could not have seen either. A story worth covering is worth re-covering when it resurfaces, which is exactly why the gap between the two runs is usually *longer* than the window.
 
 - **Against the database itself** — ⚠️ **the file is not the whole picture and will get worse**:
 

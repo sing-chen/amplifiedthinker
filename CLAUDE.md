@@ -23,6 +23,7 @@ The project has a written architecture and a phased plan. Read them rather than 
 | [supabase/README.md](supabase/README.md) | Applying and rolling back the schema, the two verification halves, the redirect allowlist, and the email SMTP runbook |
 | [docs/email-dns-baseline.md](docs/email-dns-baseline.md) | The DNS zone as it stood before Phase 4 touched it. Cloudflare keeps no history, so this is the only restore reference there is |
 | [docs/email-aliases-runbook.md](docs/email-aliases-runbook.md) | Moving the contact route to `contact@`, adding `dmarc@`, retiring Brevo. Staged, with a handoff table that **is** the state — update it in the same sitting as the work |
+| [docs/adding-news.md](docs/adding-news.md) | **How a story gets from a digest into the database.** ⚠️ Writing the file publishes NOTHING — the SQL step does, and a run that stops before it looks entirely successful. Read it before running `/add-news` |
 | [BACKLOG.md](BACKLOG.md) | Unscheduled ideas |
 
 `docs/` is excluded from the Vercel deploy but the repo is **public** — these are public documents.
@@ -212,7 +213,7 @@ scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run v
                  verify-news-duplicates.mjs (npm run verify:news-dupes [dev|prod]) - compares
                  content/news.json against what is actually PUBLISHED in news_stories. Reads with
                  the anon key, never writes. Found two real duplicates on its first run, both
-                 re-publications 17 and 31 days apart, which /add-news's two-week file window could
+                 re-publications 19 and 31 days apart, which /add-news's two-week file window could
                  not see. An EMPTY table reports "not a pass", never clean
                  build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
                  from the pages into public/skills-catalogue.json
