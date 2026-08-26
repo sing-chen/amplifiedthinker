@@ -57,7 +57,7 @@ prevent.
 | 9 | Load dev, verify the data | Claude | ✅ Done | 2026-08-26. **81 rows on dev**, 81 distinct slugs and `legacy_id`s, one pinned matching `news.json`, statuses `["published"]` — all verified with the anon key from outside the dashboard. ⚠️ **All 81 stories compared field-by-field against the source, 0 differences**, rather than the five-title eyeball the stage asked for; em dashes read correctly in Postgres. `verify:rls` moved from `empty` to **`published`** — asserting the RLS predicate rather than the absence of data — and passes **22/22** |
 | 10 | `/news` and `/news/:slug`, server-rendered | Claude | ✅ Done | 2026-08-26, committed `6f23385`. Both routes live on the branch, `prerender = false`, **81 story links in the index's response body** and the story text in `/news/<slug>`'s — no user-agent sniffing anywhere. Unknown slug **404 + noindex**; unreadable feed **503**, not an empty page. `sitemap.xml` **generated** now (100 URLs) and `public/sitemap.xml` deleted — a static file cannot list 81 URLs and stay right. Server and browser render from **one shared module**, so the two cannot drift. ⚠️ **Two defects found by measuring the rendered page, both also present in `news.html`**: `scrollIntoView` scrolled the whole document on load, and `.story-panel` kept a near-white border in dark mode. **Checked by eye by the site owner and confirmed** — screenshots were unavailable, so every other visual claim here is a measurement. ⚠️ **The cutoff for `/add-news`** once this merges: the command still succeeds and publishes nothing. Breakage map under stage 16 |
 | 11 | The 301 endpoint for legacy URLs | Claude | ✅ Done | 2026-08-26. `/news.html?story=<date>-<index>` → **301** → `/news/<slug>`, resolved through the stored `legacy_id`. ⚠️ **`public/news.html` deleted and `/news.html` is a route now** — Vercel runs `handle: filesystem` before any route, so a static file at that path would have shadowed the endpoint entirely; there was no arrangement where both work. ⚠️ **`middleware.js` deleted here, not at stage 15**: its matcher is `/news.html` and it runs *before* the route, so for a social crawler it would have served the old shell **instead of the 301** — and `curl` could never have caught that. Unknown id → **404** (the old page showed the *pinned* story with a 200); failed lookup → **503, never a redirect**, because browsers cache 301s. **13 internal links** moved to `/news/`. ⚠️ **Reorder test PASSED**: with 14 August's two stories swapped on dev, the page order flipped and both redirects stayed put — `2026-08-14-0` still resolves to `ai-employment-gap`, which under the old positional scheme would by then have meant a different article |
-| 12 | Switch the banner's news source | Claude | ☐ Not started | Forced by the phase. Visitors must see no difference |
+| 12 | Switch the banner's news source | Claude | ✅ Done | 2026-08-26. Reads **`/api/news/recent.json`**, a new endpoint on our own domain. ⚠️ **The stage's own question was answered the other way, and `privacy.html` is why**: the homepage *does* load the Supabase client, but a signed-out visitor currently contacts `supabase.co` **never**, so the processor table's "Account holders" is exactly true and §9 claims *no third party is involved in showing you the page*. A browser query would have broken both, on the most-visited page. **privacy.html checked and deliberately unchanged** — the design keeps it true rather than editing it to catch up. Selection rules stayed in `index.html`; both selections computed and compared — **same three stories, same order, only the links changed**. Failure branch tested by actually breaking the fetch. ⚠️ **`news.json` is now read by nothing the site serves** |
 | 13 | `search-index.json` → `/api/search-index.json` | Claude | ☐ Not started | |
 | 14 | Favourites, pins and notes | Claude | ☐ Not started | ⚠️ First user-authored free text on the site |
 | 15 | Retire `middleware.js` | Claude | ◐ **Deleted at stage 11**; verification owed | The file is gone. It was pulled forward because at stage 11 it stopped being merely redundant and started **intercepting the very URLs the 301 answers**. What remains of this stage is the go-live check: a story URL in a link-preview debugger, which needs production and so cannot happen before stage 17 | Retire, not port |
@@ -1350,11 +1350,63 @@ way of asking the same question.
 
 **Tick as you go**
 
-- [ ] Banner reads from the DB, `news.json` no longer fetched by `index.html`
-- [ ] Same three stories, same order, same 14-day window as before the change
-- [ ] Story links use the new `/news/:slug` form
-- [ ] Screenshotted before and after — indistinguishable
-- [ ] Behaviour with the DB unreachable is graceful: the banner hides, it does not break the homepage
+- [x] Banner reads from the DB, `news.json` no longer fetched by `index.html`
+- [x] Same three stories, same order, same 14-day window as before the change
+- [x] Story links use the new `/news/:slug` form
+- [x] ~~Screenshotted before and after~~ — **replaced with something stronger**, see below
+- [x] Behaviour with the DB unreachable is graceful: the banner hides, it does not break the homepage
+
+**Observed, 2026-08-26**
+
+⚠️ **THE STAGE'S OWN QUESTION WAS ANSWERED THE OTHER WAY, AND privacy.html IS WHY.** The stage
+asks whether the page should use "the Supabase client it already loads". It does load it — `nav.js`
+injects `supabase.min.js`, `supabase-client.js` and `auth.js` on every page — so that was available.
+It was rejected:
+
+- **A signed-out visitor currently makes NO request to `supabase.co`.** `createClient` touches no
+  network and `auth.js` reads the session from `localStorage`. `privacy.html`'s processor table
+  therefore says Supabase affects **"Account holders"**, and that is exactly true today.
+- Querying `news_stories` from the browser would make it **"Everyone"**, on the site's most-visited
+  page, before the reader has done anything — and would break the §9 claim added on 2026-08-23 with
+  the self-hosted fonts: *no third party is involved in showing you the page*. That is an absolute
+  claim with **no third-party section left to append a row to**.
+
+So `/api/news/recent.json` serves it from our own domain: the server talks to Supabase, the browser
+talks only to `amplifiedthinker.com`, which Vercel already covers under "Everyone". ⚠️ **`privacy.html`
+was checked and deliberately NOT changed** — the design was chosen so it stays true as written,
+rather than the page being edited to catch up with the code.
+
+⚠️ **THE SELECTION RULES DID NOT MOVE.** `NEWS_MAX_AGE_DAYS` and `NEWS_MAX_COUNT` are still applied
+in `index.html`; the endpoint returns rows and makes no decisions. Switching the source *and* the
+rules in one change is how "visitors see no difference" becomes unprovable.
+
+**Instead of a screenshot pair, both selections were computed and compared.** The old function was
+transcribed from `index.html` as it stood and run against `news.json`; the new one run against the
+endpoint:
+
+```
+BEFORE (news.json)                          AFTER (/api/news/recent.json)
+2026-08-25  The "Great Flattening" ...      2026-08-25  The "Great Flattening" ...
+2026-08-24  Women Hold Roughly 1 in 4 ...   2026-08-24  Women Hold Roughly 1 in 4 ...
+2026-08-24  Skilled Trades Demand ...       2026-08-24  Skilled Trades Demand ...
+
+same count ................ YES
+same stories, same order .. YES
+links changed by design ... YES (all three, to /news/<slug>)
+```
+
+⚠️ A screenshot pair would have shown three identical rows of truncated text and proved only that
+three rows were present. This compares the actual selection, which is the thing that could have
+changed. The rendered page was then read as well: seven ticker items — four curated, three stories
+— with the new hrefs.
+
+**Failure branch tested by actually breaking it**, not by reading the code: the fetch was pointed at
+a path that 404s and the page reloaded. Banner still present, **four curated announcements still
+rendering, zero story items, no JS errors**, hero and cards intact. Reverted immediately.
+
+⚠️ **`news.json` is now read by nothing the site serves.** `news.html` went at stage 11 and the
+banner went here; the only remaining reader is `scripts/build-news-seed.mjs`, which is a build-time
+tool. The file is dead weight from this point and stage 16 deletes it.
 
 ---
 

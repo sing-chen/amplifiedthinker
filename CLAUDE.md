@@ -32,8 +32,10 @@ The project has a written architecture and a phased plan. Read them rather than 
 ## Where things live
 
 ```
-public/          the 20 hand-written pages, shipped byte-for-byte untouched by Astro
-                 index/about/future-skills/my-people/news/search .html, skills/**,
+public/          the 19 hand-written pages, shipped byte-for-byte untouched by Astro
+                 — 20 until 2026-08-26, when news.html was replaced by the server-rendered
+                   /news/ routes; see below
+                 index/about/future-skills/my-people/search .html, skills/**,
                  nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt
                  — ⚠️ sitemap.xml is NO LONGER HERE. It was deleted 2026-08-26 and is generated
                    per request by src/pages/sitemap.xml.js. Putting a static one back would
@@ -43,7 +45,7 @@ public/          the 20 hand-written pages, shipped byte-for-byte untouched by A
                    inside news.html; that page was deleted at stage 11, so this is now the ONLY
                    copy and there is nothing left to keep it in step with
                  — plus fonts.css and fonts/, the self-hosted type (2026-08-23). ⚠️ fonts.css is
-                   linked by ALL 20 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
+                   linked by ALL 19 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
                    primer/plan pages are self-contained and deliberately skip styles.css, so the
                    @font-face rules could not live there. That asymmetry is the whole reason it
                    is a separate file. The site is Inter and only Inter; Poppins and Source
@@ -102,6 +104,14 @@ src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.a
                                         purpose — 302 leaves the query string canonical. A failed
                                         lookup returns 503 and NEVER redirects, because browsers
                                         cache 301s and the damage would outlive the outage
+                   api/news/recent.json.js  the homepage banner's source. ⚠️ DELIBERATELY an
+                                        endpoint rather than a browser query, though nav.js loads
+                                        the Supabase client on every page. A signed-out visitor
+                                        contacts supabase.co NEVER — createClient makes no request
+                                        and auth.js reads localStorage — which is why privacy.html
+                                        can say Supabase affects "Account holders" and §9 can claim
+                                        no third party is involved in showing you the page. A
+                                        homepage query breaks both. Keep the server between them
                    sitemap.xml.js       ⚠️ REPLACED public/sitemap.xml, which was DELETED. A
                                         static file cannot list 81 story URLs and stay right,
                                         and an incomplete sitemap fails nothing and looks
@@ -176,7 +186,7 @@ _originals/      full-resolution source images, gitignored — outside public/ o
 
 **Two files scoped to the auth pages on purpose.** `pwned.js` and `auth-pages.css` are loaded by
 `/sign-in/` and `/account/` and nowhere else. `styles.css` and `nav.js` are already paid for by all
-19 pages; nothing else needs either of these, and adding them to the shared files would put weight
+18 pages; nothing else needs either of these, and adding them to the shared files would put weight
 on every page to serve two.
 
 **Two kinds of path that look alike.** A file you read or write needs `public/`; a URL inside a page
