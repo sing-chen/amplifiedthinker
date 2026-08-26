@@ -26,8 +26,10 @@ start:
 | `node_modules/`, `dist/`, `.astro/` | Nowhere — rebuilt in ~10s | No, by design |
 | Account access (GitHub, Vercel, GoDaddy, Supabase) | Your password manager | See §6 |
 
-The live site is unaffected by any of this. Vercel and GitHub Pages both build from GitHub, so
-**production keeps running whether or not you have a working machine.**
+The live site is unaffected by any of this. Vercel builds from GitHub, so **production keeps running
+whether or not you have a working machine.** ⚠️ Since the Pages origin was retired on 2026-08-26
+that is one provider rather than two — a Vercel outage now takes the site down, where it used to
+leave a complete copy serving.
 
 ---
 
@@ -167,12 +169,15 @@ echo "done — no output above means all files identical"
 
 Run this in Git Bash. Silence is success: all 66 files should match.
 
-**4. Both live origins are healthy** (they never went down, but confirm)
+**4. Production is healthy** (it never went down, but confirm)
 
 ```bash
 curl.exe -s -o /dev/null -w "vercel: %{http_code}\n" https://amplifiedthinker.com/about.html
-curl.exe -s -o /dev/null -w "pages:  %{http_code}\n" https://sing-chen.github.io/amplifiedthinker/about.html
 ```
+
+⚠️ This checked two origins until 2026-08-26. The GitHub Pages origin was retired that day, so a
+`curl` against `sing-chen.github.io/amplifiedthinker` now returns 404 **by design** — do not read
+that as a symptom of whatever brought you to this runbook.
 
 Then take a fresh backup, which also confirms the backup path still works:
 
@@ -189,7 +194,7 @@ with the provider, and no script here can restore them:
 
 | Access | Needed for | Notes |
 |---|---|---|
-| GitHub account | Pushing; triggering both deploys | Set up a PAT or credential manager on the new machine |
+| GitHub account | Pushing; triggering the deploy | Set up a PAT or credential manager on the new machine |
 | Vercel account | Production deploys, rollbacks, env vars, Deployment Protection | Signed in via GitHub |
 | GoDaddy | **Registrar only** for `amplifiedthinker.com` | Holds the domain and the nameserver delegation — *not* the DNS records |
 | Cloudflare | **DNS zone** for `amplifiedthinker.com`, and inbound Email Routing | `marvin`/`susan.ns.cloudflare.com` are authoritative. A DNS change made at GoDaddy has no effect |
@@ -217,9 +222,10 @@ are not worth backing up.
 
 The **`service_role` key is the opposite, and must never be committed**: it bypasses RLS entirely, so
 one line carrying it undoes every policy in the schema. It currently has **no home at all**. There
-are deliberately no Supabase environment variables in Vercel or the Pages workflow, because anything
-that must work on both origins decides at runtime instead — so the key exists only in the Supabase
-dashboard until Phase 6 adds a server endpoint that needs it. Losing local access does not lose it;
+are deliberately no Supabase environment variables in Vercel, because anything environment-dependent
+decides at runtime instead — so the key exists only in the Supabase dashboard until Phase 6 adds a
+server endpoint that needs it. (This also named the Pages workflow until that origin was retired on
+2026-08-26; the runtime-decision design outlived it and is still the rule.) Losing local access does not lose it;
 losing the Supabase account does.
 
 **Database contents are not covered by this guide at all.** A git bundle backs up code, not Postgres.
@@ -251,7 +257,7 @@ The project's context is committed, so nothing needs reconstructing from memory:
 - [CLAUDE.md](../CLAUDE.md) — orientation, file layout, known traps. Loads automatically in Claude Code.
 - [docs/implementation-sequence.md](implementation-sequence.md) — phase status and what each phase taught.
 - [docs/supabase-integration-plan.md](supabase-integration-plan.md) — architecture and data model.
-- [docs/dev-workflow.md](dev-workflow.md) — branches, previews, both origins, environment settings.
+- [docs/dev-workflow.md](dev-workflow.md) — branches, previews, the deploy, environment settings.
 
 Claude Code keys its project memory to the working-copy path, so a session at a new path starts with
 empty memory. That is fine — `CLAUDE.md` is version-controlled and carries the same context

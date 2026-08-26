@@ -152,9 +152,10 @@ Auth → URL Configuration:
 Site URL:       https://amplifiedthinker.com
 
 Redirect URLs:  https://amplifiedthinker.com/**
-                https://sing-chen.github.io/amplifiedthinker/**
                 https://amplifiedthinker-git-*-singchen.vercel.app/**
                 http://localhost:4321/**
+
+                https://sing-chen.github.io/amplifiedthinker/**   <- RETIRED, still listed
 ```
 
 The scope was `<your-scope>` here until Phase 3 resolved it to `singchen` from the preview URLs
@@ -164,9 +165,14 @@ Without the wildcard line, sign-in works in production and fails on every previe
 useful error. This is the failure mode the original brief flagged as a possibility; the branch
 workflow makes it a certainty rather than a risk.
 
-`https://sing-chen.github.io/amplifiedthinker/**` is **required, not optional** — see "The GitHub
-Pages origin" below. Users blocked from the custom domain by corporate NRD policies reach the site
-only there, so omitting it means sign-in fails for the people with no fallback.
+⚠️ **`https://sing-chen.github.io/amplifiedthinker/**` is stale and still in the dashboard.** It was
+required while the Pages origin was the only route in for users behind corporate NRD filtering; that
+origin was retired on 2026-08-26 and now 404s. The line was dropped from `verify:redirects`'
+expectations on the same day, but **only the Supabase dashboard can actually remove it**, and until
+someone does, production will honour an auth redirect to a host that serves nothing. Low
+consequence — the destination is dead, not hostile — but it is a live allowlist entry pointing at an
+address this project no longer controls the content of. Runbook in
+[../supabase/README.md](../supabase/README.md).
 
 ⚠️ **Phase 0's one blocked activity, now carried by Phase 3.** The values were settled here in
 advance precisely so they would not be invented under pressure later, and Phase 3 spent them
@@ -270,17 +276,19 @@ without editing tracked code.
 
 ### The GitHub Pages origin — a supported second home, not a mirror to retire
 
-> ⚠️ **SUPERSEDED IN PART, 2026-08-18. The retirement decision reverses this section's conclusion,
-> not its content.** The NRD block described below **lifted on 2026-08-18**, 43 days after
-> registration, and the origin was never shared outside the owner's organisation — so the audience
-> that could only reach the site this way is now zero, and the origin is slated for retirement.
-> The decision, and what falls away with it, are in [../CLAUDE.md](../CLAUDE.md) and
-> [../BACKLOG.md](../BACKLOG.md).
+> ⚠️ **FULLY SUPERSEDED, 2026-08-26. THE ORIGIN IS GONE.** Pages is switched off for the repository,
+> the workflow is deleted, and `sing-chen.github.io/amplifiedthinker` 404s. Everything below is a
+> record of why it existed and what it could do, not an instruction — **there is nothing to verify
+> on a second origin any more, and the capability table no longer governs what can be built.**
 >
-> **What still holds:** the origin is live today, so **keep verifying both**. The capability table
-> below is still correct and still governs what can be built. What no longer holds is "it must stay
-> live" as a permanent constraint — treat "this cannot work on Pages" as a scheduling question, and
-> prefer designs that get simpler when the origin goes.
+> The NRD block described below lifted on 2026-08-18, 43 days after registration, and the origin was
+> never shared outside the owner's organisation, so its audience was already zero when it went. The
+> retirement, what was kept deliberately, and the one step that was skipped are in
+> [../BACKLOG.md](../BACKLOG.md); the current shape of things is in [../CLAUDE.md](../CLAUDE.md).
+>
+> ⚠️ **The capability table is worth reading exactly once more, in reverse:** every ✅/❌ pair in it
+> is a constraint that has now been lifted. Anything shelved for "Pages cannot run code" is
+> buildable.
 
 `https://sing-chen.github.io/amplifiedthinker/` **is live and actively rebuilding from `main`.**
 Confirmed in Phase 0: it serves the full site and already carries the Phase 1 `progress.js`.
@@ -356,11 +364,9 @@ unknown population to strand.
 workflows stay. Only `sing-chen.github.io/amplifiedthinker` stops being a way for the public to
 reach the site.
 
-**Not yet done, and both origins are still live** — so the capability matrix above still applies and
-changes still get verified on both. The advice this section used to give still holds, more strongly:
-avoid architecture that assumes Pages must be supported forever. Add to it that "this needs a server,
-so Pages cannot have it" is now a **scheduling** question — retiring the origin first is a legitimate
-answer where it was not before.
+**Done on 2026-08-26.** Pages is off, the workflow is deleted, and the origin 404s — so the
+capability matrix above no longer applies and changes are verified on production only. "This needs a
+server, so Pages cannot have it" has stopped being a question of any kind.
 
 ⚠️ **What is given up, and it is not the NRD audience.** A bad deploy or a Vercel outage currently
 leaves a complete, working site on the other origin, and `main` has been able to fail to deploy since

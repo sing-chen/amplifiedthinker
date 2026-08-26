@@ -73,21 +73,17 @@
   .contact-body{font-family:var(--font-body);font-size:14px;line-height:1.65;color:var(--navy)}
   .contact-link{color:var(--navy);font-weight:500;text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--deep-teal) 35%, transparent);text-underline-offset:2px}
 
-  /* ── SITE UPDATES ── */
+  /* ── SITE UPDATES ──
+     The log itself moved to whats-new.html on 2026-08-26. What is left here is
+     the pointer to it, and it keeps id="updates" on purpose: every footer on
+     the site, plus privacy.html and terms.html, pointed at this anchor for two
+     months, and those links are out in the world. They now land on a block
+     that says where the log went. */
   .updates-block{margin-top:8px;padding-top:32px;border-top:1px solid rgba(172,196,182,.25);scroll-margin-top:var(--site-total-offset,56px)}
-  .updates-toggle{display:flex;align-items:center;gap:6px;background:none;border:none;padding:0;cursor:pointer;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
-  .updates-toggle:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px;border-radius:2px}
-  .updates-chevron{width:12px;height:12px;transition:transform .2s;flex-shrink:0}
-  .updates-toggle[aria-expanded="true"] .updates-chevron{transform:rotate(180deg)}
-  .updates-body{overflow:hidden;max-height:0;transition:max-height .25s ease}
-  .updates-list{display:flex;flex-direction:column;gap:10px;padding-top:14px}
-  .update-item{display:flex;gap:14px;align-items:baseline;font-family:var(--font-body);font-size:14px;line-height:1.65;color:var(--text-muted)}
-  .update-date{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.03em;color:var(--fg-brand);white-space:nowrap;flex-shrink:0;width:96px}
-  .update-text a{color:var(--navy);font-weight:500;text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--deep-teal) 35%, transparent);text-underline-offset:2px}
-  .update-text a:hover{color:var(--mid-teal)}
-  @media(max-width:480px){
-    .update-item{flex-direction:column;gap:2px}
-  }
+  .updates-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+  .updates-text{font-family:var(--font-body);font-size:14px;line-height:1.65;color:var(--text-muted);margin-top:10px}
+  .updates-text a{color:var(--navy);font-weight:500;text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--deep-teal) 35%, transparent);text-underline-offset:2px}
+  .updates-text a:hover{color:var(--mid-teal)}
 
   /* ── FOOTER ──
      Rules live in styles.css under .site-footer. Only the responsive padding
@@ -104,7 +100,7 @@
   /* ── DARK MODE ──
      Thesis and footer are fixed dark brand bands already, unchanged in
      both themes. identity-name/-role, prose-heading, audience-label,
-     aud-title, updates-toggle/-date already sit on tokens whose light
+     aud-title and updates-label already sit on tokens whose light
      value exactly matches the original raw color, so they adapt for
      free. Everything below needed its own override because the raw
      color it started from (navy, text-muted, or a sage-tinted rgba
@@ -122,8 +118,8 @@
   [data-theme="dark"] .contact-body{color:var(--fg-2)}
   [data-theme="dark"] .contact-link{color:var(--fg-brand)}
   [data-theme="dark"] .updates-block{border-top-color:var(--line)}
-  [data-theme="dark"] .update-item{color:var(--fg-2)}
-  [data-theme="dark"] .update-text a{color:var(--fg-brand)}
+  [data-theme="dark"] .updates-text{color:var(--fg-2)}
+  [data-theme="dark"] .updates-text a{color:var(--fg-brand)}
 </style>
 </head>
 <body>
@@ -220,24 +216,22 @@
       </div>
     </div>
 
-    <!-- Contact: one version, shown on every origin. The email used to be hidden on the github.io
-         origin, which had it backwards — some corporate networks block amplifiedthinker.com under
-         newly-registered-domain policies, so those users reach the site only via the GitHub URL and
-         were the ones least able to get in touch any other way.
+    <!-- Contact: one version, unconditionally. It was once hidden on the github.io origin, which
+         had it backwards — corporate networks blocking amplifiedthinker.com under
+         newly-registered-domain policies meant those users reached the site only via the GitHub URL
+         and were the ones least able to get in touch any other way. That origin was retired on
+         2026-08-26 and there is only one now.
 
-         No hostname branching, so this also renders with JavaScript disabled. -->
+         ⚠️ Still no hostname branching, and that is the part to keep: it is why this renders with
+         JavaScript disabled. Do not reintroduce a per-origin variant for the next origin either. -->
     <div class="contact-block" id="contact-block">
       <p class="contact-label">Get in touch</p>
       <p class="contact-body">If something here resonated, or you're working through similar questions about capability, AI adoption, or how work is changing — reach out. I'd love to hear from you, whether that's by email at <a href="mailto:contact@amplifiedthinker.com?subject=Amplified%20Thinker%20feedback" class="contact-link">contact@amplifiedthinker.com</a> or on <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" class="contact-link">LinkedIn</a>.</p>
     </div>
 
     <div class="updates-block" id="updates">
-      <button class="updates-toggle" type="button" aria-expanded="false" aria-controls="updates-body">
-        What's New <svg class="updates-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="updates-body" id="updates-body">
-        <div class="updates-list" id="updates-list"></div>
-      </div>
+      <p class="updates-label">What's New</p>
+      <p class="updates-text">The log of what has changed here — new skills, new pages, new features — has its own page now. <a href="whats-new.html">See what's new</a>.</p>
     </div>
 
   </div>
@@ -261,53 +255,10 @@
         <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </nav>
     </div>
-    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="about.html#updates">What's New</a> · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="whats-new.html">What's New</a> · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
   </div>
 </footer>
 
-<script>
-(function () {
-  'use strict';
-
-  var listEl = document.getElementById('updates-list');
-  if (!listEl) return;
-
-  var toggle = document.querySelector('.updates-toggle');
-  var body = document.getElementById('updates-body');
-
-  if (window.location.hash === '#updates') {
-    toggle.setAttribute('aria-expanded', 'true');
-    body.style.maxHeight = body.scrollHeight + 'px';
-  }
-
-  toggle.addEventListener('click', function () {
-    var expanded = this.getAttribute('aria-expanded') === 'true';
-    this.setAttribute('aria-expanded', String(!expanded));
-    body.style.maxHeight = expanded ? '0' : body.scrollHeight + 'px';
-  });
-
-  function fmtDate(iso) {
-    var d = new Date(iso + 'T00:00:00');
-    if (isNaN(d)) return iso;
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  }
-
-  fetch('updates.json')
-    .then(function (r) { return r.json(); })
-    .then(function (entries) {
-      var sorted = (entries || []).slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
-      listEl.innerHTML = sorted.map(function (u) {
-        return '<div class="update-item"><span class="update-date">' + fmtDate(u.date) + '</span><span class="update-text">' + u.html + '</span></div>';
-      }).join('') || '<p class="update-item">No updates yet.</p>';
-      if (toggle.getAttribute('aria-expanded') === 'true') {
-        body.style.maxHeight = body.scrollHeight + 'px';
-      }
-    })
-    .catch(function () {
-      listEl.innerHTML = '<p class="update-item">Couldn\'t load updates. Try refreshing.</p>';
-    });
-})();
-</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

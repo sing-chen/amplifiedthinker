@@ -1,38 +1,62 @@
 [
     {
+        "date": "2026-08-26",
+        "type": "improvement",
+        "title": "What's New has its own page",
+        "html": "This log used to sit in a collapsible block at the foot of the <a href=\"about.html\">About</a> page. It is now a page of its own, grouped into a card for each month with the most recent one open, and every entry labelled by the kind of change it was."
+    },
+    {
         "date": "2026-08-21",
+        "type": "feature",
+        "title": "Your learning",
         "html": "<a href=\"learning/\">Your learning</a> is a new page showing how far you are through each skill, with the primer and the plan tracked separately, what you have finished, and what you have not opened yet. Find it in the menu under your avatar, or from the top of the <a href=\"future-skills.html#the-library\">Future Skills library</a>."
     },
     {
         "date": "2026-08-21",
+        "type": "feature",
+        "title": "Mark it complete yourself",
         "html": "Every primer and plan now ends with a control to mark it complete — nothing is inferred from how far you scrolled, so it only counts when you say so. Completed items show the date in the sidebar, and you can undo it whenever you like."
     },
     {
         "date": "2026-08-20",
+        "type": "feature",
+        "title": "Accounts, and the pages that explain them",
         "html": "Accounts arrived: sign in to keep your place across devices. New <a href=\"privacy.html\">privacy &amp; cookies</a> and <a href=\"terms.html\">terms of use</a> pages set out exactly what is stored and why, and <a href=\"why-sign-up.html\">why sign up</a> compares an account with browsing as a guest. Account holders can now opt in to hear when new skills or features land."
     },
     {
         "date": "2026-08-13",
-        "html": "<a href=\"future-skills.html#s-strategic\">Strategic Synthesis &amp; Decision-Making</a> added as a new Future Skill, with a primer and full learning plan."
+        "type": "skill",
+        "title": "Strategic Synthesis & Decision-Making",
+        "html": "<a href=\"future-skills.html#s-strategic\">Added to the library</a> as a new Future Skill, with a primer and full learning plan."
     },
     {
         "date": "2026-07-21",
-        "html": "Dark Mode added — toggle light/dark appearance from the nav"
+        "type": "feature",
+        "title": "Dark mode",
+        "html": "Toggle light or dark appearance from the nav."
     },
     {
         "date": "2026-07-17",
-        "html": "<a href=\"future-skills.html#s-systems\">Systems Thinking</a> added as a new Future Skill, with a primer and full learning plan. Announcement banner added to the homepage for surfacing time-sensitive updates."
+        "type": "skill",
+        "title": "Systems Thinking",
+        "html": "<a href=\"future-skills.html#s-systems\">Added to the library</a> as a new Future Skill, with a primer and full learning plan. An announcement banner was added to the homepage for surfacing time-sensitive updates."
     },
     {
         "date": "2026-07-10",
+        "type": "improvement",
+        "title": "Search covers News stories",
         "html": "<a href=\"search.html\">Search</a> now indexes individual News stories, not just the News page, and supports extended search with a range of search term operators."
     },
     {
         "date": "2026-07-08",
+        "type": "feature",
+        "title": "News",
         "html": "<a href=\"news.html\">News</a> section added — a curated, dated feed of workforce and skills stories."
     },
     {
         "date": "2026-07-06",
-        "html": "Site launched."
+        "type": "milestone",
+        "title": "Site launched",
+        "html": "Amplified Thinker went live."
     }
 ]

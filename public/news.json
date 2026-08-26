@@ -1,5 +1,90 @@
 [
   {
+    "date": "2026-08-25",
+    "stories": [
+      {
+        "title": "The \"Great Flattening\" Is Shrinking Management Without Preparing Those Who Remain",
+        "source": "HR Executive",
+        "url": "https://hrexecutive.com/great-flattening-is-shrinking-management-without-preparing-those-who-remain/",
+        "summary": "Only 6% of leaders say their middle managers are prepared to lead through change across most of the organization; roughly 19% say managers are unprepared company-wide and another 19% simply don't know. Two-thirds of organizations provide manager development resources and half offer coaching, yet just 10% systematically use span-of-control data to track how management roles are actually changing.",
+        "implications": "Organizational leaders flattening structures are removing a layer whose replacement capability they cannot measure — span-of-control instrumentation is the missing diagnostic before further delayering.",
+        "tags": ["leadership and culture", "workforce transformation"],
+        "pinned": true
+      }
+    ]
+  },
+  {
+    "date": "2026-08-24",
+    "stories": [
+      {
+        "title": "Women Hold Roughly 1 in 4 New AI Roles — and 13% of AI-Company Executive Seats",
+        "source": "HR Dive",
+        "url": "https://www.hrdive.com/news/women-are-significantly-underrepresented-in-the-ai-workforce/828485/",
+        "summary": "Women's share of AI roles sits about 10 percentage points below their share of non-AI roles — 26% of new AI hires in 2025 versus roughly half of non-AI hires. The gap widens with seniority: 20% of Head of AI roles, 26% of Director of AI, and 13% of executive leadership at AI companies. A typical LinkedIn AI posting advertises ~$177k against ~$80k for non-AI roles.",
+        "implications": "Capability builders running AI upskilling should treat participation equity as a design constraint, not a reporting metric — the compounding wage premium means today's access gap becomes tomorrow's leadership pipeline gap.",
+        "tags": ["skills development", "macro signals", "leadership and culture", "research and insights"]
+      },
+      {
+        "title": "Skilled Trades Demand Nearly Doubles in Three Years as AI Infrastructure Pulls Labour Away",
+        "source": "HR Dive",
+        "url": "https://www.hrdive.com/news/skilled-labor-demand-is-exploding-ai-is-both-a-cause-and-a-solution-nfpa/828486/",
+        "summary": "Demand for skilled labour has roughly doubled over three years, with about a third of NFPA respondents attributing the rise to data-centre and AI-infrastructure buildout drawing electricians, HVAC and technical trades away from other sectors. Hiring an electrician now takes longer than hiring a software developer, and a retirement cliff in the engineering and technical workforce compounds it as vocational pipelines fail to keep pace.",
+        "implications": "Organisational leaders planning physical-asset or facilities work should model trade-labour scarcity as a schedule risk on par with capital cost, and build direct pipeline relationships rather than relying on spot hiring.",
+        "tags": ["macro signals", "skills development", "workforce transformation"]
+      },
+      {
+        "title": "\"What Gets Your Best Employees to Stay\" — Mobility Barriers, Not Engagement Scores, Explain Retention",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/what-gets-your-best-employees-to-stay/",
+        "summary": "The authors argue retention of high performers is better explained by understanding what actually constrains or enables their mobility than by generic engagement interventions. The framing shifts retention from a satisfaction problem to a structural one about outside options and switching costs.",
+        "implications": "Leaders should audit why their strongest people could leave — and what internal moves genuinely compete with the external market — rather than reinvesting in engagement surveys that don't discriminate between stayers and leavers.",
+        "tags": ["leadership and culture", "research and insights"]
+      },
+      {
+        "title": "\"The Power of Opportunity Mindset in Hiring\" — Merit-Based Hiring Lacks the Rigour It Claims",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/the-power-of-opportunity-mindset-in-hiring/",
+        "summary": "Castilla reconsiders merit-based hiring, arguing that many nominally meritocratic selection processes lack the evidentiary rigour to actually identify capability, and proposes an opportunity-oriented alternative to reduce reliance on unvalidated proxies.",
+        "implications": "Anyone standing up skills-based hiring should validate that their assessments predict performance — otherwise \"skills-first\" reproduces the same proxy-based judgment it was meant to replace.",
+        "tags": ["leadership and culture", "skills development"]
+      }
+    ]
+  },
+  {
+    "date": "2026-08-21",
+    "stories": [
+      {
+        "title": "Is Your Organizational Culture Too Nice?",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/08/is-your-organizational-culture-too-nice",
+        "summary": "Argues that organizations optimizing for harmony and comfort over candor systematically undermine performance. The authors call for leaders to model direct feedback, redesign review and governance routines to reward substantive debate over polite approval, and demonstrate that tougher calls produce better outcomes.",
+        "implications": "A structural diagnosis for leaders whose transformation or performance initiatives stall despite apparent alignment — the failure mode is often manufactured consensus, not lack of strategy.",
+        "tags": ["leadership and culture"]
+      },
+      {
+        "title": "Cedefop Updates Skills Forecast: New Data to Guide Europe's Skills and Labour Market Policy to 2035",
+        "source": "Cedefop",
+        "url": "https://www.cedefop.europa.eu/en/news/cedefop-updates-skills-forecast-new-data-guide-europes-skills-and-labour-market-policy-2035",
+        "summary": "EU employment is projected to grow 4%+ through 2035, but with sharp sectoral divergence: ICT (+2.5%/yr, Romania +7.8%) and healthcare surging on green transition and demographic aging, while coal (-10.7%/yr) and manufacturing fuels (-4.4%/yr) decline steeply. A rapidly aging workforce (65+ growing 7%+/yr) intensifies replacement-demand pressure on high-skilled roles.",
+        "implications": "A concrete, non-US data point for workforce planners benchmarking skills investment against demographic and green-transition timelines rather than AI alone.",
+        "tags": ["macro signals", "skills development"]
+      }
+    ]
+  },
+  {
+    "date": "2026-08-20",
+    "stories": [
+      {
+        "title": "Goldman Sachs: AI's Hiring Drag Is Now Visible in the Data — and Hits Entry-Level Workers Hardest",
+        "source": "CNBC",
+        "url": "https://www.cnbc.com/2026/08/19/goldman-ai-impact-employment-jobs.html",
+        "summary": "Goldman Sachs' cross-country analysis finds AI exposure carries roughly 3x the employment drag for entry-level workers versus the broader labor market, with call-center roles down as much as 39% below trend in the US. The effect is concentrated in a narrow band of industries — IT services, publishing, computer programming — and shows up mainly as suppressed hiring rather than layoffs, consistent across the US, Germany, Australia and Canada.",
+        "implications": "Organizational leaders should treat entry-level pipeline erosion as a structural planning problem, not a cyclical blip, since the mechanism (reduced hiring, not firing) won't show up in layoff headlines.",
+        "tags": ["macro signals", "research and insights", "workforce transformation"]
+      }
+    ]
+  },
+  {
     "date": "2026-08-19",
     "stories": [
       {
@@ -58,8 +143,7 @@
         "url": "https://fortune.com/2026/08/13/buried-in-openais-latest-research-no-correlation-between-ai-use-and-revenue-per-employee/",
         "summary": "A 69-page OpenAI-co-authored study (with Columbia Business School and Wharton researchers) analyzing enterprise ChatGPT usage from Oct 2025–Mar 2026 finds token usage per employee is not meaningfully associated with revenue per employee once controls are applied. Senior leaders use AI least intensively even as they drive adoption decisions; early-career employees use it most.",
         "implications": "Leaders relying on adoption/usage metrics as a proxy for AI ROI are measuring the wrong thing; the paper suggests real value capture depends on empowering frontline usage rather than top-down mandates.",
-        "tags": ["workforce transformation", "research and insights"],
-        "pinned": true
+        "tags": ["workforce transformation", "research and insights"]
       }
     ]
   },

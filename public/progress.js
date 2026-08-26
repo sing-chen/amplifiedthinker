@@ -1130,14 +1130,28 @@
     };
   }
 
+  // ⚠️ IDEMPOTENT, AND IT HAS TO BE. This used to build a fresh store and mount
+  // a fresh completion control on every call, which was harmless only while
+  // exactly one caller existed. A second caller — exit-guard.js needs `mode()`
+  // and `completedAt()` — would have silently mounted a SECOND "mark complete"
+  // control on all ten pages, and given itself a store whose completion state
+  // could drift from the one the page is showing.
+  //
+  // Caching is the fix rather than asking callers to co-ordinate: two stores for
+  // one page is never the intent, and the page and the guard must agree about
+  // whether this item is finished. Same rule as everywhere else here — one
+  // owner for one answer.
+  var pageStore = null;
+
   function forPage() {
+    if (pageStore) return pageStore;
     var match = PAGE_RE.exec(global.location.pathname);
     if (!match) return createNullStore();
-    var store = createStore(match[2], match[1]);
+    pageStore = createStore(match[2], match[1]);
     // Self-mounting on purpose: ten pages already call forPage(), and none of
     // them should have to learn a second call to get the control.
-    mountCompletion(store);
-    return store;
+    mountCompletion(pageStore);
+    return pageStore;
   }
 
   global.AmplifiedProgress = {

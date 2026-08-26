@@ -231,17 +231,22 @@ JSON, right entry count, every check green — the only symptom was search resul
 the PowerShell trap in [CLAUDE.md](../../CLAUDE.md).
 
 Skill titles and descriptions here routinely contain em dashes and `·`, so this file is squarely in
-range. `npm run verify:encoding` catches it and runs as `prebuild` on both origins; `npm run
+range. `npm run verify:encoding` catches it and runs as `prebuild`, so it gates the deploy; `npm run
 fix:encoding` repairs it.
 
 **5d. Announce the skill in both places, in one sitting**
 
 A new skill gets **two** entries, and they are the same fact written twice:
 
-- [updates.json](public/updates.json) — the permanent What's New list. Prepend an object with `date`
-  (`YYYY-MM-DD`) and `html`, following the shape of the existing skill entries: a link to
-  `future-skills.html#s-[slug]` wrapping the skill name, then "added as a new Future Skill, with a
-  primer and full learning plan."
+- [updates.json](public/updates.json) — the permanent What's New list, served by
+  [whats-new.html](public/whats-new.html). Prepend an object with **four** keys: `date`
+  (`YYYY-MM-DD`), `type` (`"skill"` — it drives the coloured pill, and the key is the same one the
+  homepage banner takes), `title` and `html`. Follow the shape of the existing skill entries — `title` is the
+  skill name on its own, and `html` is a link to `future-skills.html#s-[slug]` reading "Added to the
+  library", then "as a new Future Skill, with a primer and full learning plan."
+  ⚠️ **The day is never displayed.** Since 2026-08-26 the page groups entries by month and labels
+  them "August 2026"; `date` still decides the month and the order within it, so it must be right,
+  but the reader only ever sees the `title`. An entry with no `title` renders as a bare paragraph.
 - The `ANNOUNCEMENTS` array in [index.html](public/index.html) — the homepage banner. Add an item at
   the **top** with `type: 'skill'`, the same `date`, a one-line `text` (the skill name in `<b>`, then
   an em-dash and what it lets you do), `linkHref: 'future-skills.html#s-[slug]'` and
@@ -325,7 +330,7 @@ learns a plan or primer's length **for a skill nobody has opened** — the datab
 that, because a `skill_progress` row exists only once someone visits.
 
 ⚠️ **This is not optional and it is not deferrable.** `verify:catalogue` runs as npm's `prebuild`,
-so a stale catalogue **fails `npm run build`** — and both origins build with `npm run build`, so a
+so a stale catalogue **fails `npm run build`** — which is how production builds, so a
 new skill without this step does not deploy anywhere. That is deliberate: the alternative is a
 committed file quietly reporting the wrong denominator, which is what a `skills` table was rejected
 for. Add the new skill to the `SKILLS` array in

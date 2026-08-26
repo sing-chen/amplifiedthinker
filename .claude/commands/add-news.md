@@ -133,7 +133,7 @@ symptom was search results reading `Brené Brown`. See the PowerShell trap in
 [CLAUDE.md](../../CLAUDE.md).
 
 `npm run verify:encoding` now catches this, and it is wired as `prebuild`, so a corrupted index fails
-the build on both origins rather than shipping. If it ever fires: `npm run fix:encoding`, then find
+the build rather than shipping. If it ever fires: `npm run fix:encoding`, then find
 what wrote the file.
 
 ⚠️ **Expect a whole-file reformat the first time the snippet is used.** The committed file is
