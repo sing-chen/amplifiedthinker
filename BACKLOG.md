@@ -2083,14 +2083,40 @@ page, and the same one the `learning.js` header warns about for completion rules
 - `notes_one_per_target_idx` — unique on `(user_id, target_type, target_id)`.
 - `notes_own` — the only policy on the table. No admin view, deliberately.
 
-**The one design decision that is NOT already made:** ⚠️ *one note per plan, or one note per
-SECTION?* The unique index says one per `target_id`, so the answer is whatever goes in that column.
-`why-sign-up.html` currently promises *"a thought against a plan section"*, which means
-`target_id` has to carry the section — something like `analytical-thinking#step-3` — not just the
-slug. **Decide that before the first row is written**, because `target_id` is what every existing
-note is addressed by and changing the scheme afterwards orphans them.
+### The shape, decided 2026-08-26
 
-**What has to be lifted out of `public/news-actions.js` rather than copied:**
+⚠️ **MANY NOTES PER PLAN, NOT ONE PER SECTION — AND THE REASON IS HOW PEOPLE ACTUALLY READ.** A
+reader is in step 7 when the thought about step 3 arrives. Requiring them to navigate back to
+step 3 to write it down is asking them to interrupt the reading to file the note, and the note is
+the thing that gets abandoned. So a note is written wherever the reader is, and *optionally says
+what it is about*.
+
+That also settles the length question. **500 characters stays** — the limit is per note, and a plan
+does not need a longer note, it needs more of them. Raising the cap for skills would give two
+surfaces two different definitions of a note for no gain.
+
+**What this requires that news did not:**
+
+- ⚠️ **`notes_one_per_target_idx` MUST NOT APPLY TO SKILL ROWS.** It is unique on
+  `(user_id, target_type, target_id)`, so with `target_id` set to a plan it would allow exactly one
+  note per plan — the opposite of this. Scope it `where target_type = 'news'`. That rule was only
+  ever reasoned about for stories; applying it to a half of the table nobody had designed yet was
+  accidental reach, not intent.
+- **A nullable column for what the note is about** — `anchor`, holding a section id, `null` for a
+  note about the plan as a whole. It cannot be folded into `target_id`: that would make it one note
+  per section again, and would leave unattached notes with nowhere to live.
+- **`target_id` has to distinguish a primer from a plan**, because the same skill has both.
+  `skill_progress` already solved this with a separate `content_type` column; notes cannot, so the
+  value needs to carry it — `analytical-thinking:plan`.
+- **Editing addresses a note by its `id`**, not by an upsert on a conflict target. `notes.id` is
+  already a uuid primary key, so nothing new is needed — but the news code path upserts, and that
+  is one of the places the two diverge rather than share.
+- **An order to display them in.** `created_at` exists. Decide whether the list reads oldest-first
+  (the order they were thought) or newest-first (the order news uses), and say which — they are
+  different claims about what the list is for.
+
+**What has to be lifted out of `public/news-actions.js` rather than copied** — noting that a
+one-note surface and a many-note surface share the editor, not the container:
 
 - the view/edit state machine — no note → edit, note → view, Save lands in view and closes
 - inline confirmation for Clear and Delete, and Escape backing out of it
