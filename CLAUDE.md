@@ -87,6 +87,19 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                                        defect within a day: the library read completed_at and
                                        this read visited coverage, and one finished skill
                                        showed as COMPLETED on one page and 30% on the other
+                 — plus news-actions.js, added 2026-08-26. ⚠️ /news/ ONLY, same scoping rule as
+                   auth-pages.css. Save, per-reader pin and a private note, and the reader's
+                   whole saved/pinned set published for the LIST to render (the Saved chip and
+                   the Your pins group).
+                   ⚠️ user_news.pinned is ONE READER'S pin. news_stories.pinned is EDITORIAL,
+                   admin-set, one site-wide. Both render in the same list wearing the same icon,
+                   which is exactly where they get conflated. This file writes only the first
+                   ⚠️ IT POLLS FOR window.AmplifiedAuth AND MUST. nav.js appends the auth stack
+                   with async=false, which preserves order but does NOT delay DOMContentLoaded,
+                   so auth.js can land after any body script has run. Reading the global once and
+                   giving up leaves the personal layer unpainted FOR SIGNED-IN READERS ONLY —
+                   the entire audience for it. progress.js and learning.js poll for the same
+                   reason. Short-circuit on <html data-session="out"> so guests never poll
 src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.astro are live;
                  blog and admin still to come. Both scaffolds were deleted 2026-08-19 —
                  auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is
@@ -361,6 +374,27 @@ redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still n
   2026-08-26: `.story-panel` was the one surface in news.html's dark block without one, so in dark
   mode it wore a near-white `#D8E4DD` outline while the panel beside it wore a faint one. Valid CSS,
   correct token name, and **only a computed-style read finds it** — it had been live for weeks.
+- ⚠️ **`node --check` PROVES SYNTAX, NOT THAT ANYTHING EXISTS.** A call to a function that has
+  been deleted parses perfectly and fails at runtime. On 2026-08-26 a coarse range replacement in
+  `news-actions.js` removed `paint()`, `toggleFlag()` and `reflectFlag()` outright — `node --check`
+  stayed green and the build passed, because dangling references are valid JavaScript. **After any
+  edit that replaces a RANGE rather than a known string, list the functions defined and the
+  functions called and compare them.** ⚠️ And calibrate that scan against a file known to be good
+  before trusting it: the first version flagged `var(`, `rgba(` and `calc(` out of embedded CSS and
+  buried the real finding in noise. A checker that has not been shown to pass on working code is
+  measuring nothing — same argument as the control probe in `verify-redirects`.
+- ⚠️ **`notes` holds the first user-authored free text on this site, and RLS is the ONLY thing
+  scoping it.** Two consequences that are easy to miss:
+  - **The application cannot detect a broken policy.** `news-actions.js` always sends
+    `.eq('user_id', uid)`, so if the policy were `using (true)` the site would look **exactly the
+    same** — your notes visible, nobody else's showing up, everything feeling right. The client
+    filter masks it completely, and `npm run verify:rls` never authenticates so it cannot see it
+    either. Proving it means deliberately making the request the app never makes, **from a second
+    account** — with one owner, "only mine" and "everything" are the same result.
+  - **A note is private today, which makes a stored payload self-XSS — and that stops being true
+    the moment anything renders notes ACROSS users.** Phase 7's admin UI is exactly that, and it
+    would turn self-XSS into stored XSS against the account holding `is_admin`. There is one render
+    path today (`esc()` into a `<textarea>`); any new one needs escaping on purpose, not by luck.
 - ⚠️ **`scrollIntoView` scrolls EVERY scrollable ancestor, the document included.** Bringing an item
   into view inside a scrolling panel also moves the whole page. On `/news/` that meant the page
   arrived **already scrolled past its own hero**, on load, before the reader touched anything — from

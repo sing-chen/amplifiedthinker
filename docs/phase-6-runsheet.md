@@ -59,7 +59,7 @@ prevent.
 | 11 | The 301 endpoint for legacy URLs | Claude | ✅ Done | 2026-08-26. `/news.html?story=<date>-<index>` → **301** → `/news/<slug>`, resolved through the stored `legacy_id`. ⚠️ **`public/news.html` deleted and `/news.html` is a route now** — Vercel runs `handle: filesystem` before any route, so a static file at that path would have shadowed the endpoint entirely; there was no arrangement where both work. ⚠️ **`middleware.js` deleted here, not at stage 15**: its matcher is `/news.html` and it runs *before* the route, so for a social crawler it would have served the old shell **instead of the 301** — and `curl` could never have caught that. Unknown id → **404** (the old page showed the *pinned* story with a 200); failed lookup → **503, never a redirect**, because browsers cache 301s. **13 internal links** moved to `/news/`. ⚠️ **Reorder test PASSED**: with 14 August's two stories swapped on dev, the page order flipped and both redirects stayed put — `2026-08-14-0` still resolves to `ai-employment-gap`, which under the old positional scheme would by then have meant a different article |
 | 12 | Switch the banner's news source | Claude | ✅ Done | 2026-08-26. Reads **`/api/news/recent.json`**, a new endpoint on our own domain. ⚠️ **The stage's own question was answered the other way, and `privacy.html` is why**: the homepage *does* load the Supabase client, but a signed-out visitor currently contacts `supabase.co` **never**, so the processor table's "Account holders" is exactly true and §9 claims *no third party is involved in showing you the page*. A browser query would have broken both, on the most-visited page. **privacy.html checked and deliberately unchanged** — the design keeps it true rather than editing it to catch up. Selection rules stayed in `index.html`; both selections computed and compared — **same three stories, same order, only the links changed**. Failure branch tested by actually breaking the fetch. ⚠️ **`news.json` is now read by nothing the site serves** |
 | 13 | `search-index.json` → `/api/search-index.json` | Claude | ✅ Done | 2026-08-26. **104 entries before, 104 after**, compared against the old file read out of git: same news set, same order, `tags` still omitted, 122 non-ASCII characters both sides and no mojibake. ⚠️ **Only 78% could be derived away** — the 23 page/primer/plan/person entries are editorial and moved to `src/data/search-static.json` unchanged, extracted by script rather than retyped. ⚠️ **The comparison caught a static entry I had not planned to touch**: the News *page*'s own result still pointed at `news.html`. ⚠️ **A failed read degrades rather than 503s** — `search.html` treats a failed fetch as fatal, so an endpoint that failed hard would have turned a DB outage into a dead search page, a regression caused by the fix. Tested by injecting a failure: 23 entries, `x-news-entries: 0`, search still working. `/add-skill` **repointed, not stripped** | |
-| 14 | Favourites, pins and notes | Claude | ☐ Not started | ⚠️ First user-authored free text on the site |
+| 14 | Favourites, pins and notes | Claude | ◐ Built; **a signed-in pass is owed** | 2026-08-26, committed `bfa6d4f`. Save, per-reader pin and a private note on `/news/<slug>` — plus **a read surface the stage never listed**: a Saved filter chip and a Your pins group, because a favourite you cannot go and look at is a button that reports success into a void. Note panel split into **view and edit modes** so Save has somewhere to land; Delete belongs to the note, Clear to the text, both confirmed inline rather than via `confirm()`. Limit is **500 in the database and 500 in the UI** — browsers write to PostgREST directly, so `maxlength` is a courtesy and the constraint is the control. ⚠️ **Defect found by reading the loader**: `start()` read `AmplifiedAuth` once, but nav.js appends the auth stack with `async=false` which does not delay `DOMContentLoaded` — the layer would have stayed unpainted **for signed-in readers only**. Now polls, as `progress.js` does. ⚠️ **A coarse edit deleted three functions and `node --check` stayed green.** ⏭️ **Two-account RLS proof deferred to stage 17** | ⚠️ First user-authored free text on the site |
 | 15 | Retire `middleware.js` | Claude | ◐ **Deleted at stage 11**; verification owed | The file is gone. It was pulled forward because at stage 11 it stopped being merely redundant and started **intercepting the very URLs the 301 answers**. What remains of this stage is the go-live check: a story URL in a link-preview debugger, which needs production and so cannot happen before stage 17 | Retire, not port |
 | 16 | Copy, privacy, and the obsolete command | Claude | ☐ Not started | ⚠️ Same-commit rule. `/add-news` dies here |
 | 17 | Go live — prod migration, then merge | Human + Claude | ☐ Not started | Migration **immediately before** the merge, never after |
@@ -1511,13 +1511,97 @@ state should invite rather than block.
 
 **Tick as you go**
 
-- [ ] Favourite, per-user pin and note controls on `/news/:slug`
-- [ ] Signed-out state shows the affordance and routes to `/sign-in/?next=…`
-- [ ] ⚠️ The `?next=` href verified by **reading the rendered attribute after scrolling**, not by calling the function — this exact defect shipped twice
-- [ ] RLS proven: a second account cannot read or write the first account's notes, tested from the browser console
-- [ ] `[hidden]` toggling: any new component that sets `display` carries an explicit override, and computed `display` is what gets asserted
-- [ ] `why-sign-up.html` — favourites and notes moved off `Soon`
-- [ ] Note length limited, and what happens at the limit is decided rather than discovered
+- [x] Favourite, per-user pin and note controls on `/news/:slug`
+- [x] Signed-out state shows the affordance and routes to `/sign-in/?next=…`
+- [x] ⚠️ The `?next=` href verified by **reading the rendered attribute after scrolling**, not by calling the function — this exact defect shipped twice
+- [ ] ⏭️ RLS proven: a second account cannot read or write the first account's notes — **DEFERRED TO STAGE 17**, see below
+- [x] `[hidden]` toggling: any new component that sets `display` carries an explicit override, and computed `display` is what gets asserted
+- [x] `why-sign-up.html` — favourites and notes moved off `Soon`
+- [x] Note length limited, and what happens at the limit is decided rather than discovered
+- [x] **Added, not in the original list:** somewhere to SEE what was saved — see below
+- [ ] A signed-in pass in a real browser — **owed by the site owner**
+
+**Observed, 2026-08-26**
+
+⚠️ **THE STAGE LISTED WRITE CONTROLS AND NO READ SURFACE, AND THAT IS A GAP IN THE STAGE RATHER
+THAN IN THE BUILD.** A favourite you cannot go and look at is a button that reports success into a
+void. Raised by the site owner while reviewing the first cut. Added:
+
+- a **Saved** chip in the filter bar, shown only to a signed-in reader who has saved something —
+  showing it to a guest advertises a filter that can only return nothing, and showing it at zero
+  reads as broken rather than empty
+- a **Your pins** group at the top of the headline list, never collapsed behind an archive toggle,
+  because a pin is a request to keep something in sight
+- un-saving the last story falls back to **All stories** rather than stranding the reader on a
+  filter that can no longer match anything
+
+⚠️ **`user_news.pinned` renders in the same list as `news_stories.pinned` and they are different
+concepts** — one reader's pin versus the editorial one, one site-wide. Both wear the pin icon
+because both mean "keep this in sight", but only one is visible to anyone else. The schema carries a
+comment warning about this; the list is exactly where they would get conflated.
+
+**The note panel has two modes**, which is what gives it a resting state — a single always-editing
+panel has no natural end, because saving leaves you in a textarea with a Save button:
+
+| | opens to | buttons |
+|---|---|---|
+| No note yet | edit | Save note *(disabled)* · Clear · Close |
+| Note exists | **view** | Edit · Delete · Close |
+| Editing | edit | Save note · Clear · **Cancel** |
+
+**Save lands in view mode.** Delete belongs to the note and Clear belongs to the text, so they live
+in different modes and cannot be mistaken for one another. Both ask first, **inline rather than
+`confirm()`** — a browser dialog cannot be styled to match anything here — and Escape backs out of
+the question. Deleting closes the panel; an empty editor left open says nothing the status line has
+not already said. Save is disabled when empty **and when unchanged from what is stored**, which is
+what stops the button inviting a second press after a successful save.
+
+**The full machine was walked step by step and read back at each step**, not reasoned about:
+
+```
+painted   edit  closed  Save(disabled)              "Add a note"
+opened    edit  flex    Save(disabled)
+typed     edit  flex    Save                        counter 16 / 500
+saved     VIEW  flex    Edit Delete Close           "View note"   "Note saved."
+edit      edit  flex    Save(disabled) - unchanged
+changed   edit  flex    Save
+clear?    edit  flex    "Clear what you have typed?"  textarea untouched
+cancel    edit  flex    toolbar restored exactly
+cleared   edit  flex    Save(disabled)  "Cleared. Your saved note is unchanged until you save."
+delete?   view  flex    "Delete this note permanently?"
+escape    view  flex    toolbar restored
+deleted   edit  CLOSED  "Add a note"   "Note deleted."   db: null
+```
+
+⚠️ **A DEFECT FOUND BY READING THE LOADER, INVISIBLE IN A SIGNED-OUT BROWSER.** `start()` read
+`window.AmplifiedAuth` once and returned if absent — but nav.js appends the auth stack with
+`async = false`, which preserves execution order and does **not** delay `DOMContentLoaded`, so
+`auth.js` can land afterwards. The personal layer would have stayed unpainted **for signed-in
+readers only**, which is the entire audience for the feature and the group least likely to report
+it. `progress.js` and `learning.js` both poll for exactly this reason and say so; this now polls the
+same way, short-circuiting on `data-session="out"` so guests never do.
+
+⚠️ **`nav.js`'s sign-in href refresher now matches `[data-signin-return]` as well as its own
+class.** The alternative was a second copy of that logic in `news-actions.js` — and the lesson that
+function exists for is that when two files maintain one control, they drift. The rendered attribute
+was read at activation: `#at=640` appears when scrolled and is gone at the top.
+
+⚠️ **A note is the first user-authored free text this site stores**, so the limit is enforced in the
+DATABASE, not the form. Signed-in browsers write to PostgREST directly, so `maxlength` is a
+courtesy; `notes_body_length` is the control. 500 in both, with a comment on each saying it must
+match the other.
+
+⚠️ **`notes.target_id` has no foreign key and no shape constraint**, so a signed-in account with a
+console can create rows against target_ids that point at nothing. Every such row is private to that
+account. **Judged storage untidiness rather than a security hole and deliberately left open** — the
+reasoning is written into the migration header so the next reader meets the decision rather than
+rediscovering the gap.
+
+⚠️ **A self-inflicted defect worth recording.** A coarse range replacement deleted `paint()`,
+`toggleFlag()` and `reflectFlag()` outright, and **`node --check` stayed green** — a call to a
+function that no longer exists is valid syntax. Caught by a scan for called-but-undefined names,
+calibrated first against three known-good files: a checker that has not been shown to pass on
+working code is measuring nothing.
 
 ---
 
@@ -1653,6 +1737,43 @@ migration down-script plus a code revert, and the two are not symmetric. Read
 - [ ] ⚠️ Reorder test re-run on production, same story, order restored
 - [ ] `npm run verify:rls` green with its updated expectation
 - [ ] Homepage banner checked by eye on production
+- [ ] ⚠️ **The two-account RLS proof** — deferred here from stage 14. See below
+
+### The two-account RLS proof — deferred from stage 14
+
+**Why it is not covered by `verify:rls`.** That gate authenticates as nobody: it proves the
+**anon** key reads and writes nothing. Every policy on `notes` and `user_news` applies to the
+**`authenticated`** role, so the predicate that actually protects a reader's notes —
+`user_id = auth.uid()` — has never been executed by any check in this repo.
+
+⚠️ **THE APPLICATION CANNOT DETECT THIS FAILURE, BY CONSTRUCTION.** `news-actions.js` always
+sends `.eq('user_id', uid)`. If the policy were `using (true)` — one word wrong — the site would
+look **exactly the same**: you would see your own notes, nobody else's would appear, and everything
+would feel correct. The client-side filter masks a broken policy completely. The only way to find
+out is to deliberately make the request the application never makes.
+
+⚠️ **ONE ACCOUNT CANNOT PROVE IT.** With a single owner, "returns only mine" and "returns
+everything" are the same result — the test passes while measuring nothing. Same reason
+`verify-redirects` insists on probing an origin that must be refused: without the negative case
+there is no evidence.
+
+Signed in as **B**, from the browser console:
+
+| ask | must answer |
+|---|---|
+| `select * from notes` — no user filter | only B's rows, never A's |
+| `select from notes where target_id = <a story A noted>` | empty |
+| `update notes set body = 'x' where id = <A's note id>` | 0 rows changed |
+| `insert into notes (user_id = A's id, …)` | rejected by `with check` |
+
+⚠️ **The last one is the one that gets forgotten.** `using` governs what you can SEE; `with check`
+governs what you can WRITE. A policy can be correct on reads and still let anyone write rows on
+someone else's behalf.
+
+⏭️ **Deferred here deliberately, and the trade is worth naming**: proving it on dev before the merge
+would have been better, but it needs a second dev account nobody had. Production has two real
+accounts, so it is provable there — at the cost of being **after** go-live rather than before. If
+that trade ever looks wrong, the fix is one dev sign-up, not a new tool.
 
 ---
 
