@@ -169,6 +169,12 @@
   [data-theme="dark"] .headline-item.pinned:hover{background:rgba(201,122,74,.2)}
   [data-theme="dark"] .headline-item.pinned.active{background:rgba(201,122,74,.24)}
   [data-theme="dark"] .headline-archive{border-top-color:var(--line)}
+  /* ⚠️ `--light-sage` does not flip, and this panel was the one surface in this
+     block without an override — so in dark mode it kept a near-white #D8E4DD
+     outline while .headline-col beside it wore a faint one. Found 2026-08-26
+     by reading the computed border colour on the new /news/ route, which is a
+     copy of this block; fixed in both. */
+  [data-theme="dark"] .story-panel{border-color:var(--line)}
   [data-theme="dark"] .story-source{color:var(--accent-warm)}
   [data-theme="dark"] .story-pinned-badge{color:var(--accent-warm)}
   [data-theme="dark"] .story-nav-btn{border-color:var(--line)}

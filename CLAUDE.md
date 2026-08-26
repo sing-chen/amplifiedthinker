@@ -34,7 +34,15 @@ The project has a written architecture and a phased plan. Read them rather than 
 ```
 public/          the 20 hand-written pages, shipped byte-for-byte untouched by Astro
                  index/about/future-skills/my-people/news/search .html, skills/**,
-                 nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt, sitemap.xml
+                 nav.js, progress.js, styles.css, fuse.min.js, *.json, robots.txt
+                 — ⚠️ sitemap.xml is NO LONGER HERE. It was deleted 2026-08-26 and is generated
+                   per request by src/pages/sitemap.xml.js. Putting a static one back would
+                   SHADOW that route, because `handle: filesystem` runs first
+                 — plus news-app.css, added 2026-08-26. ⚠️ /news/ and /news/<slug> ONLY, same
+                   scoping rule as auth-pages.css. It is a deliberate near-copy of the <style>
+                   block inside news.html and the duplication is TEMPORARY: both surfaces are
+                   live for two stages of Phase 6, so a visual change belongs in BOTH files
+                   until news.html goes at stage 16
                  — plus fonts.css and fonts/, the self-hosted type (2026-08-23). ⚠️ fonts.css is
                    linked by ALL 20 PAGES AND BaseLayout, which styles.css is NOT — the 10 skill
                    primer/plan pages are self-contained and deliberately skip styles.css, so the
@@ -82,6 +90,42 @@ src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.a
                  blog and admin still to come. Both scaffolds were deleted 2026-08-19 —
                  auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is
                  ever wanted back (auth-test holds RLS checks nothing has replaced)
+                 — plus the first SERVER-RENDERED routes, added 2026-08-26 (Phase 6 stage 10).
+                   ⚠️ Each declares `export const prerender = false`. WITHOUT IT the route is
+                   built once at deploy time and then serves a frozen snapshot for ever — it
+                   keeps working, keeps looking healthy, and quietly stops showing anything
+                   published since. That is the exact failure server rendering was added to stop
+                   news/index.astro     /news/ — the index
+                   news/[slug].astro    /news/<slug> — one story, real text in the response body
+                   sitemap.xml.js       ⚠️ REPLACED public/sitemap.xml, which was DELETED. A
+                                        static file cannot list 81 story URLs and stay right,
+                                        and an incomplete sitemap fails nothing and looks
+                                        exactly like a correct one — same shape as the
+                                        catalogue trap. Serves the static half even if the
+                                        story read fails
+src/lib/         news-render.mjs  ⚠️ THE MARKUP, WRITTEN ONCE AND RUN IN TWO PLACES — the server
+                                  builds the first paint from it and public's client script
+                                  re-renders from the same functions. A server render and a
+                                  client render of one list are two implementations of one thing
+                                  and they drift silently: the page looks right until JS takes
+                                  over. Pure string building, no DOM and no fetch, so it runs
+                                  unchanged in a serverless function and in a browser. Never
+                                  import `node:` anything into it
+                 news-data.mjs    the PostgREST read. SERVER ONLY. ⚠️ The project table is
+                                  parsed out of public/supabase-client.js by astro.config.mjs
+                                  and injected with `vite.define` — at BUILD time, because
+                                  public/ is not in a Vercel serverless bundle and a readFileSync
+                                  in the route would work in dev and find nothing in production.
+                                  The prod/dev choice is still per request, from the request's
+                                  own hostname, by the same BLOCKLIST rule the browser uses
+src/components/  NewsView.astro (the reader, shared by both routes), NewsUnavailable.astro (503),
+                 NewsNotFound.astro (404). ⚠️ An unreadable feed is a 503 with a page that says
+                 so, never an empty list — "no stories" and "the database did not answer" look
+                 identical once they reach HTML, and serving the second as the first tells a
+                 crawler the feed is genuinely empty
+src/scripts/     news-app.js — filter, search, keyboard nav and in-place story swapping for the
+                 /news/ routes. Bundled by Astro (a module here is fine: it has no
+                 document.currentScript and no inline handlers, which is what is:inline is for)
 src/layouts/     BaseLayout.astro — mirrors index.html's head so new pages match old ones
 middleware.js    Vercel Edge Middleware, repo root. Serves social-preview meta tags to bots
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
@@ -273,6 +317,20 @@ redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still n
   `--fg-on-brand` does not flip on these pages either, so say it explicitly.
   The binding colour rules live in
   [docs/design-modernisation.md](docs/design-modernisation.md) — read it before adding a token.
+  ⚠️ **The other pages flip their semantic tokens, but not all of them — `--light-sage` does not.**
+  A rule using it needs an explicit `[data-theme="dark"]` counterpart like any raw colour. Found
+  2026-08-26: `.story-panel` was the one surface in news.html's dark block without one, so in dark
+  mode it wore a near-white `#D8E4DD` outline while the panel beside it wore a faint one. Valid CSS,
+  correct token name, and **only a computed-style read finds it** — it had been live for weeks.
+- ⚠️ **`scrollIntoView` scrolls EVERY scrollable ancestor, the document included.** Bringing an item
+  into view inside a scrolling panel also moves the whole page. On `/news/` that meant the page
+  arrived **already scrolled past its own hero**, on load, before the reader touched anything — from
+  a call whose only intent was to reveal the selected headline in a 320px column. Adjust the panel's
+  own `scrollTop` instead, and pair it with `focus({preventScroll:true})`, because focusing an
+  off-screen element scrolls the page for the same reason. ⚠️ **`news.html` has carried the identical
+  call since it was written** and it is invisible there only because the panel happens to start at
+  the top of a shorter page — which is what makes this a trap rather than a typo: the bug is in
+  working code, and it moves the moment the code is reused somewhere taller.
 - ⚠️ **Test what the nav RENDERED, never the function that renders it.** Two defects in one
   afternoon, 2026-08-21, both in the sign-in `?next=` work, both passing every check at the time:
   1. `?next=` was wired into `nav.js`'s `paintAuthSlot` but not `auth.js`'s `renderNavAuth`. **Two

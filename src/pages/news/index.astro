@@ -1,0 +1,50 @@
+---
+// /news/ — the index, rendered on the server.
+//
+// ⚠️ `prerender = false` IS LOAD-BEARING. Without it Astro builds this route
+// once at deploy time and then serves that snapshot for ever: the page keeps
+// working, keeps looking healthy, and quietly stops showing anything published
+// since the last deploy. That is the exact failure server rendering was added
+// to prevent — see the `output` note in astro.config.mjs.
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsView from '../../components/NewsView.astro';
+import NewsUnavailable from '../../components/NewsUnavailable.astro';
+import { fetchPublishedStories, hostnameFor } from '../../lib/news-data.mjs';
+import { pickDefault } from '../../lib/news-render.mjs';
+
+const DESCRIPTION = 'A curated, dated feed of workforce, skills, and organizational-readiness stories — hand-picked from a daily research scan of WEF, McKinsey, Deloitte, and other institutional sources.';
+
+let stories = [];
+let failure = null;
+try {
+  stories = await fetchPublishedStories(hostnameFor(Astro.request, Astro.url));
+} catch (err) {
+  // Logged, not swallowed. The reader gets a civil message; the function log is
+  // the only place anyone can find out WHY, and a 503 with no cause behind it
+  // is an outage nobody can diagnose.
+  console.error('[news] /news/ could not read news_stories:', err);
+  failure = err;
+}
+
+// ⚠️ A read failure is a 503, not a quietly empty page. An empty feed and a
+// database that did not answer look identical once they reach HTML, and
+// serving "no stories" with a 200 tells a crawler the feed is genuinely empty.
+if (failure) Astro.response.status = 503;
+
+// The pinned story if there is one, otherwise the newest. Same choice the
+// browser makes, from the same function.
+const active = stories.length ? pickDefault(stories, { tag: 'all', query: '' }) : null;
+---
+
+<BaseLayout
+  title="News · Amplified Thinker"
+  description={DESCRIPTION}
+  canonical="https://amplifiedthinker.com/news/"
+>
+  <link slot="head" rel="stylesheet" href="/news-app.css">
+  {failure
+    ? <NewsUnavailable />
+    : <NewsView stories={stories} active={active} />}
+</BaseLayout>

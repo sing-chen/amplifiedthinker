@@ -55,7 +55,7 @@ prevent.
 | 7 | The adapter decision | Claude + Human | ✅ Done | 2026-08-26, deployed as `2c9685c`. `@astrojs/vercel` 11.0.8, **`output` stays `'static'`** — ⚠️ `hybrid` was removed from Astro and `static` is what it became. Build output byte-identical with and without the adapter (88/89, the 89th a timestamp), and the live differential came back **3 changed / 0 not served**, all three the comment-only files. ⚠️ **`vercel.json`'s `outputDirectory: dist` removed** — it would have silently served stage 10's server routes as frozen static. `service_role`: **still no home** |
 | 8 | Write the migration script — slugs and `legacy_id` | Claude | ✅ Done | 2026-08-26. `scripts/build-news-seed.mjs` → `supabase/seed/news_seed.sql`, **81 stories / 27 groups / 1 pinned** derived from the file, not hardcoded. **All 81 `legacy_id`s round-tripped through `middleware.js`'s own `findStory()`, 0 mismatches.** ⚠️ Emits SQL rather than inserting: the table is admin-write and `service_role` is ruled out, so the dashboard SQL editor is the only route left  **Loaded and verified in stage 9 on 2026-08-26**, which is what closes this row |
 | 9 | Load dev, verify the data | Claude | ✅ Done | 2026-08-26. **81 rows on dev**, 81 distinct slugs and `legacy_id`s, one pinned matching `news.json`, statuses `["published"]` — all verified with the anon key from outside the dashboard. ⚠️ **All 81 stories compared field-by-field against the source, 0 differences**, rather than the five-title eyeball the stage asked for; em dashes read correctly in Postgres. `verify:rls` moved from `empty` to **`published`** — asserting the RLS predicate rather than the absence of data — and passes **22/22** |
-| 10 | `/news` and `/news/:slug`, server-rendered | Claude | ☐ Not started | ⚠️ **The cutoff for `/add-news`.** From here the command still succeeds and publishes nothing — no gate reads `news.json`. Breakage map under stage 16 |
+| 10 | `/news` and `/news/:slug`, server-rendered | Claude | ◐ Built and measured; **one box owed** | 2026-08-26. Both routes live on the branch, `prerender = false`, **81 story links in the index's response body** and the story text in `/news/<slug>`'s — no user-agent sniffing anywhere. Unknown slug **404 + noindex**; unreadable feed **503**, not an empty page. `sitemap.xml` **generated** now (100 URLs) and `public/sitemap.xml` deleted — a static file cannot list 81 URLs and stay right. Server and browser render from **one shared module**, so the two cannot drift. ⚠️ **Two defects found by measuring the rendered page, both also present in `news.html`**: `scrollIntoView` scrolled the whole document on load, and `.story-panel` kept a near-white border in dark mode. ⏭️ **The by-eye check is owed** — screenshots were unavailable, so every visual claim is a measurement. ⚠️ **The cutoff for `/add-news`** once this merges: the command still succeeds and publishes nothing. Breakage map under stage 16 |
 | 11 | The 301 endpoint for legacy URLs | Claude | ☐ Not started | This is the one the done-when tests |
 | 12 | Switch the banner's news source | Claude | ☐ Not started | Forced by the phase. Visitors must see no difference |
 | 13 | `search-index.json` → `/api/search-index.json` | Claude | ☐ Not started | |
@@ -1076,6 +1076,42 @@ renders from the DB, so the command still succeeds, still writes `public/news.js
 nothing. No gate reads that file. **Treat this stage as the cutoff for using it** — the full
 breakage map is under stage 16.
 
+**How it is built**
+
+| File | |
+|---|---|
+| `src/lib/news-render.mjs` | The markup, **written once and run in two places** — see below |
+| `src/lib/news-data.mjs` | The PostgREST read. Server only |
+| `src/components/NewsView.astro` | The reader, shared by both routes |
+| `src/components/NewsUnavailable.astro`, `NewsNotFound.astro` | The 503 and the 404 |
+| `src/pages/news/index.astro`, `src/pages/news/[slug].astro` | Both `prerender = false` |
+| `src/scripts/news-app.js` | Filter, search, keyboard, in-place swapping |
+| `public/news-app.css` | Scoped to these two routes, like `auth-pages.css` |
+| `src/pages/sitemap.xml.js` | Replaces the static file |
+
+⚠️ **The server and the browser render the list from the SAME functions.** A server render and a
+client render of one list are two implementations of one thing, and they drift silently — the page
+looks right until the moment JS takes over and something shifts. `news-render.mjs` is pure string
+building with no DOM and no fetch, so it runs unchanged in a serverless function and in a browser,
+and a change to a headline row cannot land on one side only.
+
+⚠️ **The stories are serialised into the page, not fetched again from the browser.** The server has
+already read those rows; a second read would be a second answer that could disagree with the HTML
+wrapped around it, plus a spinner for nothing.
+
+⚠️ **Every headline is a real `<a>`, and stays one.** The script intercepts a plain left click and
+nothing else, so middle-click, ctrl-click and open-in-new-tab keep working — on a page whose whole
+purpose this stage is that its links are real. It is also what makes the archive crawlable.
+
+⚠️ **The Supabase project table is PARSED out of `public/supabase-client.js` at build time**, by
+`astro.config.mjs`, and injected via `vite.define`. Retyping the two url/key pairs into a server
+module would put a second copy in the repo and the stale copy is always the one nobody looks at —
+`keepalive.mjs` and `verify-redirects.mjs` already treat that file as the source of truth the same
+way. It is read at BUILD time because `public/` is not in a Vercel serverless bundle: a
+`readFileSync` in the route would work perfectly in dev and find nothing in production. The parse
+refuses a `service_role`-shaped key rather than inlining it. The prod/dev choice is still made per
+request, from the request's own hostname, by the same blocklist rule the browser uses.
+
 **Verify:**
 
 ```bash
@@ -1088,13 +1124,76 @@ before merging, and do the real `curl` verification against production at stage 
 
 **Tick as you go**
 
-- [ ] `/news` index renders, most-recent first, grouped by date
-- [ ] `/news/:slug` renders one story with body text in the HTML source
-- [ ] `<link rel="canonical">` correct on both
-- [ ] The pinned story surfaces the way it does today
-- [ ] `sitemap.xml` includes the new URLs
-- [ ] Nav and footer correct — ⚠️ `<footer class="site-footer">`, or it renders unstyled and nothing fails
-- [ ] Checked by eye in both themes, desktop and mobile
+- [x] `/news` index renders, most-recent first, grouped by date
+- [x] `/news/:slug` renders one story with body text in the HTML source
+- [x] `<link rel="canonical">` correct on both
+- [x] The pinned story surfaces the way it does today
+- [x] `sitemap.xml` includes the new URLs
+- [x] Nav and footer correct — ⚠️ `<footer class="site-footer">`, or it renders unstyled and nothing fails
+- [ ] Checked by eye in both themes, desktop and mobile — **owed, and it is the human's box**
+
+**Observed, 2026-08-26 — against `astro dev` on localhost, reading the DEV project**
+
+Measured rather than asserted from the source, everything below by fetching the route or reading
+computed style off the rendered page:
+
+| | |
+|---|---|
+| `/news/` | `200`, **81 headline `<a href="/news/…">` in the response body** — the whole archive is one crawl from the index, collapsed groups included, because a collapsed group is `display:none` and not absent |
+| `/news/<slug>` | `200`, title / summary / *Why it matters* all in the HTML source. `og:type` `article`, canonical self-referential, `<title>` the story's own |
+| unknown slug | **`404` + `noindex`**, not a `200` with an empty panel |
+| feed unreadable | **`503`** and a page that says so — see the note below |
+| `sitemap.xml` | **100 URLs = 19 static + 81 stories**, `/news.html` no longer among them |
+| build output | `.vercel/output/functions/_render.func` with routes for `^/news/?$`, `^/news/([^/]+?)/?$` and `^/sitemap\.xml$`. **No static `/news/` directory** — so it is genuinely rendering, not a snapshot |
+| behaviour | filter 81 → 32 → 20 with search stacked on top, empty-state copy, headline click / Previous / Next / back-button all moving the URL, `<title>` and canonical together |
+| dark mode | every surface measured, one defect found — below |
+| mobile 375px | `/news/` opens on the LIST and `/news/<slug>` on the STORY; back returns to the list without leaving the story; no horizontal scroll |
+| gates | `npm run build` green (all three `prebuild` gates), `verify:rls` **22/22** |
+
+⚠️ **A read failure is a 503 with a page that says so, not an empty feed.** "There are no stories"
+and "the database did not answer" look identical once they reach HTML, and serving the second as
+the first tells a crawler the feed is genuinely empty while telling the reader nothing is wrong.
+The cause is logged server-side; a 503 nobody can diagnose is barely better than a lie.
+
+⚠️ **Two defects found by measuring the rendered page, neither visible in the source.**
+
+1. **The page arrived already scrolled past its own hero.** `scrollIntoView({block:'nearest'})`
+   scrolls *every* scrollable ancestor, the document included — so bringing the active headline
+   into view inside its panel jumped the whole page, on load, before the reader touched anything.
+   Replaced with a helper that moves only the panel's own `scrollTop`, and
+   `focus({preventScroll:true})` alongside it for the same reason. ⚠️ **The old code was copied
+   verbatim from `news.html`, where it does the same thing** — masked there only because the panel
+   happens to start at the top of a shorter page.
+2. **The story panel kept a near-white border in dark mode.** `--light-sage` does not flip, and
+   `.story-panel` was the one surface in the dark block with no override — so it wore a `#D8E4DD`
+   outline while `.headline-col` beside it wore a faint one. Valid CSS, correct token name, wrong
+   result, and **only a computed-style read finds it**. ⚠️ **`news.html` has the same bug and it is
+   live today** — fixed in both files in the same commit.
+
+⚠️ **The last box is not one an automated check can close, so it is left open.** Screenshots were
+unavailable this session (the Browser pane was not compositing), so every visual claim above is a
+*measurement* — computed colours, computed `display`, element counts, scroll offsets. That is what
+caught both defects, and it is still not the same as looking at the page. Both of Phase 1's defects
+were found by a human in a browser and neither was catchable by the passing test.
+
+**What this stage changed beyond the two routes**
+
+- ⚠️ **`public/sitemap.xml` was deleted and `sitemap.xml` is now generated per request.** A static
+  file cannot list 81 story URLs and stay right: every story added after it was written is a URL
+  missing from it, and an incomplete sitemap fails nothing and looks exactly like a correct one —
+  the same shape as the catalogue trap, with the same answer. It serves the static half even if the
+  story read fails, because a 500 tells a crawler the whole file is broken.
+- **`/news.html` dropped from the sitemap in favour of `/news/`.** It becomes a 301 at stage 11 and
+  pointing a crawler at a redirect whose destination is known is pure indirection. The page itself
+  is untouched and still serves.
+- **A skip link was added to `BaseLayout`**, which never had one — so `/sign-in/`, `/account/` and
+  `/learning/` made a keyboard user tab the whole nav on every page. The hand-written pages have
+  carried one since launch; `.skip-link` was already in `styles.css`.
+- **`og:type` is now a `BaseLayout` prop**, so a story can be `article` rather than `website`.
+
+**Baseline captured before merging:** `verify:published` — **85 files / 1 origin / 0 not served**.
+⚠️ Two changes are expected in the after-diff and are not regressions: `/news.html` (the dark-border
+fix) and `/sitemap.xml` (now generated, and no longer in `git ls-tree public/` at all).
 
 ---
 
