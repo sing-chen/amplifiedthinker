@@ -302,9 +302,43 @@ const clearPin = emitPinned.length
 const values = emit.map((r) =>
   `  (${sqlText(r.slug)}, ${sqlText(r.legacyId)}, ${sqlText(r.storyDate)}::date, ${r.sortOrder}, ` +
   `${sqlText(r.title)}, ${sqlText(r.source)}, ${sqlText(r.url)}, ${sqlText(r.summary)}, ` +
-  `${sqlText(r.implications)}, ${sqlTextArray(r.tags)}, ${r.pinned}, ${sqlText(r.status)}, ` +
-  `${r.mergedInto ? sqlText(r.mergedInto) : 'null'})`
+  `${sqlText(r.implications)}, ${sqlTextArray(r.tags)}, ${r.pinned}, ${sqlText(r.status)})`
 ).join(',\n');
+
+/* ── `merged_into` is set AFTERWARDS, as its own statement ────────────────────
+   ⚠️ NOT A COLUMN IN THE INSERT, AND THE REASON IS ORDERING. `merged_into` is a
+   foreign key to `slug`, and an archived row references a story that appears
+   LATER in the same VALUES list — the archived Kyndryl row sits ~30 lines above
+   the July story it points at, because the file is ordered newest-first.
+
+   Postgres checks foreign keys at the end of the STATEMENT rather than per row,
+   so a single INSERT would in fact succeed. But that is a property of the
+   engine being relied on silently, and it only ever gets exercised for real
+   ONCE — on the empty prod table at stage 17, where every row is new and there
+   is no existing target to fall back on. Splitting it removes the dependency
+   entirely rather than betting the one-shot load on remembering the semantics
+   correctly. Two statements, no ordering, nothing to get right. */
+const mergedRows = emit.filter((r) => r.mergedInto);
+const emitSlugs = emit.map((r) => sqlText(r.slug)).join(', ');
+const mergeUpdate = mergedRows.length
+  ? '\n\n-- Merge pointers, after every row above exists.\n' +
+    'update public.news_stories set merged_into = v.target\n' +
+    '  from (values\n' +
+    mergedRows.map((r) => `    (${sqlText(r.slug)}, ${sqlText(r.mergedInto)})`).join(',\n') +
+    '\n  ) as v(slug, target)\n' +
+    ' where public.news_stories.slug = v.slug;\n\n' +
+    '-- and cleared on anything in this batch that is no longer merged away,\n' +
+    '-- so re-running after an un-merge does not leave a stale pointer behind.\n' +
+    'update public.news_stories set merged_into = null\n' +
+    ` where slug in (${emitSlugs})\n` +
+    `   and merged_into is not null\n` +
+    `   and slug not in (${mergedRows.map((r) => sqlText(r.slug)).join(', ')});`
+  : (emit.length
+      ? '\n\n-- Nothing in this batch is merged away; clear any pointer left by a\n' +
+        '-- previous run so the file stays the source of truth.\n' +
+        'update public.news_stories set merged_into = null\n' +
+        ` where slug in (${emitSlugs}) and merged_into is not null;`
+      : '');
 
 const sql = `-- ${partial ? 'PARTIAL load' : 'Seed'} for public.news_stories, GENERATED from content/news.json.
 --
@@ -324,7 +358,7 @@ const sql = `-- ${partial ? 'PARTIAL load' : 'Seed'} for public.news_stories, GE
 -- Generated from ${emit.length} stor${emit.length === 1 ? 'y' : 'ies'}${partial ? ` for ${onlyDates.join(', ')}, out of ${rows.length} in the file` : ` across ${groups.length} date groups`}.
 ${partial ? `--\n-- \u26a0\ufe0f PARTIAL. This touches ONLY the rows listed below. It is not a\n-- replacement for supabase/seed/news_seed.sql and does not reconcile\n-- anything it omits.\n` : ''}
 ${clearPin}insert into public.news_stories
-  (slug, legacy_id, story_date, sort_order, title, source, url, summary, implications, tags, pinned, status, merged_into)
+  (slug, legacy_id, story_date, sort_order, title, source, url, summary, implications, tags, pinned, status)
 values
 ${values}
 on conflict (slug) do update set
@@ -338,8 +372,7 @@ on conflict (slug) do update set
   implications = excluded.implications,
   tags         = excluded.tags,
   pinned       = excluded.pinned,
-  status       = excluded.status,
-  merged_into  = excluded.merged_into;
+  status       = excluded.status;${mergeUpdate}
 
 -- Verification, to run in the same sitting:
 ${partial ? `--   select count(*) from public.news_stories
