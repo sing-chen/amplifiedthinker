@@ -53,7 +53,7 @@ prevent.
 | 6 | Delete `pages.yml` | Claude | ✅ Done | 2026-08-26, same branch and merge as stage 4. `keepalive.yml` correctly untouched and still scheduled |
 | **B** | **News into the DB** | | | |
 | 7 | The adapter decision | Claude + Human | ✅ Done | 2026-08-26, deployed as `2c9685c`. `@astrojs/vercel` 11.0.8, **`output` stays `'static'`** — ⚠️ `hybrid` was removed from Astro and `static` is what it became. Build output byte-identical with and without the adapter (88/89, the 89th a timestamp), and the live differential came back **3 changed / 0 not served**, all three the comment-only files. ⚠️ **`vercel.json`'s `outputDirectory: dist` removed** — it would have silently served stage 10's server routes as frozen static. `service_role`: **still no home** |
-| 8 | Write the migration script — slugs and `legacy_id` | Claude | ☐ Not started | Derive counts from the file; the documented 21/69 is stale |
+| 8 | Write the migration script — slugs and `legacy_id` | Claude | ◐ **Written; load is stage 9** | 2026-08-26. `scripts/build-news-seed.mjs` → `supabase/seed/news_seed.sql`, **81 stories / 27 groups / 1 pinned** derived from the file, not hardcoded. **All 81 `legacy_id`s round-tripped through `middleware.js`'s own `findStory()`, 0 mismatches.** ⚠️ Emits SQL rather than inserting: the table is admin-write and `service_role` is ruled out, so the dashboard SQL editor is the only route left |
 | 9 | Load dev, verify the data | Claude | ☐ Not started | Dev project only. Prod waits for stage 16 |
 | 10 | `/news` and `/news/:slug`, server-rendered | Claude | ☐ Not started | ⚠️ **The cutoff for `/add-news`.** From here the command still succeeds and publishes nothing — no gate reads `news.json`. Breakage map under stage 16 |
 | 11 | The 301 endpoint for legacy URLs | Claude | ☐ Not started | This is the one the done-when tests |
@@ -949,9 +949,10 @@ anything is sorted, filtered, or deduplicated. Get it wrong and every previously
 to the wrong story — silently, with no error anywhere, which is precisely the failure the slug design
 exists to prevent.
 
-**Derive the counts from the file.** Re-counted 2026-08-24: **23 groups / 73 stories / 1 pinned**,
-unchanged since 2026-08-22. Have the script report what it found and fail loudly if a title
-slugifies to a collision.
+**Derive the counts from the file, and this is why.** They were 21/69 in the plan, 23/73 on
+2026-08-22 and **27 groups / 81 stories / 1 pinned** when the script actually ran on 2026-08-26 —
+news landed that morning. Any number written into this runsheet is a snapshot; the script reports
+what it found on the day and fails loudly on a slug collision.
 
 ⚠️ **A correction to an earlier revision of this stage**, which warned that the file had been
 rewritten on 2026-08-23 to repair 39 mojibaked characters. **That was `search-index.json`, not
@@ -968,11 +969,44 @@ characters in the loaded rows**, not just the counts.
 
 **Tick as you go**
 
-- [ ] Script written, re-runnable, idempotent on `slug`
-- [ ] `legacy_id` computed from original array order, verified against `middleware.js`'s parse
-- [ ] Slug collisions fail loudly rather than being auto-suffixed silently
-- [ ] Counts reported by the script, not hardcoded
-- [ ] Dry-run output eyeballed against `news.json` for three spot-checked stories
+- [x] Script written, re-runnable, idempotent on `slug` — `scripts/build-news-seed.mjs`,
+      `npm run build:news-seed`
+- [x] `legacy_id` computed from original array order, **verified against `middleware.js`'s parse** —
+      all **81 ids round-tripped through its own `findStory()`, 0 mismatches**
+- [x] Slug collisions fail loudly rather than being auto-suffixed silently — and legacy-id
+      collisions, and a second pinned story, all abort before anything is written
+- [x] Counts reported by the script, not hardcoded — **27 groups / 81 stories / 1 pinned**
+- [x] Dry-run output eyeballed against `news.json` for three spot-checked stories
+
+**Observed 2026-08-26:**
+
+⚠️ **The script emits SQL rather than inserting rows, and that is forced.** `news_stories` is
+admin-write (`news_stories_admin_all` requires `is_admin()`), `is_admin` is settable only where
+`auth.uid()` is null, and stage 7 ruled `service_role` out of this phase. That leaves the dashboard
+SQL editor, which runs as the table owner — the same route the schema and the `is_admin` bootstrap
+already took. The stage asked for "a script, not a hand-written SQL file"; this satisfies it, because
+the SQL is **generated and re-generable** and nobody hand-writes 81 rows.
+
+⚠️ **`supabase/seed/news_seed.sql` is committed even though it is generated**, which breaks the usual
+rule for derived files. The reason is stage 16: **`news.json` is deleted there**, and once it is gone
+this seed can never be regenerated. Committing it keeps the migration reproducible after its own
+input disappears — and it is what stage 17 applies to prod, so prod and dev get byte-identical SQL.
+
+**Two defects in the script's own output, both caught by reading it rather than by it failing:**
+
+1. **Slug truncation reordered meaning.** A `reduce` capping length at 60 characters *skipped* a word
+   that did not fit and then appended a later, shorter one — turning *"Without Preparing Those Who
+   Remain"* into `...management-without-those`. Truncation is fine; a slug that reads as though a
+   word were never there is not, and **these are immutable once shipped**. Now stops at the first
+   word that does not fit.
+2. **The non-ASCII preview printed a column of bare em dashes** — correct, and useless to compare
+   anything against. Now prints surrounding context, and sorts accented letters ahead of punctuation
+   because a mangled `é` reads as a typo while a mangled `—` reads as obvious damage.
+
+**Encoding, as it actually stands:** 46 of 81 rows contain non-ASCII text and **none of it is
+accented letters** — it is all em dashes and smart quotes. That is not a relief: `â€"` from an em
+dash is exactly what mojibaked `search-index.json`. The seed carries the raw characters and the
+generated SQL ends with the query to eyeball them after loading.
 
 ---
 
