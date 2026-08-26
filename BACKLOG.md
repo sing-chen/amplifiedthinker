@@ -1342,12 +1342,24 @@ inference from content that happens to differ.
 - **Retiring the Pages origin halves the value but does not remove it.** The Vercel half is the half
   that cannot currently be checked at all without the dashboard.
 
-### Bump the GitHub Actions off deprecated Node 20 — **both** workflows
-**Status:** Idea · Not started · Noticed 2026-08-17 during Phase 3 · **Widened 2026-08-19**
-**Relates to:** [.github/workflows/pages.yml](.github/workflows/pages.yml),
-[.github/workflows/keepalive.yml](.github/workflows/keepalive.yml)
+### Bump the GitHub Actions off deprecated Node 20 — **`keepalive.yml` only**
+**Status:** Idea · Not started · Noticed 2026-08-17 during Phase 3 · Widened 2026-08-19 ·
+**Halved 2026-08-26**
+**Relates to:** [.github/workflows/keepalive.yml](.github/workflows/keepalive.yml)
 
-Both workflows emit this. Pages names one action; the keep-alive names two:
+⚠️ **This entry was about BOTH workflows until 2026-08-26. The `pages.yml` half is now closed by
+deletion, not by fixing** — the Pages origin was retired and the workflow removed, taking
+`deploy-pages@v4`, `configure-pages@v5` and `upload-pages-artifact@v3` with it. Nothing to bump;
+they are gone.
+
+**`keepalive.yml` is the whole of what is left, and it does not go away.** It exists because the
+free Supabase tier pauses an idle project, so it outlives the origin entirely and lasts until the
+project moves to a paid plan. Two actions, `checkout@v4` and `setup-node@v4`.
+
+⚠️ **The two were only ever grouped because they shared a symptom.** Now that one has been deleted,
+do not read a closed half as progress on the open one — nothing has been bumped.
+
+The warning, as `keepalive.yml` still emits it:
 
 > Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on
 > Node.js 24: `actions/checkout@v4`, `actions/setup-node@v4`
@@ -1362,10 +1374,12 @@ out, not a current fault. The deprecation was announced 2025-09-19 and is still 
 | The action's **own runtime** — `runs: using: node20` inside `checkout@v4`, `setup-node@v4`, `deploy-pages@v4` | What the annotation is about. Fixed only by bumping the action version. | ✅ **This entry** |
 | `with: node-version: '20'` in `keepalive.yml` | The Node that runs **our** script. Nothing to do with the warning. | ❌ Separate, below |
 
-**Action:** bump to `@v5` of each — `checkout`, `setup-node`, `deploy-pages`, `configure-pages`,
-`upload-pages-artifact` — or whichever version targets a supported runtime. ⚠️ **Do all of them in
-one pass:** the annotation names only the actions that tripped it, not everything sharing the
-runtime, so fixing the named ones just reveals the next.
+**Action:** bump `checkout` and `setup-node` to `@v5`, or whichever version targets a supported
+runtime. ⚠️ **Do both in one pass:** the annotation names only the actions that tripped it, not
+everything sharing the runtime, so fixing the named ones just reveals the next.
+
+⚠️ **`deploy-pages`, `configure-pages` and `upload-pages-artifact` are no longer in this repo** —
+they left with `pages.yml` on 2026-08-26. Do not re-add them to this list from memory.
 
 **⚠️ The 2026-08-18 note that this "dies with the workflow" is now only half true.** That reasoning
 was about `pages.yml`, which goes when the GitHub origin is retired. **`keepalive.yml` is not going

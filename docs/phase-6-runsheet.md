@@ -352,7 +352,13 @@ rather than an assumption.
 - [x] `site:` search run logged-out on **DuckDuckGo and Bing** — 2026-08-22, nothing from the host
 - [x] **Google `site:` search run** — 2026-08-22, *"did not match any documents"*
 - [x] Stage 5's shape decided from it — **straight deletion, no redirect stubs**
-- [ ] Anyone with a known bookmark identified and told
+- [x] ~~Anyone with a known bookmark identified and told~~ — ⊘ **not done, and closed on the
+      outcome instead.** Nobody was contacted. The origin was never shared outside one organisation
+      and its audience had been zero since the NRD block lifted on 2026-08-18, so there was no list
+      of people to tell. ⚠️ **Recorded as skipped rather than ticked**: what actually closes this is
+      stage 3's "no broken-link reports" after the origin went dark — evidence that nobody needed
+      telling, which is not the same as having told them. If a colleague surfaces a dead bookmark
+      later, this box is why there was no warning
 
 **Observed 2026-08-22 — two engines say nothing, and the third could not be asked.**
 
@@ -619,9 +625,10 @@ All three prebuild gates must still pass — `verify:catalogue`, `verify:signin-
       as a survivor of the retirement. The `GITHUB_SHA` arm of the stamp is inert and harmless
 - [x] `verify-published.mjs`, `verify-build-stamp.mjs`, `verify-schema-columns.mjs` reduced to one
       origin — **0 references remaining in each**
-- [ ] ⚠️ `verify-redirects.mjs` — Pages entry **moved from `allowed` to `rejected`**, not deleted —
-      **NOT DONE, it was dropped.** Deferred into stage 5, where the dashboard change makes the
-      `rejected` assertion pass. See the reconciliation note under the handoff table
+- [x] ⚠️ `verify-redirects.mjs` — Pages entry **moved from `allowed` to `rejected`**, not deleted —
+      dropped on 2026-08-26 and **restored the same day with stage 5**, once the dashboard change
+      made the `rejected` assertion pass. Gate green at 13 assertions. The two-day gap in which
+      nothing tested that host is recorded in the reconciliation note under the handoff table
 - [x] `verify-signin-return.mjs` — **assertions kept**: 2 references retained on purpose, gate runs
       **26 passed, 0 failed**
 - [x] `supabase-client.js` — **`environment()` byte-identical**, comment rewritten to keep the
@@ -750,10 +757,21 @@ file — close that half of the item and leave the `keepalive.yml` half open.
 
 **Tick as you go**
 
-- [ ] `pages.yml` deleted
-- [ ] `keepalive.yml` confirmed present and still scheduled
-- [ ] `BACKLOG.md` deprecation item — Pages half closed, keepalive half left open
-- [ ] `BACKLOG.md` retirement entry moved from "decided, not scheduled" to done, with the date
+**Verified box by box on 2026-08-26, after this row had been marked ✅ with all four untouched.**
+
+- [x] `pages.yml` deleted — `.github/workflows/` now contains **only** `keepalive.yml`
+- [x] `keepalive.yml` confirmed present and still scheduled — `cron: '14 6 * * *'` plus
+      `workflow_dispatch`, and the GitHub API reports the workflow **`state=active`**
+- [x] `BACKLOG.md` deprecation item — Pages half closed, keepalive half left open. ⚠️ **This was
+      genuinely outstanding**: the entry still said *"both workflows"* and still listed
+      `deploy-pages@v4` days after that workflow was deleted. Halved on 2026-08-26
+- [x] `BACKLOG.md` retirement entry moved from "decided, not scheduled" to done, with the date —
+      now reads **✅ DONE 2026-08-26**, with the original reasoning kept as the record of *why*
+
+⚠️ **One thing that is not ours and cannot be deleted from here.** The GitHub API still lists a
+`pages-build-deployment` workflow as `state=active`. That is GitHub's own built-in Pages workflow,
+created automatically when Pages was enabled — it is not in `.github/workflows/` and never was.
+With the site unpublished it has nothing to build. Do not go looking for a file to delete.
 
 **Rollback:** `git revert`, then redo stage 2 in reverse. Cheap in git, but the Pages source has to
 be re-enabled by hand.
