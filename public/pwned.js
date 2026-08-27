@@ -144,6 +144,19 @@
    *
    * The count is included because scale is what makes it land: "found in a
    * breach" sounds theoretical, "seen 4,700 times" does not.
+   *
+   * ⚠️ "NEVER SENT ANYWHERE" IS HERE RATHER THAN ON THE FORM, AND THAT IS A
+   * DELIBERATE MOVE, NOT A DELETION. The sign-up form used to carry "Checked
+   * against passwords exposed in known breaches. It never leaves your browser."
+   * as standing help text, which spent a line pre-empting a question nobody has
+   * yet — most passwords are not breached and most readers never see this
+   * message at all.
+   *
+   * But the moment someone IS told their password is on a public list, "so you
+   * sent my password somewhere to find that out?" is the immediate and
+   * reasonable next thought, and it is alarming. Answering it in the rejection
+   * puts the answer where the question actually arises. privacy.html §7
+   * documents the k-anonymity mechanism in full for anyone who wants it.
    */
   function message(result) {
     var scale = result.count > 1
@@ -151,8 +164,10 @@
       : '';
     return 'This password has appeared in a public data breach, so it is ' +
            'already on lists that attackers try.' + scale +
-           ' Nothing has happened to this site or your account — please pick a ' +
-           'different one, and change it anywhere else you have used it.';
+           ' Nothing has happened to this site or your account, and your ' +
+           'password was never sent anywhere — the check runs inside your ' +
+           'browser. Please pick a different one, and change it anywhere else ' +
+           'you have used it.';
   }
 
   global.AmplifiedPwned = { check: check, message: message };
