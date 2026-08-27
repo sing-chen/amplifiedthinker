@@ -287,20 +287,25 @@ The Transactional → Settings page offers no switch for any of them on the free
 strip them either — it exposes no custom-header control. Confirmed as a product limitation rather
 than a missed setting.
 
-⚠️ **Brevo's DNS records are retained pending teardown, and nothing depends on them — since
-2026-08-20.** This paragraph used to say they *must stay*, which was true while Gmail's *Send mail
-as* for `singchen@amplifiedthinker.com` relayed through `smtp-relay.brevo.com` and signed with the
-`brevo1`/`brevo2` selectors. That alias was repointed at `smtp.resend.com`, so both send-as
-identities — `contact@` and `singchen@` — now go through Resend, and nothing signs with the Brevo
-selectors any more.
+⚠️ **Brevo is gone as of 2026-08-27 — records deleted, apex SPF include removed, account closed.**
+This section used to warn at length that its DNS records *must stay*, which was true while Gmail's
+*Send mail as* for `singchen@amplifiedthinker.com` relayed through `smtp-relay.brevo.com`. Both
+send-as identities — `contact@` and `singchen@` — were repointed at `smtp.resend.com` on
+2026-08-20, and the teardown followed a week later. `npm run verify:email` no longer asserts
+anything about it and reads **16/16**.
 
-The records stay until stage 7 of [../docs/email-aliases-runbook.md](../docs/email-aliases-runbook.md),
-which removes them after a soak. `npm run verify:email` still asserts them, under a heading that now
-says *unused, retained pending teardown* rather than implying a live dependency.
+Two consequences worth stating rather than inferring:
 
-⚠️ **The 90-day inactivity expiry on that Brevo key no longer matters**, because nothing
-authenticates with it. It was a live risk while one low-traffic alias depended on it; the repoint
-resolved it by removal. Tracked in [../BACKLOG.md](../BACKLOG.md), to be closed at stage 7.
+- **The 90-day inactivity expiry on the Brevo SMTP key is resolved by removal**, not mitigated. The
+  key is deleted and the account is closed. It was a live risk only while one low-traffic alias
+  depended on it.
+- **Resend now carries everything** — Supabase auth mail on `noreply@` and both human send-as
+  identities. One vendor, one domain verification, and a **shared 100/day allowance on the free
+  tier**: a heavy dev test loop can exhaust it and stop real password resets *and* personal
+  correspondence together, each looking like an independent SMTP fault.
+
+The full teardown record is in [../docs/email-dns-baseline.md](../docs/email-dns-baseline.md) and
+stage 7 of [../docs/email-aliases-runbook.md](../docs/email-aliases-runbook.md).
 
 #### How to confirm it actually works
 

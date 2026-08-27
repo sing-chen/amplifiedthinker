@@ -33,22 +33,22 @@ const RESOLVERS = ['1.1.1.1', '8.8.8.8'];
 //   Cloudflare Email Routing owns inbound: the MX records and the SPF include.
 //   Resend owns auth mail: everything under send.<domain>, plus one DKIM
 //     selector at the apex.
-//   Brevo owns NOTHING as of 2026-08-20. It carried auth mail for four hours on
-//     2026-08-17, then the Gmail "Send mail as" alias until that alias was
-//     repointed at Resend. Its records are still asserted below, and still must
-//     not be deleted yet - but the reason is now "scheduled teardown has not
-//     happened", not "something depends on them". See stage 7 of
-//     docs/email-aliases-runbook.md.
 //   Vercel owns the website: the apex A records and the www CNAME.
 //
-// Four systems, one zone, and exactly one record shared between them - the apex
-// SPF TXT. That record is the whole risk surface of this phase, and Resend
-// deliberately does not touch it.
+// THREE systems now, not four. Brevo was torn out on 2026-08-27 - records
+// deleted, apex SPF include removed, account closed - after both Gmail "Send
+// mail as" identities were repointed at Resend on 2026-08-20. It is gone from
+// this file entirely rather than kept as a disabled block: a commented-out
+// assertion is an invitation to re-enable something nothing needs. The history
+// is in docs/email-dns-baseline.md and stage 7 of docs/email-aliases-runbook.md.
+//
+// Three systems, one zone, and exactly one record shared between them - the apex
+// SPF TXT. That record is the whole risk surface here, and Resend deliberately
+// does not touch it: its Return-Path SPF lives on send.<domain>, a DIFFERENT
+// record, and editing the wrong one of the two is the mistake to fear.
 // ---------------------------------------------------------------------------
 const CLOUDFLARE_MX = ['route1.mx.cloudflare.net', 'route2.mx.cloudflare.net', 'route3.mx.cloudflare.net'];
 const CLOUDFLARE_SPF_INCLUDE = '_spf.mx.cloudflare.net';
-const BREVO_SPF_INCLUDE = 'spf.brevo.com';
-const BREVO_SELECTORS = ['brevo1', 'brevo2'];
 
 // Resend puts its bounce handling on a subdomain and signs from the apex. That
 // split is the whole reason for the switch: the Return-Path lands on
@@ -105,8 +105,10 @@ async function lookup(kind, name) {
 
 // SPF costs a DNS lookup per include/a/mx/ptr/exists/redirect, and more than ten
 // is a permanent error - which fails *open* on most receivers, so it does not
-// announce itself. Counted rather than eyeballed because the count is recursive
-// and Brevo's include is not the only thing that spends from the budget.
+// announce itself. Counted rather than eyeballed because the count is RECURSIVE:
+// an include costs its own lookups too, so the apex string having one include
+// does not mean the budget has one lookup in it. Removing Brevo's include on
+// 2026-08-27 bought headroom back; it did not make this check unnecessary.
 async function countSpfLookups(record, depth = 0, seen = new Set()) {
   if (depth > 5) return 0;
   let n = 0;
@@ -142,12 +144,6 @@ const apexA = await lookup('A', DOMAIN);
 const wwwCname = await lookup('CNAME', `www.${DOMAIN}`);
 const dmarcTxt = await lookup('TXT', `_dmarc.${DOMAIN}`);
 
-const dkim = {};
-for (const sel of BREVO_SELECTORS) {
-  const host = `${sel}._domainkey.${DOMAIN}`;
-  dkim[sel] = { cname: await lookup('CNAME', host), txt: await lookup('TXT', host) };
-}
-
 const sendHost = `${RESEND_SUBDOMAIN}.${DOMAIN}`;
 const sendMx = await lookup('MX', sendHost);
 const sendTxt = await lookup('TXT', sendHost);
@@ -161,11 +157,6 @@ console.log(`  CNAME www     ${wwwCname.join(', ') || '(none)'}`);
 for (const r of mx) console.log(`  MX   ${String(r.priority).padEnd(4)}     ${r.exchange}`);
 for (const t of apexTxt) console.log(`  TXT  @        ${t}`);
 for (const t of dmarcTxt) console.log(`  TXT  _dmarc   ${t}`);
-for (const sel of BREVO_SELECTORS) {
-  const { cname, txt } = dkim[sel];
-  if (cname.length) console.log(`  CNAME ${sel}._domainkey  -> ${cname.join(', ')}`);
-  for (const t of txt) console.log(`  TXT   ${sel}._domainkey  ${t.slice(0, 60)}... (${t.length} chars)`);
-}
 for (const r of sendMx) console.log(`  MX   ${String(r.priority).padEnd(4)}     ${r.exchange}   (on ${sendHost})`);
 for (const t of sendTxt) console.log(`  TXT  ${RESEND_SUBDOMAIN}     ${t}`);
 for (const t of resendDkimTxt) console.log(`  TXT   ${RESEND_SELECTOR}._domainkey  ${t.slice(0, 60)}... (${t.length} chars)`);
@@ -210,9 +201,10 @@ console.log('\nThe shared record - one SPF TXT, three systems');
 // The single highest-value assertion in the file. Two TXT records both starting
 // v=spf1 is a permerror: not "the second one is ignored" but "SPF evaluation
 // fails outright", taking Cloudflare's inbound authorisation down with it. It is
-// also the most natural mistake to make here, because "add a record" is the
-// obvious way to add Brevo and it is the wrong one. Brevo must be a new include
-// inside the existing string.
+// also the most natural mistake to make when authorising a new sender, because
+// "add a record" is the obvious move and it is the wrong one - a second sender
+// goes in as another `include:` INSIDE the existing string. That is how Brevo
+// was added in Phase 4 and how anything else would be.
 record(
   spfRecords.length === 1,
   'exactly one SPF record at the apex',
@@ -288,53 +280,6 @@ if (resendRecordsFound === 0) {
     );
   }
 }
-
-console.log('\nOutbound - Brevo (UNUSED since 2026-08-20; retained pending teardown)');
-
-record(
-  apexTxt.some((t) => /^brevo-code:/i.test(t)),
-  'Brevo domain-ownership TXT present',
-  apexTxt.find((t) => /^brevo-code:/i.test(t))
-);
-
-// These carried auth mail before the Resend switch, then the Gmail "Send mail
-// as" alias until 2026-08-20, when that alias was repointed at Resend too.
-// NOTHING signs with these selectors any more.
-//
-// They are still asserted because the teardown is scheduled, not done - stage 7
-// of docs/email-aliases-runbook.md, after a soak. Until then a green line here
-// means "the record we intend to delete is still present", which is a weaker
-// claim than it was and is stated so nobody reads it as proof of a dependency.
-// Measured while Brevo was carrying auth mail: dkim=pass
-// header.i=@amplifiedthinker.com header.s=brevo2, DMARC passing on DKIM alone.
-for (const sel of BREVO_SELECTORS) {
-  const { cname, txt } = dkim[sel];
-  const key = txt.find((t) => /(^|;)\s*p=[A-Za-z0-9+/]/.test(t));
-  record(
-    cname.some((h) => h.endsWith('.dkim.brevo.com')) && Boolean(key),
-    `DKIM ${sel}._domainkey resolves to a published key`,
-    key ? `via ${cname.join(', ')}` : 'CNAME present but no key resolved - Brevo has not published it'
-  );
-}
-
-// Precaution, not the load-bearing record - and that was measured rather than
-// assumed. A delivered message shows
-// smtp.mailfrom=bounces-…@gw.d.sender-sib.com, so SPF is evaluated against
-// Brevo's own bounce domain and never against this one. This include therefore
-// does nothing for the current flow, and cannot align for DMARC either, since
-// sender-sib.com and amplifiedthinker.com are different organisational domains.
-//
-// Kept anyway: Brevo documents it, it costs one lookup of ten, and it becomes
-// load-bearing the moment a custom Return-Path on this domain is configured.
-// Stated here so nobody later reads a green line as proof that SPF is what
-// carries this mail. DKIM is. See the DMARC section below.
-record(
-  spf.includes(BREVO_SPF_INCLUDE),
-  `SPF includes ${BREVO_SPF_INCLUDE} (precautionary - see comment)`,
-  spf.includes(BREVO_SPF_INCLUDE)
-    ? 'inert while Brevo uses its own Return-Path; DKIM is what aligns'
-    : `not present - edit the existing TXT to: v=spf1 include:${CLOUDFLARE_SPF_INCLUDE} include:${BREVO_SPF_INCLUDE} ~all`
-);
 
 console.log('\nDMARC');
 

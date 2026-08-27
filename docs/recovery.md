@@ -199,18 +199,16 @@ with the provider, and no script here can restore them:
 | GoDaddy | **Registrar only** for `amplifiedthinker.com` | Holds the domain and the nameserver delegation — *not* the DNS records |
 | Cloudflare | **DNS zone** for `amplifiedthinker.com`, and inbound Email Routing | `marvin`/`susan.ns.cloudflare.com` are authoritative. A DNS change made at GoDaddy has no effect |
 | Supabase | Database, auth, RLS — from Phase 3 onward | See below |
-| Resend | **Supabase auth email** — from Phase 4 onward | Domain `amplifiedthinker.com`, region eu-west-1, Return-Path on `send`. API keys are shown once; a replacement is created and pasted into Supabase Auth → SMTP, nothing else uses it |
-| Brevo | **The Gmail "Send mail as" alias only** — it carried auth mail for four hours on 2026-08-17 and no longer does | Account "Amplified Thinker". The key created 2026-07-06 is what Gmail authenticates with; its value is not recoverable, and replacing it means updating Gmail → Settings → Accounts and Import |
+| Resend | **All outbound mail** — Supabase auth email from Phase 4, and both Gmail *Send mail as* identities from 2026-08-20 | Domain `amplifiedthinker.com`, region eu-west-1, Return-Path on `send`. **Three keys, one per consumer**: `Supabase Auth`, `Supabase Dev`, `Gmail send-as`. Keys are shown once. Replacing the auth key means pasting it into Supabase Auth → SMTP; replacing the send-as key means updating **both** identities in Gmail → Settings → Accounts and Import, host `smtp.resend.com`, port 587, username the literal word `resend`. ⚠️ The free 100/day allowance is **per account, not per key** |
 
-⚠️ **Brevo is a leftover as of 2026-08-20, and nothing depends on it.** This paragraph previously
-said the opposite, correctly at the time: `singchen@amplifiedthinker.com` relayed through
-`smtp-relay.brevo.com` and signed with the `brevo1`/`brevo2` DKIM records. That alias was repointed
-at Resend, so **both** send-as identities now use `smtp.resend.com` and nothing signs with the Brevo
-selectors.
+⚠️ **Brevo no longer exists and a rebuild needs nothing from it — since 2026-08-27.** This paragraph
+previously said the opposite, correctly at the time: `singchen@amplifiedthinker.com` relayed through
+`smtp-relay.brevo.com` and signed with the `brevo1`/`brevo2` DKIM records. Both send-as identities
+were repointed at `smtp.resend.com` on 2026-08-20, and a week later the DNS records were deleted,
+the apex SPF include removed, the SMTP key deleted and **the account closed**.
 
-The records and the account are **retained pending teardown**, which is stage 7 of
-[email-aliases-runbook.md](email-aliases-runbook.md), scheduled after a soak. A rebuild before that
-teardown does not need Brevo at all — skip it and continue.
+If a restored copy of this repo or an old note mentions Brevo, it is describing the world before
+that date. There is nothing to recreate. See [email-dns-baseline.md](email-dns-baseline.md).
 
 ⚠️ **DNS records are not backed up by anything.** Cloudflare keeps no history, so the only copy
 of the zone as it stood before Phase 4 is [email-dns-baseline.md](email-dns-baseline.md).

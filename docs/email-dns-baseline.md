@@ -74,6 +74,40 @@ hostnames that nothing else uses. This is why the Brevo SPF edit is written up a
 these three get a code block: an in-place edit to a shared record is a different class of change
 from three new names, even though the dashboard presents them identically.
 
+## What stage 7 removed — 2026-08-27
+
+Brevo is gone: records deleted, apex SPF include removed, SMTP key deleted, **account closed**. It
+had relayed nothing since 2026-08-20, when both Gmail *Send mail as* identities were repointed at
+Resend.
+
+```
+- TXT    @                    brevo-code:27431d23f6f1d5cdb76357ed50877560
+- CNAME  brevo1._domainkey    b1.amplifiedthinker-com.dkim.brevo.com
+- CNAME  brevo2._domainkey    b2.amplifiedthinker-com.dkim.brevo.com
+
+- TXT    @   v=spf1 include:_spf.mx.cloudflare.net include:spf.brevo.com ~all
++ TXT    @   v=spf1 include:_spf.mx.cloudflare.net ~all
+```
+
+Gate before: **20/20**. Gate after, with the four Brevo assertions removed: **16/16**. SPF lookups
+went **2 → 1**. Every inbound, Resend, DMARC and website assertion unchanged throughout.
+
+⚠️ **The three deletions and the SPF edit were done as separate changes, deliberately.** Deleting a
+record nothing reads is reversible and dull; editing the shared apex string is neither. Bundled,
+a mail failure afterwards would have had two candidate causes.
+
+⚠️ **Those three records carried a 1 hr TTL where the rest of the zone is Auto.** `1.1.1.1` — the
+resolver the gate queries — can keep serving a deleted record for that long, so a green Brevo
+section immediately after deletion proves nothing. Confirm from the Cloudflare record list, which
+is authoritative and instant.
+
+**Restoring Brevo is no longer a rollback, it is a rebuild.** The account is closed, so the DKIM
+selectors above cannot be re-published — those hostnames point at a Brevo tenant that no longer
+exists. Anything needing an SMTP relay for this domain now goes through Resend, which is what both
+send-as identities already use.
+
+---
+
 **Two records the apex must never acquire.** Resend offers both, and both would break something
 that works:
 
@@ -84,35 +118,42 @@ that works:
 
 ---
 
-## Four systems, one zone, and only one record shared
+## Three systems, one zone, and no record shared any more
+
+⚠️ **This said FOUR systems until 2026-08-27.** Brevo was the fourth and it is gone — see *What
+stage 7 removed* below. The table now describes the zone as it stands.
 
 The plan asked whether Cloudflare's MX records and Vercel's records can coexist. They can, and the
 reason is worth stating precisely, because it also identifies the only place they *can* collide:
 
 | System | Owns | Record types |
 |---|---|---|
-| **Cloudflare Email Routing** | Inbound mail | `MX` at the apex, and an SPF `include` |
-| **Resend** | Supabase auth mail | `MX` + SPF `TXT` on `send`, `resend._domainkey` TXT |
-| **Brevo** | The Gmail "Send mail as" alias, and nothing else | `brevo-code` TXT, `brevo1`/`brevo2._domainkey` CNAMEs, and an SPF `include` |
+| **Cloudflare Email Routing** | Inbound mail | `MX` at the apex, an SPF `include`, and `cf2024-1._domainkey` |
+| **Resend** | Supabase auth mail **and both Gmail send-as identities** | `MX` + SPF `TXT` on `send`, `resend._domainkey` TXT |
 | **Vercel** | The website | `A` at the apex, `CNAME` at `www` |
 
 MX and A are different record types answering different questions, so Vercel and Email Routing
 never contend — Vercel publishes no MX and wants none. Resend and Email Routing both publish MX,
 but for *different names* — `send.amplifiedthinker.com` against the apex — which is the same
-answer one level down. **The single shared record is the apex SPF TXT**, which Cloudflare and Brevo
-each need a piece of, and a domain may have only one of. Resend deliberately sits outside it.
+answer one level down.
 
-⚠️ **Brevo's records are load-bearing for something the Resend dashboard cannot see.** Auth mail
-moved, but Gmail's "Send mail as" for `singchen@amplifiedthinker.com` still relays through Brevo
-SMTP and still authenticates with those DKIM selectors. Deleting them as leftovers of the migration
-would break a working alias. `npm run verify:email` keeps asserting them, under a section heading
-that says why.
+**The apex SPF TXT is no longer shared.** It was, while Cloudflare and Brevo each needed a piece of
+it; now only Cloudflare's `include` is in it, and Resend deliberately sits outside on `send`. The
+single-record hazard below has not gone away — it is one edit from returning the moment a second
+sender is authorised.
 
-⚠️ **This makes "add a record" the wrong instinct and the natural one.** Two TXT records both
-beginning `v=spf1` is not "the second is ignored" — it is a **permanent error**, and SPF evaluation
-fails outright, taking Cloudflare's inbound authorisation down with it. Brevo goes in as a new
-`include` **inside the existing string**, edited in place. `npm run verify:email` asserts the
-single-record property for exactly this reason.
+⚠️ **`cf2024-1._domainkey` is Cloudflare's and is load-bearing.** Email Routing signs every message
+it *forwards inbound* as this domain with that selector — measured on a real delivered message,
+2026-08-20: `dkim=pass header.i=@amplifiedthinker.com header.s=cf2024-1`. It sits in the record list
+looking exactly like a stray DKIM entry of the Brevo family. It carries a padlock, which helps.
+Deleting it degrades every forwarded message under `p=quarantine`.
+
+⚠️ **"Add a record" is the wrong instinct and the natural one.** Two TXT records both beginning
+`v=spf1` is not "the second is ignored" — it is a **permanent error**, and SPF evaluation fails
+outright, taking Cloudflare's inbound authorisation down with it. A second sender goes in as another
+`include` **inside the existing string**, edited in place — that is how Brevo went in during Phase 4
+and how anything else would. `npm run verify:email` asserts the single-record property for exactly
+this reason.
 
 ---
 

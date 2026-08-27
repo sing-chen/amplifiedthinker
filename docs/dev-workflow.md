@@ -274,7 +274,7 @@ without editing tracked code.
 
 ## GitHub
 
-### The GitHub Pages origin — a supported second home, not a mirror to retire
+### The GitHub Pages origin — historical record of a second home that was retired
 
 > ⚠️ **FULLY SUPERSEDED, 2026-08-26. THE ORIGIN IS GONE.** Pages is switched off for the repository,
 > the workflow is deleted, and `sing-chen.github.io/amplifiedthinker` 404s. Everything below is a
@@ -290,16 +290,19 @@ without editing tracked code.
 > is a constraint that has now been lifted. Anything shelved for "Pages cannot run code" is
 > buildable.
 
-`https://sing-chen.github.io/amplifiedthinker/` **is live and actively rebuilding from `main`.**
-Confirmed in Phase 0: it serves the full site and already carries the Phase 1 `progress.js`.
+`https://sing-chen.github.io/amplifiedthinker/` **was live and rebuilding from `main`.** Confirmed in
+Phase 0: it served the full site and carried the Phase 1 `progress.js`.
 
-**It must stay live.** Some corporate networks block `amplifiedthinker.com` under
+**It had to stay live, while it did.** Some corporate networks blocked `amplifiedthinker.com` under
 newly-registered-domain (NRD) policies — security filtering that blocks domains registered within
-the last 30–90 days. Users on those networks have been given the GitHub URL and can reach it.
-Retiring Pages would cut off an audience segment that has no other route in.
+the last 30–90 days. Users on those networks had been given the GitHub URL and could reach it.
+Retiring Pages then would have cut off an audience segment with no other route in.
 
-So this is not a stale artifact. It is a **second supported origin with different capabilities**, and
-that has to be designed for rather than tidied away.
+It was a **second supported origin with different capabilities**, designed for rather than tidied
+away — right up until the NRD block lifted on 2026-08-18 and its audience became zero.
+
+⚠️ **Everything from here to the end of this section is past tense on purpose.** It reads as an
+instruction otherwise, and a reader arriving by search or anchor link does not see the banner above.
 
 #### What each origin can serve
 

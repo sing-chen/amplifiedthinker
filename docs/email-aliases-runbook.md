@@ -31,9 +31,16 @@ prevent.
 | 4 | Move the `singchen@` send-as off Brevo | Human + Claude | ✅ Done | 2026-08-20. **Scope changed mid-stage: repointed, not deleted** — `singchen@` stays as a personal outbound identity, and retiring the vendor never required retiring the address. Both send-as entries now relay through `smtp.resend.com` on one key; *Treat as an alias* fixed on `singchen@`, which had been *"Not an alias"*; `contact@` remains default. Delivered test measured identical to `contact@`. **Brevo now relays nothing for anybody.** Gate comment, `supabase/README.md` and `recovery.md` all amended from *must stay* to *retained pending teardown*. `verify:email` still 21/21 |
 | 5 | Swap the site over | Claude | ✅ Done | 2026-08-20, `4d28458`, live on both origins. 13 lines, 6 files, all `?subject=` values preserved. Resend's row in the privacy processor table widened to cover contact replies. Supabase templates pasted by hand. ⚠️ **Two pre-existing Astro collapsed-space defects found and fixed while verifying** — instances 3 and 4 of a trap a grep cannot detect. Promptly sibling **⊘ skipped by decision**, pre-launch, but still wrong at its launch |
 | 6 | Repoint DMARC reports | Human | ✅ Done | 2026-08-20. `rua` now `dmarc@amplifiedthinker.com`; `p=quarantine`, `adkim=r`, `aspf=r` untouched. Gate reads **20/20, no warnings** — ⚠️ **the count drops from 21 because the warning was itself a result entry.** This file predicted "21/21 with the warning gone", which cannot happen; corrected here and in stage 7, whose target is now **16/16**. **First report received and read 2026-08-24, covering 20 Aug: two records, both `dkim=pass selector=resend` and `spf=pass` on `send.amplifiedthinker.com`, `disposition=none`.** ⚠️ It took **three days**, not the ~24h this file first predicted. Stage 6 is fully closed |
-| 7 | Brevo teardown **and account closure** | Human + Claude | ☐ Not started | **After a soak — see the stage.** Three parts now: 7a safe record deletions, 7b the apex SPF edit alone, 7c close the account last |
+| 7 | Brevo teardown **and account closure** | Human + Claude | ✅ Done | 2026-08-27, soak satisfied. Baseline **20/20** → **16/16**, SPF lookups **2 → 1**, every inbound/Resend/DMARC/website assertion unchanged throughout. 7a three records deleted with `cf2024-1._domainkey` confirmed intact; 7b the apex SPF edited alone; 7c key deleted then **account closed**. Gate assertions removed outright rather than commented out. Baseline, README, recovery and BACKLOG all updated. **Vendors 7 → 6** |
 
 **Statuses:** ☐ Not started · ◐ In progress · ✅ Done · ⊘ Skipped (say why)
+
+⚠️ **This drifted once, and the drift was invisible.** On 2026-08-27, before stage 7 opened, stages
+1, 4 and 6 were all marked ✅ in the table with four boxes still unticked beneath them. Every one of
+the four was genuinely true and evidenced — they were simply never ticked — but that is the point:
+**a ✅ in the table stopped meaning "every box below is closed", and nothing reported it.** Ticking
+a stage row is not a substitute for closing its boxes, and the only thing that catches this is
+looking. Caught by asking "is anything outstanding?" rather than by any check.
 
 **Two levels, on purpose.** The table above is the *stage* state and is what a handoff reads first.
 Inside each stage, a **Tick as you go** list carries the individual steps as `- [ ]` checkboxes —
@@ -153,7 +160,8 @@ Cloudflare work, and treat "the gate passed" as saying nothing whatsoever about 
 - [x] `singchen` route left in place, untouched — still Active, 3 rules total
 - [x] Catch-all checked, set to disabled or Drop, and **recorded in the handoff table**
       — **2026-08-20: already Drop *and* Disabled. No change made**
-- [ ] No DNS records were edited in this stage
+- [x] No DNS records were edited in this stage — confirmed by `verify:email` reading an identical
+      record set at stage 0 and again at stage 4. Routing rules are not DNS
 - [x] Test message to `contact@` arrived in Gmail — 2026-08-20
 - [x] Test message to `dmarc@` arrived in Gmail — 2026-08-20
 
@@ -432,7 +440,8 @@ reader either deletes them anyway or trusts a wrong explanation. Both are worse 
 
 **Tick as you go**
 
-- [ ] Stage 3 verified **by a delivered message** before starting this stage
+- [x] Stage 3 verified **by a delivered message** before starting this stage — two receivers,
+      headers measured, closed before this stage was opened
 - [x] `singchen@` send-as repointed to `smtp.resend.com` / `587` / `resend` / the stage 2 key / TLS
       — 2026-08-20, both rows now read *Mail is sent through: smtp.resend.com*
 - [x] No confirmation email arrived (correct — the address was already verified)
@@ -582,8 +591,10 @@ signal. Reports are daily XML from each receiver; expect the first within about
 
 **Tick as you go**
 
-- [ ] `_dmarc` TXT edited **in place**, `rua` address changed and nothing else
-- [ ] `p=quarantine`, `adkim=r` and **`aspf=r`** all still present, unaltered
+- [x] `_dmarc` TXT edited **in place**, `rua` address changed and nothing else — the gate printed
+      the whole record back: `v=DMARC1; p=quarantine; adkim=r; aspf=r; rua=mailto:dmarc@amplifiedthinker.com;`
+- [x] `p=quarantine`, `adkim=r` and **`aspf=r`** all still present, unaltered — same gate line, and
+      **independently confirmed** by Google's `policy_published` in the first aggregate report
 - [x] `npm run verify:email` — **20/20, no warnings** (not 21/21 — see above). Confirmed 2026-08-20,
       `rua=mailto:dmarc@amplifiedthinker.com`, with `p=quarantine` and `aspf=r` unaltered
 - [x] First aggregate report arrived at `dmarc@` — landed **overnight 23–24 Aug 2026** from
@@ -639,6 +650,20 @@ something to "fix" by adding them.
 
 **Soak first.** Leave at least a week between stage 4 and this, using `contact@` normally. Nothing
 forces the wait except that these records are cheap to keep and expensive to restore under pressure.
+
+⚠️ **THE GATE WILL GO RED PART-WAY THROUGH, AND THAT IS CORRECT.** `verify:email` still asserts the
+four Brevo records, so deleting them makes it fail — three failures after 7a, four after 7b — and it
+stays failing until the assertions come out. **Do not treat a red board here as damage and do not
+restore a record to make it green.** The order is: delete the records, then remove the assertions,
+then expect 16/16. The only genuinely alarming outcome in this stage is a failure in the *inbound*
+or *website* sections, which nothing here should touch.
+
+⚠️ **AND IT GOES RED LATE, WHICH IS THE MORE MISLEADING HALF.** The three Brevo records carry a
+**1 hr TTL** where everything else on the zone is Auto, so `1.1.1.1` — the resolver the gate
+deliberately queries — keeps serving them for up to an hour after they are deleted. **A green Brevo
+section immediately after 7a does not mean the deletion failed.** Confirm 7a from the Cloudflare
+record list, which is authoritative and instant, and do not wait for a red board before starting
+7b. Observed 2026-08-27.
 
 **Three safe deletions and one dangerous edit, and they should not be one change.**
 
@@ -713,7 +738,8 @@ baseline of 20, *not* from the 21 this file assumed before the DMARC warning cle
 [email-dns-baseline.md](email-dns-baseline.md) with a *what stage 7 removed* block in the same shape
 as its existing *What Phase 4 changed* section, and correct the four-systems table down to three.
 Update [../supabase/README.md](../supabase/README.md) and [../docs/recovery.md](recovery.md), both of
-which currently instruct a reader that Brevo must stay.
+which instructed a reader that Brevo must stay — done 2026-08-27, along with `recovery.md`'s vendor
+table, which still described Resend as carrying auth mail only.
 
 ⚠️ **Run the gate before and after and compare the counts deliberately.** 16/16 is the pass; 16
 assertions with one silently absent is what a wrong deletion looks like, and both print green.
@@ -724,28 +750,42 @@ inactivity"* is no longer a live risk — it is resolved by removal. Vendors: **
 
 **Tick as you go**
 
-- [ ] At least a week has passed since stage 4, with `contact@` in normal use
-- [ ] `npm run verify:email` run **before** touching anything, count recorded
-- [ ] 7a — `brevo-code` TXT deleted
-- [ ] 7a — `brevo1._domainkey` CNAME deleted
-- [ ] 7a — `brevo2._domainkey` CNAME deleted
-- [ ] 7a — **`cf2024-1._domainkey` left alone** (it is Cloudflare's, and inbound depends on it).
+- [x] At least a week has passed since stage 4, with `contact@` in normal use — stage 4 was
+      2026-08-20, stage 7 opened 2026-08-27
+- [x] `npm run verify:email` run **before** touching anything, count recorded — **20/20, no
+      warnings**, record set identical to the 20th. Nothing moved during the soak
+- [x] 7a — `brevo-code` TXT deleted — 2026-08-27
+- [x] 7a — `brevo1._domainkey` CNAME deleted — 2026-08-27
+- [x] 7a — `brevo2._domainkey` CNAME deleted — 2026-08-27
+- [x] 7a — **`cf2024-1._domainkey` left alone** (it is Cloudflare's, and inbound depends on it) —
+      confirmed still present after the deletions, 2026-08-27.
       Observed 2026-08-20: it carries a **padlock** in the dashboard, like the three inbound MX
       rows — Cloudflare manages it, so it resists casual deletion. Better protected than this
       runbook assumed, but do not treat the padlock as a reason to stop being careful
-- [ ] 7b — apex SPF `include:spf.brevo.com` removed, **as its own separate change**
-- [ ] 7c — Brevo account inspected for anything else (lists, domains, history) before closing
-- [ ] 7c — the SMTP key created 2026-07-06 deleted
-- [ ] 7c — **Brevo account closed** — last, after 7a and 7b
-- [ ] 7c — confirmed no `privacy.html` change is needed (Brevo was never named there)
-- [ ] Claude: four `record(...)` assertions, `BREVO_SPF_INCLUDE` and `BREVO_SELECTORS` removed
-- [ ] `npm run verify:email` — **16/16**, and the count was compared deliberately against the
+- [x] 7b — apex SPF `include:spf.brevo.com` removed, **as its own separate change** — 2026-08-27.
+      Gate reads `v=spf1 include:_spf.mx.cloudflare.net ~all`, and the lookup budget went **2 → 1**
+- [x] 7c — Brevo account inspected for anything else (lists, domains, history) before closing
+- [x] 7c — the SMTP key created 2026-07-06 deleted — 2026-08-27, **before** attempting closure, so
+      that a closure blocked behind support would still have killed the credential
+- [x] 7c — **Brevo account closed** — last, after 7a and 7b. ⚠️ The control is **Settings → General
+      → bottom of page → "Definitively close your account"**, then type `DELETE` and *Delete
+      organization*. It is not in the profile menu, only the owner sees it, and if it is absent the
+      documented route is a support ticket from inside the account
+- [x] 7c — confirmed no `privacy.html` change is needed (Brevo was never named there)
+- [x] Claude: four `record(...)` assertions, `BREVO_SPF_INCLUDE` and `BREVO_SELECTORS` removed —
+      plus the DKIM capture loop and the record-printing loop that used them, and two comments that
+      had gone stale. ⚠️ **Removed outright rather than commented out**: a disabled assertion is an
+      invitation to re-enable something nothing needs
+- [x] `npm run verify:email` — **16/16**, and the count was compared deliberately against the
       post-stage-6 baseline of **20**, not against the 21 that predates the DMARC fix
-- [ ] Claude: [email-dns-baseline.md](email-dns-baseline.md) updated, four-systems table now three
-- [ ] Claude: [../supabase/README.md](../supabase/README.md) and [recovery.md](recovery.md) Brevo
-      instructions deleted
-- [ ] Claude: [../BACKLOG.md](../BACKLOG.md) — candidate 1 closed, 90-day key risk resolved,
-      vendors **7 → 6**
+- [x] Claude: [email-dns-baseline.md](email-dns-baseline.md) updated, four-systems table now three,
+      plus a *What stage 7 removed* block
+- [x] Claude: [../supabase/README.md](../supabase/README.md) and [recovery.md](recovery.md) Brevo
+      instructions deleted; `recovery.md`'s vendor table now shows Resend carrying **all** outbound
+- [x] Claude: [../BACKLOG.md](../BACKLOG.md) — candidate 1 closed, 90-day key risk **resolved by
+      removal**, vendors **7 → 6**. ⚠️ Recorded there that the count overstates the gain: Resend now
+      carries auth mail *and* both human identities on one account, so failures that were once
+      independent are now correlated
 
 **Rollback:** re-add the three records from the block above and restore the `include`. DKIM
 propagation is not instant; assume the alias is unusable for the length of a TTL.

@@ -1476,26 +1476,44 @@ unscheduled** · Revisit in a future phase
 **Relates to:** [CLAUDE.md](CLAUDE.md), [docs/dev-workflow.md](docs/dev-workflow.md),
 [docs/implementation-sequence.md](docs/implementation-sequence.md)
 
-**Nothing here has been done.** The whole topic was talked through and parked; this entry exists so
-the reasoning survives rather than being re-derived. Seven vendors sit behind the site today:
-GitHub, Vercel, Cloudflare, Supabase, Resend, Brevo, GoDaddy.
+**Partly done as of 2026-08-27.** Candidate 1 shipped and the Pages retirement shipped; candidate 2
+is still open. This entry keeps the reasoning as written so it is not re-derived.
+
+**Six vendors sit behind the site today: GitHub, Vercel, Cloudflare, Supabase, Resend, GoDaddy.**
+⚠️ **This said seven, including Brevo, until 2026-08-27.** Brevo's account is closed and its records
+are off the zone.
 
 **The realistic floor is five**, not fewer. Supabase, Cloudflare, GitHub and Vercel each do something
 nothing else here can, and Resend exists because Supabase's built-in mailer allows ~2 messages an
-hour and is unsupported for production. Two are removable.
+hour and is unsupported for production. **One is still removable** — GoDaddy, candidate 2 below,
+which is a registrar-only dependency and a deliberate escape hatch rather than an oversight.
 
-#### Candidate 1 — Brevo → Resend (the strongest one)
+⚠️ **Removing Brevo did not reduce the surface as much as the count suggests.** Resend now carries
+Supabase auth mail *and* both human send-as identities on one account with one 100/day allowance.
+Fewer vendors, more concentrated: an account-level problem at Resend now takes password resets and
+personal correspondence down together, where previously they failed independently.
 
-Brevo's only remaining job is relaying the Gmail *Send mail as* alias for
-`singchen@amplifiedthinker.com`. Resend already has the domain verified, so this is one SMTP setting
-in Gmail: `smtp.resend.com` / 587 / `resend` / an API key.
+#### Candidate 1 — Brevo → Resend — ✅ **DONE 2026-08-27. Vendors 7 → 6**
 
-- ⚠️ **Use a *separate* API key**, not Supabase's. One credential shared by two senders means
-  rotating it for one silently breaks the other — the exact trap Phase 4 finding 1 identified with
-  the Brevo keys.
-- ⚠️ **Check Resend's acceptable-use policy covers human correspondence.** It is built for
-  application mail; a personal relay is an unusual use and was never confirmed as permitted.
-- It also retires the *"key expires after 90 days of inactivity"* risk logged below.
+**Brevo is gone: both send-as identities repointed at Resend on 2026-08-20, then DNS records
+deleted, apex SPF include removed, SMTP key deleted and the account closed on 2026-08-27.** Done as
+[docs/email-aliases-runbook.md](docs/email-aliases-runbook.md), stages 2–4 and 7.
+
+Both cautions below were addressed rather than skipped:
+
+- **A separate API key was created** — `Gmail send-as`, sending access, domain-restricted. It is
+  shared by the two send-as identities and by neither Supabase key. ⚠️ **The 100/day free allowance
+  is per ACCOUNT, not per key**, so three keys isolate rotation but not capacity.
+- **The acceptable-use policy was read.** It is a prohibition list and personal one-to-one
+  correspondence is not on it. ⚠️ The permitted use is **replies to inbound mail** — cold outreach
+  from `contact@` would be a genuine violation of *"recipients who have explicitly opted in"*.
+
+It also retired the *"key expires after 90 days of inactivity"* risk below, by removal.
+
+⚠️ **The scope changed during the work, and the change is the lesson.** This entry assumed
+`singchen@` would be deleted along with Brevo. It was not: **retiring a vendor never required
+retiring the address.** The alias was repointed and still sends; what it lost was its place on the
+site, which is a separate question that was decided separately.
 
 #### Candidate 2 — GoDaddy → Cloudflare registrar
 
@@ -1658,7 +1676,7 @@ or the workflow adopts pull requests, at which point branching is a better model
 project and the second project becomes the thing to retire.
 
 ### The Brevo SMTP key behind the Gmail alias expires after 90 days of *inactivity*
-**Status:** Live risk · Noticed 2026-08-17 during Phase 4 · Rescoped 2026-08-18
+**Status:** ✅ **RESOLVED BY REMOVAL 2026-08-27** · Noticed 2026-08-17 during Phase 4 · Rescoped 2026-08-18
 **Relates to:** [supabase/README.md](supabase/README.md), Gmail → Settings → Accounts and Import
 
 ⚠️ **This no longer concerns auth mail.** Supabase moved to Resend on 2026-08-18, and Resend's API
@@ -1678,6 +1696,17 @@ user's password reset. Worth knowing, not worth scheduling.
 
 Options, none urgent: send something from the alias each quarter, or simply remember that this is
 the first thing to check when the alias stops working and nothing was changed.
+
+**What actually happened: neither option was taken, and the risk was removed instead.** On
+2026-08-20 the `singchen@` send-as was repointed at `smtp.resend.com`, so nothing authenticated with
+the Brevo key any more; on 2026-08-27 the key was deleted and the account closed. Resend's API keys
+have no inactivity expiry.
+
+⚠️ **Worth keeping as a shape rather than a fact.** The failure mode was the interesting part: a
+credential that dies from *disuse*, on a low-traffic path, surfacing as an authentication error
+indistinguishable from a wrong password. Anything else that quietly depends on periodic activity has
+the same shape — and the free Supabase project pausing itself after a week of no reads, which
+`keepalive.yml` exists to prevent, is the other instance of it already in this repo.
 
 ---
 
