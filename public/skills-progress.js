@@ -205,6 +205,25 @@
 
   /* ── deriving everything ───────────────────────────────────────────────── */
 
+  /* Slug → display name. Derived rather than mapped, so a sixth skill needs no
+     edit here. Sentence case ("Systems thinking"), matching the site's own
+     headings.
+
+     ⚠️ IT LIVES HERE BECAUSE TWO SURFACES NEEDED IT AND A THIRD WAS ABOUT TO
+     WRITE ITS OWN. It began inside learning.js; the account Notes tab wanted the
+     same answer, and this file's whole reason for existing is that
+     `skills-progress.js` owns the definitions so two pages cannot disagree about
+     one account. A display name is a smaller thing to disagree about than
+     "complete" — but the disagreement is the same shape, and the second copy is
+     always the cheap one to write. */
+  function nameFor(slug) {
+    var words = String(slug).split('-');
+    var first = words[0] || '';
+    return [first.charAt(0).toUpperCase() + first.slice(1)]
+      .concat(words.slice(1))
+      .join(' ');
+  }
+
   function derive(catalogue, rows) {
     var out = {};
     if (!catalogue || !catalogue.skills) return out;
@@ -212,15 +231,15 @@
     var index = {};
     for (var i = 0; i < (rows || []).length; i++) {
       var r = rows[i];
-      index[r.skill_slug + ' ' + r.content_type] = r;
+      index[r.skill_slug + '\u0000' + r.content_type] = r;
     }
 
     for (var slug in catalogue.skills) {
       if (!Object.prototype.hasOwnProperty.call(catalogue.skills, slug)) continue;
       var entry = catalogue.skills[slug];
       out[slug] = {
-        primer: deriveOne(entry.primer, 'primer', index[slug + ' primer']),
-        plan: deriveOne(entry.plan, 'plan', index[slug + ' plan'])
+        primer: deriveOne(entry.primer, 'primer', index[slug + '\u0000primer']),
+        plan: deriveOne(entry.plan, 'plan', index[slug + '\u0000plan'])
       };
     }
     return out;
@@ -281,6 +300,50 @@
       }, function () { return []; });
   }
 
+  /* ── notes, counted per artefact ─────────────────────────────────────────
+     A skill note's target_id is `<slug>:<primer|plan>`. ⚠️ THE PARSE LIVES
+     HERE for the same reason nameFor does: the account Notes tab already
+     derives kind from this string, and the Future Skills page is the second
+     surface to want it. Two copies of "what does this id mean" is exactly the
+     shape of disagreement this file exists to prevent.
+
+     ⚠️ It is a COUNT, not a flag. The one-note-per-target unique index is
+     scoped to news only — a plan can hold a note per section, which is what
+     the `anchor` column is for. */
+  // rows -> { slug: { primer: n, plan: n } }. Pure; anything unrecognised is
+  // ignored rather than guessed at.
+  function countNotes(rows) {
+    var out = {};
+    for (var i = 0; i < (rows || []).length; i++) {
+      var bits = String((rows[i] && rows[i].target_id) || '').split(':');
+      var slug = bits[0], kind = bits[1];
+      if (!slug || (kind !== 'primer' && kind !== 'plan')) continue;
+      if (!out[slug]) out[slug] = { primer: 0, plan: 0 };
+      out[slug][kind]++;
+    }
+    return out;
+  }
+
+  /* ⚠️ SELECTS target_id AND NOTHING ELSE. A note body runs to 500 characters
+     and forty of them would be a payload fetched to be counted and thrown
+     away. PostgREST cannot group, so the counting happens above.
+     ⚠️ Resolves to {} on any failure, never rejects — a page that cannot count
+     notes must still show progress. */
+  function loadNoteCounts() {
+    var c = client();
+    if (!c) return Promise.resolve({});
+
+    // No user_id filter, same reasoning as loadRows: RLS is the boundary and a
+    // client-side filter would mask a broken policy.
+    return c.from('notes')
+      .select('target_id')
+      .eq('target_type', 'skill')
+      .then(function (r) {
+        if (r.error || !r.data) return {};
+        return countNotes(r.data);
+      }, function () { return {}; });
+  }
+
   // Resolves to null for a guest, or when anything at all goes wrong. Callers
   // render the guest page in both cases — there is deliberately no error state
   // to design, because the personal layer is additive.
@@ -305,6 +368,12 @@
     // Exposed for the surfaces to share, and for tests to drive without a
     // network: derive(catalogue, rows) is pure.
     derive: derive,
+    nameFor: nameFor,
+    // ⚠️ Notes are NOT folded into load(). Only the Future Skills page needs
+    // them today, and adding a second query to the shared loader would make
+    // every surface pay for it — including the ones that never render a note.
+    loadNoteCounts: loadNoteCounts,
+    countNotes: countNotes,
     formatDate: formatDate,
     summarise: summarise,
     deriveOne: deriveOne,

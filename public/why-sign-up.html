@@ -23,13 +23,27 @@
 <style>
   /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
 
-  /* ── PAGE WRAPPER ──
-     Wider than `--col` (680px), which the two legal pages keep. Those are
-     long prose read top to bottom, where a narrow measure is the right call.
-     This page is built around a comparison table with three columns and a
-     fourth state to signal, and 680px squeezed it. Still centred, and still
-     well inside a comfortable measure for the paragraphs around it. */
-  .doc-page{max-width:820px;margin:0 auto;padding:72px 40px 96px}
+  /* ── PAGE FRAME ──
+     ⚠️ THE FRAME IS --page-max AND THE CONTENT IS NOT. This page ran end to end
+     at its reading measure until 2026-08-27, which left it visibly narrower than
+     Future Skills, My People and News — all of which run to --page-max (1100px)
+     with 40px of side padding. The frame now matches them, so every page on the
+     site starts its content at the same left edge.
+
+     Prose plus the three-column comparison table, which is what earned 820px in the first place.
+
+     ⚠️ NOTHING REFLOWED. The measure below is exactly what this page's frame
+     was before, so the text sets identically — what changed is that the column
+     now sits at the LEFT of a wide frame instead of being centred in the
+     viewport. Widening the prose itself was measured and rejected on about.html:
+     --col is 80 characters a line, 820px is 97, and the full frame is 120,
+     against a comfortable 45–75.
+
+     ⚠️ privacy.html and terms.html are also served into the document modal on
+     /sign-in/ with ?embed=1. Capping the CONTENT rather than only the frame is
+     what keeps that case unchanged whatever width the modal happens to be. */
+  .doc-page{max-width:var(--page-max);margin:0 auto;padding:72px 40px 96px}
+  .doc-page > *{max-width:820px}
 
   /* ── MASTHEAD ── */
   .doc-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
@@ -96,27 +110,10 @@
   @media(prefers-reduced-motion:reduce){
     .doc-chevron,.doc-disclosure summary,.doc-table tbody tr{transition:none}
   }
-  .yes,.no,.soon{font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
+  .yes,.no{font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
   .yes{color:var(--deep-teal)}
   .no{color:var(--warm-gray)}
-  .yes svg,.no svg,.soon svg{width:14px;height:14px;stroke-width:2.5;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-
-  /* ── THE THIRD STATE ──
-     ⚠️ A DELIBERATELY DIFFERENT SHAPE, not a paler tick. A feature with a table
-     waiting for it in the schema and nothing writing to it yet cannot carry a
-     tick — that would be a promise the site cannot keep today, and this page is
-     the one place a reader is deciding whether to trust it.
-     (The progress page was the third of these until 2026-08-21, when it shipped
-     and its row became a plain Yes. Saved news stories were the second until
-     2026-08-26. ⚠️ EXACTLY ONE ROW IS LEFT — notes on a PLAN SECTION. Notes on
-     a news story ship today; notes on a plan do not, and the two are easy to
-     collapse into "notes" and mark done. ⚠️ When the last Soon row goes, this whole
-     state — the CSS, the legend below the table and the paragraph introducing
-     it — goes with it, or the page keeps explaining a marker nothing carries.)
-
-     A pill rather than an icon+label, because the eye reads the two icon columns
-     as a matched pair and would fold a third icon into them. */
-  .soon{background:rgba(234,217,200,.55);color:#7A4526;padding:3px 10px;border-radius:999px;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+  .yes svg,.no svg{width:14px;height:14px;stroke-width:2.5;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
   /* ── SECTION DIVIDERS ── */
   .doc-divider{height:1px;background:rgba(172,196,182,.4);margin:10px 0 2px}
@@ -183,7 +180,6 @@
   [data-theme="dark"] .doc-table td{color:var(--fg-2)}
   [data-theme="dark"] .yes{color:var(--fg-brand)}
   [data-theme="dark"] .no{color:var(--fg-2)}
-  [data-theme="dark"] .soon{background:rgba(201,122,74,.22);color:#E8C9AE}
   [data-theme="dark"] .doc-divider{background:var(--line)}
   [data-theme="dark"] .doc-note{color:var(--fg-2)}
   [data-theme="dark"] .doc-list li{color:var(--fg-1)}
@@ -243,13 +239,7 @@
 
     <p>None of this is available signed out, because there is nowhere to put it. A guest's News page is the same feed, read once.</p>
 
-    <p>One thing is still coming, and it is worth being straight about which:</p>
-
-    <ul class="doc-list">
-      <li><strong>Notes as you go, on a plan.</strong> Capture a thought against a plan section while it is fresh, then read it back in place or alongside every other note for that plan. Notes on news stories work today; notes on plan sections do not yet.</li>
-    </ul>
-
-    <p>That one is <strong>marked <span class="soon">Soon</span> in the table below rather than counted as a reason to sign up today.</strong> It is being built on top of the same record an account is already keeping, which is why signing up now means having something to look at when it lands.</p>
+    <p><strong>Notes as you go, on a plan.</strong> Capture a thought against a plan section while it is fresh, and read it back in place, alongside every other note for that plan, or all together on your account page. Nobody else can ever see them.</p>
 
     <details class="doc-disclosure">
       <summary>
@@ -295,9 +285,9 @@
             <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
           </tr>
           <tr>
-            <th scope="row">Notes on a plan section, kept and searchable</th>
+            <th scope="row">Notes on a plan section, kept and private to you</th>
             <td><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>No</span></td>
-            <td><span class="soon">Soon</span></td>
+            <td><span class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Yes</span></td>
           </tr>
           <tr>
             <th scope="row">Mark a primer or plan as complete, with the date</th>
@@ -337,8 +327,6 @@
         </tbody>
       </table>
     </div>
-
-        <p class="doc-note"><span class="soon">Soon</span> means the groundwork is in place and the feature is not. It is on the table so you can see where this is going, not so it counts as a reason to sign up today.</p>
 
       </div>
     </details>

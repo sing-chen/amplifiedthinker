@@ -24,7 +24,45 @@
   /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
 
   /* ── PAGE WRAPPER ── */
-  .about-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
+  /* ── PAGE FRAME ──
+     ⚠️ THE FRAME IS --page-max, THE PROSE IS NOT, and that split is the whole
+     point of these two rules.
+
+     This page ran at --col (680px) end to end until 2026-08-27, which made it
+     visibly narrower than Future Skills, My People and News — all of which run
+     their content to --page-max (1100px). It is also the one content page with
+     NO HERO BAND, so it opens straight into a narrow column and the difference
+     is obvious the moment you arrive from anywhere else.
+
+     ⚠️ BUT THE PROSE MUST NOT GO TO 1100px. This is a personal essay at 16px
+     with 1.85 line-height; 1100px is roughly 150 characters a line, which is
+     about twice a comfortable measure. --col exists for exactly this and the two
+     legal pages keep it for exactly this reason. What widened is the frame and
+     the things that genuinely want room — the identity block.
+
+     ⚠️ THE READING COLUMN STAYS AT --col, AND THAT WAS MEASURED RATHER THAN
+     ASSUMED. It went to 820px first, on the precedent that why-sign-up.html uses
+     820px for prose. Measuring the rendered character count settled it:
+
+         --col 680px .... 80 characters per line
+         740px .......... 87
+         820px .......... 97
+         full 1020px .... 120
+
+     Comfortable is 45–75 and about 85 is the outside edge, so 680 is not a
+     cautious choice here — it is the only one of the four that lands in range,
+     and it is presumably why --col is 680 in the first place. (why-sign-up runs
+     at 97 too, which is worth knowing and is not a reason to copy it.)
+
+     So the prose does not get wider. It moves: the column now sits at the LEFT
+     edge of a --page-max frame rather than centred in the viewport, which is
+     what makes the page sit on the same grid as every other page while keeping
+     a measure somebody can actually read. */
+  .about-page{max-width:var(--page-max);margin:0 auto;padding:72px 40px 96px}
+
+  /* The reading column, and everything that shares its left edge. */
+  .about-prose,
+  .updates-block{max-width:var(--col)}
 
   /* ── IDENTITY BLOCK ── */
   .identity{display:flex;gap:32px;align-items:flex-start;margin-bottom:56px}

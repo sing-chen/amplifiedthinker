@@ -26,8 +26,27 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 <style>
   /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
 
-  /* ── PAGE WRAPPER ── */
-  .doc-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
+  /* ── PAGE FRAME ──
+     ⚠️ THE FRAME IS --page-max AND THE CONTENT IS NOT. This page ran end to end
+     at its reading measure until 2026-08-27, which left it visibly narrower than
+     Future Skills, My People and News — all of which run to --page-max (1100px)
+     with 40px of side padding. The frame now matches them, so every page on the
+     site starts its content at the same left edge.
+
+     Long prose read top to bottom. --col is 680px, which measures 80 characters a line.
+
+     ⚠️ NOTHING REFLOWED. The measure below is exactly what this page's frame
+     was before, so the text sets identically — what changed is that the column
+     now sits at the LEFT of a wide frame instead of being centred in the
+     viewport. Widening the prose itself was measured and rejected on about.html:
+     --col is 80 characters a line, 820px is 97, and the full frame is 120,
+     against a comfortable 45–75.
+
+     ⚠️ privacy.html and terms.html are also served into the document modal on
+     /sign-in/ with ?embed=1. Capping the CONTENT rather than only the frame is
+     what keeps that case unchanged whatever width the modal happens to be. */
+  .doc-page{max-width:var(--page-max);margin:0 auto;padding:72px 40px 96px}
+  .doc-page > *{max-width:var(--col)}
 
   /* ── MASTHEAD ── */
   .doc-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
@@ -411,7 +430,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
     <p>Under the UK GDPR you have the right to see the information we hold about you; to have it corrected if it is wrong; to have it deleted; to restrict or object to how we use it; and to receive it in a portable, machine-readable format.</p>
 
-    <p><strong>If you have an account</strong>, some of this you can do yourself without asking. Your first name can be changed on the <a href="account/">account page</a>, any note you have written can be edited or deleted where you wrote it — on the news story, or in the notes panel on the primer or plan — and the same page will close your account outright, which covers erasure. There is no self-serve export yet, so <strong>for a copy of your data, email us and we will put it together by hand</strong> — that is a limitation of the site, not of your right, and we will respond within one month.</p>
+    <p><strong>If you have an account</strong>, some of this you can do yourself without asking. Your first name can be changed on the <a href="account/">account page</a>, any note you have written can be edited or deleted either where you wrote it — on the news story, or in the notes panel on the primer or plan — or all together under <a href="account/#notes">Notes on your account page</a>, which also lets you select several and delete them at once — and the same page will close your account outright, which covers erasure. There is no self-serve export yet, so <strong>for a copy of your data, email us and we will put it together by hand</strong> — that is a limitation of the site, not of your right, and we will respond within one month.</p>
 
     <p><strong>If you do not have an account</strong>, the only information we hold that could relate to you is a server log entry containing your IP address. You have the same rights over it, including the right to object to our relying on legitimate interests. There is a limit worth being straight about: we have no way of telling which log entries are yours, so we cannot act on a request unless you can give us something that identifies them — and the UK GDPR does not require us to collect more information about you purely so that we can find you (Article 11). If you want to raise something, email us and we will do what we can.</p>
 

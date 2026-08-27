@@ -27,6 +27,19 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <!-- is:inline for the same reason as every other script here — see pwned.js. -->
   <script slot="head" is:inline src={`${base}/pwned.js`}></script>
 
+  <!-- ⚠️ ORDER MATTERS, AND IT IS NOT ALPHABETICAL. note-editor.js publishes
+       window.AmplifiedNoteEditor and account-notes.js reads it. Both are classic
+       scripts, so the browser runs them in document order and that is the only
+       thing keeping the guarantee.
+
+       ⚠️ LOADED UNCONDITIONALLY HERE, unlike on the ten skill pages where nav.js
+       injects them on a peeked session. This page is already on nav.js's
+       `pageNeedsAuth()` allowlist — it loads the auth stack for everyone,
+       because it has something to say to a signed-out visitor — so there is no
+       guest to spare the download from. -->
+  <script slot="head" is:inline src={`${base}/note-editor.js`}></script>
+  <script slot="head" is:inline src={`${base}/account-notes.js`}></script>
+
   <section class="auth-wrap auth-wrap-wide">
 
     <div class="auth-panel" id="acct-loading">
@@ -68,6 +81,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </div>
 
     <div id="acct-main" hidden>
+
+      <!--
+        ⚠️ THE PANELS BELOW ARE NOT RE-INDENTED INTO THEIR TAB PANEL, ON PURPOSE.
+        Wrapping them properly would re-flow ~230 lines of markup for no change
+        in output, and this is an .astro file: a newline landing between text and
+        a tag compiles to NOTHING, not to a space, and has silently shipped that
+        way four times on these two pages. A wrapper at this depth with its
+        children left alone is a diff a person can actually check.
+      -->
+      <div class="acct-tabs" role="tablist" aria-label="Account sections">
+        <button type="button" role="tab" class="acct-tab" id="acct-tab-btn-account"
+                aria-controls="acct-tab-account" aria-selected="true">Account</button>
+        <button type="button" role="tab" class="acct-tab" id="acct-tab-btn-notes"
+                aria-controls="acct-tab-notes" aria-selected="false" tabindex="-1">Notes<span
+                class="acct-tab-count" id="acct-tab-notes-count" hidden></span></button>
+      </div>
+
+      <div id="acct-tab-account" role="tabpanel" aria-labelledby="acct-tab-btn-account">
       <div class="auth-panel">
         <h1 id="acct-greeting">Account</h1>
         <p class="auth-lede">Your account details</p>
@@ -301,6 +332,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
         <p class="auth-status" id="acct-delete-status" role="status" aria-live="polite"></p>
       </div>
+      </div><!-- /#acct-tab-account -->
+
+      <div id="acct-tab-notes" role="tabpanel" aria-labelledby="acct-tab-btn-notes" hidden>
+        <div class="auth-panel">
+          <h2>Your notes</h2>
+          <p class="auth-lede">Everything you have written, in one place &mdash; on a plan, a primer,
+            or a news story. Only you can see them.</p>
+
+          <!--
+            Filled by account-notes.js, which owns the markup. Empty and inert if
+            that file is unavailable, so a blocked script leaves a tab that says
+            nothing rather than a tab that lies about having nothing.
+          -->
+          <div id="acct-notes-root">
+            <p class="auth-muted" id="acct-notes-loading">Loading your notes&hellip;</p>
+          </div>
+        </div>
+      </div><!-- /#acct-tab-notes -->
     </div>
 
   </section>
@@ -310,6 +359,87 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       'use strict';
 
       var el = function (id) { return document.getElementById(id); };
+
+      /* ---- tabs -------------------------------------------------------------
+         Page furniture, so it lives here rather than in account-notes.js: the
+         tabs have to work whether or not that file loads, and a tab that cannot
+         be opened because a content script failed is worse than an empty tab.
+
+         ⚠️ ROVING TABINDEX, NOT `tabindex="0"` ON BOTH. A tablist is one stop in
+         the tab order; the arrow keys move between the tabs inside it. Leaving
+         both focusable makes a keyboard user tab THROUGH the controls to reach
+         the panel, which is the thing the pattern exists to avoid.
+
+         ⚠️ `hidden` is what shows and hides a panel, and it is load-bearing that
+         auth-pages.css carries `.auth-wrap [hidden] { display: none !important }`
+         — `.auth-panel` sets a `display`, and any author `display` beats the UA
+         rule for `[hidden]`. That has cost this project three defects. Assert
+         computed `display`, never `.hidden`. */
+      var TABS = [
+        { btn: 'acct-tab-btn-account', panel: 'acct-tab-account', hash: '' },
+        { btn: 'acct-tab-btn-notes',   panel: 'acct-tab-notes',   hash: '#notes' }
+      ];
+
+      function selectTab(name, focus) {
+        var found = false;
+        TABS.forEach(function (t) {
+          var on = t.panel === name;
+          var b = el(t.btn), p = el(t.panel);
+          if (!b || !p) return;
+          if (on) found = true;
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+          if (on) b.removeAttribute('tabindex'); else b.setAttribute('tabindex', '-1');
+          if (on) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+          if (on && focus) b.focus();
+        });
+        if (!found) return;
+        /* The hash follows the tab so a tab is linkable and survives a reload —
+           the same reasoning /sign-in/ uses for #sign-up and #forgot, where the
+           comment notes that without it the deep links are merely cosmetic.
+           replaceState, not a hash assignment: setting location.hash would push
+           a history entry per tab click and make Back walk the tabs. */
+        var t = TABS.filter(function (x) { return x.panel === name; })[0];
+        try {
+          history.replaceState(null, '', location.pathname + location.search + t.hash);
+        } catch (e) { /* a failed URL tidy is not worth breaking the tabs over */ }
+      }
+
+      TABS.forEach(function (t) {
+        var b = el(t.btn);
+        if (b) b.addEventListener('click', function () { selectTab(t.panel, false); });
+      });
+
+      var tablist = document.querySelector('.acct-tabs');
+      if (tablist) {
+        tablist.addEventListener('keydown', function (e) {
+          /* ⚠️ `e.target`, NOT `document.activeElement`. The key was delivered to
+             the tab that had focus and bubbled to here, so the event already
+             carries the answer — while `document.activeElement` is a question
+             about the whole document and returns <body> whenever the document
+             itself is not focused. That is not only a test artefact: a page in a
+             background tab, an iframe, or a window that has just lost focus
+             would all take the same wrong branch. */
+          var from = (e.target && e.target.id) || '';
+          var i = TABS.map(function (t) { return t.btn; }).indexOf(from);
+          if (i < 0) return;
+          var next = null;
+          if (e.key === 'ArrowRight') next = (i + 1) % TABS.length;
+          if (e.key === 'ArrowLeft') next = (i - 1 + TABS.length) % TABS.length;
+          if (e.key === 'Home') next = 0;
+          if (e.key === 'End') next = TABS.length - 1;
+          if (next === null) return;
+          e.preventDefault();
+          selectTab(TABS[next].panel, true);
+        });
+      }
+
+      // Open the tab named in the address bar, on load and on a later change.
+      function fromHash() {
+        var t = TABS.filter(function (x) { return x.hash && x.hash === location.hash; })[0];
+        if (t) selectTab(t.panel, false);
+      }
+      fromHash();
+      window.addEventListener('hashchange', fromHash);
 
       // ---- reveal a password field ----------------------------------------
       //

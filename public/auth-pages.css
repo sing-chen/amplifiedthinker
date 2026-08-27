@@ -29,6 +29,43 @@
 :root { --status-error-on: var(--white); }
 :root[data-theme="dark"] { --status-error-on: #0E1917; }
 
+/* ⚠️ AND THE SAME FAULT AGAIN, ONE TOKEN ALONG. `--accent-warm` is ALSO
+   #C97A4A in dark, and the notes table wanted it as chip text: 4.33:1 on
+   --bg-surface — the identical colour and the identical measurement that
+   --status-error-text above exists to correct. Found by measuring the chip,
+   after the palette had already been caught out this way once.
+
+   Kept as a SEPARATE NAME rather than reusing --status-error-text, which
+   currently holds the same two values. They mean different things — one is "an
+   error, as text", the other is "the warm accent, as text" — and a news chip
+   borrowing the error colour would be a wrong statement that happens to look
+   right. If the error colour ever changes, these must not move together.
+
+   ⚠️ Note that --accent-cool needs no partner: it is `var(--teal)` in both
+   themes and is unusable as text on a light panel at 2.81:1, so anything
+   wanting a cool accent AS TEXT should use --fg-brand, which does flip. */
+:root { --accent-warm-text: #8A4B2C; }
+:root[data-theme="dark"] { --accent-warm-text: #E7A57C; }
+
+/* ⚠️ AND A THIRD TIME, FOR THE SUPPORT ACCENT. --accent-support is #8AA35E in
+   dark, which is legible on the panel (5.09:1) and NOT on its own 20% tint,
+   where the chip background rises to rgb(49,69,52) and the ratio falls to
+   3.68:1. Both chips that use it — the Where column and the filter above it —
+   sit the text on that tint, so both were failing.
+
+   ⚠️ IT WAS MEASURED THE WRONG WAY FIRST AND REPORTED AS PASSING. The check
+   compared the label against the PANEL rather than against the chip's own
+   tinted background, which is the surface the text is actually on. A tint that
+   lightens a dark panel moves the background TOWARDS a light label, so the
+   error always flatters. Measure text against what is immediately behind it,
+   not against what is behind that.
+
+   #B4C98A gives 5.74:1 on the tint and 7.94:1 on the panel. Light is unchanged
+   from the token; only dark is lifted, exactly as --status-error-text and
+   --accent-warm-text already do. */
+:root { --accent-support-text: #55643A; }
+:root[data-theme="dark"] { --accent-support-text: #B4C98A; }
+
 /* ⚠️ `hidden` MUST WIN over any display rule in this file.
  *
  * The browser hides `[hidden]` with a UA rule of the lowest possible weight, so
@@ -65,8 +102,37 @@
 /* The account page only. Sign-in is a single column of fields and reads better
    narrow; the account page has a row of three actions that wraps at 480px, and
    a wrapped button row makes the third look like it belongs to something else.
-   Widening one page beats shrinking the buttons on both. */
-.auth-wrap-wide { max-width: 660px; }
+   Widening one page beats shrinking the buttons on both.
+
+   ⚠️ WIDENED TO --page-max ON 2026-08-27, when the Notes tab arrived. It was
+   660px, which is right for a column of form fields and far too narrow for a
+   five-column table — and it made the account page look like a different site
+   from Future Skills, My People and News, all of which run to `--page-max`
+   (1100px) with 40px of side padding. The frame now matches them.
+
+   ⚠️ THE FORMS DID NOT GO WITH IT. A single column of inputs stretched to
+   1100px is worse than one at 660px, so everything that is a form keeps the old
+   measure — see the two rules below. This is a wide FRAME holding a narrow
+   COLUMN where the content is prose or fields, and the full width only where
+   there is a table to fill it. */
+.auth-wrap-wide { max-width: var(--page-max); }
+
+/* Side padding to match .news-main and .people-section, but only once there is
+   room for it — --space-4 stays on a phone, where 40px would eat a quarter of
+   the screen. */
+@media (min-width: 720px) {
+  .auth-wrap-wide { padding-left: 40px; padding-right: 40px; }
+}
+
+/* ⚠️ `> .auth-panel` — DIRECT children only. That is the loading, signed-out and
+   deleted panels, which sit beside #acct-main rather than inside a tab. The
+   panels within the tab panels are not direct children and must not be caught,
+   or the Notes table would be capped at 660px inside a 1100px frame. */
+.auth-wrap-wide > .auth-panel { max-width: 660px; }
+
+/* The Account tab is forms and prose throughout, so it keeps exactly the width
+   it had before the frame grew. The Notes tab is deliberately not capped. */
+#acct-tab-account { max-width: 660px; }
 
 .auth-panel {
   background: var(--bg-surface);
@@ -481,3 +547,385 @@
 .auth-field-row { display: flex; justify-content: space-between; gap: var(--space-3); align-items: baseline; }
 .auth-field-row dt { font-size: var(--fs-label); color: var(--fg-2); }
 .auth-field-row dd { font-size: var(--fs-label); color: var(--fg-1); word-break: break-all; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Account tabs, and the notes they hold
+ *
+ * ⚠️ SEMANTIC TOKENS ARE CORRECT HERE, unlike on the ten skill pages. Those
+ * pages do not flip their semantic tokens in dark mode — `--bg-surface` stays
+ * #FFFFFF and dark is a parallel `--d-*` set — which is why skill-notes.js
+ * carries an explicit `[data-theme="dark"]` counterpart for every surface.
+ * /account/ and /sign-in/ are Astro pages built on BaseLayout, so they load
+ * styles.css, where the tokens DO flip. Using `--d-*` here would resolve to
+ * nothing.
+ *
+ * ⚠️ Panels are shown and hidden with `hidden`, which works only because of the
+ * blanket `.auth-wrap [hidden] { display: none !important }` near the top of
+ * this file. Anything below that sets a `display` and also gets toggled depends
+ * on it. Assert computed `display`, never `.hidden`.
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+.acct-tabs {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.acct-tab {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: var(--space-3) var(--space-4);
+  font-family: inherit;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--fg-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.acct-tab:hover { color: var(--fg-1); }
+.acct-tab:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: -2px; }
+.acct-tab[aria-selected="true"] { color: var(--fg-brand); border-bottom-color: var(--fg-brand); }
+
+.acct-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--bg-sunken);
+  color: var(--fg-2);
+  font-size: 11px;
+  font-weight: 700;
+}
+.acct-tab-count[hidden] { display: none !important; }
+.acct-tab[aria-selected="true"] .acct-tab-count { background: var(--bg-brand); color: var(--fg-on-brand); }
+
+/* ── the list ─────────────────────────────────────────────────────────────── */
+
+.acct-notes-bulk {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: var(--space-4);
+}
+.acct-notes-bulk[hidden] { display: none !important; }
+.acct-notes-bulk-count { font-size: var(--fs-label); color: var(--fg-2); }
+
+/* ── the editor, prefix `acct` ────────────────────────────────────────────── */
+
+.acct-note { display: flex; flex-direction: column; gap: var(--space-2); }
+.acct-note-label {
+  font-size: 11px; font-weight: 650; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--fg-brand);
+}
+.acct-note-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  color: var(--fg-1);
+  font-family: inherit;
+  font-size: var(--fs-label);
+  line-height: 1.6;
+  resize: vertical;
+}
+.acct-note-input:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 1px; }
+.acct-note-read {
+  font-size: var(--fs-label);
+  line-height: 1.65;
+  color: var(--fg-1);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.acct-note-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3); flex-wrap: wrap;
+}
+.acct-note-count { font-size: 12px; color: var(--fg-2); }
+.acct-note-count.is-near { color: var(--status-error-text); font-weight: 600; }
+.acct-note-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.acct-note-confirm { font-size: 13px; line-height: 1.5; color: var(--fg-1); }
+.acct-note-status { margin: 0; font-size: 12px; color: var(--fg-2); }
+.acct-note-status:empty { display: none; }
+
+/* The editor asks for `is-primary` and `is-danger` modifiers on whatever button
+   class it is given. Mapped onto the two variants this file already defines,
+   rather than inventing a third pair. */
+.auth-btn.is-primary { /* the default .auth-btn already is the primary */ }
+.auth-btn.is-danger { background: var(--status-error); color: var(--status-error-on); }
+
+/* ── the notes table ───────────────────────────────────────────────────────
+ * ⚠️ THE THREE CHIP COLOURS COME FROM --accent-cool / --accent-support /
+ * --accent-warm, which already flip in styles.css's dark block. Hardcoding
+ * three hexes would have meant writing three more dark rules and keeping them
+ * in step with a palette they are not part of.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.acct-notes-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.acct-notes-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: var(--fs-label);
+}
+.acct-notes-table th,
+.acct-notes-table td { text-align: left; padding: var(--space-3); vertical-align: top; }
+.acct-notes-table thead th {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--fg-brand);
+  border-bottom: 2px solid var(--line);
+  white-space: nowrap;
+}
+.acct-notes-table tbody tr { border-bottom: 1px solid var(--line-soft); }
+
+/* ── row states ────────────────────────────────────────────────────────────
+ * Three of them, and they must be tellable apart at a glance: the row under the
+ * pointer, the rows you have ticked, and the row asking whether to delete
+ * itself. They were two identical greys before, so a selected row and a row
+ * mid-confirmation looked the same.
+ *
+ * ⚠️ ZEBRA STRIPING WAS THE OTHER OPTION AND WAS NOT TAKEN. Stripes plus hover
+ * plus selected is three background states on one row, and the stripe wins the
+ * argument for the wrong reason — it is always on, so it competes with the two
+ * that actually mean something. Hover is what helps the eye carry a row across
+ * five columns, which is the job the stripe was being asked to do.
+ *
+ * ⚠️ ORDER IS LOAD-BEARING. These are all (0,2,0) or lower, so they resolve by
+ * SOURCE ORDER: hover, then selected, then selected+hover, then confirming.
+ * Moving any of them changes which state wins, silently. */
+
+/* ⚠️ Behind a hover-capable media query so a touch device does not get a
+   highlight stuck on the last row tapped — on touch, :hover persists until
+   something else is tapped, which reads as a selection that cannot be cleared. */
+@media (hover: hover) {
+  .acct-notes-table tbody tr.acct-note-row:hover {
+    background: color-mix(in srgb, var(--fg-brand) 7%, transparent);
+  }
+}
+
+/* The same cue for keyboard users, who have no pointer to follow. Any focus
+   inside the row — checkbox, link, icon button — lights the whole row. */
+.acct-note-row:focus-within {
+  background: color-mix(in srgb, var(--fg-brand) 7%, transparent);
+}
+
+/* Ticked. Deliberately the BRAND tint rather than a darker grey, so "I chose
+   this" cannot be mistaken for "the pointer is here". The inset bar gives it a
+   second signal that survives at any tint strength. */
+.acct-note-row.is-selected {
+  background: color-mix(in srgb, var(--bg-brand) 15%, transparent);
+  box-shadow: inset 3px 0 0 var(--bg-brand);
+}
+.acct-note-row.is-selected:hover,
+.acct-note-row.is-selected:focus-within {
+  background: color-mix(in srgb, var(--bg-brand) 22%, transparent);
+}
+
+/* Asking to be deleted. Warm, because it is the one state with a consequence,
+   and it must outrank selected — a row can be ticked and then deleted. */
+.acct-note-row.is-confirming,
+.acct-note-row.is-confirming:hover {
+  background: color-mix(in srgb, var(--accent-warm) 14%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent-warm-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .acct-note-row { transition: background .12s; }
+}
+
+.acct-col-pick { width: 1%; white-space: nowrap; }
+.acct-col-kind { width: 1%; white-space: nowrap; }
+/* Topic carries a full news headline, which wraps to three lines at 26% and
+   made the table look unbalanced against notes that are often a single line.
+   Both columns are given an explicit share so the browser stops guessing from
+   content. */
+.acct-col-topic { width: 40%; }
+/* ⚠️ DELIBERATELY NOT CLAMPED. A three-line clamp was tried and reverted: it
+   made rows even, and it took the note away from the one column whose whole
+   job is to show it. A long note makes a tall row, which is the honest
+   rendering — the reader can read every note without opening anything, and
+   that is why there is no Read control on a row. */
+.acct-col-note {
+  width: 34%;
+  color: var(--fg-1);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.acct-col-act { width: 1%; white-space: nowrap; text-align: right; }
+.acct-col-act .acct-icon-btn + .acct-icon-btn { margin-left: 2px; }
+
+/* ⚠️ Scoped to beat `.auth-panel input` (0,1,1), which sets width:100% and
+   display:block for this file's form fields — see the note on the checkbox
+   further up. Same fault, same fix, and it applies to the header box too. */
+.acct-notes-table .acct-note-pick {
+  width: auto;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.acct-topic-sub { display: block; color: var(--fg-2); font-size: 12px; margin-top: 2px; }
+
+.acct-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* ⚠️ THE PLAN CHIP TAKES ITS TEXT FROM --fg-brand, NOT --accent-cool, and the
+   difference is the only one of the three that matters. --accent-cool is
+   `var(--teal)` in BOTH themes — it is the one accent that does not flip — and
+   #5BA79F on a white panel measures 2.81:1, which is a fill colour being asked
+   to be text. --fg-brand flips properly: --deep-teal in light, --sage in dark,
+   and clears AA in both. The tint stays --accent-cool, where a light teal is
+   exactly right. Measured, not assumed; the first version of this rule shipped
+   at 2.81:1 and looked perfectly pleasant. */
+.acct-chip.is-plan   { background: color-mix(in srgb, var(--accent-cool) 18%, transparent);    color: var(--fg-brand); }
+.acct-chip.is-primer { background: color-mix(in srgb, var(--accent-support) 20%, transparent); color: var(--accent-support-text); }
+.acct-chip.is-news   { background: color-mix(in srgb, var(--accent-warm) 18%, transparent);    color: var(--accent-warm-text); }
+
+.acct-icon-btn {
+  appearance: none;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 5px;
+  cursor: pointer;
+  color: var(--fg-2);
+  line-height: 0;
+}
+.acct-icon-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.acct-icon-btn:hover { color: var(--fg-brand); border-color: var(--line); }
+.acct-icon-btn.is-danger:hover { color: var(--status-error-text); }
+.acct-icon-btn:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 1px; }
+
+/* The expanded editing row, and the inline delete prompt. */
+.acct-note-editing > td,
+.acct-note-confirming > td { background: var(--bg-sunken); }
+.acct-note-editing-inner { padding: var(--space-2) 0; }
+.acct-note-confirming .acct-note-confirm { margin-right: var(--space-3); }
+.acct-note-confirm-actions { display: inline-flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* Screen-reader-only, for the actions column header. Same technique as
+   .auth-label-hidden: clipped, not display:none, so it stays in the
+   accessibility tree. */
+.acct-sr {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* ── the notes filter ──────────────────────────────────────────────────────
+ * Same shape as the chips on /news/ (.filter-chip there), rebuilt against the
+ * auth tokens rather than shared: news-app.css is scoped to /news/ and must
+ * stay that way, and this needs to flip with the semantic tokens the account
+ * page uses.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+.acct-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  /* The padding asked for: clear of the lede above and the table below. */
+  padding: var(--space-4) 0 var(--space-5);
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: var(--space-4);
+}
+
+.acct-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--bg-sunken);
+  color: var(--fg-2);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: background .15s, color .15s, box-shadow .15s;
+}
+
+/* ⚠️ EACH CHIP WEARS THE COLOUR ITS KIND WEARS IN THE WHERE COLUMN, and the
+   values come from the same three tokens .acct-chip uses — --accent-cool for a
+   plan, --accent-support for a primer, --accent-warm for news. A filter in one
+   colour scheme and the rows it produces in another makes the pairing something
+   to learn rather than something to see.
+
+   ⚠️ Note the text colours are NOT simply the tint token. --accent-cool is
+   `var(--teal)` in both themes and measures 2.81:1 as text on a light panel, so
+   a plan reads in --fg-brand; --accent-warm is #C97A4A in dark at 4.33:1, so
+   news reads in --accent-warm-text. Both of those are written up at the top of
+   this file. And --accent-support is #8AA35E in dark, which fails on its own
+   20% tint at 3.68:1, so a primer reads in --accent-support-text.
+
+   ⚠️ So NONE of the three accents is usable as text on its own tint in both
+   themes. Every one needed a partner token, and each was found only by
+   measuring the label against the CHIP background rather than the panel. */
+.acct-filter-chip.is-plan   { background: color-mix(in srgb, var(--accent-cool) 18%, transparent);    color: var(--fg-brand); }
+.acct-filter-chip.is-primer { background: color-mix(in srgb, var(--accent-support) 20%, transparent); color: var(--accent-support-text); }
+.acct-filter-chip.is-news   { background: color-mix(in srgb, var(--accent-warm) 18%, transparent);    color: var(--accent-warm-text); }
+
+.acct-filter-chip:hover:not(:disabled) { box-shadow: inset 0 0 0 1px currentColor; }
+.acct-filter-chip:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+/* ⚠️ ACTIVE IS A RING IN THE CHIP'S OWN COLOUR, NOT A FILL. Filling it with the
+   accent would need a legible foreground for each of the four accents in both
+   themes — eight more contrast decisions — and would make the active chip a
+   different colour from the rows it is showing, which is the opposite of the
+   point. The ring is the same device /news/ uses for its themed filter chips. */
+.acct-filter-chip.is-active { box-shadow: inset 0 0 0 2px currentColor; }
+
+/* "All" has no kind, so it takes the page's own brand rather than an accent. */
+.acct-filter-chip.is-all { background: var(--bg-sunken); color: var(--fg-brand); }
+
+/* Disabled means "you have none of these", not "this is broken" — quiet, not
+   greyed to the point of looking like a fault. */
+.acct-filter-chip:disabled { opacity: .45; cursor: default; }
+
+/* The count sits on the chip's own tint, so it needs a fill of its own to stay
+   readable rather than inheriting whatever is behind it. */
+.acct-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  /* ⚠️ THE PANEL COLOUR, NOT A TINT OF currentColor. A tint darkened the
+     already-tinted chip and dropped the count to 3.92:1 on the primer chip and
+     4.14:1 on news — both under AA, on the smallest text in the component.
+     Sitting the badge on the panel's own surface puts the count back on the
+     same background the label would have had, which is a ratio already
+     measured and known good. */
+  background: var(--bg-surface);
+  color: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) { .acct-filter-chip { transition: none; } }

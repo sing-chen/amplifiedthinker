@@ -26,8 +26,27 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 <style>
   /* Tokens, reset, base typography, skip-link and :focus-visible live in styles.css */
 
-  /* ── PAGE WRAPPER ── */
-  .doc-page{max-width:var(--col);margin:0 auto;padding:72px 40px 96px}
+  /* ── PAGE FRAME ──
+     ⚠️ THE FRAME IS --page-max AND THE CONTENT IS NOT. This page ran end to end
+     at its reading measure until 2026-08-27, which left it visibly narrower than
+     Future Skills, My People and News — all of which run to --page-max (1100px)
+     with 40px of side padding. The frame now matches them, so every page on the
+     site starts its content at the same left edge.
+
+     Long prose read top to bottom. --col is 680px, which measures 80 characters a line.
+
+     ⚠️ NOTHING REFLOWED. The measure below is exactly what this page's frame
+     was before, so the text sets identically — what changed is that the column
+     now sits at the LEFT of a wide frame instead of being centred in the
+     viewport. Widening the prose itself was measured and rejected on about.html:
+     --col is 80 characters a line, 820px is 97, and the full frame is 120,
+     against a comfortable 45–75.
+
+     ⚠️ privacy.html and terms.html are also served into the document modal on
+     /sign-in/ with ?embed=1. Capping the CONTENT rather than only the frame is
+     what keeps that case unchanged whatever width the modal happens to be. */
+  .doc-page{max-width:var(--page-max);margin:0 auto;padding:72px 40px 96px}
+  .doc-page > *{max-width:var(--col)}
 
   /* ── MASTHEAD ── */
   .doc-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}

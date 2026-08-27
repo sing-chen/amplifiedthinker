@@ -2094,6 +2094,15 @@ Whatever ships must: say how many notes will go **before** asking, ask once and 
 
 ## Notes on primers and plans — reuse the news architecture, do not rebuild it
 
+**Status:** ✅ **Built 2026-08-27** as [public/skill-notes.js](public/skill-notes.js) on the shared
+[public/note-editor.js](public/note-editor.js), with [public/account-notes.js](public/account-notes.js)
+as the cross-artefact view and note counts on the Future Skills library · Raised 2026-08-26
+
+⚠️ **It took the `Soon` row with it, and that row was the last one** — the whole third state on
+`why-sign-up.html` went in the same change, exactly as the note below said it would have to. The
+row also lost the word *searchable*: see **Searching your own notes**, deferred the same day, for
+why keeping it would have made the page describe something that does not exist.
+
 The one remaining `Soon` row on [why-sign-up.html](public/why-sign-up.html). Raised 2026-08-26,
 straight after notes on news stories shipped in Phase 6 stage 14.
 
@@ -2171,3 +2180,31 @@ aggregates. There is one escaped render path today; a second one needs escaping 
 Also update `why-sign-up.html` when this lands: it is the **last** `Soon` row, and the page's own
 comment says that when it goes, the whole third state — the CSS, the legend and the paragraph
 introducing it — goes with it, or the page keeps explaining a marker nothing carries.
+
+### Searching your own notes
+**Status:** Deferred 2026-08-27, deliberately, while the rest of notes shipped
+**Relates to:** [public/search.html](public/search.html),
+[src/pages/api/search-index.json.js](src/pages/api/search-index.json.js), the account Notes tab
+
+⚠️ **NOTES MUST NEVER GO INTO `/api/search-index.json`.** That endpoint is anonymous — it is served
+to anybody with no session at all, which is the whole reason site search works for guests. Adding
+notes to it would publish every reader's private text to the world. It is also the obvious-looking
+implementation, which is exactly why it is written down here as the first line rather than the last.
+Searching your own notes has to be a **separate, authenticated** search over your own rows, and the
+natural place for it is wherever those rows are already listed.
+
+**The site search page needs no change today and was checked rather than assumed.** Its heading says
+*"Search skills, thinkers, and news"* and its empty state says *"Skills, learning plans, people, and
+pages — all searchable."* Both **enumerate** what is covered rather than claiming everything is, so
+neither becomes false by notes existing outside them. ⚠️ If either is ever reworded into a general
+claim — "search everything", "search the whole site" — it becomes false immediately and silently.
+
+**What was dropped to defer this.** `why-sign-up.html`'s row read *"Notes on a plan section, kept and
+**searchable**"* while it was still marked `Soon`. Clearing the `Soon` while leaving that word would
+have made the page describe something that does not exist, on the page where somebody decides
+whether to trust the site. The word came out; the row is now what the feature does.
+
+**Why one plan's notes did not need it.** A handful of notes on a single plan is a scroll, not a
+search. The case with a real job is the cross-artefact one — everything you have written, anywhere —
+which is the account Notes tab, and a client-side filter over your own already-loaded rows is
+probably the whole implementation. It needs no endpoint and no index.

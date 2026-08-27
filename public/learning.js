@@ -48,10 +48,14 @@
     return nav && nav.root ? nav.root(path) : '/' + path;
   }
 
-  // Slug → display name. Derived rather than mapped, so a sixth skill needs no
-  // edit here. Sentence case ("Systems thinking"), matching the site's own
-  // headings and the design exploration.
+  /* Slug → display name. MOVED to skills-progress.js on 2026-08-27, when the
+     account Notes tab needed the same answer and would otherwise have been the
+     third copy. Delegated rather than deleted so this file keeps reading the
+     same way, and falls back if the module is unavailable — the surrounding
+     code already copes with a missing model. */
   function nameFor(slug) {
+    var m = model();
+    if (m && m.nameFor) return m.nameFor(slug);
     var words = String(slug).split('-');
     var first = words[0] || '';
     return [first.charAt(0).toUpperCase() + first.slice(1)]
