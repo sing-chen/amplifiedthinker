@@ -1,5 +1,17 @@
 [
     {
+        "date": "2026-08-27",
+        "type": "feature",
+        "title": "Write notes on a primer or plan",
+        "html": "Signed in, every primer and every learning plan now carries a <b>notes</b> panel — the same one the <a href=\"news/\">News</a> page already had, pointed at what you are reading. Write as many as you like, up to 500 characters each, and each one can record <b>which section it is about</b>, so a thought about the habit builder comes back next to the habit builder rather than in a pile. Notes stay private to your account: no other reader sees them, and there is deliberately no page anywhere that lists what people have written. <a href=\"why-sign-up.html\">Why sign up</a> sets out what an account does and does not get you. <a href=\"privacy.html\">Privacy</a> and <a href=\"terms.html\">Terms</a> were both updated the same day to say that notes now live on primers and plans as well as on news stories."
+    },
+    {
+        "date": "2026-08-27",
+        "type": "improvement",
+        "title": "Every note you have written, in one place",
+        "html": "Notes used to be reachable only where you wrote them, so finding one meant remembering which plan it was on. Your <a href=\"account/#notes\">account page</a> now has a <b>Notes</b> tab listing all of them together — news, primers and plans — with a filter for each kind, a link back to whatever the note is about, and the ability to edit, delete, or select several and delete them at once. The <a href=\"future-skills.html\">Future Skills</a> library shows the count too, on each skill you have written against."
+    },
+    {
         "date": "2026-08-26",
         "type": "feature",
         "title": "Save, pin and note a news story",

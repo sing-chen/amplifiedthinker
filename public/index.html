@@ -320,6 +320,21 @@
   var ANNOUNCEMENTS = [
     {
       type: 'feature',
+      date: '2026-08-27',
+      // ⚠️ Date taken from the commits that shipped it, and paired with the two
+      // What's New entries of the same date, written in this sitting — see the
+      // note above for why the pair cannot be reconciled after the fact.
+      //
+      // 21 days rather than the 14-day `feature` default, on the same reasoning
+      // as the news notes below it: this is a thing an account does on pages
+      // guests read too, so it is worth the longer run.
+      expiryDays: 21,
+      text: '<b>Notes on a primer or plan</b> — capture a thought against the section you are reading, and find everything you have written on your account page.',
+      linkHref: 'future-skills.html',
+      linkLabel: 'Go to Future Skills'
+    },
+    {
+      type: 'feature',
       date: '2026-08-26',
       // ⚠️ DATE TAKEN FROM THE MERGE COMMIT ee680a5, not from the day this was
       // written, and paired with the two What's New entries of the same date.
