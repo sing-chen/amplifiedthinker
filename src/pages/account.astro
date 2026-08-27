@@ -133,7 +133,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="auth-check" id="acct-updates-row" hidden>
           <label class="auth-check-label" for="acct-updates">
             <input type="checkbox" id="acct-updates" />
-            <span>Email me when new skills or features are added</span>
+            <span>Email me when a new skill or feature lands</span>
           </label>
           <p class="auth-hint auth-check-hint" id="acct-updates-hint">
             Occasional, about this site only. Turning this off never affects
@@ -185,12 +185,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <div class="auth-panel" id="acct-password-section" hidden>
         <h2>Change your password</h2>
 
-        <label for="acct-current-password">Your current password</label>
-        <div class="auth-pw">
-          <input type="password" id="acct-current-password"
-                 autocomplete="current-password" />
-          <button type="button" class="auth-pw-toggle" data-pw-for="acct-current-password"
-                  aria-pressed="false" aria-label="Show password">Show</button>
+        <label class="auth-label-hidden" for="acct-current-password">Your current password</label>
+        <div class="auth-field">
+          <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <div class="auth-pw">
+            <input type="password" id="acct-current-password"
+                   autocomplete="current-password" placeholder="Your current password" />
+            <button type="button" class="auth-pw-toggle" data-pw-for="acct-current-password"
+                    aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
         </div>
         <!--
           No minlength on this field, matching the deletion panel: this is not
@@ -203,14 +206,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </p>
 
         <form id="acct-password-form" novalidate>
-          <label for="acct-new-password">New password</label>
-          <div class="auth-pw">
-            <input type="password" id="acct-new-password" autocomplete="new-password"
-                   required minlength="8" />
-            <button type="button" class="auth-pw-toggle" data-pw-for="acct-new-password"
-                    aria-pressed="false" aria-label="Show password">Show</button>
+          <label class="auth-label-hidden" for="acct-new-password">New password</label>
+          <div class="auth-field">
+            <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+            <div class="auth-pw">
+              <input type="password" id="acct-new-password" autocomplete="new-password"
+                     required minlength="8" placeholder="New password &mdash; at least 8 characters" />
+              <button type="button" class="auth-pw-toggle" data-pw-for="acct-new-password"
+                      aria-pressed="false" aria-label="Show password">Show</button>
+            </div>
           </div>
-          <p class="auth-hint">At least 8 characters, and not the one you have now.</p>
+          <!--
+            ⚠️ THE LENGTH RULE MOVED TO THE PLACEHOLDER; THIS DID NOT, because it
+            is a rule about the OTHER field. "Not the one you have now" cannot be
+            said inside the box it constrains, and it is the half a person is
+            most likely to trip over here.
+          -->
+          <p class="auth-hint">Not the one you have now. Checked against passwords exposed in known breaches.</p>
 
           <div id="acct-password-turnstile" class="auth-turnstile"></div>
 
@@ -264,12 +276,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             Enter your password to confirm. Nothing here can be undone, so this
             is one of two places that asks you to prove it is you.
           </p>
-          <label for="acct-delete-password">Your password</label>
-          <div class="auth-pw">
-            <input type="password" id="acct-delete-password"
-                   autocomplete="current-password" />
-            <button type="button" class="auth-pw-toggle" data-pw-for="acct-delete-password"
-                    aria-pressed="false" aria-label="Show password">Show</button>
+          <label class="auth-label-hidden" for="acct-delete-password">Your password</label>
+          <div class="auth-field">
+            <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+            <div class="auth-pw">
+              <input type="password" id="acct-delete-password"
+                     autocomplete="current-password" placeholder="Your password" />
+              <button type="button" class="auth-pw-toggle" data-pw-for="acct-delete-password"
+                      aria-pressed="false" aria-label="Show password">Show</button>
+            </div>
           </div>
 
           <div id="acct-delete-turnstile" class="auth-turnstile"></div>

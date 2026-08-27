@@ -92,17 +92,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           AFTER the auth user has been created.
         -->
         <div id="auth-name-row" hidden>
-          <label for="auth-name">First name</label>
-          <input type="text" id="auth-name" autocomplete="given-name" maxlength="60"
-                 placeholder="What should we call you?" />
-          <p class="auth-hint">
-            So your account emails aren&rsquo;t addressed to nobody.
-          </p>
+          <label class="auth-label-hidden" for="auth-name">First name</label>
+          <div class="auth-field">
+            <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+            <input type="text" id="auth-name" autocomplete="given-name" maxlength="60"
+                   placeholder="First name &mdash; so account emails are addressed to you" />
+          </div>
         </div>
 
-        <label for="auth-email">Email</label>
-        <input type="email" id="auth-email" autocomplete="username" required
-               placeholder="you@example.com" />
+        <label class="auth-label-hidden" for="auth-email">Email</label>
+        <div class="auth-field">
+          <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+          <input type="email" id="auth-email" autocomplete="username" required
+                 placeholder="Email" />
+        </div>
         <!--
           Sits under the EMAIL field, not the name field, because that is what
           it is a promise about.
@@ -126,14 +129,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </p>
 
         <div id="auth-password-row">
-          <label for="auth-password">Password</label>
-          <div class="auth-pw">
-            <input type="password" id="auth-password" autocomplete="current-password"
-                   required minlength="8" />
-            <button type="button" class="auth-pw-toggle" data-pw-for="auth-password"
-                    aria-pressed="false" aria-label="Show password">Show</button>
+          <label class="auth-label-hidden" for="auth-password">Password</label>
+          <div class="auth-field">
+            <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+            <div class="auth-pw">
+              <input type="password" id="auth-password" autocomplete="current-password"
+                     required minlength="8" placeholder="Password &mdash; at least 8 characters" />
+              <button type="button" class="auth-pw-toggle" data-pw-for="auth-password"
+                      aria-pressed="false" aria-label="Show password">Show</button>
+            </div>
           </div>
-          <p class="auth-hint" id="auth-password-hint" hidden>At least 8 characters.</p>
+          <!--
+            ⚠️ THIS NO LONGER REPEATS THE LENGTH RULE, because the placeholder
+            carries it now. It says the other thing that is true of this field
+            and was previously said nowhere near it: the password is checked
+            against known breached passwords before the account is created. That
+            happens in the browser and the password never leaves it — see
+            privacy.html §7 and public/pwned.js. Sign-up only, like the length.
+          -->
+          <p class="auth-hint" id="auth-password-hint" hidden>Checked against passwords exposed in known breaches. It never leaves your browser.</p>
         </div>
 
         <!--
@@ -155,8 +169,35 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
                exactly what Article 7(4) says it must not be.
             3. Specific about what arrives, so the reader knows what they are
                agreeing to rather than agreeing to "updates".
-            4. Refusable at no cost — the account works identically either way,
-               and the hint says so.
+            4. Refusable at no cost — the account works identically either way.
+
+          ⚠️ TWO THINGS CHANGED HERE ON 2026-08-27 AND BOTH ARE WORTH KNOWING.
+
+          The hint under this box was removed and its content redistributed,
+          not dropped. It read "Occasional, about this site only, and you can
+          stop it at any time from your account."
+
+          ⚠️ "YOU CAN STOP ANY TIME" IS IN THE LABEL BECAUSE ARTICLE 7(3)
+          REQUIRES IT THERE. The right to withdraw must be made known BEFORE
+          consent is given, and the label is the only text a person is certain
+          to read at the moment they tick. Behind a link, or inside the
+          collapsed summary below, is later and weaker. Do not move it out to
+          shorten this line.
+
+          "Occasional" and "about this site only" are carried by "when a new
+          skill or feature lands" — event-driven, and the events are this
+          site's own. "Leaving it unticked changes nothing else" moved to the
+          email bullet in the summary below: Article 7(4) wants consent not to
+          be a condition of service, which the form's structure already shows,
+          so it is reassurance rather than an information duty.
+
+          ⚠️ AND "This is not a newsletter" IS A CLAIM ABOUT THE SYSTEM, on a
+          form that has already had one such claim go from true to false. It
+          said "Never a newsletter" until 2026-08-20, when the account started
+          offering update email. This version is narrower and currently true —
+          privacy.html §8 and terms.html §2 both describe event-driven,
+          opt-in messages rather than a periodical. IT BECOMES FALSE THE DAY A
+          ROUNDUP IS SENT. Grep for the promise, not just the feature.
 
           It is INSIDE the form but outside `auth-name-row`, and toggled by
           setMode() like the other sign-up-only fields. On the sign-in and reset
@@ -165,12 +206,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <div class="auth-check" id="auth-updates-row" hidden>
           <label class="auth-check-label" for="auth-updates">
             <input type="checkbox" id="auth-updates" />
-            <span>Email me when new skills or features are added</span>
+            <span>Email me when a new skill or feature lands — not a newsletter, and you can stop any time.</span>
           </label>
-          <p class="auth-hint auth-check-hint">
-            Occasional, about this site only, and you can stop it at any time
-            from your account. Leaving it unticked changes nothing else.
-          </p>
         </div>
 
         <div id="auth-turnstile" class="auth-turnstile"></div>
@@ -237,9 +274,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           </summary>
           <ul>
             <li>Everything on the site is free to read <strong>without an account</strong>. One only remembers where you got to.</li>
-            <li>We hold your <strong>first name, your email address, and your progress</strong>. That is the whole list.</li>
+            <li>We hold your <strong>first name, your email address, your progress</strong>, and anything you <strong>save or write on the News page</strong>. That is the whole list.</li>
             <li><strong>No cookies at all</strong>, no advertising, no tracking you across the web, and nothing sold or shared.</li>
-            <li>Two emails are always sent — <strong>confirmation and password reset</strong>. Anything else is the tickbox above.</li>
+            <li>Two emails are always sent — <strong>confirmation and password reset</strong>. Anything else is the tickbox above, and leaving it unticked changes nothing else.</li>
             <li>You can <strong>delete your account yourself, immediately</strong>, and no copy is kept.</li>
           </ul>
           <p class="auth-summary-foot">
@@ -264,14 +301,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <h1>Choose a new password</h1>
       <p class="auth-lede">You followed a reset link, so you can set a new password now.</p>
       <form id="auth-recover-form" novalidate>
-        <label for="auth-new-password">New password</label>
-        <div class="auth-pw">
-          <input type="password" id="auth-new-password" autocomplete="new-password"
-                 required minlength="8" />
-          <button type="button" class="auth-pw-toggle" data-pw-for="auth-new-password"
-                  aria-pressed="false" aria-label="Show password">Show</button>
+        <label class="auth-label-hidden" for="auth-new-password">New password</label>
+        <div class="auth-field">
+          <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <div class="auth-pw">
+            <input type="password" id="auth-new-password" autocomplete="new-password"
+                   required minlength="8" placeholder="New password &mdash; at least 8 characters" />
+            <button type="button" class="auth-pw-toggle" data-pw-for="auth-new-password"
+                    aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
         </div>
-        <p class="auth-hint">At least 8 characters.</p>
+        <p class="auth-hint">Checked against passwords exposed in known breaches. It never leaves your browser.</p>
         <button type="submit" id="auth-recover-submit">Save new password</button>
       </form>
       <p class="auth-status" id="auth-recover-status" role="status" aria-live="polite"></p>
@@ -967,6 +1007,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         el('auth-password').required = !isForgot;
         el('auth-password').autocomplete = isSignup ? 'new-password' : 'current-password';
         el('auth-password-hint').hidden = !isSignup;
+
+        // ⚠️ THE PLACEHOLDER IS A RULE FOR CHOOSING A PASSWORD, SO IT ONLY
+        // BELONGS WHERE ONE IS BEING CHOSEN. On the sign-in form you are typing
+        // a password you already have, and "at least 8 characters" reads either
+        // as a demand or as a hint that your existing password might not
+        // qualify. Same field, two jobs.
+        el('auth-password').placeholder = isSignup
+          ? 'Password — at least 8 characters'
+          : 'Password';
 
         el('auth-to-signup').hidden = isSignup;
         el('auth-to-signin').hidden = !isSignup && !isForgot;

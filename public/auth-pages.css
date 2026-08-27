@@ -97,6 +97,66 @@
   margin-bottom: var(--space-1);
 }
 
+/* ⚠️ THE LABELS ARE HIDDEN, NOT REMOVED, AND THAT DISTINCTION IS THE WHOLE
+ * POINT. The visible label text moved into the placeholder on 2026-08-27 so the
+ * fields read as the design intends — but a placeholder is NOT an accessible
+ * name. Screen readers treat it inconsistently, some ignore it entirely, and it
+ * disappears the moment anyone types, taking the only description of the field
+ * with it. Deleting the <label> would leave three unnamed inputs on the one form
+ * that asks for a password.
+ *
+ * So each label stays in the DOM, still tied to its input by `for`, and is
+ * removed from view only. Do not "tidy" these away.
+ *
+ * `clip-path` rather than `display:none` or `visibility:hidden`, both of which
+ * take the element out of the accessibility tree along with the layout. */
+.auth-label-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A field with an icon sitting inside it. The wrapper owns the bottom margin,
+ * the same arrangement `.auth-pw` already uses, so `.auth-hint`'s -12px tuck
+ * keeps landing where it did rather than depending on margin collapsing through
+ * a new element. */
+.auth-field { position: relative; margin-bottom: var(--space-4); }
+
+/* ⚠️ `.auth-panel` IS IN THESE SELECTORS ON PURPOSE, AND REMOVING IT BREAKS
+ * THEM SILENTLY. `.auth-panel input` below sets `padding: 10px 12px` — a
+ * SHORTHAND, so it rewrites padding-left too — and at (0,1,1) it ties with a
+ * bare `.auth-field input`. A tie is settled by source order, so the icon
+ * padding lost and the placeholder ran underneath the icon. Valid CSS, correct
+ * class names, and only a measurement finds it: the first version of this
+ * shipped that way and was caught by comparing the icon's right edge against
+ * the input's padding, not by looking.
+ *
+ * (0,2,1) wins outright and keeps winning if these rules are ever moved. */
+.auth-panel .auth-field input { margin-bottom: 0; padding-left: 2.5rem; }
+.auth-panel .auth-field .auth-pw input { padding-left: 2.5rem; }
+
+.auth-field-icon {
+  position: absolute;
+  left: 12px;
+  top: 11px;
+  width: 16px;
+  height: 16px;
+  color: var(--fg-2);
+  pointer-events: none;   /* the icon must never eat a click meant for the field */
+  z-index: 1;
+}
+.auth-field-icon svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* The icon is decorative — the label already names the field — so it is
+ * aria-hidden in the markup and gets no colour of its own in dark mode beyond
+ * the token, which does flip. */
+
 .auth-panel input {
   display: block;
   width: 100%;
@@ -118,6 +178,7 @@
  * input, so the negative margin on .auth-hint below keeps landing where it did
  * instead of depending on margin collapsing through the new element. */
 .auth-pw { position: relative; margin-bottom: var(--space-4); }
+.auth-field .auth-pw { margin-bottom: 0; }
 .auth-pw input { margin-bottom: 0; padding-right: 4.25rem; }
 
 .auth-pw-toggle {
