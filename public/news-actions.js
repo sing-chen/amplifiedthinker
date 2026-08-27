@@ -25,12 +25,10 @@
   // Same route test the rest of the news stack uses.
   if (!/^\/news(\/|$)/.test(global.location.pathname)) return;
 
-  // ⚠️ MUST MATCH `notes_body_length` in 20260826120000_notes_body_length.sql.
-  // The database is the real limit — browsers write to PostgREST directly, so
-  // this number is the courtesy, not the control. Raising one without the other
-  // means a note that types fine and then fails to save.
-  var NOTE_MAX = 500;
-  var NOTE_WARN_AT = 450;
+  // ⚠️ THE LENGTH LIMIT IS DELIBERATELY NOT RESTATED HERE. It lives in
+  // note-editor.js, which has to match `notes_body_length` in
+  // 20260826120000_notes_body_length.sql — and a number written down in two
+  // files is a number that will eventually disagree with itself.
 
   var STAR = '<path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>';
   var PIN = '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/>';
@@ -309,54 +307,19 @@
       '<a class="story-action-btn story-action-signin" href="/sign-in/" data-signin-return>Sign in</a>';
   }
 
-  /* ── the note panel has TWO MODES, and that is what gives it a resting state ──
-     A single always-editing panel has no natural end: saving leaves you in a
-     textarea with a Save button, so the only way out is to notice that the
-     toolbar button toggles it. Splitting view from edit means Save has
-     somewhere to LAND.
+  /* ── the note panel ───────────────────────────────────────────────────────
+     ⚠️ THE EDITOR LIVES IN note-editor.js AND IS NOT REIMPLEMENTED HERE. The
+     two modes, the counter, the disabled-Save rule, the inline confirmations
+     for Clear and Delete, and Escape backing out of one were all written on
+     this page first and were lifted out wholesale when notes reached primers
+     and plans. Copying them would have been the cheaper edit and is exactly how
+     two surfaces end up disagreeing about what Clear means.
 
-         no note yet  ->  edit (empty)   Save note (disabled) · Close
-         note exists  ->  view           Edit · Delete · Close
-         editing      ->  edit           Save note · Clear · Cancel
-
-     ⚠️ DELETE BELONGS TO THE NOTE, CLEAR BELONGS TO THE TEXT, so they live in
-     different modes and cannot be mistaken for one another. You delete a thing
-     you have; you clear what you are typing. Both are irreversible in the sense
-     that matters to the reader, so both ask first. */
-
-  function noteToolbarHTML(mode, state) {
-    if (mode === 'view') {
-      return '<button type="button" class="story-action-btn" data-action="note-edit">Edit</button>' +
-             '<button type="button" class="story-action-btn" data-action="note-delete">Delete</button>' +
-             '<button type="button" class="story-action-btn" data-action="note-close">Close</button>';
-    }
-    var hasSaved = Boolean(state.note);
-    return '<button type="button" class="story-action-btn is-primary" data-action="note-save" disabled>Save note</button>' +
-           '<button type="button" class="story-action-btn" data-action="note-clear">Clear</button>' +
-           '<button type="button" class="story-action-btn" data-action="' +
-             (hasSaved ? 'note-cancel' : 'note-close') + '">' +
-             (hasSaved ? 'Cancel' : 'Close') + '</button>';
-  }
-
-  function notePanelHTML(mode, state) {
-    if (mode === 'view') {
-      return '<div class="story-note-read" data-note-read>' + esc(state.note) + '</div>' +
-             '<div class="story-note-foot">' +
-               '<span class="story-note-count"></span>' +
-               '<span class="story-note-actions" data-note-toolbar>' + noteToolbarHTML('view', state) + '</span>' +
-             '</div>';
-    }
-    return '<label class="story-note-label" for="story-note-body">Your note</label>' +
-      '<textarea id="story-note-body" class="story-note-input" rows="4" maxlength="' + NOTE_MAX + '"' +
-        ' placeholder="Only you can see this.">' + esc(state.note) + '</textarea>' +
-      '<div class="story-note-foot">' +
-        '<span class="story-note-count" data-note-count></span>' +
-        '<span class="story-note-actions" data-note-toolbar>' + noteToolbarHTML('edit', state) + '</span>' +
-      '</div>';
-  }
+     What stays here is everything about a STORY: which row to write, the
+     favourite and pin flags beside it, the published personal set, and the
+     button that opens the panel. The editor knows none of that. */
 
   function signedInHTML(state) {
-    var hasNote = Boolean(state.note);
     return '' +
       '<div class="story-actions-row">' +
         '<button type="button" class="story-action-btn" data-action="favorite"' +
@@ -373,9 +336,15 @@
         '</button>' +
         '<span class="story-action-status" role="status" aria-live="polite"></span>' +
       '</div>' +
-      '<div class="story-note" data-note-panel data-mode="' + (hasNote ? 'view' : 'edit') + '" hidden>' +
-        notePanelHTML(hasNote ? 'view' : 'edit', state) +
-      '</div>';
+      /* ⚠️ AN EMPTY, UNCLASSED WRAPPER, AND BOTH HALVES OF THAT MATTER.
+         Empty because note-editor.js appends its own root here rather than
+         being handed markup. Unclassed because `.story-note` sets
+         `display: flex` and the editor's own root carries that class — putting
+         it on the wrapper too would nest one inside the other, and would put a
+         `display` on the element that gets `hidden` toggled. That is the trap
+         this file's CSS block already carries an `!important` override for; the
+         wrapper having no display rule means it does not depend on it. */
+      '<div data-note-mount hidden></div>';
   }
 
   function noteButtonLabel(state) {
@@ -401,81 +370,69 @@
     if (el) el.textContent = statusText;
   }
 
-  function updateCount(ta) {
-    var el = doc.querySelector('[data-note-count]');
-    if (!el || !ta) return;
-    var used = ta.value.length;
-    el.textContent = used + ' / ' + NOTE_MAX;
-    // The limit is stated rather than discovered: the counter is visible from
-    // the first keystroke and turns colour before it bites, so nobody writes
-    // past 500 and finds out only when saving fails.
-    el.classList.toggle('is-near', used >= NOTE_WARN_AT);
-    refreshSaveEnabled(ta);
+  /* ── the editor instance ──────────────────────────────────────────────────
+     One at a time, because a story has one note and only one story is open. It
+     is destroyed and rebuilt on every paint, which is why the status text is
+     seeded back in through `opts.status` rather than living inside it. */
+  var editor = null;
+
+  function mountEditor(storyId, state) {
+    var mount = doc.querySelector('[data-note-mount]');
+    if (!mount || !global.AmplifiedNoteEditor) return;
+    if (editor) editor.destroy();
+
+    editor = global.AmplifiedNoteEditor.create({
+      mount: mount,
+      prefix: 'story',
+      body: state.note || '',
+      status: statusText,
+      // The row already has a `role="status"` live region that reports Save and
+      // Pin too. A second one inside the panel would announce over it.
+      inlineStatus: false,
+      onStatus: setStatus,
+      onSave: function (bodyText) { return saveNote(storyId, bodyText); },
+      onDelete: function () { return saveNote(storyId, ''); },
+      onSaved: function (bodyText) {
+        var st = cache[storyId] || {};
+        st.note = bodyText;
+        cache[storyId] = st;
+        updatePersonal(box2Slug(), 'noted', true);
+        /* ⚠️ SAVING CLOSES THE PANEL. Landing in view mode was already better
+           than staying in an editor, but it still left the reader looking at
+           something they had finished with and had to dismiss themselves. The
+           status line says it saved and the toolbar button now says "View
+           note", so it is one click away if they want it. The editor has
+           already set view mode, which is what makes that click open the note
+           rather than an editor. */
+        openNote(false);
+        setNoteLabel('View note');
+      },
+      onDeleted: function () {
+        var st = cache[storyId] || {};
+        st.note = '';
+        cache[storyId] = st;
+        updatePersonal(box2Slug(), 'noted', false);
+        // DELETING CLOSES THE PANEL. An empty editor left open after a delete
+        // says nothing the status line has not already said, and reads as
+        // though something failed to happen.
+        openNote(false);
+        setNoteLabel('Add a note');
+      },
+      onClose: function () { openNote(false); }
+    });
   }
 
-  /* SAVE IS DISABLED WHEN THERE IS NOTHING TO SAVE - empty, or identical to
-     what is already stored. The second half is the one that matters: without it
-     the button stays live after a successful save and invites the reader to
-     press it again, which is what made the old always-open panel feel like it
-     had no end. A disabled control that explains itself beats an enabled one
-     that does nothing. */
-  function refreshSaveEnabled(ta) {
-    var btn = doc.querySelector('[data-action="note-save"]');
-    if (!btn || !ta) return;
-    var box = container();
-    var state = (box && cache[box.getAttribute('data-story-id')]) || { note: '' };
-    var value = ta.value.trim();
-    btn.disabled = !value || value === (state.note || '').trim();
-  }
-
-  function panel() { return doc.querySelector('[data-note-panel]'); }
-
-  function setNoteMode(mode) {
-    var p = panel();
-    var box = container();
-    if (!p || !box) return;
-    var state = cache[box.getAttribute('data-story-id')] || { note: '' };
-    p.setAttribute('data-mode', mode);
-    p.innerHTML = notePanelHTML(mode, state);
-    if (mode === 'edit') {
-      var ta = doc.getElementById('story-note-body');
-      if (ta) { ta.focus(); updateCount(ta); }
-    }
+  function setNoteLabel(text) {
+    var lbl = doc.querySelector('[data-action="note"] [data-label]');
+    if (lbl) lbl.textContent = text;
   }
 
   function openNote(open) {
-    var p = panel();
+    var mount = doc.querySelector('[data-note-mount]');
     var btn = doc.querySelector('[data-action="note"]');
-    if (!p || !btn) return;
-    if (open) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+    if (!mount || !btn) return;
+    if (open) mount.removeAttribute('hidden'); else mount.setAttribute('hidden', '');
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  }
-
-  /* INLINE CONFIRMATION, NOT confirm(). A browser dialog cannot be styled to
-     match anything here, and this site already thought hard about leave
-     prompts once. The toolbar is replaced in place with the question and two
-     answers, so the reader stays where they are and Cancel or Escape puts it
-     back exactly as it was. */
-  function askConfirm(question, confirmLabel, action) {
-    var bar = doc.querySelector('[data-note-toolbar]');
-    if (!bar) return;
-    bar.setAttribute('data-restore', bar.innerHTML);
-    bar.innerHTML = '<span class="story-note-confirm">' + esc(question) + '</span>' +
-      '<button type="button" class="story-action-btn is-danger" data-action="confirm-yes" data-confirm="' + esc(action) + '">' +
-        esc(confirmLabel) + '</button>' +
-      '<button type="button" class="story-action-btn" data-action="confirm-no">Cancel</button>';
-    var yes = bar.querySelector('[data-action="confirm-yes"]');
-    if (yes) yes.focus();
-  }
-
-  function cancelConfirm() {
-    var bar = doc.querySelector('[data-note-toolbar]');
-    if (!bar || !bar.hasAttribute('data-restore')) return false;
-    bar.innerHTML = bar.getAttribute('data-restore');
-    bar.removeAttribute('data-restore');
-    var ta = doc.getElementById('story-note-body');
-    if (ta) refreshSaveEnabled(ta);
-    return true;
   }
 
   // The slug of whatever story is open, read at call time rather than captured:
@@ -483,26 +440,6 @@
   function box2Slug() {
     var box = container();
     return box ? box.getAttribute('data-story-slug') : null;
-  }
-
-  function doDelete(storyId) {
-    setStatus('Deleting...');
-    saveNote(storyId, '').then(function () {
-      var st = cache[storyId] || {};
-      st.note = '';
-      cache[storyId] = st;
-      updatePersonal(box2Slug(), 'noted', false);
-      // DELETING CLOSES THE PANEL. An empty editor left open after a delete
-      // says nothing the status line has not already said, and reads as though
-      // something failed to happen.
-      openNote(false);
-      setNoteMode('edit');
-      var lbl = doc.querySelector('[data-action="note"] [data-label]');
-      if (lbl) lbl.textContent = 'Add a note';
-      setStatus('Note deleted.');
-    }).catch(function (err) {
-      setStatus('Could not delete your note. ' + (err && err.message ? err.message : ''));
-    });
   }
 
   function paint() {
@@ -531,7 +468,7 @@
       var target2 = slot();
       if (!target2) return;
       target2.innerHTML = signedInHTML(state);
-      updateCount(doc.getElementById('story-note-body'));
+      mountEditor(storyId, state);
       if (state.degraded) setStatus('Could not load your saved state.');
       else if (statusText) setStatus(statusText);   // survive the repaint
     });
@@ -594,9 +531,12 @@
     );
   }
 
-  /* The pin prompt cannot reuse askConfirm(): that one replaces the NOTE
-     toolbar, which does not exist unless the note panel is open. This one
-     replaces the actions row itself. */
+  /* ⚠️ THE PIN PROMPT CANNOT USE THE EDITOR'S CONFIRMATION, and that is a
+     property of what it replaces rather than a duplication to tidy away.
+     note-editor.js replaces its own toolbar in place, which does not exist
+     unless the note panel is open — and a pin is confirmed from the actions
+     row, with the panel shut. This one replaces that row instead. The two look
+     alike and are anchored to different things. */
   function askPinConfirm(question, confirmLabel) {
     var row = doc.querySelector('.story-actions-row');
     if (!row) return;
@@ -630,40 +570,23 @@
     if (!btn || !container() || !container().contains(btn)) return;
 
     var action = btn.getAttribute('data-action');
-    var box = container();
-    var storyId = box.getAttribute('data-story-id');
 
     if (action === 'favorite') return toggleFlag(btn, 'favorited');
     if (action === 'pin') return requestPin(btn);
 
     if (action === 'note') {
-      var p = panel();
-      if (!p) return;
-      var opening = p.hasAttribute('hidden');
+      var mount = doc.querySelector('[data-note-mount]');
+      if (!mount) return;
+      var opening = mount.hasAttribute('hidden');
       openNote(opening);
-      if (opening) {
-        var st = cache[storyId] || { note: '' };
-        setNoteMode(st.note ? 'view' : 'edit');
-      }
+      /* ⚠️ THE MODE IS NOT RESET ON OPEN, AND IT USED TO BE. The editor already
+         holds the right one — `view` when a note exists, `edit` when it does
+         not, and `view` after a save. Re-deriving it here would discard an edit
+         in progress every time the panel was toggled shut and open again. */
+      if (opening && editor) editor.focus();
       return;
     }
 
-    if (action === 'note-edit') return setNoteMode('edit');
-    if (action === 'note-close') { openNote(false); setStatus(''); return; }
-
-    if (action === 'note-cancel') {
-      // Back to the stored note, discarding whatever was typed.
-      setNoteMode('view');
-      setStatus('');
-      return;
-    }
-
-    if (action === 'note-clear') {
-      return askConfirm('Clear what you have typed? This cannot be undone.', 'Yes, clear', 'clear');
-    }
-    if (action === 'note-delete') {
-      return askConfirm('Delete this note permanently? It cannot be restored.', 'Yes, delete', 'delete');
-    }
     if (action === 'pin-replace-no') { cancelPinConfirm(); return; }
     if (action === 'pin-replace-yes') {
       cancelPinConfirm();
@@ -671,62 +594,18 @@
       if (pinBtn) toggleFlag(pinBtn, 'pinned');
       return;
     }
-    if (action === 'confirm-no') { cancelConfirm(); return; }
 
-    if (action === 'confirm-yes') {
-      var which = btn.getAttribute('data-confirm');
-      cancelConfirm();
-      if (which === 'clear') {
-        var ta = doc.getElementById('story-note-body');
-        if (ta) { ta.value = ''; ta.focus(); updateCount(ta); }
-        // CLEAR DOES NOT TOUCH THE DATABASE. It empties the box; the stored
-        // note is untouched until Save. Saying so stops "clear" reading as a
-        // quieter word for "delete".
-        setStatus('Cleared. Your saved note is unchanged until you save.');
-        return;
-      }
-      if (which === 'delete') return doDelete(storyId);
-      return;
-    }
-
-    if (action === 'note-save') {
-      var input = doc.getElementById('story-note-body');
-      if (!input) return;
-      var body = input.value.trim();
-      if (!body) return;                    // the button is disabled; belt and braces
-      setStatus('Saving...');
-      saveNote(storyId, body).then(function () {
-        var st = cache[storyId] || {};
-        st.note = body;
-        cache[storyId] = st;
-        updatePersonal(box2Slug(), 'noted', true);
-        /* ⚠️ SAVING CLOSES THE PANEL. Landing in view mode was already better
-           than staying in an editor, but it still left the reader looking at
-           something they had finished with and had to dismiss themselves. The
-           status line says it saved and the toolbar button now says "View
-           note", so it is one click away if they want it. Setting the mode to
-           `view` BEFORE closing is what makes that click open the note rather
-           than an editor. */
-        setNoteMode('view');
-        openNote(false);
-        var lbl = doc.querySelector('[data-action="note"] [data-label]');
-        if (lbl) lbl.textContent = 'View note';
-        setStatus('Note saved.');
-      }).catch(function (err) {
-        setStatus('Could not save your note. ' + (err && err.message ? err.message : ''));
-      });
-      return;
-    }
+    /* Everything the note panel does — Edit, Save, Clear, Delete, Cancel,
+       Close, and both confirmations — is handled by note-editor.js on its own
+       root. Those actions never reach here, and adding a branch for one would
+       mean two handlers racing for the same click. */
   });
 
-  // Escape backs out of a confirmation before it backs out of anything else.
+  // Escape backs out of the PIN confirmation. The note editor cancels its own
+  // on its own root, so this no longer has a note case to handle.
   doc.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    if (cancelConfirm() || cancelPinConfirm()) e.stopPropagation();
-  });
-
-  doc.addEventListener('input', function (e) {
-    if (e.target && e.target.id === 'story-note-body') updateCount(e.target);
+    if (cancelPinConfirm()) e.stopPropagation();
   });
 
   /* ── lifecycle ───────────────────────────────────────────────────────────── */

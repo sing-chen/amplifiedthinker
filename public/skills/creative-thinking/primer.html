@@ -681,7 +681,13 @@
     font-weight:650;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color:var(--fg-brand);
+    /* --sage, not --fg-brand: --fg-brand is --deep-teal #26605B, which on this
+       banner's --charcoal #2D3330 is 1.79:1 — nowhere near AA, on an 11px
+       uppercase label where AA wants 4.5:1. --sage gives 6.96:1. --teal was the
+       other candidate and reaches only 4.59:1, which passes by 0.09 and would
+       fail again on any future tweak to either token. This is the same fault
+       the .dismiss button had below, found the same way: by measuring it. */
+    color:var(--sage);
     margin-bottom: 2px;
   }
   .resume-banner-btn {

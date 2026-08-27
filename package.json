@@ -27,7 +27,9 @@
     "specimen:completion": "node scripts/dev/build-completion-specimen.mjs",
     "specimen:circles": "node scripts/dev/build-circle-specimen.mjs",
     "build:news-seed": "node scripts/build-news-seed.mjs",
-    "verify:news-dupes": "node scripts/verify-news-duplicates.mjs"
+    "verify:news-dupes": "node scripts/verify-news-duplicates.mjs",
+    "specimen:note-editor": "node scripts/dev/build-note-editor-specimen.mjs",
+    "specimen:skill-notes": "node scripts/dev/build-skill-notes-specimen.mjs"
   },
   "devDependencies": {
     "astro": "^7.2.2"

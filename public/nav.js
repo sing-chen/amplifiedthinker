@@ -739,6 +739,42 @@
     });
   }
 
+  /* ⚠️ THE NOTE STACK LOADS THE SAME WAY AND FOR THE SAME REASON — so that a
+     guest downloads nothing they can never use.
+
+     These two were static <script> tags on the ten primer and plan pages to
+     begin with, which worked and cost every guest 51 KB per page view for a
+     feature that refuses to render without a session. That is the opposite of
+     the rule the rest of the site follows: the auth stack is injected on a
+     peeked session, and pwned.js and auth-pages.css are scoped to two pages
+     precisely so nothing else pays for them.
+
+     ⚠️ NOT ADDED TO `pageNeedsAuth()`, deliberately. That list is for surfaces
+     which render a SIGNED-OUT state and would otherwise mistake "signed out"
+     for "something broke" — /learning/ shipped that defect once. skill-notes.js
+     renders nothing whatever for a guest, so it wants the plain session gate
+     and not the allowlist. */
+  function isSkillArtefact() {
+    return /\/skills\/[a-z0-9-]+\/(plan|primer)(\.html)?$/i.test(window.location.pathname);
+  }
+
+  function loadNoteStack() {
+    if (window.__amplifiedNoteStack) return;
+    window.__amplifiedNoteStack = true;
+
+    // ⚠️ Same `async = false` discipline as the auth stack, and it is
+    // load-bearing here too: note-editor.js publishes window.AmplifiedNoteEditor
+    // and skill-notes.js reads it. Without this the two race and the panel can
+    // come up with no editor in it.
+    ['note-editor.js', 'skill-notes.js'].forEach(function (file) {
+      var s = document.createElement('script');
+      s.src = root(file);
+      s.async = false;
+      s.defer = true;
+      document.head.appendChild(s);
+    });
+  }
+
   function setupAuth() {
     var peek = peekSession();
 
@@ -768,6 +804,14 @@
     });
 
     if (peek.state !== 'out' || pageNeedsAuth()) loadAuthStack();
+
+    /* ⚠️ 'unknown' MUST LOAD IT, which is why this matches 'out' rather than
+       testing for 'in'. A stale token peeks as 'in' and a first-load race peeks
+       as 'unknown'; treating 'unknown' as a guest would leave a signed-in
+       reader with no notes control at all, silently, on the one page they went
+       looking for it. Erring the other way costs a guest-who-looked-signed-in
+       two script downloads and nothing else. */
+    if (peek.state !== 'out' && isSkillArtefact()) loadNoteStack();
   }
 
   /* ── Guard against the Primer bundle wiping the nav ─────────────────────

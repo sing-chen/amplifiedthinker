@@ -66,6 +66,13 @@ const EXPECTED = [
   { table: 'profiles', column: 'display_name',       since: 'initial_schema' },
   { table: 'profiles', column: 'wants_updates',      since: '20260820070000_profiles_wants_updates' },
   { table: 'profiles', column: 'updates_consent_at', since: '20260820070000_profiles_wants_updates' },
+
+  // ⚠️ EXPECT THIS TO FAIL ON PROD UNTIL THE NOTES-ON-SKILLS GO-LIVE, AND THAT
+  // IS THE CHECK WORKING. dev is migrated first and prod immediately before the
+  // merge, so between those two moments the honest answer is "dev yes, prod
+  // no". A row added here only after prod is migrated would make this script
+  // agree with whatever happened to be true, which is not a check.
+  { table: 'notes',    column: 'anchor',             since: '20260827090000_notes_anchor' },
 ];
 
 const clientSrc = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');

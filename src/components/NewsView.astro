@@ -98,4 +98,10 @@ const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
      `window.AmplifiedAuth`, which nav.js injects as a plain script too. Bundled
      as a module it would run before that exists on some loads and silently
      leave every reader looking signed out. Same reasoning as BaseLayout's note. -->
+<!-- ⚠️ ORDER MATTERS AND IS NOT ALPHABETICAL. note-editor.js publishes
+     `window.AmplifiedNoteEditor`, which news-actions.js reads at paint time.
+     Both are classic scripts, so the browser runs them in document order and
+     this is the only thing keeping that guarantee. If the note panel ever opens
+     empty with no controls in it, check this line before anything else. -->
+<script src="/note-editor.js" is:inline></script>
 <script src="/news-actions.js" is:inline></script>

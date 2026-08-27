@@ -173,13 +173,50 @@
 
     // The inline colour is the one concession. `.resume-banner-text a` is not
     // styled on any of these pages, and a default blue link on the charcoal
-    // panel is close to unreadable.
+    // panel is close to unreadable. `--teal` on `--charcoal` is 4.59:1, which
+    // clears AA for this 13px text by 0.09 — worth knowing before either token
+    // is touched.
+    //
+    /* ⚠️ NOTES LEADS, AND THE REST IS SUBORDINATE TO IT ON PURPOSE.
+       This read "Your place, your answers and your notes are only kept when you
+       are signed in" for about an hour, and the list was the problem: it gave a
+       note the same weight as a remembered scroll position. Everything else an
+       account does is the site handing back what the site gave you. A note is
+       the only thing here the READER makes, which is a different kind of thing
+       to lose, and the sentence order is what says so. Do not fold it back into
+       a list to save a line. */
+
+    /* ⚠️ NO <strong> IN THIS BODY TEXT, however tempting it is for "Notes".
+       `.resume-banner-text strong` is (0,1,1) in all ten stylesheets and sets
+       `display:block`, `text-transform:uppercase` and 11px — it is the rule that
+       styles the TITLE above. A `<strong>` here would silently become a second
+       uppercase block heading mid-sentence. The emphasis comes from being the
+       subject of the first sentence instead, which costs no markup. */
+
+    /* ⚠️ "NOBODY ELSE CAN EVER SEE THEM" IS A PROMISE ABOUT THE SYSTEM, NOT A
+       DESCRIPTION OF A FEATURE, and it rots like a comment. It is true because
+       `notes_own` is the single policy on the table and there is exactly one
+       render path, which escapes into a text node. Phase 7's admin UI is the
+       thing that would make it false — anything rendering notes ACROSS users
+       turns a private jotting into someone else's reading. If that is ever
+       built, this sentence changes in the SAME commit, with why-sign-up.html
+       and privacy.html. Grep for "Nobody else can ever see".
+
+       ⚠️ privacy.html §13 makes the strongest version of this promise and is
+       the one to read first: "there is deliberately no page anywhere on this
+       site — INCLUDING ANY PAGE ONLY WE CAN REACH — that lists what people have
+       written". An admin notes view is precisely the page that sentence rules
+       out. It was written before the admin portal was designed, which is what
+       makes it worth honouring rather than editing. */
     el.innerHTML =
       '<div class="resume-banner-text">' +
         '<strong>Not being saved</strong>' +
-        'Your place and your answers are only kept when you are signed in. ' +
+        'Notes are the one thing on this page you write yourself — your own ' +
+        'thinking, against any section, as you read it. Nobody else can ever ' +
+        'see them. An account keeps them, and your place and your answers with ' +
+        'them, on every device. ' +
         '<a href="' + href + '" style="color: var(--teal); text-decoration: underline;">' +
-        'Sign in</a> and they follow you to every device, or read ' +
+        'Sign in</a>, or read ' +
         '<a href="' + whyHref + '" style="color: var(--teal); text-decoration: underline;">' +
         'what an account gets you</a> first.' +
       '</div>' +
