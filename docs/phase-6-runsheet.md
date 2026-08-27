@@ -33,8 +33,10 @@ the last merge and goes stale the moment anything is ticked here** — it alread
 stage 7's `verify:published` box read *"owed after deploy"* on `main` while it was ticked and
 evidenced on the branch.
 
-**Read this file on `feat/news-db` until stage 17 merges the phase.** If you are on `main` and a box
-looks open, check the branch before acting on it — the work may be done and recorded.
+✅ **Stage 17 merged the phase on 2026-08-26 (`ee680a5`), so this no longer applies.** `main` and the
+branch agree, and `main` is now the copy to read. The warning is kept because it describes a real
+hazard for the next phase run this way: while a runsheet is open on a branch, the copy on `main` is a
+snapshot from the last merge and goes stale the moment anything is ticked.
 
 **This file is the state.** There is no other tracker. Whoever does a stage updates its status row
 in the same sitting, in this file, and says what they *observed* — not "done" but what the check
@@ -63,7 +65,7 @@ prevent.
 | 15 | Retire `middleware.js` | Claude | ✅ Done | Deleted at stage 11, where it stopped being merely redundant and started **intercepting the very URLs the 301 answers** — its matcher was `/news.html` and it runs BEFORE routes, so it would have handed a crawler the old shell instead of the redirect, which no `curl` test can detect. Verification closed on production 2026-08-26: both the new `/news/<slug>` and the old `?story=` form render correctly in a link-preview debugger, with no user-agent sniffing anywhere | The file is gone. It was pulled forward because at stage 11 it stopped being merely redundant and started **intercepting the very URLs the 301 answers**. What remains of this stage is the go-live check: a story URL in a link-preview debugger, which needs production and so cannot happen before stage 17 | Retire, not port |
 | 16 | Copy, privacy, and the obsolete command | Claude | ✅ Done | 2026-08-26. `privacy.html` gained a §3 category (**what you save and what you write**, with a caution against putting sensitive personal information in a note), a §4 contract row, and corrections at §§11/12/13. ⚠️ **§13 also gained the honest limit** — `why-sign-up.html` was already telling readers *"Privacy says so plainly"* about administrative database access, **and privacy did not say it**. `terms.html` gained §4 *"So is anything you write"* and a §5 acceptable-use line, both following the Promptly sibling, which had the precedent for every part of this. `account.astro`'s deletion copy said *"your saved items"* and now names what it destroys; the cascade was checked against the migration rather than assumed. ⚠️ **`/add-news` was REWRITTEN, not deleted** — its curation half was never about the file format. `public/news.json` **moved** to `content/news.json`: under `public/` it was a stale public copy of database content served at `/news.json` and read by nothing. Route is now author → `build:news-seed -- --only <date> --write` → the SQL editor, with `--only` existing because a full regeneration after Phase 7 would silently overwrite admin-UI edits and report success | ⚠️ Same-commit rule. `/add-news` rewritten, and the interim route written down before the merge |
 | 17 | Go live — prod migration, then merge | Human + Claude | ✅ Done | 2026-08-26, merged as `ee680a5`. Four migrations to prod, read back from the catalogue rather than the success message — Block A 10/10, Block B 6/6, both identical to a dev rehearsal run first. ⚠️ **The reorder test is the one worth keeping**: `2026-08-14`'s display order was flipped on production and both 301s stayed exactly put, because `legacy_id` is resolved from a stored column rather than recomputed from array position. ⚠️ **`verify:rls -- prod` was FAILING before the seed** on *"zero rows — the check above proved nothing"*, then green after: the ordering working because it was checked. Two-account RLS proof done live, probe 4 refused with an explicit `with check` violation | Migration **immediately before** the merge, never after |
-| 18 | Announce | Human + Claude | ☐ Not started | Banner and `updates.json` in the same sitting |
+| 18 | Announce | Human + Claude | ✅ Done | 2026-08-27, `7727204`. One banner item and two What's New entries, all dated **2026-08-26 from the merge commit** rather than from the day of writing. ⚠️ **The day-level disagreement this stage guards against is no longer expressible**: the banner shows only the MONTH for announcements as of 2026-08-27, matching how `whats-new.html` groups them — so the two surfaces now state the same thing at the same granularity, and a wrong month would be visible on both rather than a wrong day visible on neither. Both still written in one sitting |
 
 **Statuses:** ☐ Not started · ◐ In progress · ✅ Done · ⊘ Skipped (say why)
 
@@ -2029,11 +2031,18 @@ assuming it, because the mechanism underneath it changed in this same phase.
 
 **Tick as you go**
 
-- [ ] Banner item added to `ANNOUNCEMENTS` in `index.html`
-- [ ] Matching `updates.json` entry, **same date, same sitting, date taken from the commit**
-- [ ] Rendered banner checked on production — the new data source works for a new item
-- [ ] Phase 6 progress-log entry written in `implementation-sequence.md`
-- [ ] Handoff table at the top of this file completed, with observations rather than "done"
+- [x] Banner item added to `ANNOUNCEMENTS` in `index.html` — `expiryDays: 21`, not the 14-day
+      `feature` default and not the 35 the Accounts item took
+- [x] **Two** matching `updates.json` entries, same sitting, dated **2026-08-26 — taken from the
+      merge commit `ee680a5`**, not from the day they were written. One for what a reader gains
+      (save, pin, note), one for what is visible without an account (every story has its own
+      address, old links redirect)
+- [x] Rendered banner checked on production — 8 items: five announcements reading **August**, three
+      news items keeping **Tue 25 Aug / Mon 24 Aug**. What's New shows *August 2026 · 7 updates* with
+      both entries and no day. The recursion the stage warned about is closed: stage 12 rewrote this
+      data source and the new item was watched rendering through it, not assumed
+- [x] Phase 6 progress-log entry written in `implementation-sequence.md`
+- [x] Handoff table completed, with observations rather than "done"
 
 ---
 

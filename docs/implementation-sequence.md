@@ -106,6 +106,118 @@ Full capability matrix in [dev-workflow.md](dev-workflow.md); staging and conseq
 
 ## Progress log
 
+### Phase 6 — done, merged, live (2026-08-26)
+
+Merged as `ee680a5`. **Four migrations and the news seed went to prod immediately before the merge**,
+in that order, and `verify:stamp` reports production on the merge commit. Part A — retiring the
+GitHub Pages origin — had merged earlier; this entry is about Part B.
+
+News now lives in `news_stories`. `/news/` and `/news/<slug>` are server-rendered, so a story's
+headline and summary are in the response body for a crawler, a share preview and a reader with JS
+off alike — with no user-agent sniffing anywhere. `middleware.js`, which had been doing exactly that
+sniffing by hand, was deleted. Four public files went with it (`news.html`, `sitemap.xml`,
+`search-index.json`, and `news.json` moved out of `public/`), each replaced by a route that cannot
+go stale.
+
+#### The finding worth reading: four checks that could only pass, and the fourth nearly counted as evidence
+
+Every one of these was green, and none was measuring anything.
+
+| | The check | Why it could not fail |
+|---|---|---|
+| 1 | `verify:rls` — *"news_stories returns only published rows"* | The schema deliberately exposes `archived` too. It passed for months because no archived row existed |
+| 2 | `verify:news-dupes` against prod | An empty table has no duplicates and no drift |
+| 3 | `verify:rls -- prod` before the seed | Same — no rows for the policy predicate to be tested against |
+| 4 | The two-account RLS proof, probe 5 | `user_news` returned *"0 rows, 0 someone else's"*. Account A had no saved story, so empty was the answer either way |
+
+⚠️ **The fourth is the one to keep, because it was reported as a PASS in a table of five and I
+was about to accept it.** The other four probes were conclusive — account A demonstrably had a
+note, so an unfiltered `select` returning nothing meant something. Probe 5 asked a different
+question against data that did not exist. The fix was not a code change: save a story on the first
+account, confirm from that account's own session that the row exists, then re-run the probe from
+the second looking for **A's specific `user_id`** rather than merely for "not mine".
+
+**What made the pattern visible at all** was writing the empty-table case down as a refusal rather
+than a pass. `verify-news-duplicates.mjs` prints *"Not a pass: with no rows, every check below would
+report clean"* and exits, and `verify:rls` gained a second assertion that the read returned any rows
+at all. Both were written after finding #1; both then caught #2 and #3 on their first run.
+
+**Worth carrying forward:** an assertion that no data can violate is being recited, not tested. The
+question to ask of a green check is not *"did it pass"* but *"what would have made it fail, and does
+that thing exist yet"*.
+
+#### A gate pointed at the wrong database, and passing is exactly what it would have done
+
+Stage 17's checklist read *"`npm run verify:rls` green"*. `.env` names **dev**, and had all phase.
+Run at go-live it would have checked dev, passed, and said nothing whatever about the database that
+had just been migrated — while the tick box recorded that RLS was verified.
+
+It now takes `dev`/`prod` explicitly, reading the project out of `public/supabase-client.js` rather
+than a second copy of the URL. ⚠️ **A gate aimed at the wrong target does not fail. It reports
+success about something nobody asked.**
+
+#### The first real test of the write path was a reader's first save
+
+`saveNote()` used `.upsert(..., { onConflict: 'user_id,target_type,target_id' })`. A later migration
+scoped that index to `where target_type = 'news'`, and **Postgres can only infer a PARTIAL unique
+index for `ON CONFLICT` if the statement carries the index's own `WHERE` predicate** — which
+PostgREST does not emit. So the upsert could not work at all, not even for rows inside the predicate.
+
+Nothing in the repo could have caught it. `verify:rls` uses the anon key and never writes. Every
+browser test used a stub whose `upsert` was **a function I had written myself**, so it answered the
+way I expected rather than the way PostgREST does. The migration's own header asserted the opposite
+and had to be corrected in place.
+
+⚠️ **A stub you wrote cannot falsify an assumption you hold.** The write path is now
+update-then-insert with a 23505 retry, which also removes the coupling: how the client writes no
+longer depends on which indexes happen to exist.
+
+#### A command that kept succeeding and published nothing for six stages
+
+`/add-news` wrote `public/news.json` and regenerated `search-index.json`. From **stage 10** the site
+rendered from the database instead — so the command still ran, still wrote both files, still
+committed and deployed green, and **published nothing.** No gate saw it: the three `prebuild` checks
+read skills, redirects and encoding, and none reads news. It only became visible at stage 13, when a
+file it opened was finally deleted and it threw.
+
+It was **rewritten rather than deleted**, which is the part worth keeping. Its curation half —
+parsing a digest, shortlisting, duplicate-checking — was never about the file format and was still
+exactly right; only its write half was dead. ⚠️ **Deleting a command with no successor silently
+removes a working capability**, so the replacement route was written down before the merge that
+killed the old one, not discovered after it.
+
+#### Two duplicate stories, and a window that was the bug
+
+A database-side duplicate check, added because the file-based one goes blind the day Phase 7's admin
+UI ships, **found two source URLs each published twice** on its first run — 19 and 31 days apart.
+`/add-news` had said to check *"the last ~2 weeks"*. ⚠️ **A story worth covering is worth
+re-covering when it resurfaces, so the gap is usually longer than a short window.** The limit is
+gone.
+
+Merging them exposed the sharper rule. `legacy_id` is `<date>-<array index>`, so **removing an entry
+renumbers every story after it in that date group and silently repoints every link already shared
+for them**. The duplicates were archived in place instead, carrying `merged_into` so their old links
+301 to the survivor. ⚠️ And the titles were deliberately left alone: the slug derives from the
+title and the load is idempotent on slug, so retitling does not update a row — **it inserts a second
+one and leaves the original published**, manufacturing exactly the duplicate being removed.
+
+Proven on production by flipping a day's `sort_order` and confirming both redirects stayed put.
+
+#### Worth carrying forward
+
+- **Ask what would make a green check fail, and whether that thing exists yet.** Four instances in
+  one phase, and the last was inside a results table I had already read.
+- **A gate must name its target.** Anything reading `.env` checks whatever `.env` happens to say.
+- **A stub cannot test an assumption you wrote it under.** The write path's first real exercise was
+  a reader's.
+- **`node --check` proves syntax, not existence.** A coarse range replacement deleted three
+  functions and the build stayed green, because dangling references are valid JavaScript.
+- **`scrollIntoView` scrolls every scrollable ancestor**, so a call meant to reveal a headline in a
+  320px column arrived with the page already scrolled past its own hero.
+- Two defects were found by eye and by no check: a pressed state that read white, and a leave dialog
+  showing *"Sign in first"* to signed-in readers. The pattern from Phase 9 held — the site still has
+  no check that two surfaces agree about one account.
+
 ### Phase 9 — done, merged, live on both origins (2026-08-21)
 
 Merged as `ef7c58c`, out of order: it was scheduled last because it visualises data that only
@@ -2152,7 +2264,12 @@ merged as `947fb19` on 2026-08-20, before either the banner item or the What's N
 
 ## Phase 6 — News into the DB
 
-**Impact:** 🔵 Visible + 🟢 New (visitor) · 🟡 Silent (admin) — **announce the favourites and notes.**
+**Impact:** 🔵 Visible + 🟢 New (visitor) · 🟡 Silent (admin) · **Shipped 2026-08-26** — outcome in the
+Progress log above. The favourites and notes were announced on 2026-08-27.
+
+⚠️ **The counts below are as PLANNED, and the load was 81 stories across 27 date groups** — not the
+21/69 written here in Phase 3. They are left as written because this section is the plan; what
+actually shipped is in the Progress log.
 
 **Why before the admin portal:** it gives the admin UI something real to manage, and forces the
 URL problem to be solved while the data set is small, known, and fully under your control.
