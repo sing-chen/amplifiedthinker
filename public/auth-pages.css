@@ -171,6 +171,18 @@
 }
 .auth-panel input:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 1px; }
 
+/* ⚠️ PLACEHOLDERS CARRY HELP TEXT HERE, SO A CLIPPED ONE IS A SENTENCE THAT
+ * STOPS MID-WORD. Every placeholder on these forms was measured against the
+ * field's inner width at a 375px viewport and shortened until it fits — three
+ * of them did not, and only measuring found it. Below about 340px the longest
+ * still run out of room, and this makes that read as truncation rather than as
+ * the end of the sentence.
+ *
+ * ⚠️ If you lengthen a placeholder, measure it. The password fields have
+ * ~227px of usable width at 375px, not the ~283px the others get, because the
+ * Show button takes 4.25rem of padding-right. */
+.auth-panel input::placeholder { text-overflow: ellipsis; }
+
 /* Reveal control for password fields.
  *
  * A typo in a password field is invisible, and on sign-up it costs a whole email
