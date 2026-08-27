@@ -320,6 +320,26 @@
   var ANNOUNCEMENTS = [
     {
       type: 'feature',
+      date: '2026-08-26',
+      // ⚠️ DATE TAKEN FROM THE MERGE COMMIT ee680a5, not from the day this was
+      // written, and paired with the two What's New entries of the same date.
+      // Both were written in this sitting for the reason the comment below
+      // repeats: once the banner expires the two can no longer be compared.
+      // ⚠️ Since 2026-08-27 the banner shows only the MONTH for announcements,
+      // matching how whats-new.html groups them — so a day's disagreement is no
+      // longer possible here, and a month's would be visible on both surfaces.
+      //
+      // 21 days rather than the 14-day `feature` default: this is the first
+      // thing an account does on a page guests read too, so it is worth the
+      // longer run. Not the 35 the Accounts item took — that changed how the
+      // whole site works; this adds to it.
+      expiryDays: 21,
+      text: '<b>Keep the news that matters</b> — save any story, pin one to the top of your own list, and write a private note against it.',
+      linkHref: 'news/',
+      linkLabel: 'Go to News'
+    },
+    {
+      type: 'feature',
       date: '2026-08-21',
       // Paired with the What's New entry of the same date in updates.json —
       // ⚠️ written in the same sitting on purpose. The banner expires in 14

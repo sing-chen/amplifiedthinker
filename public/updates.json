@@ -1,6 +1,18 @@
 [
     {
         "date": "2026-08-26",
+        "type": "feature",
+        "title": "Save, pin and note a news story",
+        "html": "Signed in, every story on the <a href=\"news/\">News</a> page now carries three controls. <b>Save</b> as many as you like and they collect behind a <em>Saved</em> filter. <b>Pin</b> exactly one, to hold it at the top of your own list — pinning a second asks first, and tells you which one it would replace. And write a <b>note</b> of up to 500 characters against any story: why it mattered, what you would do about it, who needs to see it. A <em>Has Notes</em> filter brings back everything you have written on. No other account can read your notes, and <a href=\"privacy.html#s13\">Privacy</a> is straight about the one limit to that."
+    },
+    {
+        "date": "2026-08-26",
+        "type": "improvement",
+        "title": "Every news story has its own page",
+        "html": "The <a href=\"news/\">News</a> page used to be a single page that swapped stories in and out as you clicked. Each story now has its own address, which changes two things worth knowing. A link you share shows that story's own headline and summary in the preview, rather than the site's front page. And the story is in the page itself, so it reads correctly whether or not scripts run. <b>Links shared before the change still work</b> — they now redirect to the story's new address."
+    },
+    {
+        "date": "2026-08-26",
         "type": "improvement",
         "title": "What's New has its own page",
         "html": "This log used to sit in a collapsible block at the foot of the <a href=\"about.html\">About</a> page. It is now a page of its own, grouped into a card for each month with the most recent one open, and every entry labelled by the kind of change it was."
