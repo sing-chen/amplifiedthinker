@@ -1017,6 +1017,17 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           ? 'Password — 8+ characters'
           : 'Password';
 
+        // ⚠️ SAME ARGUMENT, AND IT IS THE REASON THIS SUFFIX EXISTS AT ALL.
+        // "confirmations and resets" is a promise about what will be sent to an
+        // address you are handing over, so it belongs at the moment you hand it
+        // over and nowhere else. On the sign-in form the account already exists
+        // and the mail has already been agreed to; on the reset form the field
+        // identifies you rather than collecting anything. In both, the promise
+        // is answering a question that was settled at sign-up.
+        el('auth-email').placeholder = isSignup
+          ? 'Email — confirmations and resets'
+          : 'Email';
+
         el('auth-to-signup').hidden = isSignup;
         el('auth-to-signin').hidden = !isSignup && !isForgot;
         el('auth-to-forgot').hidden = isForgot;
