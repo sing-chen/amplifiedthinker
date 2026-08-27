@@ -189,6 +189,13 @@
     '.lcard.lc-done .lc-dot{background:var(--fg-brand,#1F6F5C)}',
     '.lc-meta{font-family:var(--font-body);font-size:12.5px;line-height:1.5;color:var(--text-muted,#5A6B66);margin-bottom:9px}',
     '.lc-meta strong{color:var(--fg-1,#2C3E3A);font-weight:600}',
+    /* ⚠️ The note count is APPENDED INSIDE .lc-meta, and that is the whole
+       reason it carries no colour of its own — it inherits the four contexts
+       .lc-meta is already solved for (light plain, light primary-on-teal, dark
+       plain-on-brown, dark primary). Anything given its own colour here would
+       have to restate all four, which is how the .lc-state overrides below
+       came to be needed twice. */
+    '.lc-notes{white-space:nowrap}',
     '.lc-bar{height:4px;border-radius:99px;background:var(--light-sage,#DCE7E3);overflow:hidden;margin-bottom:10px}',
     '.lc-fill{height:100%;width:0;border-radius:99px;background:var(--mid-teal,#3E7F72)}',
     '.lc-bar.is-anim .lc-fill{transition:width ' + BAR_MS + 'ms cubic-bezier(.22,.75,.28,1)}',
@@ -221,6 +228,28 @@
     // put the brand teal at 4.13:1, just under AA for normal text.
     '.ls-more a{color:#14584A;font-weight:600;text-decoration:underline;text-underline-offset:2px}',
 
+    /* ── the per-skill notes callout ──────────────────────────────────────
+       ⚠️ IT SITS AT THE END OF .sdef, NOT UNDER .lcards, and the layout is the
+       reason rather than taste. Those two are side by side — .sdef is flex:1
+       and .slaunch a fixed 252px column — so a line under the cards renders in
+       252px and wraps to three. Under the description it has the full measure
+       and reads as a statement about the SKILL rather than about the second
+       card.
+       Border and fill are borrowed from the page's own .sources-callout so it
+       reads as the same family of box rather than a new one. */
+    '.sk-notes{display:flex;align-items:flex-start;gap:10px;margin-top:20px;padding:12px 14px;' +
+      'background:var(--light-sage,#DCE7E3);border:1px solid rgba(172,196,182,.55);' +
+      'border-radius:var(--radius-lg,10px);' +
+      'font-family:var(--font-body);font-size:13px;line-height:1.55;color:var(--text-muted,#5A6B66)}',
+    // flex-start, so the icon stays with the FIRST line when the text wraps on
+    // a narrow viewport rather than floating between two.
+    '.sk-notes svg{width:15px;height:15px;margin-top:1px;fill:none;stroke:var(--mid-teal,#3E7F72);' +
+      'stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}',
+    '.sk-notes strong{color:var(--fg-1,#2C3E3A);font-weight:600}',
+    // Same treatment as .ls-more a, and darker than --fg-brand for the same
+    // reason: this box has the identical --light-sage ground.
+    '.sk-notes a{color:#14584A;font-weight:600;text-decoration:underline;text-underline-offset:2px}',
+
     /* Dark mode. Tokens differ per surface on this page, so these are explicit. */
     '[data-theme="dark"] .sring .sr-track{stroke:rgba(255,255,255,.12)}',
     '[data-theme="dark"] .sring .sr-arc{stroke:var(--d-teal-stroke,#8FCFC3)}',
@@ -247,6 +276,19 @@
     '[data-theme="dark"] .ls-counts{color:var(--d-fg-1,#C7D6D1)}',
     '[data-theme="dark"] .ls-counts strong{color:var(--d-fg-heading,#E6EFEC)}',
     '[data-theme="dark"] .ls-more a{color:var(--d-teal-stroke,#8FCFC3)}',
+
+    /* ⚠️ --light-sage DOES NOT FLIP. It is one of the few semantic tokens on
+       this site that keeps its light value in dark mode, so a rule using it
+       needs an explicit counterpart exactly as a raw hex would. Without these
+       three lines the callout is a near-white box on a dark card — valid CSS,
+       correct token name, and the identical fault that left news.html's
+       .story-panel wearing a #D8E4DD outline for weeks.
+       The values match .sources-callout, which is the box it sits near. */
+    '[data-theme="dark"] .sk-notes{background:var(--bg-sunken);border-color:var(--line);' +
+      'color:var(--fg-2,#9DB2AC)}',
+    '[data-theme="dark"] .sk-notes svg{stroke:var(--d-teal-stroke,#8FCFC3)}',
+    '[data-theme="dark"] .sk-notes strong{color:var(--fg-heading,#E6EFEC)}',
+    '[data-theme="dark"] .sk-notes a{color:var(--d-teal-stroke,#8FCFC3)}',
 
     /* ⚠️ Reduced motion is NOT a faster sweep. It renders the final value
        instantly — the page already carries a prefers-reduced-motion block and
@@ -350,7 +392,44 @@
     return m ? m[1] : null;
   }
 
-  function renderLaunchCard(el, artefact, kindLabel) {
+  /* ── notes ──────────────────────────────────────────────────────────────
+     ⚠️ NOTHING RENDERS AT ZERO, on either surface. Same rule as the rest of
+     this file: the personal layer is additive, and a row of "0 notes" down nine
+     cards is exactly the empty-slot noise the design rejected. */
+
+  var NOTE_ICON =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5Z"/>' +
+    '<line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/>' +
+    '<line x1="8" y1="17" x2="12.5" y2="17"/></svg>';
+
+  function plural(n) { return n === 1 ? '1 note' : n + ' notes'; }
+
+  /* The callout, once per skill, at the end of the description column.
+     ⚠️ IT IS ALSO THE SAFETY NET FOR A NOT-STARTED ARTEFACT. renderLaunchCard
+     returns early in that state to keep the guest text, so there is no .lc-meta
+     to append a count to — and a note on a page someone merely opened is
+     perfectly possible. Without this line that note would be invisible here. */
+  function renderNotesCallout(card, total) {
+    if (!total) return;
+    var sdef = card.querySelector('.sdef');
+    if (!sdef) return;
+
+    var line = doc.createElement('div');
+    line.className = 'sk-notes';
+    var nav = global.AmplifiedNav;
+    var href = nav && nav.root ? nav.root('account/#notes') : 'account/#notes';
+    /* ⚠️ The WHOLE second sentence is the link, not a trailing "here". "Here"
+       is meaningless out of context, and a screen reader's list of links on
+       this page would otherwise hold nine identical entries. */
+    line.innerHTML = NOTE_ICON + '<span>You have <strong>' + plural(total) +
+      '</strong> on this skill. <a href="' + esc(href) + '">Read all your notes here.</a></span>';
+
+    sdef.appendChild(line);
+    onTeardown(function () { line.remove(); });
+  }
+
+  function renderLaunchCard(el, artefact, kindLabel, noteCount) {
     if (!el || !artefact || !artefact.known) return null;
     if (artefact.status === M.STATUS.NOT_STARTED) return null;   // keep the guest text
 
@@ -378,6 +457,16 @@
       if (artefact.resume) {
         meta.innerHTML += ' · you left off in <strong>' + esc(artefact.resume.name) + '</strong>';
       }
+    }
+
+    /* ⚠️ Appended to the meta line rather than given a row of its own, and it
+       is PLAIN TEXT: `.lcard` is an <a>, so anything interactive here would be
+       a nested link — invalid, and unreliable in real browsers. The link to the
+       notes themselves lives in the callout, outside both anchors.
+       No teardown of its own: it is a child of `meta`, which is removed whole
+       by the registration further down. */
+    if (noteCount) {
+      meta.innerHTML += ' · <span class="lc-notes"><strong>' + plural(noteCount) + '</strong></span>';
     }
 
     var bar = doc.createElement('div');
@@ -432,7 +521,7 @@
     });
   }
 
-  function renderCard(card, pair) {
+  function renderCard(card, pair, notes) {
     var header = card.querySelector('.sheader');
     var shc = card.querySelector('.shc');
     if (!header || !shc || !pair) return;
@@ -491,15 +580,22 @@
       }
     }
 
+    // Absent for a skill with no notes, which is the common case — normalised
+    // once here so neither call site has to test for it.
+    var n = notes || { primer: 0, plan: 0 };
+
     var cards = card.querySelectorAll('.lcard');
     var bars = [];
     for (var i = 0; i < cards.length; i++) {
       var href = cards[i].getAttribute('href') || '';
       var isPrimer = /primer\.html/.test(href);
       var bar = renderLaunchCard(cards[i], isPrimer ? pair.primer : pair.plan,
-                                 isPrimer ? 'Primer' : 'Plan');
+                                 isPrimer ? 'Primer' : 'Plan',
+                                 isPrimer ? n.primer : n.plan);
       if (bar) bars.push(bar);
     }
+
+    renderNotesCallout(card, n.primer + n.plan);
 
     card._rings = [primerRing, planRing];
     card._bars = bars;
@@ -712,7 +808,7 @@
 
   var painted = false;
 
-  function paint(data) {
+  function paint(data, notes) {
     if (!data || !data.progress) return;
 
     /* ⚠️ ONCE ONLY. onAuthChange fires on more than signing in — a token
@@ -729,7 +825,7 @@
     for (var i = 0; i < cards.length; i++) {
       var slug = slugFromCard(cards[i]);
       if (!slug || !data.progress[slug]) continue;
-      renderCard(cards[i], data.progress[slug]);
+      renderCard(cards[i], data.progress[slug], (notes || {})[slug]);
       wireExpansion(cards[i]);
     }
 
@@ -763,8 +859,14 @@
           // also fires this — does not re-query or re-render.
           if (painted) return;
 
-          M.load({}).then(function (data) {
-            if (data) { try { paint(data); } catch (e) { teardown(); } }
+          /* ⚠️ IN PARALLEL, AND THE NOTES HALF CANNOT FAIL THE PAINT.
+             loadNoteCounts resolves to {} on any error rather than rejecting,
+             so a notes query that breaks costs the reader their note counts
+             and nothing else — the rings, bars and dates still render. Running
+             it after load() would have added a second round trip to first
+             paint for a decoration. */
+          Promise.all([M.load({}), M.loadNoteCounts()]).then(function (parts) {
+            if (parts[0]) { try { paint(parts[0], parts[1]); } catch (e) { teardown(); } }
           });
         });
         return;
