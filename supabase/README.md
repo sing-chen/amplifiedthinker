@@ -386,7 +386,7 @@ hostname are included automatically.
 
 | Widget | Hostnames | Secret goes in |
 |---|---|---|
-| `amplifiedthinker-prod` | `amplifiedthinker.com`, `sing-chen.github.io` | prod (`spehmrgmcdenqdftkyrt`) |
+| `amplifiedthinker-prod` | `amplifiedthinker.com` — and nothing else | prod (`spehmrgmcdenqdftkyrt`) |
 | `amplifiedthinker-dev` | `localhost`, `vercel.app` | the dev project |
 
 ⚠️ **`vercel.app` must never appear on the prod widget.** It is a public suffix, so listing it
@@ -394,9 +394,10 @@ authorises *every* site on `vercel.app` to render a challenge for our sitekey an
 against our signup endpoint. The split is what keeps that grant confined to a scratch database —
 which is a second, independent reason for the dev project, beyond protecting user data.
 
-`sing-chen.github.io` is listed rather than `github.io`: the parent would authorise every GitHub
-Pages site in existence. ⚠️ **That origin was retired on 2026-08-26 and the hostname is still on the
-widget** — see *Cleanup owed* below.
+⚠️ **`sing-chen.github.io` was on the prod widget until 2026-08-26** and came off when that origin
+was retired — see the section below, which is where the reasoning lives. It was listed rather than
+`github.io` because the parent would have authorised every GitHub Pages site in existence; the
+narrower form was still wrong, for the reason given below.
 
 #### Cleanup owed — ✅ **DONE 2026-08-26.** Both dashboard entries removed
 

@@ -282,9 +282,18 @@ deliberately and should not be torn out as dead code:
   read as a synthetic sub-path deployment, because they still exercise base-aware containment in the
   real `safeNext()`. Deleting them would drop open-redirect coverage the shipped code still needs.
 
-⚠️ **Two dashboard entries outlived the origin and are not in this repo.** The Supabase prod
-redirect allowlist and the `amplifiedthinker-prod` Turnstile widget both still name
-`sing-chen.github.io`. Neither can be changed from here — see [supabase/README.md](supabase/README.md).
+✅ **The two dashboard entries that outlived the origin were removed on 2026-08-26** — the Supabase
+prod redirect allowlist and the `amplifiedthinker-prod` Turnstile widget, both of which named
+`sing-chen.github.io` and neither of which lives in this repo. ⚠️ **The rule outlives the cleanup:
+never add a `*.github.io` or `vercel.app` hostname to a production Turnstile widget.** Both are
+public suffixes and a hostname grant covers subdomains, so listing either lets someone else's site
+mint tokens production accepts.
+
+⚠️ **The two halves are not equally checkable, and only one of them stays proven.**
+`npm run verify:redirects` asserts prod *rejects* the GitHub redirect and will keep asserting it —
+that hostname still fronts every project on the account. Nothing in this repo can read a Turnstile
+widget's hostname list at all, so a wrong one surfaces as a **captcha** failure on a real production
+sign-in and nowhere else. See [supabase/README.md](supabase/README.md).
 
 ---
 

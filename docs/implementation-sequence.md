@@ -1,14 +1,21 @@
 # Implementation sequence
 
-**Status:** In progress — Phases 0, 1, 2, 3, 4, 5 and **9 live on both origins**. Phase 5 merged as
-`947fb19`; seven post-release defects were found by hand the same day and all fixed.
+**Status:** In progress — **Phases 0 to 6 and 9 are done and live.** Two remain, in this order:
+**7 — Admin portal and banner**, then **8 — Blog**, which depends on it. Phase 5 merged as `947fb19`
+(seven post-release defects found by hand the same day, all fixed); Phase 6 as `ee680a5`, 2026-08-26.
+
+⚠️ **"Live on both origins" is written all over this document and it named a world that ended on
+2026-08-26.** The GitHub Pages origin was retired that day, so there is one production origin —
+`amplifiedthinker.com` — and a change is verified there and nowhere else. Every such phrase below is
+left as written because it records what was true when it was written; read it as "live on
+production". The cross-cutting constraint section says the same thing at length.
 
 **Phase 9 shipped out of order (`ef7c58c`, 2026-08-21).** It was scheduled last on the assumption
 that it needed data from 6, 7 and 8; it does not — Phase 5 alone produces everything it reads. It
 required no migration, which makes it the first phase since 3 where code and schema did not have
-to move together. 6, 7 and 8 are unaffected and still to come.
+to move together. 7 and 8 are unaffected and still to come.
 
-**`feat/legal-pages` is merged and live on both origins.** It carried the three legal pages, the
+**`feat/legal-pages` is merged and live.** It carried the three legal pages, the
 sign-up consent checkbox and account toggle, the document modal, and migration
 `20260820070000_profiles_wants_updates`, applied to prod before the merge. A same-day audit of the
 privacy and terms pages against the system they describe found and fixed six more issues (`e671790`).
@@ -17,13 +24,19 @@ privacy and terms pages against the system they describe found and fixed six mor
 *there is no announcement* — a What's New entry, a homepage banner item (`c27d53d`), and the guest
 notice `progress.js` was already showing. See "Announcement planning" under Phase 5 for why.
 
-⚠️ **No update email may be sent yet**, whatever the consent column says: the unsubscribe route and
-any multi-recipient sender are unbuilt. See BACKLOG.md ·
-**Last updated:** 2026-08-20
+⚠️ **No update email may be sent yet**, whatever the consent column says. Confirmed still true on
+2026-08-27: the account page carries the consent toggle, but the in-message unsubscribe link and any
+multi-recipient sender are unbuilt, and nothing in `src/` sends to more than one address. See
+*Site-update email* in [../BACKLOG.md](../BACKLOG.md) for the four things it needs and the order
+they have to land in.
+
+**Last updated:** 2026-08-27
 
 ⚠️ **The step-by-step runsheet for Phase 5 is not in this repo** — it is an artifact, *Phase 5
 Runsheet*, and it carries the click paths, who does each step, and the live-cutover order. This
-document holds the reasoning and the findings; that one holds the sequence.
+document holds the reasoning and the findings; that one holds the sequence. **Phase 6's equivalent
+*is* in the repo**, as [phase-6-runsheet.md](phase-6-runsheet.md) — the better precedent, and the
+shape Phase 7's should follow.
 
 The phased breakdown of activities, with rationale for each. Companion to:
 
@@ -55,8 +68,8 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 3 — Supabase schema + RLS | ✅ **Done — live** | ⚪ None | ⚪ None | No | 0 |
 | 4 — Email | ✅ **Done — live** | ⚪ None | ⚪ None | No | 3 |
 | 5 — Auth + progress sync | ✅ **Done — live** | 🟢 **New** + 🔵 regression | 🟢 New | ✅ Banner + What's New, **no announcement** | 1, 3, 4 |
-| 6 — News into the DB | ☐ Not started | 🔵 Visible + 🟢 New | 🟡 Silent | **Yes** | 2, 3, 5 |
-| 7 — Admin portal + banner | ☐ Not started | ⚪ None | 🟢 **New** | No | 6 |
+| 6 — News into the DB | ✅ **Done — live** | 🔵 Visible + 🟢 New | 🟡 Silent | ✅ Banner + What's New | 2, 3, 5 |
+| 7 — Admin portal + banner | ☐ **Next** | ⚪ None | 🟢 **New** | No | 6 ✅ |
 | 8 — Blog | ☐ Not started | 🟢 **New** | 🟢 New | **Yes** | 7 |
 | 9 — Your learning | ✅ **Done — live** | 🟢 **New** | ⚪ None | ✅ Banner + What's New | 5 (not 6–8) |
 
