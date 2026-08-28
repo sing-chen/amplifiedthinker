@@ -35,8 +35,9 @@ position it does not have.
 | 11 | The two-tone wordmark | 2026-08-28 | `1b987ba` |
 | — | **Next** | — | **unassigned — see Candidates** |
 
-⚠️ Pieces 9–11 are committed on `feat/amplitude` and **not yet merged** — the dates above are
-build dates, not go-live dates. The production eye pass happens after the merge.
+Pieces 9–11 were built on `feat/amplitude` and merged to `main` on 2026-08-28. ⚠️ Remaining
+verification at merge time: `npm run verify:stamp` against the deploy, and the production eye
+pass on amplifiedthinker.com — both themes, the entrance on a real phone.
 
 Measured outcomes, not estimates:
 
