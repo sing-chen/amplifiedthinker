@@ -28,8 +28,6 @@
      dark variants and no +40 weight compensation, because there is nothing
      to compensate for. See docs/design-modernisation.md, piece 10. */
   .hero{position:relative;overflow:hidden;height:min(calc(88vh - var(--site-nav-h,56px)),720px);min-height:520px;display:flex;flex-direction:column;background:radial-gradient(ellipse 780px 520px at 78% 24%,rgba(91,167,159,.07) 0%,transparent 68%),linear-gradient(179deg,#1B4A44 0%,#193F3A 55%,#122E2A 100%)}
-  /* staff lines — the instrument-grid the signal is read against */
-  .hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0 79px,rgba(172,196,182,.045) 79px 80px)}
   .hero-lamp{position:absolute;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(91,167,159,.055) 0%,transparent 62%);top:0;left:0;pointer-events:none;will-change:transform;transform:translate(-9999px,-9999px)}
   .hero-body{position:relative;z-index:2;flex:1;display:flex;align-items:stretch;max-width:var(--page-max);margin:0 auto;width:100%;padding:24px 40px 0}
   .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:auto auto auto;column-gap:88px;align-content:center;width:100%}
