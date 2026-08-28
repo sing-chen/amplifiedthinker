@@ -219,6 +219,46 @@ Not a queue. Listed with what each would actually cost, so the choice is informe
   deleted 2026-08-24 — it survives only in the Drive git bundle. ⚠️ Its two documented traps are
   worth reading before anything similar is attempted: `nav.js` owns `data-theme` and overwrites a
   manually-set attribute, and a stray `*/` silently deleted a `#site-nav` rule with nothing erroring.
+- **An ambient gradient field behind the page** — the blurred colour wash, as seen on the reference
+  page that prompted it. **Assessed 2026-08-28 against `future-skills.html` at `a3f6fb1`; not
+  attempted.** The layer is the cheap half: roughly fifteen lines, no markup change at all, if the
+  ground moves to `<html>` so `body` can go transparent and carry the wash on a `body::before` at
+  `z-index:-1` — which is what lets every section stay untouched. ⚠️ **Leave the ground on `body` and
+  it paints straight over the wash.**
+
+  ⚠️ **The expensive half is that only one section can show it.** The page is six full-bleed bands
+  and five paint an opaque background, so a fixed layer behind them is visible through **25.4% of the
+  page height** and nothing else — measured, not estimated:
+
+  | Band | Background | Share of height | Shows it |
+  |---|---|---|---|
+  | `.hero` | `#1B4A44` | 7.7% | no |
+  | `.why` | *none* | **25.4%** | **yes** |
+  | `.chart-section` | `var(--bg-surface)` | 13.0% | no |
+  | `.intro` | `#EEF4F0` | 17.4% | no |
+  | `.library-wrap` | `var(--bg-surface)` | 29.5% | no |
+  | `.site-footer` | `var(--charcoal)` | 3.0% | no |
+
+  So the real cost is opening five bands up — translucent backgrounds plus `backdrop-filter` — which
+  is a different and much larger piece of work than "add a layer", and it lands on the **largest**
+  band on the page (`.library-wrap`, 29.5%).
+
+  ⚠️ **Two bands can never take it, so this can never be a full-page treatment.** `.hero` and
+  `.site-footer` both carry light text on dark grounds; making either translucent puts white type
+  over a pale wash. That is a contrast failure, not a style choice, and the effect has to stop at
+  their edges by design.
+
+  ⚠️ **It also drags in `.intro`'s hardcoded `#EEF4F0`**, which is the same one-line fix the ground
+  work needs — light-mode only, because `[data-theme="dark"] .intro` already points at
+  `var(--bg-sunken)`.
+
+  A three-pane specimen (current / wash only / wash + bands opened, embedding the real page in
+  iframes) is on the unmerged `explore/ambient-field` branch, with a copy and a written-up finding in
+  the Drive backup's `discovery/` folder. ⚠️ **Open it through the dev server, never as `file://`** —
+  relative `<link>` hrefs do not resolve there, `styles.css` never loads, every `var(--bg-*)`
+  collapses to transparent, and all three panes render an unstyled page. That artifact reads as a
+  *finding* — "the bands ARE transparent" — and it produced exactly that wrong answer on the first
+  measurement.
 
 ⚠️ **Pick one and finish it.** The reason six pieces shipped cleanly is that each was independently
 verifiable and independently revertible. "Modernise the design" is not a piece of work; "the site is
