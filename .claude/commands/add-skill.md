@@ -243,25 +243,27 @@ A new skill gets **two** entries, and they are the same fact written twice:
 - [updates.json](public/updates.json) — the permanent What's New list, served by
   [whats-new.html](public/whats-new.html). Prepend an object with **four** keys: `date`
   (`YYYY-MM-DD`), `type` (`"skill"` — it drives the coloured pill, and the key is the same one the
-  homepage banner takes), `title` and `html`. Follow the shape of the existing skill entries — `title` is the
+  homepage announce card takes), `title` and `html`. Follow the shape of the existing skill entries — `title` is the
   skill name on its own, and `html` is a link to `future-skills.html#s-[slug]` reading "Added to the
   library", then "as a new Future Skill, with a primer and full learning plan."
   ⚠️ **The day is never displayed.** Since 2026-08-26 the page groups entries by month and labels
   them "August 2026"; `date` still decides the month and the order within it, so it must be right,
   but the reader only ever sees the `title`. An entry with no `title` renders as a bare paragraph.
-- The `ANNOUNCEMENTS` array in [index.html](public/index.html) — the homepage banner. Add an item at
-  the **top** with `type: 'skill'`, the same `date`, a one-line `text` (the skill name in `<b>`, then
-  an em-dash and what it lets you do), `linkHref: 'future-skills.html#s-[slug]'` and
-  `linkLabel: 'Explore it'`.
+- The `ANNOUNCEMENTS` array in [index.html](public/index.html) — the announce card in the hero,
+  which replaced the banner on 2026-08-28 (design piece 10; the array and its rules survived the
+  move unchanged). Add an item at the **top** with `type: 'skill'`, the same `date`, a `text` (the
+  skill name in `<b>`, then an em-dash and what it lets you do),
+  `linkHref: 'future-skills.html#s-[slug]'` and `linkLabel: 'Explore it'`.
 
 ⚠️ **The two dates must match, and nothing checks that they do.** Dark Mode was dated 23 July in the
-banner and 21 July in updates.json for a month. The banner's expiry is what hid it — a `skill` item
+old banner and 21 July in updates.json for a month. The expiry is what hid it — a `skill` item
 renders for 21 days and then vanishes, while the What's New list is permanent, so by the time the two
 could be compared only one was still on screen. **Write both entries in the same sitting and take the
 date from the commit, not from memory.**
 
-Keep the banner `text` short. It is a single 24px line with `text-overflow: ellipsis`, so anything
-long is silently truncated rather than wrapped — compare against the existing items, which fit.
+Keep the `text` tight. The card wraps it across up to **four** 15px lines and clamps with an
+ellipsis after that — an announcement should finish its sentence inside the frame; compare against
+the existing items, which do.
 
 Validate `updates.json` is still well-formed JSON before moving on.
 
@@ -351,7 +353,7 @@ feat: add [Skill Name] primer and learning plan
 - public/skills/[slug]/plan.html: 14-section learning plan with [key structural notes]
 - public/nav.js, public/future-skills.html: register and activate the [Skill Name] card
 - src/data/search-static.json: add primer/plan entries so the skill surfaces in site search (⚠️ NOT public/search-index.json — deleted 2026-08-26)
-- public/updates.json, public/index.html: What's New entry and homepage banner item, same date
+- public/updates.json, public/index.html: What's New entry and announce-card item, same date
 - public/skills-catalogue.json, scripts/build-skills-catalogue.mjs: regenerated counts
 ```
 

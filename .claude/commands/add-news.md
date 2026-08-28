@@ -12,7 +12,7 @@ written to be read rather than executed. Keep the two in step; they describe one
 ## ⚠️ How news actually gets published now, and why this changed
 
 **Phase 6 moved news into the database.** `public/news.html` and `public/search-index.json` were
-deleted; `/news/` renders from `news_stories`, the homepage banner reads `/api/news/recent.json`,
+deleted; `/news/` renders from `news_stories`, the homepage announce card reads `/api/news/recent.json`,
 and site search reads `/api/search-index.json`. Nothing serves a JSON file of stories any more.
 
 **`content/news.json` is no longer served either.** It moved out of `public/` on 2026-08-26 for

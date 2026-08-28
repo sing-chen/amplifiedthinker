@@ -30,7 +30,13 @@ position it does not have.
 | 6 | Bring docs and auth email templates back in step | 2026-08-24 | `a7619ea` |
 | 7 | Retire the 52 `--teal` `rgba()` longhands — a verified no-op | 2026-08-24 | `1835753` |
 | 8 | Retire the 88 old-palette `rgba()` longhands — a real repaint | 2026-08-24 | `e82d1af` |
-| — | **Next** | — | **pieces 9–11 in flight on `feat/amplitude` — see In flight below** |
+| 9 | The tiles go quiet — hue at four signal points, never as fill | 2026-08-28 | `82e5f5a` |
+| 10 | The Amplitude hero, with the announce card | 2026-08-28 | `058fdad` |
+| 11 | The two-tone wordmark | 2026-08-28 | `1b987ba` |
+| — | **Next** | — | **unassigned — see Candidates** |
+
+⚠️ Pieces 9–11 are committed on `feat/amplitude` and **not yet merged** — the dates above are
+build dates, not go-live dates. The production eye pass happens after the merge.
 
 Measured outcomes, not estimates:
 
@@ -266,12 +272,26 @@ Inter" is.
 
 ---
 
-## In flight — the Amplitude pieces (`feat/amplitude`)
+## The Amplitude pieces — 9, 10 and 11 (`feat/amplitude`, merge pending)
 
-The homepage redesign, planned here before the first edit. All three pieces were designed as LIVE
-SPECIMENS first — an assembled homepage mock and an argued proposal, iterated on sight with real
-content — so the decisions below were taken looking at the thing, not at a description of it. The
-specimens are the reference for every visual question this section leaves open.
+The homepage redesign, planned here before the first edit and now built. All three pieces were
+designed as LIVE SPECIMENS first — an assembled homepage mock and an argued proposal, iterated on
+sight with real content — so the decisions below were taken looking at the thing, not at a
+description of it. The specimens remain the reference for every visual question this section
+leaves open.
+
+**What building them taught, beyond the plan:**
+
+- **The range-edit discipline earned its keep in the other direction.** A script that spliced the
+  announcement code used an end-anchor (`'  }'`) that matched *inside* a nested close two lines
+  early, truncating `escapeHTML`. `node --check` on every extracted inline script caught it before
+  the build did — the check the news-actions incident mandated, doing its job on the first big
+  range edit since.
+- **The card's grid binding measured exact**: 0.0px deviation at both edges against the headline
+  and CTA rows, at the first rendered check. Binding alignment structurally beats tuning it.
+- **`document.hidden` gates the wave's rAF loop**, so a tab loaded in the background draws nothing
+  until its first `visibilitychange` — correct behaviour that *looks* like a broken canvas to any
+  headless check. A rendered assertion on the wave must run in a visible tab or force a draw first.
 
 ### Piece 9 — the three tiles become quiet surfaces
 
@@ -330,9 +350,11 @@ Decisions already taken, in the specimens, on sight:
 - ⚠️ **Copy joins the promise list**: "Hand-built. Private. Free." rots like every other claim —
   grep for it when anything makes it untrue. The meta and og descriptions get reviewed against
   the new headline in the same sitting.
-- ⚠️ **`.claude/commands` gets re-read after landing** — `/add-skill` documents the
-  announcement-banner step, and the surface it feeds is being renamed and relocated. The sixth
-  instance of command drift is otherwise waiting to happen.
+- ✅ **`.claude/commands` re-read and updated in the same sitting** — `/add-skill` documented the
+  announcement-banner step, and the surface it feeds was renamed and relocated. Its wording now
+  describes the card (including the four-line clamp replacing the single-line ellipsis rule), and
+  `/add-news`'s one banner reference moved with it. The sixth instance of command drift, headed
+  off rather than logged.
 
 ### Piece 11 — the nav wordmark, two-tone (already on the branch)
 
