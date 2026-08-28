@@ -30,7 +30,7 @@ position it does not have.
 | 6 | Bring docs and auth email templates back in step | 2026-08-24 | `a7619ea` |
 | 7 | Retire the 52 `--teal` `rgba()` longhands — a verified no-op | 2026-08-24 | `1835753` |
 | 8 | Retire the 88 old-palette `rgba()` longhands — a real repaint | 2026-08-24 | `e82d1af` |
-| — | **Next** | — | **unassigned — see Candidates** |
+| — | **Next** | — | **pieces 9–11 in flight on `feat/amplitude` — see In flight below** |
 
 Measured outcomes, not estimates:
 
@@ -263,6 +263,84 @@ Not a queue. Listed with what each would actually cost, so the choice is informe
 ⚠️ **Pick one and finish it.** The reason six pieces shipped cleanly is that each was independently
 verifiable and independently revertible. "Modernise the design" is not a piece of work; "the site is
 Inter" is.
+
+---
+
+## In flight — the Amplitude pieces (`feat/amplitude`)
+
+The homepage redesign, planned here before the first edit. All three pieces were designed as LIVE
+SPECIMENS first — an assembled homepage mock and an argued proposal, iterated on sight with real
+content — so the decisions below were taken looking at the thing, not at a description of it. The
+specimens are the reference for every visual question this section leaves open.
+
+### Piece 9 — the three tiles become quiet surfaces
+
+`public/index.html` only. The pastel section cards invert the colour rule this document fixed —
+the loudest colour on the page used as FILL — so the re-cut moves each surface's hue to four
+signal points (hairline border, eyebrow, CTA, motif) on a quiet card, and restructures the
+hierarchy into the site's reading order: hue eyebrow → editorial-light headline (380, 420 dark)
+→ body → action. The section label sentence is promoted word-for-word to an editorial headline
+under an "Explore" kicker.
+
+- **Light hues are written as the tokens they are** — skills `var(--deep-teal)`, people
+  `var(--moss)`, news `var(--terracotta)` — never fresh literals (rule 6 above). The dark hues
+  are the page's existing dark-mode literals (`#7FC4B8` / `#9BB577` / `#C97A4A`), now named once
+  and scoped to the section rather than scattered per property.
+- **Each tile carries the hero's waveform in miniature** — a per-tile canvas in the tile's hue,
+  resting quiet, amplifying on hover/focus, decaying after. One engine, ~40 lines.
+- ⚠️ **SYSTEM CHANGE: the motif engine reads its colour with `getComputedStyle`.** The
+  token-sweep checklist above asks "does any JS read getComputedStyle" and the answer has always
+  been *nothing does*. From this piece on, something does — future sweeps must account for it or
+  their "no consumer" step verifies a stale assumption.
+- Verification: computed-style sweep in BOTH themes with transitions killed first; hover/focus
+  states by eye (unreachable by `querySelectorAll`); reduced-motion renders the motifs static;
+  no horizontal overflow at 375/768/1100; a human looks at it.
+
+### Piece 10 — the Amplitude hero, with the announce card
+
+`public/index.html` **and `public/privacy.html` in the same commit** (see below). Replaces the
+hero and RETIRES the announcement banner as a surface: the two-weight headline ("AI is raising
+the floor." at 200 / "Raise your ceiling." at 800), a live canvas waveform, a cursor lamp, and
+the announcements as a smoked-glass card right of the headline, its edges grid-bound to the
+headline row and the CTA row. `ANNOUNCEMENTS`, the expiry rules, the month-label reasoning and
+the `/api/news/recent.json` fetch all survive — only the item template and the container change.
+
+Decisions already taken, in the specimens, on sight:
+
+- **Autoplay ends.** The carousel was the one element on the site moving without being asked.
+  Items beyond the newest are seen on request via a stepper; a tabular count states the depth;
+  What's New remains the permanent record. The frame is FIXED — every item padded to the
+  tallest, so nothing bleeds into the window and the card never resizes while stepping.
+- **The hero eyebrow goes, and "About me" leaves the hero.** The two-weight headline becomes
+  the site's first words; About stays in the nav and the footer.
+- **The weight system gains endpoints 200 and 800.** ⚠️ The hero takes NO dark +40 compensation
+  — it is a fixed pine world in both themes, so there is nothing to compensate for. Recorded so
+  nobody "fixes" it.
+- **The entrance is the motion doctrine's ONE exception** — a ~1.3s arrival, once per session,
+  fully settled after; `prefers-reduced-motion` skips it entirely and the design must be
+  complete without it. ⚠️ The session guard is a **new sessionStorage key**, and privacy.html
+  names every key this site sets — it changes in the SAME commit, with the standing
+  cross-check against the sibling Promptly site.
+- **The glass card is the site's first translucent surface.** Smoked, not clear — tint + blur +
+  saturate + darken, so text contrast stays stable whatever passes beneath. Near-solid fallback
+  where `backdrop-filter` is unsupported; fully solid under `prefers-reduced-transparency`.
+  Glass is admitted ONLY where something real passes beneath it — the wave's crests graze the
+  card's corner with an amplitude MEASURED against the card's rect on every resize, never
+  hardcoded — which is also why the tiles stay matte.
+- ⚠️ **Copy joins the promise list**: "Hand-built. Private. Free." rots like every other claim —
+  grep for it when anything makes it untrue. The meta and og descriptions get reviewed against
+  the new headline in the same sitting.
+- ⚠️ **`.claude/commands` gets re-read after landing** — `/add-skill` documents the
+  announcement-banner step, and the surface it feeds is being renamed and relocated. The sixth
+  instance of command drift is otherwise waiting to happen.
+
+### Piece 11 — the nav wordmark, two-tone (already on the branch)
+
+`public/nav.js`, 9 lines, repaints all 19 pages + BaseLayout: "Amplified" at 700 against
+"Thinker" at 300/62% — the weight-spread gesture applied to the site's own name — with the
+15px-appropriate −.01em from the tracking ramp. The 300 weight is available because fonts.css
+retains the full 100–900 range. ⚠️ The frosted-glass nav bar from the specimen is NOT part of
+this piece; it is a separate decision with its own fallback stack, and it has not been taken.
 
 ---
 

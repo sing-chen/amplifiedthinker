@@ -65,57 +65,35 @@
     .announce-text{order:4;flex:1 1 100%;white-space:normal;text-overflow:clip;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   }
 
-  /* ── EXPLORE ── */
-  .explore{padding:72px 40px 88px;max-width:var(--page-max);margin:0 auto}
-  .explore-label{font-family:var(--font-display);font-size:var(--fs-label);font-weight:600;letter-spacing:-.006em;color:var(--mid-teal);margin-bottom:32px}
-  .explore-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+  /* ── EXPLORE — quiet tiles, hue at four signal points only ──
+     Each surface's hue appears exactly four times per tile: border, eyebrow,
+     CTA, motif. Never as fill, never as body text. Light hues ARE existing
+     tokens; the dark hues are this page's previous dark-mode literals, named
+     once here and scoped to the section instead of scattered per property. */
+  .explore{padding:72px 40px 88px;max-width:var(--page-max);margin:0 auto;
+    --hue-skills:var(--deep-teal);--hue-people:var(--moss);--hue-news:var(--terracotta)}
+  [data-theme="dark"] .explore{--hue-skills:#7FC4B8;--hue-people:#9BB577;--hue-news:#C97A4A}
+  .tiles-kicker{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin:0 0 12px}
+  .tiles-title{font-family:var(--font-editorial);font-size:clamp(22px,2.6vw,30px);font-weight:380;letter-spacing:-.024em;line-height:1.25;color:var(--fg-heading);margin:0 0 36px}
+  /* editorial weight carries the standard +40 dark compensation */
+  [data-theme="dark"] .tiles-title,[data-theme="dark"] .tile-title{font-weight:420}
+  .explore-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
 
-  /* ── SECTION CARDS ── */
-  .scard{display:flex;flex-direction:column;text-decoration:none;border-radius:var(--radius-xl);padding:32px 36px 36px;transition:border-color .2s,box-shadow .2s,transform .2s;position:relative;overflow:hidden;border:1px solid transparent;box-shadow:0 4px 16px -6px rgba(27,74,68,.12)}
-  .scard:hover{box-shadow:0 12px 32px -8px rgba(27,74,68,.2);transform:translateY(-3px)}
-  .scard:focus-visible{outline:2px solid var(--mid-teal);outline-offset:4px;border-radius:var(--radius-xl)}
-  .scard-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;flex-shrink:0}
-  .scard-icon svg{width:18px;height:18px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-  .scard-title{font-family:var(--font-editorial);font-size:var(--fs-h2);font-weight:600;line-height:1.2;margin-bottom:10px;letter-spacing:-.024em}
-  .scard-desc{font-family:var(--font-body);font-size:14px;line-height:1.7;margin-bottom:24px;flex:1}
-  .scard-cta{font-family:var(--font-display);font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;letter-spacing:.02em;text-decoration:none}
-  a.scard-cta:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:2px}
-  .scard-cta svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
-  .scard:hover .scard-cta svg{transform:translateX(3px)}
-
-  /* Future Skills card — sage tint */
-  .scard-skills{background:#BFDACB;border-color:color-mix(in srgb, var(--deep-teal) 18%, transparent)}
-  .scard-skills:hover{border-color:color-mix(in srgb, var(--deep-teal) 35%, transparent)}
-  .scard-skills .scard-icon{background:#1B4A44;}
-  .scard-skills .scard-icon svg{stroke:#ACC4B6;}
-  .scard-skills .scard-title{color:#1B4A44}
-  .scard-skills .scard-desc{color:#2D3F3A}
-  .scard-skills .scard-cta{color:#26605B}
-
-  /* My People card — moss tint */
-  .scard-people{background:#DCE3CC;border-color:rgba(85,100,58,.18)}
-  .scard-people:hover{border-color:rgba(85,100,58,.35)}
-  .scard-people .scard-icon{background:#55643A;}
-  .scard-people .scard-icon svg{stroke:#EDF0E4;}
-  .scard-people .scard-title{color:#2E3524}
-  .scard-people .scard-desc{color:#3D4432}
-  .scard-people .scard-cta{color:#55643A}
-
-  /* News card — clay tint */
-  .scard-news{background:#EAD9C8;border-color:rgba(154,86,54,.22)}
-  .scard-news:hover{border-color:rgba(154,86,54,.4)}
-  .scard-news .scard-icon{background:#8A4B2C;}
-  .scard-news .scard-icon svg{stroke:#F5EAE0;}
-  .scard-news .scard-title{color:#4A2E1E}
-  .scard-news .scard-desc{color:#5A4433}
-  .scard-news .scard-cta{color:#8A4B2C}
-
-  /* accent stripe on hover */
-  .scard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;opacity:0;transition:opacity .2s}
-  .scard-skills::after{background:#26605B}
-  .scard-people::after{background:#55643A}
-  .scard-news::after{background:#8A4B2C}
-  .scard:hover::after{opacity:1}
+  .tile{--hue:var(--hue-skills);display:flex;flex-direction:column;text-decoration:none;background:var(--bg-surface);border:1px solid color-mix(in srgb, var(--hue) 22%, transparent);border-radius:var(--radius-xl);padding:30px 32px 0;position:relative;overflow:hidden;box-shadow:0 4px 16px -6px rgba(27,74,68,.12);transition:transform .2s,box-shadow .2s,border-color .2s}
+  .tile:hover{transform:translateY(-3px);box-shadow:0 12px 32px -8px rgba(27,74,68,.2);border-color:color-mix(in srgb, var(--hue) 45%, transparent)}
+  .tile:focus-visible{outline:2px solid var(--hue);outline-offset:4px;border-radius:var(--radius-xl)}
+  .tile::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--hue);opacity:0;transition:opacity .2s}
+  .tile:hover::after,.tile:focus-visible::after{opacity:1}
+  .tile-skills{--hue:var(--hue-skills)}
+  .tile-people{--hue:var(--hue-people)}
+  .tile-news{--hue:var(--hue-news)}
+  .tile-eyebrow{font-family:var(--font-display);font-size:10.5px;font-weight:650;letter-spacing:.11em;text-transform:uppercase;color:var(--hue);margin:0 0 12px}
+  .tile-title{font-family:var(--font-editorial);font-size:22px;font-weight:380;letter-spacing:-.022em;line-height:1.3;color:var(--fg-heading);margin:0 0 12px;text-wrap:balance}
+  .tile-desc{font-family:var(--font-body);font-size:14px;line-height:1.65;color:var(--fg-2);margin:0 0 20px}
+  .tile-cta{font-family:var(--font-display);font-size:12.5px;font-weight:650;color:var(--hue);display:inline-flex;align-items:center;gap:6px;letter-spacing:.02em;margin-bottom:6px}
+  .tile-cta svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  .tile:hover .tile-cta svg{transform:translateX(3px)}
+  .tile canvas{display:block;width:100%;height:52px;margin-top:auto;pointer-events:none}
 
   /* Footer rules live in styles.css under .site-footer. Only the responsive
      padding is here, because the breakpoint is this page's own. */
@@ -129,17 +107,17 @@
     .site-footer{padding-left:20px;padding-right:20px}
   }
   @media(prefers-reduced-motion:reduce){
-    .scard,.scard::after,.scard-cta svg,.announce-ticker-track,.announce-ticker{transition:none}
+    .tile,.tile::after,.tile-cta svg,.announce-ticker-track,.announce-ticker{transition:none}
   }
 
   /* ── DARK MODE ──
      Hero and footer are fixed dark brand bands already — they read fine
-     unchanged in both themes. The announcement banner, the three tinted
-     section cards, and the ticker sit as light pastel surfaces directly
-     on the page background, so they need dark variants or they'd stay
-     bright against a suddenly-dark page. */
+     unchanged in both themes. The announcement banner sits as a light
+     pastel surface directly on the page background, so it needs dark
+     variants or it'd stay bright against a suddenly-dark page. The tiles
+     need almost nothing: their surface and text ride the theme-aware
+     tokens, and their hues flip via the section-scoped --hue-* above. */
   /* Triggered by [data-theme="dark"] on <html> — see styles.css / nav.js. */
-  [data-theme="dark"] .explore-label{color:var(--teal)}
 
   [data-theme="dark"] .announce-banner{background:#2E2115;border-color:rgba(154,86,54,.4)}
   [data-theme="dark"] .announce-date{color:#D9895D}
@@ -150,29 +128,6 @@
   [data-theme="dark"] .announce-link:hover{color:#EEDBC6}
   [data-theme="dark"] .announce-progress-dot{--announce-fill:#D9895D;--announce-track:rgba(217,137,93,.25)}
 
-  [data-theme="dark"] .scard-skills{background:#1C332E;border-color:color-mix(in srgb, var(--teal) 25%, transparent)}
-  [data-theme="dark"] .scard-skills:hover{border-color:color-mix(in srgb, var(--teal) 45%, transparent)}
-  [data-theme="dark"] .scard-skills .scard-icon{background:#0F211D}
-  [data-theme="dark"] .scard-skills .scard-icon svg{stroke:#8FCFC3}
-  [data-theme="dark"] .scard-skills .scard-title{color:#BFE0D4}
-  [data-theme="dark"] .scard-skills .scard-desc{color:#A9C4BB}
-  [data-theme="dark"] .scard-skills .scard-cta{color:#7FC4B8}
-
-  [data-theme="dark"] .scard-people{background:#232B1B;border-color:rgba(138,163,107,.25)}
-  [data-theme="dark"] .scard-people:hover{border-color:rgba(138,163,107,.45)}
-  [data-theme="dark"] .scard-people .scard-icon{background:#151C0F}
-  [data-theme="dark"] .scard-people .scard-icon svg{stroke:#C9D9AE}
-  [data-theme="dark"] .scard-people .scard-title{color:#D3DEC4}
-  [data-theme="dark"] .scard-people .scard-desc{color:#B7C2A4}
-  [data-theme="dark"] .scard-people .scard-cta{color:#9BB577}
-
-  [data-theme="dark"] .scard-news{background:#33231A;border-color:rgba(201,122,74,.3)}
-  [data-theme="dark"] .scard-news:hover{border-color:rgba(201,122,74,.5)}
-  [data-theme="dark"] .scard-news .scard-icon{background:#20140D}
-  [data-theme="dark"] .scard-news .scard-icon svg{stroke:#E8C9AE}
-  [data-theme="dark"] .scard-news .scard-title{color:#E8C9AE}
-  [data-theme="dark"] .scard-news .scard-desc{color:#C7A98F}
-  [data-theme="dark"] .scard-news .scard-cta{color:#C97A4A}
 </style>
 </head>
 <body>
@@ -240,34 +195,32 @@
 <main id="main-content">
 
 <section class="explore" aria-labelledby="explore-label">
-  <p class="explore-label" id="explore-label">Skills to build. Thinkers worth knowing. News worth tracking.</p>
+  <p class="tiles-kicker">Explore</p>
+  <p class="tiles-title" id="explore-label">Skills to build. Thinkers worth knowing. News worth tracking.</p>
   <div class="explore-grid" role="list">
 
-    <a href="future-skills.html" class="scard scard-skills" role="listitem">
-      <div class="scard-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      </div>
-      <div class="scard-title">Future Skills</div>
-      <div class="scard-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more.</div>
-      <div class="scard-cta">Browse the library <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+    <a href="future-skills.html" class="tile tile-skills" role="listitem">
+      <p class="tile-eyebrow">Future skills</p>
+      <p class="tile-title">The library of what holds its value</p>
+      <p class="tile-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more.</p>
+      <span class="tile-cta">Browse the library <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      <canvas aria-hidden="true"></canvas>
     </a>
 
-    <a href="my-people.html" class="scard scard-people" role="listitem">
-      <div class="scard-icon">
-        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      </div>
-      <div class="scard-title">The people whose work I keep turning to</div>
-      <div class="scard-desc">The thinkers, coaches, and practitioners who've shaped how I lead, communicate, and build capability.</div>
-      <div class="scard-cta">Meet them <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+    <a href="my-people.html" class="tile tile-people" role="listitem">
+      <p class="tile-eyebrow">My people</p>
+      <p class="tile-title">The people whose work I keep turning to</p>
+      <p class="tile-desc">The thinkers, coaches, and practitioners who've shaped how I lead, communicate, and build capability.</p>
+      <span class="tile-cta">Meet them <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      <canvas aria-hidden="true"></canvas>
     </a>
 
-    <a href="news/" class="scard scard-news" role="listitem">
-      <div class="scard-icon">
-        <svg viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
-      </div>
-      <div class="scard-title">The stories reshaping how we work</div>
-      <div class="scard-desc">A curated feed of the skills and workplace shifts worth knowing about.</div>
-      <div class="scard-cta">Read the feed <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+    <a href="news/" class="tile tile-news" role="listitem">
+      <p class="tile-eyebrow">News</p>
+      <p class="tile-title">The stories reshaping how we work</p>
+      <p class="tile-desc">A curated feed of the skills and workplace shifts worth knowing about.</p>
+      <span class="tile-cta">Read the feed <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      <canvas aria-hidden="true"></canvas>
     </a>
 
   </div>
@@ -295,6 +248,87 @@
   </div>
 </footer>
 
+<script>
+/* Tile motifs — the hero's waveform in miniature, one per tile, in the
+   tile's hue. Resting quiet; hover or keyboard focus raises its energy and
+   leaving lets it decay, so nothing moves that the reader did not cause.
+   ⚠️ The colour is read from the tile's CTA with getComputedStyle, so a
+   theme change or a future palette move repaints the motifs for free — and
+   this is the site's FIRST getComputedStyle colour consumer, which the
+   token-sweep checklist in docs/design-modernisation.md now accounts for. */
+(function () {
+  'use strict';
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var motifs = [];
+
+  Array.prototype.forEach.call(document.querySelectorAll('.tile'), function (tile) {
+    var canvas = tile.querySelector('canvas');
+    var cta = tile.querySelector('.tile-cta');
+    if (!canvas || !cta || !canvas.getContext) return;
+    var m = { canvas: canvas, ctx: canvas.getContext('2d'), cta: cta,
+              E: 0, T: 0, phase: 0, W: 0, H: 0, running: false };
+    motifs.push(m);
+    if (!reduced) {
+      tile.addEventListener('pointerenter', function () { m.T = 1; wake(m); });
+      tile.addEventListener('pointerleave', function () { m.T = 0; wake(m); });
+      tile.addEventListener('focus', function () { m.T = 1; wake(m); });
+      tile.addEventListener('blur', function () { m.T = 0; wake(m); });
+    }
+  });
+
+  function size(m) {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    m.W = m.canvas.clientWidth; m.H = m.canvas.clientHeight;
+    m.canvas.width = m.W * dpr; m.canvas.height = m.H * dpr;
+    m.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw(m);
+  }
+
+  function draw(m) {
+    var c = m.ctx, w = m.W, h = m.H;
+    var color = getComputedStyle(m.cta).color;
+    var zero = h * 0.55;
+    var level = reduced ? 0.45 : (0.45 + 0.55 * m.E);
+    c.clearRect(0, 0, w, h);
+    c.beginPath();
+    for (var x = 0; x <= w; x += 3) {
+      var a = Math.pow(x / w, 1.6) * h * 0.34 * level;
+      var y = zero + Math.sin(x / 26 + m.phase) * a;
+      x === 0 ? c.moveTo(x, y) : c.lineTo(x, y);
+    }
+    c.strokeStyle = color; c.globalAlpha = 0.55; c.lineWidth = 1.4;
+    c.stroke();
+    c.globalAlpha = 1;
+  }
+
+  function wake(m) {
+    if (m.running || reduced) return;
+    m.running = true;
+    (function step() {
+      m.E += (m.T - m.E) * 0.08;
+      m.phase += 0.045 * m.E;
+      draw(m);
+      if (Math.abs(m.T - m.E) > 0.01 || m.E > 0.01) { requestAnimationFrame(step); }
+      else { m.running = false; }
+    })();
+  }
+
+  function sizeAll() { motifs.forEach(size); }
+
+  var timer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(timer);
+    timer = setTimeout(sizeAll, 150);
+  });
+  // nav.js owns data-theme and repaints it on the toggle; watch the attribute
+  // rather than the button, so this needs to know nothing about the nav.
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(function () { motifs.forEach(draw); })
+      .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+  sizeAll();
+})();
+</script>
 <script>
 (function () {
   'use strict';
