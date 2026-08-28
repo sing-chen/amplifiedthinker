@@ -113,11 +113,18 @@
     '.snav-brand { margin-right: auto; line-height: 1; text-decoration: none; display: flex; align-items: center; gap: 0px; }',
     '.snav-brand-logo { display: block; width: 75px; height: 75px; object-fit: contain; flex-shrink: 0; }',
     '.snav-brand-text { display: flex; flex-direction: column; gap: 2px; }',
+    /* Two-tone wordmark: "Amplified" heavy against "Thinker" light — the
+       site's weight-spread gesture applied to its own name. The 700/300 pair
+       needs the variable font's full weight range, which fonts.css retains.
+       The nav is a fixed dark band in both themes, so the dimmed colour is a
+       literal on purpose, like every other colour in this bar. */
     '.snav-brand-name {',
     '  font-family: var(--font-display);',
-    '  font-size: 15px; font-weight: 600; color: #fff;',
+    '  font-size: 15px; font-weight: 700; color: #fff;',
+    '  letter-spacing: -0.01em;',
     '  display: block; line-height: 1.2;',
     '}',
+    '.snav-brand-thin { font-weight: 300; color: rgba(238,242,239,0.62); }',
     '.snav-brand-tag { font-size: 12px; color: #ACC4B6; letter-spacing: 0.01em; }',
     '.snav-links { display: flex; gap: 2px; list-style: none; margin: 0; padding: 0; }',
     '.snav-links a {',
@@ -363,7 +370,7 @@
     '  <a href="' + root('index.html') + '" class="snav-brand">',
     '    <img src="' + root('images/amplified_site_logo.png') + '" alt="Amplified Thinker" class="snav-brand-logo" width="36" height="36">',
     '    <span class="snav-brand-text">',
-    '      <span class="snav-brand-name">Amplified Thinker</span>',
+    '      <span class="snav-brand-name">Amplified <span class="snav-brand-thin">Thinker</span></span>',
     '      <span class="snav-brand-tag">Built for a world that keeps changing.</span>',
     '    </span>',
     '  </a>',
