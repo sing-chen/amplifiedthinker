@@ -281,6 +281,18 @@ sight with real content — so the decisions below were taken looking at the thi
 description of it. The specimens remain the reference for every visual question this section
 leaves open.
 
+**Revised the same day, after the production eye pass:** the canvas waveform — the hero's and the
+three tile motifs — was removed at `main` within hours of shipping. The owner's call, and the right
+one: the interaction's appeal was novelty, and ornament that needs novelty to justify itself fails
+this document's own restraint rules. What was removed removes cleanly — the wave engine, the motif
+engine, and the four canvases; what stays is everything structural: the two-weight headline, the
+glass card (still over the lamp and the light field), the entrance, and the quiet tiles, whose CTAs
+now share one baseline via `flex:1` on the description. The hero became content-height, and the
+explore section moved up to close the gap. ⚠️ **Two consequences for the record below:** the
+"first getComputedStyle colour consumer" note in piece 9 is REPEALED — nothing reads computed
+colour again, and the token-sweep checklist's answer returns to *nothing does*; and the
+`document.hidden` lesson now applies to the lamp's loop rather than the wave's.
+
 **What building them taught, beyond the plan:**
 
 - **The range-edit discipline earned its keep in the other direction.** A script that spliced the
