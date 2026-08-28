@@ -29,7 +29,10 @@
      The canvas waveform shipped here and was removed the same day — see
      docs/design-modernisation.md, piece 10 and its revision note. The hero
      is content-height now, not viewport-height. */
-  .hero{position:relative;overflow:hidden;background:radial-gradient(ellipse 780px 520px at 78% 24%,rgba(91,167,159,.07) 0%,transparent 68%),linear-gradient(179deg,#1B4A44 0%,#193F3A 55%,#122E2A 100%)}
+  /* the second, lower glow sits behind the announce card's region — the
+     environmental light the removed waveform used to provide, and what the
+     card's frost has to refract */
+  .hero{position:relative;overflow:hidden;background:radial-gradient(ellipse 780px 520px at 78% 24%,rgba(91,167,159,.07) 0%,transparent 68%),radial-gradient(ellipse 560px 380px at 84% 70%,rgba(172,196,182,.09) 0%,transparent 70%),linear-gradient(179deg,#1B4A44 0%,#193F3A 55%,#122E2A 100%)}
   .hero-lamp{position:absolute;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(91,167,159,.055) 0%,transparent 62%);top:0;left:0;pointer-events:none;will-change:transform;transform:translate(-9999px,-9999px)}
   .hero-body{position:relative;z-index:2;max-width:var(--page-max);margin:0 auto;width:100%;padding:56px 40px 64px}
   .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:auto auto auto;column-gap:88px;width:100%}
@@ -56,20 +59,23 @@
 
   /* ── ANNOUNCE CARD — the announcement banner's successor ──
      Reader-stepped, fixed frame, and the site's first translucent surface.
-     Smoked rather than clear — the heavy tint plus saturate keeps the text
-     contrast stable whatever passes beneath it. Fixed dark-glass colours in
-     both themes, because the hero behind it is; the clay mark reuses the
-     dark-mode clay the banner already used (#D9895D). */
-  .announce-card{grid-column:2;grid-row:1 / 4;position:relative;z-index:3;border-radius:var(--radius-xl);padding:24px 26px 22px;background:rgba(14,34,30,.88);border:1px solid rgba(172,196,182,.2);box-shadow:0 16px 44px -20px rgba(0,0,0,.55)}
+     A LIGHT frost: white-tinted glass with a lit top edge, brightening what
+     shows through, so the pane separates from the pine instead of merging
+     into it. Fixed glass colours in both themes, because the hero behind it
+     is. The clay accents are one step lighter than the banner's dark clay
+     — the lighter ground costs the mark contrast (~3.4:1 at 11px caps,
+     recorded in the design doc as a judgment call; the no-blur fallback
+     reads ~4.9:1). */
+  .announce-card{grid-column:2;grid-row:1 / 4;position:relative;z-index:3;border-radius:var(--radius-xl);padding:24px 26px 22px;background:rgba(31,60,55,.94);border:1px solid rgba(238,242,239,.16);box-shadow:0 16px 44px -20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.1)}
   /* display is never set on the card or the stepper, so the UA [hidden]
      rule holds — said explicitly anyway, because the next `display` added
      to either block would reopen that trap silently */
   .announce-card[hidden]{display:none}
-  @supports ((backdrop-filter:blur(14px)) or (-webkit-backdrop-filter:blur(14px))){
-    .announce-card{background:rgba(20,48,44,.38);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+  @supports ((backdrop-filter:blur(16px)) or (-webkit-backdrop-filter:blur(16px))){
+    .announce-card{background:linear-gradient(180deg,rgba(238,242,239,.07),rgba(238,242,239,.02));-webkit-backdrop-filter:blur(16px) saturate(1.25) brightness(1.08);backdrop-filter:blur(16px) saturate(1.25) brightness(1.08)}
   }
   @media (prefers-reduced-transparency:reduce){
-    .announce-card{background:rgba(14,34,30,.92);-webkit-backdrop-filter:none;backdrop-filter:none}
+    .announce-card{background:rgba(31,60,55,.96);-webkit-backdrop-filter:none;backdrop-filter:none}
   }
   .ac-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
   .ac-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.11em;text-transform:uppercase;color:var(--sage)}
@@ -83,12 +89,12 @@
   .ac-view{overflow:hidden;position:relative}
   .ac-track{position:absolute;top:0;left:0;width:100%;transition:transform .28s ease}
   .ac-item{box-sizing:border-box;padding:2px 0 4px}
-  .ac-mark{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:#D9895D;margin-bottom:10px;font-variant-numeric:tabular-nums}
-  .ac-text{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-family:var(--font-body);font-size:15px;color:rgba(238,242,239,.82);line-height:1.6;letter-spacing:-.004em;margin-bottom:12px}
+  .ac-mark{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:#E29A6F;margin-bottom:10px;font-variant-numeric:tabular-nums}
+  .ac-text{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-family:var(--font-body);font-size:15px;color:rgba(238,242,239,.86);line-height:1.6;letter-spacing:-.004em;margin-bottom:12px}
   .ac-text b{color:var(--off-white);font-weight:650}
-  .ac-go{font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#D9895D;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
+  .ac-go{font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#E29A6F;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
   .ac-go:hover{color:#EEDBC6}
-  .ac-go:focus-visible{outline:2px solid #D9895D;outline-offset:3px;border-radius:2px}
+  .ac-go:focus-visible{outline:2px solid #E29A6F;outline-offset:3px;border-radius:2px}
   .ac-go svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
   .ac-go:hover svg{transform:translateX(3px)}
 

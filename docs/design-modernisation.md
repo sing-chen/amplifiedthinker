@@ -293,6 +293,14 @@ explore section moved up to close the gap. ⚠️ **Two consequences for the rec
 colour again, and the token-sweep checklist's answer returns to *nothing does*; and the
 `document.hidden` lesson now applies to the lamp's loop rather than the wave's.
 
+The announce card was then **re-frosted lighter** in the same sitting: with the wave gone the dark
+glass merged into the pine, so the pane became white-tinted glass with a lit top edge and a
+`brightness(1.08)` lift, and a second sage glow sits in the hero behind the card's region — the
+environmental light the wave used to provide. ⚠️ **Recorded judgment call:** the lighter ground
+costs the clay accents contrast — the mark and link read **~3.4:1** on the frosted pane (11px/13.5px,
+lightened one step to `#E29A6F` to claw some back; the no-blur fallback reads ~4.9:1). Owner-approved
+material trade, same register as the coming-soon dimming.
+
 **What building them taught, beyond the plan:**
 
 - **The range-edit discipline earned its keep in the other direction.** A script that spliced the
