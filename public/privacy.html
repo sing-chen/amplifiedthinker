@@ -324,7 +324,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
     <h2 class="doc-h2" id="s6"><span class="doc-num">6.</span>What is stored on my device?</h2>
 
-    <p>Up to four things, all written by your own browser and none of them readable by anyone else. The first happens whether or not you have an account:</p>
+    <p>Up to five things, all written by your own browser and none of them readable by anyone else. The first two happen whether or not you have an account:</p>
 
     <div class="doc-table-wrap">
       <table class="doc-table">
@@ -336,6 +336,11 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
             <th scope="row"><code>theme</code></th>
             <td>Light or dark, as you set it. Read before the page paints, which is what stops the screen flashing the wrong colour. Written only at the moment you change the setting, and it never leaves your device — including for account holders, since nothing syncs it.</td>
             <td>Until you clear it</td>
+          </tr>
+          <tr>
+            <th scope="row"><code>amplified_hero_entrance</code></th>
+            <td>A flag saying the homepage's opening animation has already played, so it plays once per browsing session rather than on every visit to the page. Written the first time the homepage appears in a session; nothing about you is in it.</td>
+            <td>The browsing session</td>
           </tr>
           <tr>
             <th scope="row"><code>sb-…-auth-token</code></th>

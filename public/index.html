@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amplified Thinker · by Sing Chen</title>
-<meta name="description" content="How work changes. How capability compounds. How to stay ahead. The skills that have always set people apart as AI changes the rest and removed the excuse to ignore them, and the leaders, scholars, and practitioners whose ideas shape how you think and act, not just what you know.">
+<meta name="description" content="AI is raising the floor. Raise your ceiling. The skills that have always set people apart — taught as primers and plans you can actually finish, with the people worth reading and the news worth your time.">
 <link rel="canonical" href="https://amplifiedthinker.com/">
 <link rel="icon" type="image/png" href="images/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Amplified Thinker">
 <meta property="og:title" content="Amplified Thinker · by Sing Chen">
-<meta property="og:description" content="How work changes. How capability compounds. How to stay ahead. The skills that have always set people apart as AI changes the rest and removed the excuse to ignore them, and the leaders, scholars, and practitioners whose ideas shape how you think and act, not just what you know.">
+<meta property="og:description" content="AI is raising the floor. Raise your ceiling. The skills that have always set people apart — taught as primers and plans you can actually finish, with the people worth reading and the news worth your time.">
 <meta property="og:url" content="https://amplifiedthinker.com/">
 <meta property="og:image" content="https://amplifiedthinker.com/images/og-cover.png">
 <meta property="og:image:width" content="1200">
@@ -21,49 +21,84 @@
 <link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="styles.css">
 <style>
-  /* ── HERO ── */
-  .hero{background:#1B4A44;padding:80px 40px 56px;position:relative;overflow:hidden}
-  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,color-mix(in srgb, var(--teal) 7%, transparent) 0%,transparent 68%);pointer-events:none}
-  .hero-pattern{position:absolute;top:0;right:0;width:60%;height:100%;opacity:.07;pointer-events:none}
-  .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
-  .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
-  .hero-hl{font-family:var(--font-display);font-size:var(--fs-h1);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:20px;max-width:1100px}
-  .hero-sub{font-family:var(--font-body);font-size:var(--fs-body);line-height:1.7;color:rgba(255,255,255,.75);max-width:720px;margin-bottom:24px}
-  .hero-cta{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--sage);font-family:var(--font-display);font-size:13px;font-weight:600;padding:0 0 2px;border:none;text-decoration:none;letter-spacing:-.006em;border-bottom:1px solid rgba(172,196,182,.4);transition:color .15s,border-color .15s}
-  .hero-cta:hover{color:#BDD4C6;border-bottom-color:rgba(172,196,182,.8)}
-  .hero-cta:focus-visible{outline:2px solid var(--sage);outline-offset:4px;border-radius:2px}
+  /* ── HERO — Amplitude ──
+     The two-weight headline, a live canvas waveform, a cursor lamp, and the
+     announcements as a glass card whose edges the grid binds to the headline
+     row and the CTA row. A fixed pine world in BOTH themes — deliberately no
+     dark variants and no +40 weight compensation, because there is nothing
+     to compensate for. See docs/design-modernisation.md, piece 10. */
+  .hero{position:relative;overflow:hidden;height:min(calc(88vh - var(--site-nav-h,56px)),720px);min-height:520px;display:flex;flex-direction:column;background:radial-gradient(ellipse 780px 520px at 78% 24%,rgba(91,167,159,.07) 0%,transparent 68%),linear-gradient(179deg,#1B4A44 0%,#193F3A 55%,#122E2A 100%)}
+  /* staff lines — the instrument-grid the signal is read against */
+  .hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0 79px,rgba(172,196,182,.045) 79px 80px)}
+  .hero-lamp{position:absolute;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(91,167,159,.055) 0%,transparent 62%);top:0;left:0;pointer-events:none;will-change:transform;transform:translate(-9999px,-9999px)}
+  .hero-body{position:relative;z-index:2;flex:1;display:flex;align-items:stretch;max-width:var(--page-max);margin:0 auto;width:100%;padding:24px 40px 0}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;grid-template-rows:auto auto auto;column-gap:88px;align-content:center;width:100%}
+  .hero-copy{display:contents}
+  .hero-hl{grid-column:1;grid-row:1;font-family:var(--font-display);font-size:clamp(38px,5.8vw,68px);color:var(--off-white);line-height:1.07;letter-spacing:-.038em;margin:0;max-width:840px}
+  .h-quiet{display:block;font-weight:200;color:rgba(238,242,239,.6)}
+  .h-loud{display:block;font-weight:800}
+  .hero-sub{grid-column:1;grid-row:2;font-family:var(--font-body);font-size:clamp(14px,1.1vw,16.5px);line-height:1.65;color:rgba(238,242,239,.74);max-width:560px;margin:22px 0 0}
+  .hero-ctas{grid-column:1;grid-row:3;display:flex;align-items:center;gap:26px;margin-top:30px;flex-wrap:wrap}
+  .hero-cta{display:inline-flex;align-items:center;gap:9px;background:var(--sage);color:#0E1917;text-decoration:none;font-family:var(--font-display);font-size:14px;font-weight:650;letter-spacing:-.006em;padding:12px 21px 13px;border-radius:var(--radius-pill);box-shadow:0 10px 28px -12px rgba(0,0,0,.5);transition:transform .2s,box-shadow .2s,background-color .15s}
+  .hero-cta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  .hero-cta:hover{transform:translateY(-1px);background:#BDD4C6}
+  .hero-cta:hover svg{transform:translateX(3px)}
+  .hero-cta:focus-visible{outline:2px solid var(--off-white);outline-offset:3px}
+  .hero-cta-quiet{color:rgba(238,242,239,.72);text-decoration:none;font-family:var(--font-body);font-size:13.5px;font-weight:500;border-bottom:1px solid rgba(172,196,182,.35);padding-bottom:2px;transition:color .15s,border-color .15s}
+  .hero-cta-quiet:hover{color:var(--off-white);border-color:rgba(172,196,182,.8)}
+  .hero-cta-quiet:focus-visible{outline:2px solid var(--sage);outline-offset:4px;border-radius:2px}
+  /* 120px of drawing headroom above the wave band, without changing the
+     layout footprint: the negative margin tucks it BEHIND the hero body
+     (z-1 under z-2), where the right-side crests use it to reach the
+     announce card's lower corner — and pass behind its glass. */
+  #hero-wave{position:relative;z-index:1;display:block;width:100%;height:calc(clamp(140px,24vh,200px) + 120px);margin-top:-120px;flex-shrink:0;pointer-events:none}
+  /* entrance — the motion doctrine's one exception: once per browsing
+     session, settled in ~1.3s; prefers-reduced-motion skips it entirely */
+  .hero.enter .h-quiet{animation:hero-rise .55s ease-out .08s backwards}
+  .hero.enter .h-loud{animation:hero-amplify .8s cubic-bezier(.22,.7,.3,1) .26s backwards}
+  .hero.enter .hero-sub{animation:hero-rise .55s ease-out .44s backwards}
+  .hero.enter .hero-ctas{animation:hero-rise .55s ease-out .54s backwards}
+  .hero.enter .announce-card{animation:hero-rise .6s ease-out .7s backwards}
+  @keyframes hero-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes hero-amplify{from{opacity:0;font-weight:200;letter-spacing:-.02em}30%{opacity:1}to{opacity:1;font-weight:800;letter-spacing:-.038em}}
 
-  /* ── ANNOUNCEMENT BANNER ── */
-  .announce-banner{background:var(--warm-cream);border-top:1px solid rgba(154,86,54,.25);border-bottom:1px solid rgba(154,86,54,.25);padding:14px 40px}
-  .announce-inner{max-width:var(--page-max);margin:0 auto;display:flex;align-items:center;gap:10px}
-  .announce-progress-dot{--announce-fill:#8A4B2C;--announce-track:rgba(154,86,54,.2);flex-shrink:0;width:12px;height:12px;border-radius:50%;background:var(--announce-track)}
-  .announce-ticker{height:24px;overflow:hidden;position:relative;flex:1;min-width:0;transition:height .3s ease}
-  .announce-ticker-track{position:absolute;top:0;left:0;width:100%;transition:transform .6s ease}
-  .announce-item{min-height:24px;box-sizing:border-box;display:flex;align-items:center;gap:12px}
-  .announce-date{font-family:var(--font-body);font-size:14px;font-weight:600;line-height:1.4;letter-spacing:.03em;color:#8A4B2C;white-space:nowrap;flex-shrink:0}
-  .announce-icon{width:16px;height:16px;flex-shrink:0;display:inline-flex;color:#8A4B2C}
-  .announce-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .announce-text{font-family:var(--font-body);font-size:14px;color:#5A4433;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
-  .announce-text b{color:#4A2E1E}
-  .announce-link{font-family:var(--font-body);font-size:14px;font-weight:600;line-height:1.4;color:#8A4B2C;text-decoration:none;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;transition:color .15s}
-  .announce-link:hover{color:#6B3820}
-  .announce-link:focus-visible{outline:2px solid #8A4B2C;outline-offset:3px;border-radius:2px}
-  .announce-link svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
-  .announce-link:hover svg{transform:translateX(3px)}
-
-  /* ⚠️ BELOW 640px THE ITEM WRAPS TO TWO ROWS, and the ticker's height is
-     measured rather than assumed — see layout() in the script. On one line the
-     row is date + icon + text + link, which on a 375px screen leaves about 145px
-     for the headline: roughly eighteen characters before the ellipsis, which is
-     not a headline. So the metadata and the action share the first row and the
-     text gets the second, clamped to two lines. */
-  @media(max-width:640px){
-    .announce-item{flex-wrap:wrap;row-gap:3px;padding:3px 0}
-    .announce-date{order:1}
-    .announce-icon{order:2}
-    .announce-link{order:3;margin-left:auto}
-    .announce-text{order:4;flex:1 1 100%;white-space:normal;text-overflow:clip;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  /* ── ANNOUNCE CARD — the announcement banner's successor ──
+     Reader-stepped, fixed frame, and the site's first translucent surface.
+     Smoked rather than clear — the heavy tint plus saturate keeps the text
+     contrast stable whatever the wave does beneath it. Fixed dark-glass
+     colours in both themes, because the hero behind it is; the clay mark
+     reuses the dark-mode clay the banner already used (#D9895D). */
+  .announce-card{grid-column:2;grid-row:1 / 4;position:relative;z-index:3;border-radius:var(--radius-xl);padding:24px 26px 22px;background:rgba(14,34,30,.88);border:1px solid rgba(172,196,182,.2);box-shadow:0 16px 44px -20px rgba(0,0,0,.55)}
+  /* display is never set on the card or the stepper, so the UA [hidden]
+     rule holds — said explicitly anyway, because the next `display` added
+     to either block would reopen that trap silently */
+  .announce-card[hidden]{display:none}
+  @supports ((backdrop-filter:blur(14px)) or (-webkit-backdrop-filter:blur(14px))){
+    .announce-card{background:rgba(20,48,44,.38);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
   }
+  @media (prefers-reduced-transparency:reduce){
+    .announce-card{background:rgba(14,34,30,.92);-webkit-backdrop-filter:none;backdrop-filter:none}
+  }
+  .ac-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .ac-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.11em;text-transform:uppercase;color:var(--sage)}
+  .ac-step{display:flex;align-items:center;gap:8px}
+  .ac-step[hidden]{display:none}
+  .ac-count{font-family:var(--font-body);font-size:12.5px;font-weight:600;color:rgba(238,242,239,.55);font-variant-numeric:tabular-nums;letter-spacing:.02em;min-width:38px;text-align:center}
+  .ac-btn{width:27px;height:27px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid rgba(172,196,182,.3);border-radius:6px;color:var(--sage);cursor:pointer;padding:0;transition:background .15s,border-color .15s}
+  .ac-btn:hover{background:rgba(172,196,182,.12);border-color:rgba(172,196,182,.7)}
+  .ac-btn:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
+  .ac-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .ac-view{overflow:hidden;position:relative}
+  .ac-track{position:absolute;top:0;left:0;width:100%;transition:transform .28s ease}
+  .ac-item{box-sizing:border-box;padding:2px 0 4px}
+  .ac-mark{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:#D9895D;margin-bottom:10px;font-variant-numeric:tabular-nums}
+  .ac-text{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-family:var(--font-body);font-size:15px;color:rgba(238,242,239,.82);line-height:1.6;letter-spacing:-.004em;margin-bottom:12px}
+  .ac-text b{color:var(--off-white);font-weight:650}
+  .ac-go{font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#D9895D;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
+  .ac-go:hover{color:#EEDBC6}
+  .ac-go:focus-visible{outline:2px solid #D9895D;outline-offset:3px;border-radius:2px}
+  .ac-go svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  .ac-go:hover svg{transform:translateX(3px)}
 
   /* ── EXPLORE — quiet tiles, hue at four signal points only ──
      Each surface's hue appears exactly four times per tile: border, eyebrow,
@@ -100,33 +135,26 @@
 
   @media(max-width:900px){
     .explore-grid{grid-template-columns:1fr 1fr}
+    .hero{height:auto}
+    .hero-grid{grid-template-columns:minmax(0,1fr)}
+    .announce-card{grid-column:1;grid-row:4;margin-top:30px}
   }
   @media(max-width:700px){
     .explore-grid{grid-template-columns:1fr}
-    .hero,.explore,.announce-banner{padding-left:20px;padding-right:20px}
+    .hero-body,.explore{padding-left:20px;padding-right:20px}
     .site-footer{padding-left:20px;padding-right:20px}
   }
   @media(prefers-reduced-motion:reduce){
-    .tile,.tile::after,.tile-cta svg,.announce-ticker-track,.announce-ticker{transition:none}
+    .tile,.tile::after,.tile-cta svg,.ac-track,.hero-cta,.hero-cta svg{transition:none}
+    .hero.enter .h-quiet,.hero.enter .h-loud,.hero.enter .hero-sub,.hero.enter .hero-ctas,.hero.enter .announce-card{animation:none}
   }
 
   /* ── DARK MODE ──
-     Hero and footer are fixed dark brand bands already — they read fine
-     unchanged in both themes. The announcement banner sits as a light
-     pastel surface directly on the page background, so it needs dark
-     variants or it'd stay bright against a suddenly-dark page. The tiles
+     Hero and footer are fixed dark brand bands — they read identically in
+     both themes, and so does the announce card inside the hero. The tiles
      need almost nothing: their surface and text ride the theme-aware
-     tokens, and their hues flip via the section-scoped --hue-* above. */
-  /* Triggered by [data-theme="dark"] on <html> — see styles.css / nav.js. */
-
-  [data-theme="dark"] .announce-banner{background:#2E2115;border-color:rgba(154,86,54,.4)}
-  [data-theme="dark"] .announce-date{color:#D9895D}
-  [data-theme="dark"] .announce-icon{color:#D9895D}
-  [data-theme="dark"] .announce-text{color:#D9BBA0}
-  [data-theme="dark"] .announce-text b{color:#EEDBC6}
-  [data-theme="dark"] .announce-link{color:#D9895D}
-  [data-theme="dark"] .announce-link:hover{color:#EEDBC6}
-  [data-theme="dark"] .announce-progress-dot{--announce-fill:#D9895D;--announce-track:rgba(217,137,93,.25)}
+     tokens, and their hues flip via the section-scoped --hue-* above.
+     Triggered by [data-theme="dark"] on <html> — see styles.css / nav.js. */
 
 </style>
 </head>
@@ -134,63 +162,36 @@
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <script src="nav.js"></script>
 
-<section class="hero" aria-label="Introduction">
-  <svg class="hero-pattern" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
-    <g stroke="#5BA79F" stroke-width="1.2" fill="none">
-      <line x1="60" y1="70" x2="190" y2="30"/>
-      <line x1="190" y1="30" x2="340" y2="75"/>
-      <line x1="340" y1="75" x2="500" y2="45"/>
-      <line x1="60" y1="70" x2="130" y2="170"/>
-      <line x1="190" y1="30" x2="290" y2="195"/>
-      <line x1="340" y1="75" x2="450" y2="155"/>
-      <line x1="500" y1="45" x2="555" y2="255"/>
-      <line x1="130" y1="170" x2="290" y2="195"/>
-      <line x1="290" y1="195" x2="450" y2="155"/>
-      <line x1="450" y1="155" x2="555" y2="255"/>
-      <line x1="130" y1="170" x2="85" y2="300"/>
-      <line x1="290" y1="195" x2="250" y2="335"/>
-      <line x1="450" y1="155" x2="410" y2="315"/>
-      <line x1="555" y1="255" x2="535" y2="365"/>
-      <line x1="85" y1="300" x2="250" y2="335"/>
-      <line x1="250" y1="335" x2="410" y2="315"/>
-      <line x1="410" y1="315" x2="535" y2="365"/>
-    </g>
-    <g>
-      <circle cx="60" cy="70" r="5" fill="#5BA79F"/>
-      <circle cx="190" cy="30" r="7" fill="#5BA79F"/>
-      <circle cx="340" cy="75" r="5" fill="#5BA79F"/>
-      <circle cx="500" cy="45" r="4" fill="#5BA79F"/>
-      <circle cx="130" cy="170" r="4" fill="#D9A05B"/>
-      <circle cx="290" cy="195" r="7" fill="#5BA79F"/>
-      <circle cx="450" cy="155" r="5" fill="#5BA79F"/>
-      <circle cx="555" cy="255" r="4" fill="#9A5636"/>
-      <circle cx="85" cy="300" r="5" fill="#5BA79F"/>
-      <circle cx="250" cy="335" r="4" fill="#5BA79F"/>
-      <circle cx="410" cy="315" r="6" fill="#5BA79F"/>
-      <circle cx="535" cy="365" r="3" fill="#D9A05B"/>
-      <circle cx="160" cy="95" r="2" fill="#5BA79F" opacity=".5"/>
-      <circle cx="390" cy="185" r="2.5" fill="#9A5636" opacity=".45"/>
-      <circle cx="230" cy="260" r="2" fill="#5BA79F" opacity=".5"/>
-      <circle cx="480" cy="290" r="2" fill="#5BA79F" opacity=".4"/>
-      <circle cx="50" cy="210" r="2" fill="#5BA79F" opacity=".45"/>
-    </g>
-  </svg>
-  <div class="hi">
-    <p class="eyebrow">Amplified Thinker</p>
-    <h1 class="hero-hl">How work changes. How capability compounds. How to stay ahead.</h1>
-    <p class="hero-sub">The skills that have always set people apart as AI changes the rest and removed the excuse to ignore them, and the leaders, scholars, and practitioners whose ideas shape how you think and act, not just what you know.</p>
-    <a href="about.html" class="hero-cta">About me →</a>
-  </div>
-</section>
-
-<div class="announce-banner" id="announce-banner" role="region" aria-label="Site announcements">
-  <div class="announce-inner">
-    <div class="announce-progress-dot" id="announce-progress-dot" aria-hidden="true"></div>
-    <div class="announce-ticker" id="announce-ticker">
-      <div class="announce-ticker-track" id="announce-ticker-track"></div>
+<section class="hero" id="hero" aria-label="Introduction">
+  <div class="hero-lamp" id="hero-lamp" aria-hidden="true"></div>
+  <div class="hero-body">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <h1 class="hero-hl">
+          <span class="h-quiet">AI is raising the floor.</span>
+          <span class="h-loud">Raise your ceiling.</span>
+        </h1>
+        <p class="hero-sub">The skills that have always set people apart — taught as primers and plans you can actually finish, with the people worth reading and the news worth your time. Hand-built. Private. Free.</p>
+        <div class="hero-ctas">
+          <a href="future-skills.html" class="hero-cta">Start with a skill <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="news/" class="hero-cta-quiet">See what changed this week</a>
+        </div>
+      </div>
+      <aside class="announce-card" id="announce-card" role="region" aria-label="Site announcements" hidden>
+        <div class="ac-head">
+          <span class="ac-label">What's new</span>
+          <div class="ac-step" id="ac-step">
+            <button type="button" class="ac-btn" id="ac-prev" aria-label="Previous announcement"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <span class="ac-count" id="ac-count" aria-live="polite"></span>
+            <button type="button" class="ac-btn" id="ac-next" aria-label="Next announcement"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+          </div>
+        </div>
+        <div class="ac-view" id="ac-view"><div class="ac-track" id="ac-track"></div></div>
+      </aside>
     </div>
   </div>
-</div>
+  <canvas id="hero-wave" aria-hidden="true"></canvas>
+</section>
 
 <main id="main-content">
 
@@ -330,20 +331,26 @@
 })();
 </script>
 <script>
+/* ── Announcements — the card in the hero ──
+   The banner's successor. Everything editorial survives from the banner:
+   the hand-curated ANNOUNCEMENTS array, the expiry rules, the month-label
+   reasoning and the /api/news/recent.json fetch. What changed is the
+   surface — a reader-stepped card, no autoplay — and the item template.
+   See docs/design-modernisation.md, piece 10. */
 (function () {
   'use strict';
-  var banner = document.getElementById('announce-banner');
-  var track = document.getElementById('announce-ticker-track');
-  var progressDot = document.getElementById('announce-progress-dot');
-  var ticker = document.querySelector('.announce-ticker');
-  if (!track) return;
+  var card = document.getElementById('announce-card');
+  var track = document.getElementById('ac-track');
+  var view = document.getElementById('ac-view');
+  var countEl = document.getElementById('ac-count');
+  var stepEl = document.getElementById('ac-step');
+  if (!card || !track) return;
 
-  var ANNOUNCE_INTERVAL_MS = 5000;
   var NEWS_MAX_COUNT = 3;
   var NEWS_MAX_AGE_DAYS = 14;
 
   // Hand-curated announcements. `type` controls both the pill label and how
-  // long the item stays in the banner — see EXPIRY_DAYS below.
+  // long the item stays in the card — see EXPIRY_DAYS below.
   //
   // ⚠️ `date` is the same fact as the matching entry's date in `updates.json`,
   // written out twice with nothing checking the two agree. Dark Mode was dated
@@ -374,7 +381,7 @@
       // written, and paired with the two What's New entries of the same date.
       // Both were written in this sitting for the reason the comment below
       // repeats: once the banner expires the two can no longer be compared.
-      // ⚠️ Since 2026-08-27 the banner shows only the MONTH for announcements,
+      // ⚠️ Since 2026-08-27 the card shows only the MONTH for announcements,
       // matching how whats-new.html groups them — so a day's disagreement is no
       // longer possible here, and a month's would be visible on both surfaces.
       //
@@ -443,12 +450,9 @@
   ];
 
   var EXPIRY_DAYS = { feature: 14, skill: 21 };
-  var PILL_LABELS = { feature: 'New feature', skill: 'New skill', story: 'New story' };
-  var CATEGORY_ICONS = {
-    feature: '<svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>',
-    skill: '<svg viewBox="0 0 24 24"><path d="M22 10 12 4 2 10l10 6 10-6z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>',
-    story: '<svg viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>'
-  };
+  // The type is SAID in the mark rather than drawn — the banner's three
+  // icons asked the reader to learn three glyphs these words replace.
+  var TYPE_LABELS = { feature: 'New feature', skill: 'New skill', story: 'New story' };
 
   function escapeHTML(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -498,15 +502,14 @@
     return Math.round((now - d) / 86400000);
   }
 
-  // `dateLabel` is already formatted: the caller decides the granularity, which
-  // is the whole point of the note above formatAnnounceMonth.
+  // `dateLabel` is already formatted: the caller decides the granularity,
+  // which is the whole point of the note above formatAnnounceMonth.
   function itemHTML(pillType, dateLabel, textHTML, linkHref, linkLabel) {
-    return '<div class="announce-item">' +
-      '<span class="announce-date">' + escapeHTML(dateLabel) + '</span>' +
-      '<span class="announce-icon" role="img" aria-label="' + escapeHTML(PILL_LABELS[pillType]) + '" title="' + escapeHTML(PILL_LABELS[pillType]) + '">' + CATEGORY_ICONS[pillType] + '</span>' +
-      '<span class="announce-text">' + textHTML + '</span>' +
-      (linkHref ? '<a class="announce-link" href="' + escapeHTML(linkHref) + '">' + escapeHTML(linkLabel || 'Learn more') +
-        ' <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>' : '') +
+    return '<div class="ac-item">' +
+      '<span class="ac-mark">' + escapeHTML(dateLabel) + ' · ' + escapeHTML(TYPE_LABELS[pillType]) + '</span>' +
+      '<span class="ac-text">' + textHTML + '</span>' +
+      (linkHref ? '<a class="ac-go" href="' + escapeHTML(linkHref) + '">' + escapeHTML(linkLabel || 'Learn more') +
+        ' <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>' : '') +
       '</div>';
   }
 
@@ -551,118 +554,214 @@
       .catch(function () { return ''; });
   }
 
-  var intervalId = null;
-  var rafId = null;
-
-  /* ── measured layout ───────────────────────────────────────────────
-     ⚠️ THE TRANSFORM USED TO BE `i * 24`, AND THAT CONSTANT WAS THE ONLY THING
-     STOPPING THE ITEMS WRAPPING. The moment an item is allowed to be two lines
-     tall — which is what makes the banner readable on a phone — a fixed step
-     lands the track half way between two items, and every item after the first
-     tall one is off by the difference. So offsets are summed from what the
-     items actually measure.
-
-     Height follows the CURRENT item rather than the tallest. Sizing to the
-     tallest would leave a one-line item floating in the middle of a two-line
-     band on every rotation. */
-  var offsets = [];
-  var current = 0;
-
+  /* ── the fixed frame ──
+     ⚠️ The window is sized ONCE to the tallest item and every item is
+     padded to that same height. Items stacked at natural height would leave
+     the top of the NEXT item visible inside the window whenever a shorter
+     one shows — the card must never resize while stepping, and nothing may
+     bleed. The measure pass resets minHeight first so repeated relayouts
+     cannot ratchet the height upward. */
+  var offsets = [], current = 0;
   function layout() {
-    var items = track.children, y = 0, k;
+    var items = track.children, k, maxH = 0;
+    for (k = 0; k < items.length; k++) items[k].style.minHeight = '';
+    for (k = 0; k < items.length; k++) {
+      var h = items[k].offsetHeight;
+      if (h > maxH) maxH = h;
+    }
     offsets = [];
-    for (k = 0; k < items.length; k++) { offsets.push(y); y += items[k].offsetHeight; }
-    if (current >= items.length) current = 0;
+    for (k = 0; k < items.length; k++) {
+      items[k].style.minHeight = maxH + 'px';
+      offsets.push(k * maxH);
+    }
+    view.style.height = maxH + 'px';
     show(current, true);
   }
 
   function show(i, instant) {
-    var items = track.children;
-    if (!items.length || !offsets.length) return;
-    current = i;
+    var items = track.children, n = items.length;
+    if (!n) return;
+    current = ((i % n) + n) % n;
     if (instant) track.style.transitionDuration = '0s';
-    if (ticker) ticker.style.height = items[i].offsetHeight + 'px';
-    track.style.transform = 'translateY(-' + offsets[i] + 'px)';
+    track.style.transform = 'translateY(-' + offsets[current] + 'px)';
     if (instant) { void track.offsetHeight; track.style.transitionDuration = ''; }
+    countEl.textContent = (current + 1) + ' / ' + n;
   }
 
-  /* ⚠️ RE-MEASURE ON RESIZE AND AFTER FONTS LOAD. A rotation is a translate by a
-     number worked out earlier, so anything that changes an item's height after
-     that measurement silently desynchronises the track from the items — and it
-     looks like a rendering glitch rather than a stale number. Rotating the phone
-     does it; so does a web font arriving after first paint and reflowing two
-     lines into one. */
+  // (Re)measures and shows — call whenever track's children change.
+  function refresh() {
+    var n = track.children.length;
+    card.hidden = n === 0;
+    if (stepEl) stepEl.hidden = n < 2;
+    if (n) layout();
+    // the hero wave measures its grazing amplitude against this card's
+    // rect — tell it whenever the card's size may have changed
+    try { document.dispatchEvent(new CustomEvent('amplified:announce-layout')); } catch (e) { /* ignore */ }
+  }
+
+  document.getElementById('ac-prev').addEventListener('click', function () { show(current - 1); });
+  document.getElementById('ac-next').addEventListener('click', function () { show(current + 1); });
+
+  /* ⚠️ RE-MEASURE ON RESIZE AND AFTER FONTS LOAD — same reasoning the
+     banner carried: anything that changes an item's height after the
+     measurement silently desynchronises the track from the items. */
   var resizeTimer = null;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(layout, 150);
+    resizeTimer = setTimeout(refresh, 150);
   });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout).catch(function () {});
-
-  function stopTicker() {
-    if (intervalId) clearInterval(intervalId);
-    intervalId = null;
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = null;
-  }
-
-  function restartProgress() {
-    if (!progressDot) return;
-    if (rafId) cancelAnimationFrame(rafId);
-    var start = null;
-    function step(ts) {
-      if (start === null) start = ts;
-      var pct = Math.min(100, ((ts - start) / ANNOUNCE_INTERVAL_MS) * 100);
-      progressDot.style.background = 'conic-gradient(var(--announce-fill) ' + pct + '%, var(--announce-track) 0)';
-      if (pct < 100) rafId = requestAnimationFrame(step);
-    }
-    rafId = requestAnimationFrame(step);
-  }
-
-  // (Re)starts the ticker from scratch — call whenever track's children change.
-  function runTicker() {
-    stopTicker();
-    var items = track.children;
-
-    if (!items.length) {
-      if (banner) banner.hidden = true;
-      return;
-    }
-    if (banner) banner.hidden = false;
-
-    current = 0;
-    layout();
-
-    if (items.length < 2) {
-      if (progressDot) progressDot.hidden = true;
-      return;
-    }
-
-    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) {
-      if (progressDot) progressDot.hidden = true;
-      return;
-    }
-    if (progressDot) progressDot.hidden = false;
-
-    restartProgress();
-
-    var i = 0;
-    intervalId = setInterval(function () {
-      i = (i + 1) % items.length;
-      show(i);
-      restartProgress();
-    }, ANNOUNCE_INTERVAL_MS);
-  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh).catch(function () {});
 
   track.innerHTML = curatedItemsHTML();
-  runTicker();
+  refresh();
 
   newsItemsHTML().then(function (newsHTML) {
     if (!newsHTML) return;
     track.insertAdjacentHTML('beforeend', newsHTML);
-    runTicker();
+    refresh();
   });
+})();
+
+/* ── The hero engine — wave, lamp, entrance ──
+   Canvas geometry only: no assets, no requests, so privacy.html's claim
+   that no third party is involved in showing you the page is untouched. */
+(function () {
+  'use strict';
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hero = document.getElementById('hero');
+  var canvas = document.getElementById('hero-wave');
+  var lamp = document.getElementById('hero-lamp');
+  if (!hero || !canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+
+  /* Entrance — the motion doctrine's one exception, once per browsing
+     session. ⚠️ The key is named in privacy.html section 6; renaming it
+     means changing that page in the same commit. */
+  var ENTRANCE_KEY = 'amplified_hero_entrance';
+  var played = false;
+  try { played = sessionStorage.getItem(ENTRANCE_KEY) === '1'; } catch (e) { /* ignore */ }
+  if (!reduced && !played) {
+    hero.classList.add('enter');
+    try { sessionStorage.setItem(ENTRANCE_KEY, '1'); } catch (e) { /* ignore */ }
+  }
+  var animateIn = hero.classList.contains('enter');
+
+  /* HEAD is the canvas's extra drawing headroom (see the #hero-wave CSS).
+     The crest height is MEASURED against the card's real corner on every
+     layout — the slack between the CTA row and the wave band varies by
+     viewport, so a hardcoded amplitude would graze on one screen and miss
+     on another. */
+  var HEAD = 120, DOWN = 0.62;
+  var W = 0, H = 0, zeroY = 0, baseMax = 0, upF = 1.3;
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var bandH = Math.max(1, H - HEAD);
+    zeroY = HEAD + bandH * 0.52;
+    baseMax = bandH * 0.5;
+    upF = 1.3;
+    var cardEl = document.getElementById('announce-card');
+    if (cardEl && !cardEl.hidden) {
+      var cr = cardEl.getBoundingClientRect(), kr = canvas.getBoundingClientRect();
+      var cardBottom = cr.bottom - kr.top;
+      var target = (zeroY - (cardBottom - 14)) / baseMax;   /* tip 14px past the corner */
+      var cap = (zeroY - 4) / (baseMax * 1.55);             /* excited crest stays on canvas */
+      upF = Math.min(Math.max(1.1, target), cap, 2.2);
+    }
+    draw();
+  }
+
+  var E = 0, mx = -9999, phase = 0, t0 = performance.now();
+  var entryDelay = animateIn ? 560 : 0, entryDur = animateIn ? 700 : 1;
+  /* the flatten factor is initialised from the REAL scroll position — a
+     reader restored mid-page by nav.js's #at= marker must not get a wave
+     drawn for the top of a page they are not at */
+  var flat = Math.min(1, Math.max(0, (window.pageYOffset || 0) / 420));
+  var running = false;
+  var lampX = -9999, lampY = -9999, tx = -9999, ty = -9999;
+  function easeOut(u) { return 1 - Math.pow(1 - u, 3); }
+
+  function draw() {
+    var now = performance.now();
+    var p = Math.min(1, Math.max(0, (now - t0 - entryDelay) / entryDur));
+    var reveal = reduced ? 1 : easeOut(p);
+    var rest = reduced ? 0.6 : 1;
+    var amp0 = (1 - flat) * reveal * rest;
+    ctx.clearRect(0, 0, W, H);
+    if (amp0 <= 0.001) return;
+    var edge = W * (reduced ? 1 : reveal);
+    for (var pass = 0; pass < 2; pass++) {
+      ctx.beginPath();
+      var off = pass === 0 ? 0.9 : 0;
+      for (var x = 0; x <= edge; x += 4) {
+        var base = Math.pow(x / W, 1.9) * baseMax;
+        var exc = E * Math.exp(-((x - mx) * (x - mx)) / (2 * 140 * 140));
+        var a = base * (1 + 0.55 * exc) * amp0;
+        /* asymmetric: crests reach up toward the card, troughs stay in band */
+        var s = Math.sin(x / 46 + phase + off);
+        var y = zeroY - s * a * (s > 0 ? upF : DOWN);
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      if (pass === 0) {
+        ctx.strokeStyle = 'rgba(91,167,159,.18)'; ctx.lineWidth = 1; ctx.shadowBlur = 0;
+      } else {
+        ctx.strokeStyle = 'rgba(172,196,182,.9)'; ctx.lineWidth = 1.5;
+        ctx.shadowBlur = 14; ctx.shadowColor = 'rgba(172,196,182,.35)';
+      }
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  function tick() {
+    phase += 0.05 * E;
+    E *= 0.94;
+    lampX += (tx - lampX) * 0.06; lampY += (ty - lampY) * 0.06;
+    lamp.style.transform = 'translate(' + (lampX - 320) + 'px,' + (lampY - 320) + 'px)';
+    draw();
+    var p = (performance.now() - t0 - entryDelay) / entryDur;
+    var lampSettled = Math.abs(tx - lampX) < 1 && Math.abs(ty - lampY) < 1;
+    if (E < 0.01 && p >= 1 && lampSettled) { running = false; return; }
+    requestAnimationFrame(tick);
+  }
+  // one rAF loop that fully idles at rest — restarted by the listeners below
+  function wake() { if (!running && !document.hidden) { running = true; requestAnimationFrame(tick); } }
+
+  if (!reduced) {
+    hero.addEventListener('pointermove', function (ev) {
+      var r = hero.getBoundingClientRect();
+      tx = ev.clientX - r.left; ty = ev.clientY - r.top;
+      if (lampX < -999) { lampX = tx; lampY = ty; }
+      var kr = canvas.getBoundingClientRect();
+      mx = ev.clientX - kr.left;
+      var dy = Math.abs(ev.clientY - (kr.top + zeroY));
+      E = Math.min(1, E + 0.12 * Math.exp(-dy * dy / (2 * 200 * 200)));
+      wake();
+    });
+    hero.addEventListener('pointerleave', function () { tx = lampX; ty = lampY; });
+    hero.addEventListener('pointerdown', function (ev) {
+      var kr = canvas.getBoundingClientRect();
+      mx = ev.clientX - kr.left; E = 1; wake();
+    });
+    window.addEventListener('scroll', function () {
+      var f = Math.min(1, Math.max(0, (window.pageYOffset || 0) / 420));
+      if (f !== flat) { flat = f; wake(); }
+    }, { passive: true });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) wake(); });
+  }
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 160);
+  });
+  // the card resizing — items built, news appended, fonts loaded — moves
+  // the corner the crests aim for; re-measure when the announcements say so
+  document.addEventListener('amplified:announce-layout', resize);
+  resize();
+  if (!reduced) wake();
 })();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
