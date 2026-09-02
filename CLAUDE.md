@@ -74,8 +74,9 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    (most recent open), entries newest-first inside it. ⚠️ It renders
                    updates.json's `type` pill, `title` and `html` and NEVER the day — `date`
                    decides the month and the ordering only. ⚠️ `type` shares three of its keys
-                   (`skill`, `feature`, `story`) and their labels with index.html's
-                   ANNOUNCEMENTS/PILL_LABELS, so one update announced in both places says the
+                   (`skill`, `feature`, `story`) and their labels with the announce card's
+                   TYPE_LABELS in index.html (whose items come from the `announcements` table
+                   since Phase 7), so one update announced in both places says the
                    same word twice; `improvement` and `milestone` are this page's alone.
                    about.html keeps `id="updates"` as a pointer,
                    because every footer linked to `about.html#updates` for two months
@@ -84,13 +85,20 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    supabase-client.js  picks dev or prod BY HOSTNAME at runtime — no env vars
                    auth.js             session state site-wide, and the nav auth control
                    pwned.js            breach check; auth surfaces ONLY, not loaded by nav.js
-                   auth-pages.js       the password-reveal button, breachedMessage() and the
-                                       Turnstile widget factory, same scoping rule — shared by
-                                       the two pages since 2026-09-02
+                   auth-pages.js       the password-reveal button, breachedMessage(), plainError()
+                                       and the Turnstile widget factory, same scoping rule —
+                                       shared by the two pages since 2026-09-02.
+                                       ⚠️ NOT loaded by /admin/, which has no password field
                    auth-doc-modal.js   ⚠️ /sign-in/ ONLY: the terms/privacy reader dialog, lifted
                                        out of sign-in.astro the same day. Not in auth-pages.js
                                        because /account/ has no such modal to pay for
-                   auth-pages.css      styling for /sign-in/ and /account/, same scoping rule
+                   auth-pages.css      styling for /sign-in/, /account/ and (since Phase 7)
+                                       /admin/, same scoping rule
+                   admin.css           ⚠️ /admin/ ONLY. What the admin screens add on top of
+                                       auth-pages.css: the announcement list, state chips, and
+                                       the form controls auth-pages.css never styled. Its markup
+                                       must stay inside .auth-wrap, whose [hidden] override is
+                                       what keeps `hidden` beating the display values in here
                    learning.js/.css    ⚠️ /learning/ ONLY, same scoping rule as the two above.
                                        Owns NO definitions — what "complete" means and what
                                        counts toward a denominator live in skills-progress.js,
@@ -117,9 +125,17 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    poll every 60ms with their own bounds instead; a new signed-in surface calls
                    whenAuth and keeps its own onAuthChange subscription
 src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.astro are live;
-                 blog and admin still to come. Both scaffolds were deleted 2026-08-19 —
+                 blog still to come. Both scaffolds were deleted 2026-08-19 —
                  auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is
                  ever wanted back (auth-test holds RLS checks nothing has replaced)
+                 — plus admin/index.astro, added 2026-09-01 (Phase 7). The admin portal shell
+                   and its first screen, announcements CRUD. Client-gated by
+                   AmplifiedAuth.isAdmin() but ENFORCED BY RLS — the page hiding its panels is
+                   the polite version, not the control. Writes go browser→Supabase under the
+                   admin's own session, deliberately NOT through /api/: the privacy constraint
+                   below is about signed-out visitors, and an admin is signed in by definition.
+                   Statically prerendered like account.astro — it renders no DB content at
+                   build time, so it needs no `prerender = false`
                  — plus the first SERVER-RENDERED routes, added 2026-08-26 (Phase 6 stage 10).
                    ⚠️ Each declares `export const prerender = false`. WITHOUT IT the route is
                    built once at deploy time and then serves a frozen snapshot for ever — it
@@ -145,7 +161,16 @@ src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.a
                                         so failing hard would turn a DB outage into a dead search
                                         page — a regression caused by the fix. It serves the 23
                                         static entries and sets x-news-entries: 0
-                   api/news/recent.json.js  the homepage banner's source. ⚠️ DELIBERATELY an
+                   api/announcements.json.js  the announce card's CURATED half, added 2026-09-01
+                                        (Phase 7) when the hardcoded ANNOUNCEMENTS array moved
+                                        into the `announcements` table. Same privacy argument as
+                                        recent.json below it — and UNLIKE recent.json it returns
+                                        decisions, not raw rows: expiry became per-row
+                                        starts_at/expires_at applied by the RLS read policy, so
+                                        index.html no longer filters curated items by age. A
+                                        failed read is a 503 with no body; the card renders the
+                                        news half and the rest of the page untouched
+                   api/news/recent.json.js  the announce card's NEWS half. ⚠️ DELIBERATELY an
                                         endpoint rather than a browser query, though nav.js loads
                                         the Supabase client on every page. A signed-out visitor
                                         contacts supabase.co NEVER — createClient makes no request
@@ -171,6 +196,10 @@ src/lib/         news-render.mjs  ⚠️ THE MARKUP, WRITTEN ONCE AND RUN IN TWO
                                   over. Pure string building, no DOM and no fetch, so it runs
                                   unchanged in a serverless function and in a browser. Never
                                   import `node:` anything into it
+                 announcements-data.mjs  the announcements read. SERVER ONLY, same rules as
+                                  news-data.mjs below it — and it IMPORTS environmentFor from
+                                  there rather than retyping it, so the server cannot resolve
+                                  `dev` while the browser on the same page resolves `prod`
                  news-data.mjs    the PostgREST read. SERVER ONLY. ⚠️ The project table is
                                   parsed out of public/supabase-client.js by astro.config.mjs
                                   and injected with `vite.define` — at BUILD time, because
@@ -214,6 +243,11 @@ content/         news.json — the 81 stories as authored, in date groups. ⚠�
                  authored. See .claude/commands/add-news.md
 supabase/        migrations/ (the schema's source of truth), rollback/, and README.md —
                  the apply/verify runbook plus the dashboard settings SQL cannot reach
+                 seed/ — CONTENT, not schema (Phase 7): rows moved out of files into tables
+                 the schema already had. Idempotent by fixed primary key, so a re-run can
+                 never overwrite a row an admin has since edited. Applied on the same
+                 two-project schedule as migrations — dev when written, prod at go-live —
+                 because an unseeded prod serves an empty announce card and nothing errors
                  email-templates/ — the two auth emails. CONFIGURATION, not code: nothing
                  reads them, Supabase serves them from its dashboard, and they are committed
                  because a rebuilt project has none of them
@@ -524,12 +558,15 @@ sign-in and nowhere else. See [supabase/README.md](supabase/README.md).
   it untrue**: the form hint, `privacy.html` §8, `terms.html` §2 and `why-sign-up.html` all move
   together. Grep for the promise, not just the feature.
 - **A short-lived surface cannot be audited against a long-lived one after the fact.** The homepage
-  banner (`ANNOUNCEMENTS` in `public/index.html`) and What's New (`public/updates.json`) state the
-  same dates twice, with nothing checking they agree — and the banner's `EXPIRY_DAYS` renders an item
-  for only 14–21 days. Dark Mode was dated 23 July in one and 21 July in the other for a month:
-  ⚠️ **the expiry did not cause the error, it made the error unfalsifiable**, because by the time
-  anyone could compare the two only the permanent one was still on screen. Write the pair in the same
-  sitting and take the date from the commit. `expiryDays` on an item overrides the type default.
+  announce card (the `announcements` table since Phase 7; the `ANNOUNCEMENTS` array in
+  `public/index.html` before it) and What's New (`public/updates.json`) state the
+  same dates twice, with nothing checking they agree — and an item is only visible inside its
+  expiry window, typically 14–21 days. Dark Mode was dated 23 July in one and 21 July in the other
+  for a month: ⚠️ **the expiry did not cause the error, it made the error unfalsifiable**, because
+  by the time anyone could compare the two only the permanent one was still on screen. Write the
+  pair in the same sitting and take the date from the commit. ⚠️ Moving the card's half into the
+  database (per-row `starts_at`/`expires_at`, edited at `/admin/`) did NOT retire this trap —
+  `updates.json` stays a file, so the pair still spans a table and a file.
   ⚠️ **Since 2026-08-26 the permanent side no longer shows the day at all** — `whats-new.html` groups
   by month — so a one- or two-day disagreement is now invisible on *both* surfaces rather than one.
   The date still decides which month an entry lands in, which is the only way a wrong one shows.

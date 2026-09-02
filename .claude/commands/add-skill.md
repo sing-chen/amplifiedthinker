@@ -249,11 +249,17 @@ A new skill gets **two** entries, and they are the same fact written twice:
   ⚠️ **The day is never displayed.** Since 2026-08-26 the page groups entries by month and labels
   them "August 2026"; `date` still decides the month and the order within it, so it must be right,
   but the reader only ever sees the `title`. An entry with no `title` renders as a bare paragraph.
-- The `ANNOUNCEMENTS` array in [index.html](public/index.html) — the announce card in the hero,
-  which replaced the banner on 2026-08-28 (design piece 10; the array and its rules survived the
-  move unchanged). Add an item at the **top** with `type: 'skill'`, the same `date`, a `text` (the
-  skill name in `<b>`, then an em-dash and what it lets you do),
-  `linkHref: 'future-skills.html#s-[slug]'` and `linkLabel: 'Explore it'`.
+- A row in the **`announcements` table** — the announce card in the hero reads the database
+  through `/api/announcements.json` since Phase 7 (2026-09-01); the `ANNOUNCEMENTS` array it
+  replaced is archived in `supabase/seed/2026-09-01-announcements.sql`, which is also the shape
+  reference. ⚠️ **Editing index.html does nothing now.** Add the row through the `/admin/` UI
+  (signed in as the admin account), or by SQL in the dashboard editor — and remember the same
+  two-project rule as every DB change: **dev while the work is on a branch, prod at go-live**;
+  an announcement for a skill shipping to prod goes in the **prod** project or nobody sees it.
+  Values: `type` `'skill'`, `announce_date` the same date, `text_html` (the skill name in `<b>`,
+  then an em-dash and what it lets you do), `link_href` `'future-skills.html#s-[slug]'`,
+  `link_label` `'Explore it'`. The admin form defaults the visibility window to the old 21-day
+  skill rule; keep it unless there is a reason not to.
 
 ⚠️ **The two dates must match, and nothing checks that they do.** Dark Mode was dated 23 July in the
 old banner and 21 July in updates.json for a month. The expiry is what hid it — a `skill` item
@@ -353,7 +359,7 @@ feat: add [Skill Name] primer and learning plan
 - public/skills/[slug]/plan.html: 14-section learning plan with [key structural notes]
 - public/nav.js, public/future-skills.html: register and activate the [Skill Name] card
 - src/data/search-static.json: add primer/plan entries so the skill surfaces in site search (⚠️ NOT public/search-index.json — deleted 2026-08-26)
-- public/updates.json, public/index.html: What's New entry and announce-card item, same date
+- public/updates.json: What's New entry (the announce-card item is a DB row now, not a file edit — note in the log that it was added, and to which project)
 - public/skills-catalogue.json, scripts/build-skills-catalogue.mjs: regenerated counts
 ```
 

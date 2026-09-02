@@ -1,0 +1,407 @@
+---
+// The admin portal shell, and its first screen: announcements (Phase 7).
+//
+// Access is enforced by RLS, not by this page — `announcements_admin_all`
+// requires is_admin(), so a non-admin who finds the page, deletes the panels
+// from devtools and calls the client directly still cannot write. What this
+// page adds is only the polite version: a signed-out visitor is asked to sign
+// in, a non-admin is told there is nothing here for them.
+//
+// Writes go straight from the browser to Supabase under the admin's own
+// session — deliberately NOT through an /api/ route. The privacy constraint
+// that forces the homepage through /api/announcements.json is about
+// signed-out visitors, and an admin is signed in by definition; the browser
+// Supabase client is the normal path for authenticated surfaces (see
+// supabase-integration-plan.md, "What runs where").
+//
+// Blog, news management and site config hang off this shell in later stages.
+//
+// Every <script> carries is:inline. See BaseLayout.astro.
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout
+  title="Admin · Amplified Thinker"
+  description="Site administration."
+  noindex={true}
+>
+  <link slot="head" rel="stylesheet" href={`${base}/auth-pages.css`} />
+  <link slot="head" rel="stylesheet" href={`${base}/admin.css`} />
+
+  <section class="auth-wrap auth-wrap-wide">
+
+    <div class="auth-panel" id="adm-loading">
+      <p class="auth-muted">Loading&hellip;</p>
+    </div>
+
+    <div class="auth-panel" id="adm-signed-out" hidden>
+      <h1>Site admin</h1>
+      <p class="auth-lede">You need to be signed in to see this.</p>
+      <div class="auth-actions">
+        <a class="auth-btn" href="../sign-in/">Sign in</a>
+      </div>
+    </div>
+
+    <div class="auth-panel" id="adm-not-admin" hidden>
+      <h1>Site admin</h1>
+      <p class="auth-lede">There is nothing here for this account.</p>
+      <p class="auth-muted">
+        Admin access is granted in the database, not requested from this page.
+        The database enforces it either way &mdash; this notice is just the
+        polite version.
+      </p>
+      <div class="auth-actions">
+        <a class="auth-btn auth-btn-quiet" href="../index.html">Back to the site</a>
+      </div>
+    </div>
+
+    <div id="adm-main" hidden>
+
+      <div class="auth-panel">
+        <h1>Site admin</h1>
+        <p class="auth-lede">Signed in as <span id="adm-who"></span>.</p>
+      </div>
+
+      <div class="auth-panel">
+        <h2>Announcements</h2>
+        <p class="auth-muted">
+          The curated items in the homepage announce card. Edits are served on
+          the next page load &mdash; no deploy. &#9888;&#65039; Every item's date is the
+          same fact as its What's New entry in <code>updates.json</code>:
+          write the pair in the same sitting, and take the date from the commit.
+        </p>
+
+        <div id="adm-ann-status" class="auth-status" role="status"></div>
+
+        <div id="adm-ann-list" aria-live="polite">
+          <p class="auth-muted" id="adm-ann-empty" hidden>Nothing in the table yet.</p>
+        </div>
+
+        <div class="auth-actions">
+          <button type="button" class="auth-btn" id="adm-ann-new">New announcement</button>
+        </div>
+      </div>
+
+      <div class="auth-panel" id="adm-ann-form-wrap" hidden>
+        <h2 id="adm-ann-form-title">New announcement</h2>
+
+        <form id="adm-ann-form" novalidate>
+          <div class="adm-field-pair">
+            <div>
+              <label for="adm-f-type">Type</label>
+              <select id="adm-f-type">
+                <option value="feature">feature</option>
+                <option value="skill">skill</option>
+                <option value="story">story</option>
+              </select>
+            </div>
+            <div>
+              <label for="adm-f-date">Announce date</label>
+              <input type="date" id="adm-f-date" />
+            </div>
+          </div>
+
+          <label for="adm-f-text">Text (HTML)</label>
+          <textarea id="adm-f-text" spellcheck="true"></textarea>
+          <p class="auth-hint">
+            Trusted HTML, rendered unescaped on the homepage &mdash; that is how
+            <code>&lt;b&gt;</code> bolding works. Keep it to inline markup.
+          </p>
+
+          <div class="adm-field-pair">
+            <div>
+              <label for="adm-f-href">Link href <span class="auth-muted">(optional)</span></label>
+              <input type="text" id="adm-f-href" placeholder="learning/" />
+            </div>
+            <div>
+              <label for="adm-f-label">Link label</label>
+              <input type="text" id="adm-f-label" placeholder="Take a look" />
+            </div>
+          </div>
+
+          <div class="adm-field-pair">
+            <div>
+              <label for="adm-f-starts">Visible from</label>
+              <input type="datetime-local" id="adm-f-starts" />
+            </div>
+            <div>
+              <label for="adm-f-expires">Visible until</label>
+              <input type="datetime-local" id="adm-f-expires" />
+            </div>
+          </div>
+          <p class="auth-hint">
+            Defaults follow the old type rules &mdash; features ran 14 days,
+            skills 21 &mdash; but the window is this item's own: set what it needs.
+          </p>
+
+          <div class="adm-field-pair">
+            <div>
+              <label class="auth-check-label" for="adm-f-active"><input type="checkbox" id="adm-f-active" checked /> Active</label>
+            </div>
+            <div>
+              <label for="adm-f-sort">Sort order <span class="auth-muted">(within a day)</span></label>
+              <input type="number" id="adm-f-sort" value="0" step="1" />
+            </div>
+          </div>
+
+          <div class="auth-actions">
+            <button type="submit" class="auth-btn" id="adm-f-save">Save</button>
+            <button type="button" class="auth-btn auth-btn-quiet" id="adm-f-cancel">Cancel</button>
+          </div>
+          <div id="adm-f-status" class="auth-status" role="status"></div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      'use strict';
+
+      function el(id) { return document.getElementById(id); }
+
+      function escapeHTML(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      // The old EXPIRY_DAYS type defaults, kept as form CONVENIENCE only —
+      // the stored truth is each row's own window.
+      var TYPE_DEFAULT_DAYS = { feature: 14, skill: 21, story: 14 };
+
+      var client = null;
+      var rows = [];
+      var editingId = null;      // null while creating
+      var windowTouched = false; // stop the defaults overwriting hand-set dates
+
+      function show(which) {
+        el('adm-loading').hidden = which !== 'loading';
+        el('adm-signed-out').hidden = which !== 'out';
+        el('adm-not-admin').hidden = which !== 'denied';
+        el('adm-main').hidden = which !== 'in';
+      }
+
+      // ---- list ----------------------------------------------------------
+
+      function stateFor(row, now) {
+        if (!row.active) return 'Off';
+        if (row.starts_at && new Date(row.starts_at) > now) return 'Scheduled';
+        if (row.expires_at && new Date(row.expires_at) <= now) return 'Expired';
+        return 'Live';
+      }
+
+      function fmtDay(iso) {
+        if (!iso) return '';
+        try {
+          return new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+        } catch (e) { return String(iso); }
+      }
+
+      function rowHTML(row) {
+        var state = stateFor(row, new Date());
+        var windowText = fmtDay(row.starts_at) + ' → ' + (row.expires_at ? fmtDay(row.expires_at) : 'no expiry');
+        return '<div class="adm-row" data-id="' + escapeHTML(row.id) + '">' +
+          '<div class="adm-row-main">' +
+            '<div class="adm-row-meta">' +
+              '<span class="adm-chip' + (state === 'Live' ? ' adm-chip-live' : '') + '">' + state + '</span>' +
+              '<span>' + escapeHTML(row.type) + '</span>' +
+              '<span>' + escapeHTML(row.announce_date || '') + '</span>' +
+              '<span>' + escapeHTML(windowText) + '</span>' +
+            '</div>' +
+            // row.text_html is TRUSTED HTML (admin-authored, RLS-gated) and
+            // this is its preview — rendered as the homepage renders it.
+            '<div class="adm-row-text">' + row.text_html + '</div>' +
+            (row.link_href ? '<div class="adm-row-link">' + escapeHTML(row.link_href) + ' · ' + escapeHTML(row.link_label || 'Learn more') + '</div>' : '') +
+          '</div>' +
+          '<div class="adm-acts">' +
+            '<button type="button" class="adm-act" data-act="edit">Edit</button>' +
+            '<button type="button" class="adm-act" data-act="toggle">' + (row.active ? 'Turn off' : 'Turn on') + '</button>' +
+            '<button type="button" class="adm-act adm-act-danger" data-act="delete">Delete</button>' +
+          '</div>' +
+        '</div>';
+      }
+
+      function setListStatus(message, bad) {
+        var out = el('adm-ann-status');
+        out.textContent = message || '';
+        out.className = 'auth-status' + (bad ? ' bad' : '');
+      }
+
+      function loadList() {
+        return client
+          .from('announcements')
+          .select('*')
+          .order('announce_date', { ascending: false })
+          .order('sort_order', { ascending: true })
+          .then(function (r) {
+            if (r.error) { setListStatus('Could not read the table: ' + r.error.message, true); return; }
+            rows = r.data || [];
+            var list = el('adm-ann-list');
+            list.innerHTML = rows.map(rowHTML).join('');
+            el('adm-ann-empty').hidden = rows.length !== 0;
+            if (!rows.length) list.appendChild(el('adm-ann-empty'));
+          });
+      }
+
+      el('adm-ann-list').addEventListener('click', function (e) {
+        var btn = e.target.closest && e.target.closest('.adm-act');
+        if (!btn) return;
+        var rowEl = btn.closest('.adm-row');
+        var row = null;
+        for (var i = 0; i < rows.length; i++) if (rows[i].id === rowEl.getAttribute('data-id')) row = rows[i];
+        if (!row) return;
+
+        var act = btn.getAttribute('data-act');
+        if (act === 'edit') { openForm(row); return; }
+
+        if (act === 'toggle') {
+          client.from('announcements').update({ active: !row.active }).eq('id', row.id)
+            .then(function (r) {
+              if (r.error) { setListStatus('Update refused: ' + r.error.message, true); return; }
+              setListStatus('');
+              loadList();
+            });
+          return;
+        }
+
+        if (act === 'delete') {
+          if (!window.confirm('Delete this announcement? Expired items cost nothing to keep — delete only a mistake.')) return;
+          client.from('announcements').delete().eq('id', row.id)
+            .then(function (r) {
+              if (r.error) { setListStatus('Delete refused: ' + r.error.message, true); return; }
+              setListStatus('');
+              loadList();
+            });
+        }
+      });
+
+      // ---- form ----------------------------------------------------------
+
+      function toLocalInput(iso) {
+        if (!iso) return '';
+        var d = new Date(iso);
+        if (isNaN(d)) return '';
+        function p(n) { return (n < 10 ? '0' : '') + n; }
+        return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) +
+          'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+      }
+
+      function fromLocalInput(value) {
+        if (!value) return null;
+        var d = new Date(value);
+        return isNaN(d) ? null : d.toISOString();
+      }
+
+      function applyWindowDefaults() {
+        if (editingId || windowTouched) return;
+        var date = el('adm-f-date').value;
+        if (!date) return;
+        var days = TYPE_DEFAULT_DAYS[el('adm-f-type').value] || 14;
+        el('adm-f-starts').value = date + 'T00:00';
+        var until = new Date(date + 'T00:00:00');
+        // +1: "visible for N days" means it drops at the midnight AFTER day N,
+        // matching how the old daysSince() rule behaved. Same convention as
+        // the seed file.
+        until.setDate(until.getDate() + days + 1);
+        el('adm-f-expires').value = toLocalInput(until.toISOString());
+      }
+
+      function openForm(row) {
+        editingId = row ? row.id : null;
+        windowTouched = Boolean(row);
+        el('adm-ann-form-title').textContent = row ? 'Edit announcement' : 'New announcement';
+        el('adm-f-type').value = row ? row.type : 'feature';
+        el('adm-f-date').value = row ? (row.announce_date || '') : new Date().toISOString().slice(0, 10);
+        el('adm-f-text').value = row ? (row.text_html || '') : '';
+        el('adm-f-href').value = row && row.link_href ? row.link_href : '';
+        el('adm-f-label').value = row && row.link_label ? row.link_label : '';
+        el('adm-f-starts').value = row ? toLocalInput(row.starts_at) : '';
+        el('adm-f-expires').value = row ? toLocalInput(row.expires_at) : '';
+        el('adm-f-active').checked = row ? Boolean(row.active) : true;
+        el('adm-f-sort').value = row ? String(row.sort_order || 0) : '0';
+        setFormStatus('');
+        if (!row) applyWindowDefaults();
+        el('adm-ann-form-wrap').hidden = false;
+        el('adm-f-type').focus();
+      }
+
+      function closeForm() {
+        el('adm-ann-form-wrap').hidden = true;
+        editingId = null;
+        windowTouched = false;
+      }
+
+      function setFormStatus(message, bad) {
+        var out = el('adm-f-status');
+        out.textContent = message || '';
+        out.className = 'auth-status' + (bad ? ' bad' : '');
+      }
+
+      el('adm-ann-new').addEventListener('click', function () { openForm(null); });
+      el('adm-f-cancel').addEventListener('click', closeForm);
+      el('adm-f-type').addEventListener('change', applyWindowDefaults);
+      el('adm-f-date').addEventListener('change', applyWindowDefaults);
+      el('adm-f-starts').addEventListener('input', function () { windowTouched = true; });
+      el('adm-f-expires').addEventListener('input', function () { windowTouched = true; });
+
+      el('adm-ann-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var payload = {
+          type: el('adm-f-type').value,
+          announce_date: el('adm-f-date').value,
+          text_html: el('adm-f-text').value.trim(),
+          link_href: el('adm-f-href').value.trim() || null,
+          link_label: el('adm-f-label').value.trim() || null,
+          starts_at: fromLocalInput(el('adm-f-starts').value),
+          expires_at: fromLocalInput(el('adm-f-expires').value),
+          active: el('adm-f-active').checked,
+          sort_order: parseInt(el('adm-f-sort').value, 10) || 0
+        };
+
+        if (!payload.announce_date) { setFormStatus('Set the announce date.', true); return; }
+        if (!payload.text_html) { setFormStatus('Write the text.', true); return; }
+        if (!payload.starts_at) { setFormStatus('Set when it becomes visible.', true); return; }
+
+        el('adm-f-save').disabled = true;
+        setFormStatus('Saving…');
+
+        var write = editingId
+          ? client.from('announcements').update(payload).eq('id', editingId)
+          : client.from('announcements').insert(payload);
+
+        write.then(function (r) {
+          el('adm-f-save').disabled = false;
+          if (r.error) { setFormStatus('The database refused it: ' + r.error.message, true); return; }
+          closeForm();
+          setListStatus('Saved. The homepage picks it up on its next load (the CDN can hold the old answer for up to ~15 minutes).');
+          loadList();
+        });
+      });
+
+      // ---- bootstrap -----------------------------------------------------
+
+      function start() {
+        var auth = window.AmplifiedAuth;
+        if (!auth) { setTimeout(start, 60); return; }
+
+        auth.onAuthChange(function (session) {
+          if (!session) { show('out'); return; }
+          client = auth.client();
+          auth.isAdmin().then(function (ok) {
+            if (!ok) { show('denied'); return; }
+            el('adm-who').textContent = auth.displayName() || (session.user && session.user.email) || 'admin';
+            show('in');
+            loadList();
+          });
+        });
+      }
+      start();
+    })();
+  </script>
+</BaseLayout>

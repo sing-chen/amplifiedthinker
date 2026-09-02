@@ -69,7 +69,7 @@ visitor experience diverge sharply — most of the admin portal is invisible to 
 | 4 — Email | ✅ **Done — live** | ⚪ None | ⚪ None | No | 3 |
 | 5 — Auth + progress sync | ✅ **Done — live** | 🟢 **New** + 🔵 regression | 🟢 New | ✅ Banner + What's New, **no announcement** | 1, 3, 4 |
 | 6 — News into the DB | ✅ **Done — live** | 🔵 Visible + 🟢 New | 🟡 Silent | ✅ Banner + What's New | 2, 3, 5 |
-| 7 — Admin portal + banner | ☐ **Next** | ⚪ None | 🟢 **New** | No | 6 ✅ |
+| 7 — Admin portal + banner | 🔨 **In progress** — branch `feat/admin` | ⚪ None | 🟢 **New** | No | 6 ✅ |
 | 8 — Blog | ☐ Not started | 🟢 **New** | 🟢 New | **Yes** | 7 |
 | 9 — Your learning | ✅ **Done — live** | 🟢 **New** | ⚪ None | ✅ Banner + What's New | 5 (not 6–8) |
 
@@ -2315,7 +2315,7 @@ migration, rather than against a schema that only exists in theory.
 | `/admin` shell gated by `is_admin()` | Entry point. Access enforced in RLS, not by hiding buttons — a non-admin who finds the page still cannot write. |
 | Blog post and category CRUD | The core reason the database exists. |
 | News management: edit, reorder, archive | Replaces the `add-news` skill. Archive rather than delete, so shared links never die. |
-| Banner CRUD over the `announcements` table | Moves the hardcoded `ANNOUNCEMENTS` array in `index.html` into the DB. Deliberately like-for-like — visitors see an identical banner. ⚠️ The table needs `expiry_days` **nullable per row**, not just a type default: an item can override it (accounts got 35). And moving this to the DB does **not** retire the date-drift trap — `updates.json` stays a file, so the pair still has to be written together. |
+| Banner CRUD over the `announcements` table | Moves the hardcoded `ANNOUNCEMENTS` array in `index.html` into the DB. Deliberately like-for-like — visitors see an identical banner. ⚠️ The table needs `expiry_days` **nullable per row**, not just a type default: an item can override it (accounts got 35). And moving this to the DB does **not** retire the date-drift trap — `updates.json` stays a file, so the pair still has to be written together. The 2026-08-28 homepage redesign (design piece 10) replaced the banner surface with the announce card in the hero, but that changed only the rendering, which stays client-side in `index.html` and does not move here — the per-item data shape (`type`, `date`, `expiryDays`, trusted-HTML `text`, `linkHref`, `linkLabel`) survived the redesign untouched, so this row's plan is unaffected and "identical" now means identical to the announce card. |
 | Site config: What's New, skill card states | Removes the remaining hand-edited JSON and HTML toggles. |
 
 **Done when:** a signed-in non-admin attempting a direct write to `blog_posts` from the browser
@@ -2329,6 +2329,58 @@ next page load — no commit, no push, no deploy. Rendering stays client-side, w
 in SEO terms because banner content is supplementary rather than primary. See "The announcement
 banner" in [supabase-integration-plan.md](supabase-integration-plan.md) for the expiry, icon, and
 trusted-HTML decisions.
+
+⚠️ **The banner's data must come through a server endpoint, never a browser query to Supabase.**
+This constraint postdates the plan above: since Phase 6 (2026-08-26), a signed-out visitor
+contacts supabase.co **never** — that is what lets `privacy.html` scope Supabase to "Account
+holders" and §9 claim no third party is involved in showing you the page. `api/news/recent.json.js`
+exists for exactly this reason and is the pattern to copy: the homepage fetches a same-origin
+`/api/` route, and the server talks to the database. A `supabase.from('announcements')` call in
+`index.html` would render the identical banner and quietly make both privacy claims false —
+nothing would fail, which is why this is written down here rather than left to be rediscovered.
+
+### Progress log
+
+**Stage 1 — announcements half, built 2026-09-01 on `feat/admin`.** The shell at `/admin/`
+(gated by `AmplifiedAuth.isAdmin()`, written in Phase 5 with no consumer until now, enforced by
+RLS), the announcements CRUD screen, `src/lib/announcements-data.mjs` +
+`/api/announcements.json`, the `index.html` swap, and the seed
+(`supabase/seed/2026-09-01-announcements.sql`). Findings worth keeping:
+
+1. **No migration was needed, because Phase 3 built the whole table on spec.** `announcements`
+   already had per-row `starts_at`/`expires_at`, the trusted-HTML column, the public-read window
+   policy and the admin-write policy. The phase's database work reduced to seed data.
+2. **The endpoint returns decisions, not rows — the opposite of `recent.json`, on purpose.**
+   Expiry became a property of the data (the RLS read window), so `index.html` no longer filters
+   curated items by age. Re-filtering in the browser would be two implementations of one window.
+   The old rule translates as `expires_at = date + expiryDays + 1 day at 00:00 UTC` — the +1
+   because "visible for N days" always meant "drops at the midnight after day N". The seed and
+   the admin form's defaults both carry that convention.
+3. **Both halves of the card now arrive by fetch, and insertion order replaced source order.**
+   Curated items insert `afterbegin`, news `beforeend`, so the finished order holds whichever
+   fetch wins; a `stepped` flag keeps a late prepend from yanking the track once the reader has
+   interacted. The cost accepted: the card paints ~a fetch later than the synchronous array did,
+   and a full DB outage now empties it entirely (503 → render nothing) where the array half used
+   to survive. Supplementary content, same degradation contract as the news half.
+4. **Local server routes 503'd on a machine-trust TLS failure the browser never sees** —
+   including the known-good `recent.json`, which is what proved it environmental. Node skips the
+   Windows cert store; `--use-system-ca` fixes it; `.claude/launch.json` gained a
+   `site-system-ca` config. Written up in dev-workflow.md under Local config.
+5. **Verified so far, all against computed style or fetched output, none against source:** build
+   green through all three prebuild gates; endpoint 200/`[]` on the empty dev table and 503
+   no-body on failure; signed-out and non-admin panels at `/admin/` (the latter via the
+   fabricated-localStorage-session trick from the Phase 5 toolkit — `isAdmin()` fails closed);
+   admin list/form styling in light and dark via computed styles (the tokens flip — this is not
+   a skill page); no collapsed-whitespace text on the rendered route; `site-footer` present.
+6. **Still owed, in order:** seed the **dev** project (dashboard SQL editor) and re-verify the
+   homepage card side-by-side against production's array version — the like-for-like bar; grant
+   the owner's dev account `is_admin` (dashboard SQL, the only place the trigger allows it) and
+   exercise create/edit/toggle/delete through the UI; the phase's done-when probe — a signed-in
+   **non-admin** `insert` into `announcements`/`blog_posts` from the console, refused with
+   `row-level security` in the message, not merely refused; then at go-live, seed **prod**
+   immediately before the merge (an unseeded prod serves an empty card and nothing errors).
+   `/add-skill`'s announce step was rewritten for the table in this sitting, not after the
+   merge — the command-drift lesson applied on time for once.
 
 ---
 

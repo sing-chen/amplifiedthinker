@@ -270,6 +270,20 @@ and keeping a value in step across both is a standing cost. `.env` is for the th
 around them, and after the Phase 5 dev/prod split it is how one machine points at the dev project
 without editing tracked code.
 
+### ⚠️ Local server routes may 503 on a TLS error the browser never sees
+
+Found 2026-09-01, while verifying the Phase 7 announcements endpoint: every server route that
+reads Supabase (`/api/news/recent.json` included, which was known-good in production) returned
+503 under `astro dev` on this machine, with `UNABLE_TO_VERIFY_LEAF_SIGNATURE` in the server log.
+**Node does not use the Windows certificate store by default**, so a machine whose TLS path to
+supabase.co involves a locally-trusted root (corporate inspection, endpoint protection) fails in
+Node while the browser — which does use the system store — connects fine. That asymmetry is the
+diagnostic: browser requests to supabase.co succeed, server-side fetches to the same host fail.
+
+The fix is Node's `--use-system-ca` flag. `.claude/launch.json` carries a `site-system-ca`
+configuration that starts `astro dev` through it; use that one when server routes 503 locally.
+Production is unaffected — Vercel's trust store is its own.
+
 ---
 
 ## GitHub

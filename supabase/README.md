@@ -78,6 +78,23 @@ the other way round, and never "we'll do it straight after".
 need fixing — which is usually only one of them, because the two projects hold
 different accounts by design.
 
+### Seeds — `supabase/seed/`
+
+Content, not schema: rows a phase moves out of a file and into a table it already
+has. Applied in the dashboard SQL editor like a migration, and on the **same
+two-project schedule** (dev when written, prod at go-live) because the site reads
+the rows the moment the code merges — an unseeded prod serves an empty announce
+card and nothing errors.
+
+Each seed is **idempotent by fixed primary key** (`on conflict (id) do nothing`), so
+re-running one inserts nothing and can never overwrite a row an admin has since
+edited through the Phase 7 UI. There is no rollback half: deleting seeded rows after
+admins may have edited them is a judgement, not a script.
+
+| Seed | What it holds |
+|---|---|
+| `2026-09-01-announcements.sql` | The homepage `ANNOUNCEMENTS` array (Phase 7). Also the archive of that array's values and per-item reasoning, and the shape reference for new rows. |
+
 ### Path B — Supabase CLI
 
 Better once there is more than one migration, and the only path that keeps the

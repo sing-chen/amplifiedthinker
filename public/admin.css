@@ -1,0 +1,94 @@
+/* Admin portal styling. ⚠️ /admin/ ONLY — same scoping rule as
+   auth-pages.css, which /admin/ also loads for the shared panel, button and
+   status classes. This file holds only what the admin screens add on top:
+   the announcement list, its state chips, and form controls auth-pages.css
+   never needed (textarea, select, date/datetime inputs).
+
+   Semantic tokens only, and they flip in dark mode on this page (it is not
+   one of the ten skill pages with the parallel --d-* set). None of this uses
+   --light-sage, which is the one token here that does not flip.
+
+   ⚠️ Everything sits inside .auth-wrap, whose
+   `.auth-wrap [hidden] { display: none !important; }` is what makes
+   `hidden` beat the display values below. Markup outside that wrapper
+   reopens the [hidden] trap — keep it inside. */
+
+.adm-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-bottom: var(--space-3);
+  background: var(--bg-surface);
+}
+
+.adm-row-main { flex: 1 1 auto; min-width: 0; }
+
+.adm-row-meta {
+  font-size: 12px;
+  color: var(--fg-2);
+  margin-bottom: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+}
+
+/* The stored text_html, rendered as the card renders it — this is the
+   preview, so it shows the same trusted HTML the homepage will. */
+.adm-row-text { font-size: 14px; line-height: 1.5; color: var(--fg-1); overflow-wrap: break-word; }
+.adm-row-text b { color: var(--fg-heading); }
+
+.adm-row-link { font-size: 12px; color: var(--fg-2); margin-top: var(--space-2); }
+
+.adm-chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--fg-2);
+  background: var(--bg-sunken);
+}
+.adm-chip-live { color: var(--fg-brand); border-color: var(--fg-brand); background: transparent; }
+
+.adm-acts { display: flex; flex-direction: column; gap: var(--space-2); flex: 0 0 auto; }
+
+.adm-act {
+  font: inherit;
+  font-size: 12px;
+  color: var(--fg-brand);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: right;
+}
+.adm-act:hover { text-decoration: underline; }
+.adm-act:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 2px; }
+.adm-act-danger { color: var(--fg-2); }
+
+/* Form controls auth-pages.css does not style. Matches .auth-panel input. */
+.auth-panel textarea,
+.auth-panel select {
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  color: var(--fg-1);
+  background: var(--bg-surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: var(--space-4);
+}
+.auth-panel textarea { min-height: 96px; resize: vertical; }
+.auth-panel textarea:focus-visible,
+.auth-panel select:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 1px; }
+
+/* Two narrow fields sharing a row on wide screens. */
+.adm-field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--space-4); }
+@media (max-width: 560px) { .adm-field-pair { grid-template-columns: 1fr; } }

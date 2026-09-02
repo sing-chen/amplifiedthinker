@@ -250,11 +250,13 @@
 
 <script>
 /* ── Announcements — the card in the hero ──
-   The banner's successor. Everything editorial survives from the banner:
-   the hand-curated ANNOUNCEMENTS array, the expiry rules, the month-label
-   reasoning and the /api/news/recent.json fetch. What changed is the
-   surface — a reader-stepped card, no autoplay — and the item template.
-   See docs/design-modernisation.md, piece 10. */
+   The banner's successor (docs/design-modernisation.md, piece 10): a
+   reader-stepped card, no autoplay. Since Phase 7 BOTH halves arrive from
+   the database through same-origin /api/ routes — curated announcements
+   from /api/announcements.json, news from /api/news/recent.json — so a
+   guest's browser still talks to this host and no other, which is what
+   privacy.html §9 turns on. The rendering never moved: templates, month
+   labels and ordering all still live right here. */
 (function () {
   'use strict';
   var card = document.getElementById('announce-card');
@@ -267,107 +269,24 @@
   var NEWS_MAX_COUNT = 3;
   var NEWS_MAX_AGE_DAYS = 14;
 
-  // Hand-curated announcements. `type` controls both the pill label and how
-  // long the item stays in the card — see EXPIRY_DAYS below.
-  //
-  // ⚠️ `date` is the same fact as the matching entry's date in `updates.json`,
-  // written out twice with nothing checking the two agree. Dark Mode was dated
-  // 23 July here and 21 July there for a month before anyone noticed, which is
-  // the expiry doing the hiding: an item is only visible for a fortnight, so a
-  // wrong date is unfalsifiable by the time anyone reads the list it disagrees
-  // with. Add the pair in one sitting, and take the date from the commit.
-  var ANNOUNCEMENTS = [
-    {
-      type: 'feature',
-      date: '2026-08-27',
-      // ⚠️ Date taken from the commits that shipped it, and paired with the two
-      // What's New entries of the same date, written in this sitting — see the
-      // note above for why the pair cannot be reconciled after the fact.
-      //
-      // 21 days rather than the 14-day `feature` default, on the same reasoning
-      // as the news notes below it: this is a thing an account does on pages
-      // guests read too, so it is worth the longer run.
-      expiryDays: 21,
-      text: '<b>Notes on a primer or plan</b> — capture a thought against the section you are reading, and find everything you have written on your account page.',
-      linkHref: 'future-skills.html',
-      linkLabel: 'Go to Future Skills'
-    },
-    {
-      type: 'feature',
-      date: '2026-08-26',
-      // ⚠️ DATE TAKEN FROM THE MERGE COMMIT ee680a5, not from the day this was
-      // written, and paired with the two What's New entries of the same date.
-      // Both were written in this sitting for the reason the comment below
-      // repeats: once the banner expires the two can no longer be compared.
-      // ⚠️ Since 2026-08-27 the card shows only the MONTH for announcements,
-      // matching how whats-new.html groups them — so a day's disagreement is no
-      // longer possible here, and a month's would be visible on both surfaces.
-      //
-      // 21 days rather than the 14-day `feature` default: this is the first
-      // thing an account does on a page guests read too, so it is worth the
-      // longer run. Not the 35 the Accounts item took — that changed how the
-      // whole site works; this adds to it.
-      expiryDays: 21,
-      text: '<b>Keep the news that matters</b> — save any story, pin one to the top of your own list, and write a private note against it.',
-      linkHref: 'news/',
-      linkLabel: 'Go to News'
-    },
-    {
-      type: 'feature',
-      date: '2026-08-21',
-      // Paired with the What's New entry of the same date in updates.json —
-      // ⚠️ written in the same sitting on purpose. The banner expires in 14
-      // days and What's New does not, so once it is gone the two can no longer
-      // be compared and a disagreement between them becomes unfalsifiable.
-      // Guests see this too: /learning/ answers them with its signed-out
-      // panel, which explains the page before asking for anything.
-      text: '<b>Your learning</b> — one page showing how far you are through every skill, primer and plan tracked separately.',
-      linkHref: 'learning/',
-      linkLabel: 'Take a look'
-    },
-    {
-      type: 'feature',
-      date: '2026-08-21',
-      // No expiryDays override: this takes the 14-day `feature` default. The
-      // Accounts item below runs 35 because it changed how the site works;
-      // this is one addition on top of that, so the default is right.
-      text: '<b>Mark a plan complete</b> when you have actually worked through it — your call, not the page\'s.',
-      linkHref: 'future-skills.html',
-      linkLabel: 'Browse the library'
-    },
-    {
-      type: 'feature',
-      date: '2026-08-20',
-      // `expiryDays` overrides EXPIRY_DAYS for this item alone. Accounts are a
-      // change to how the site works rather than another thing added to it, so
-      // it stays up long enough for an occasional reader to meet it once.
-      expiryDays: 35,
-      text: '<b>Accounts</b> have landed — sign in and your place and your answers follow you to every device.',
-      linkHref: 'why-sign-up.html',
-      linkLabel: 'Why sign up'
-    },
-    {
-      type: 'skill',
-      date: '2026-08-13',
-      text: '<b>Strategic Synthesis &amp; Decision-Making</b> just joined the library — turn conflicting, incomplete inputs into one defensible call.',
-      linkHref: 'future-skills.html#s-strategic',
-      linkLabel: 'Explore it'
-    },
-    {
-      type: 'skill',
-      date: '2026-07-17',
-      text: '<b>Systems Thinking</b> just joined the library — see interdependencies and feedback loops before they surface.',
-      linkHref: 'future-skills.html#s-systems',
-      linkLabel: 'Explore it'
-    },
-    {
-      type: 'feature',
-      date: '2026-07-21',
-      text: '<b>Dark Mode</b> has landed — toggle it anytime from the nav bar.'
-    }
-  ];
+  /* Curated announcements live in the `announcements` table since Phase 7 and
+     arrive through /api/announcements.json — same origin, same privacy
+     reasoning as the news fetch below. Content is now a database edit served
+     on the next page load: no commit, no push, no deploy. The hardcoded
+     ANNOUNCEMENTS array this replaced is preserved, values and reasoning
+     both, in supabase/seed/2026-09-01-announcements.sql.
 
-  var EXPIRY_DAYS = { feature: 14, skill: 21 };
+     ⚠️ EXPIRY MOVED WITH THE DATA. The old EXPIRY_DAYS = {feature: 14,
+     skill: 21} type defaults are now per-row starts_at/expires_at columns,
+     applied by the database's read policy — "which items are live" is
+     decided once, in the data, and this file no longer filters curated items
+     by age. The news items below still filter here, unchanged.
+
+     ⚠️ THE DATE-DRIFT TRAP SURVIVES THE MOVE. An announcement's date is
+     still the same fact as its updates.json entry's date, now held in a
+     table and a file with nothing checking the two agree — Dark Mode was
+     dated 23 July in one and 21 July in the other for a month. Write the
+     pair in one sitting, and take the date from the commit. */
   // The type is SAID in the mark rather than drawn — the banner's three
   // icons asked the reader to learn three glyphs these words replace.
   var TYPE_LABELS = { feature: 'New feature', skill: 'New skill', story: 'New story' };
@@ -427,11 +346,20 @@
       '</div>';
   }
 
+  /* Same shape as newsItemsHTML below: resolves to ready-made item markup, or
+     '' on any failure — a 503 here hides the curated items and touches nothing
+     else. `a.html` is TRUSTED HTML from the admin-only announcements table
+     (that is how the <b> bolding works); everything else is escaped, exactly
+     as the array version escaped everything but `text`. */
   function curatedItemsHTML() {
-    return ANNOUNCEMENTS
-      .filter(function (a) { return daysSince(a.date) <= (a.expiryDays || EXPIRY_DAYS[a.type]); })
-      .map(function (a) { return itemHTML(a.type, formatAnnounceMonth(a.date), a.text, a.linkHref, a.linkLabel); })
-      .join('');
+    return fetch('/api/announcements.json')
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (items) {
+        return (items || []).map(function (a) {
+          return itemHTML(a.type, formatAnnounceMonth(a.date), a.html, a.linkHref, a.linkLabel);
+        }).join('');
+      })
+      .catch(function () { return ''; });
   }
 
   /* Reads /api/news/recent.json, which is served from THIS domain and reads the
@@ -510,8 +438,11 @@
     if (n) layout();
   }
 
-  document.getElementById('ac-prev').addEventListener('click', function () { show(current - 1); });
-  document.getElementById('ac-next').addEventListener('click', function () { show(current + 1); });
+  // `stepped` feeds the insertion logic at the bottom: once the reader has
+  // stepped, a late-arriving fetch must not yank the track out from under them.
+  var stepped = false;
+  document.getElementById('ac-prev').addEventListener('click', function () { stepped = true; show(current - 1); });
+  document.getElementById('ac-next').addEventListener('click', function () { stepped = true; show(current + 1); });
 
   /* ⚠️ RE-MEASURE ON RESIZE AND AFTER FONTS LOAD — same reasoning the
      banner carried: anything that changes an item's height after the
@@ -523,8 +454,21 @@
   });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh).catch(function () {});
 
-  track.innerHTML = curatedItemsHTML();
-  refresh();
+  /* Both halves now arrive by fetch, and either may win the race. Curated
+     items insert at the START and news at the END, so the finished order is
+     curated-then-news whatever the arrival order. If news landed first and
+     the reader already stepped through it, the prepend keeps their item in
+     view by moving `current` along with it; if they have not stepped, the
+     card snaps to the first curated item — the same first frame the
+     synchronous array gave. */
+  curatedItemsHTML().then(function (curatedHTML) {
+    if (!curatedHTML) return;
+    var before = track.children.length;
+    track.insertAdjacentHTML('afterbegin', curatedHTML);
+    if (stepped) current += track.children.length - before;
+    else current = 0;
+    refresh();
+  });
 
   newsItemsHTML().then(function (newsHTML) {
     if (!newsHTML) return;

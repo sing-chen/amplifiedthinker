@@ -558,7 +558,7 @@
   // read-failure panel to every guest until it was added here (2026-08-21).
   // ⚠️ Any new surface that renders a signed-out state belongs in this list.
   function pageNeedsAuth() {
-    return /\/(sign-in|account|learning)(\/|$)/i.test(pathname);
+    return /\/(sign-in|account|learning|admin)(\/|$)/i.test(pathname);
   }
 
   /* ⚠️ THE ONE HTML ESCAPER FOR EVERY BROWSER SCRIPT ON THE SITE. Exported on
