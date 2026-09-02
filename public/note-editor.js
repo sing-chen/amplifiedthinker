@@ -43,11 +43,9 @@
 
   var seq = 0;
 
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js owns the one escaper — see AmplifiedNav.escapeHtml. Every page
+  // this file is mounted on loads nav.js first; the dev specimen inlines it.
+  function esc(s) { return global.AmplifiedNav.escapeHtml(s); }
 
   /* ── the two modes, and why there are two ─────────────────────────────────
      A single always-editing panel has no natural end: saving leaves you in a

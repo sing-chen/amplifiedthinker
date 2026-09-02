@@ -445,11 +445,9 @@
   // The only interpolated value is a date this file formatted itself, so this
   // is belt and braces rather than a live defence — but the alternative is a
   // reader having to prove that, every time they read the template.
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js owns the one escaper, and every page that renders this file's UI
+  // loads nav.js first — see AmplifiedNav.escapeHtml.
+  function escapeHtml(s) { return global.AmplifiedNav.escapeHtml(s); }
 
   // ⚠️ THE WORDING IS A CLAIM ABOUT WHAT clear() DOES, so it lives beside it
   // rather than in ten pages.

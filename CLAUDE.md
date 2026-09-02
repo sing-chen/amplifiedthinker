@@ -79,6 +79,8 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    supabase-client.js  picks dev or prod BY HOSTNAME at runtime — no env vars
                    auth.js             session state site-wide, and the nav auth control
                    pwned.js            breach check; auth surfaces ONLY, not loaded by nav.js
+                   auth-pages.js       the password-reveal button and breachedMessage(), same
+                                       scoping rule — shared by the two pages since 2026-09-02
                    auth-pages.css      styling for /sign-in/ and /account/, same scoping rule
                    learning.js/.css    ⚠️ /learning/ ONLY, same scoping rule as the two above.
                                        Owns NO definitions — what "complete" means and what
@@ -235,10 +237,17 @@ _originals/      full-resolution source images, gitignored — outside public/ o
                  anything environment-dependent decides at runtime instead
 ```
 
-**Two files scoped to the auth pages on purpose.** `pwned.js` and `auth-pages.css` are loaded by
-`/sign-in/` and `/account/` and nowhere else. `styles.css` and `nav.js` are already paid for by all
-18 pages; nothing else needs either of these, and adding them to the shared files would put weight
-on every page to serve two.
+**Three files scoped to the auth pages on purpose.** `pwned.js`, `auth-pages.css` and
+`auth-pages.js` (the password-reveal button and `breachedMessage()`, shared by both pages since
+2026-09-02 instead of being retyped in each) are loaded by `/sign-in/` and `/account/` and nowhere
+else. `styles.css` and `nav.js` are already paid for by all 19 pages; nothing else needs any of
+these, and adding them to the shared files would put weight on every page to serve two.
+
+**One HTML escaper, on `AmplifiedNav.escapeHtml`.** `nav.js` is the first script in `<body>` on
+every page, so it is the one place a helper every later script needs can live. Twelve files carried
+their own copy until 2026-09-02, and one of them had stopped escaping quotes. A new browser script
+calls that one; `src/lib/news-render.mjs` keeps its own because it runs on the server, and a dev
+specimen that mounts a script without loading `nav.js` has to inline `nav.js` first.
 
 **Two kinds of path that look alike.** A file you read or write needs `public/`; a URL inside a page
 never does, because `public/` is stripped when served. `public/nav.js` is the file; `../../nav.js` is

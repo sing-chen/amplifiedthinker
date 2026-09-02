@@ -29,6 +29,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     every caller treats a missing AmplifiedPwned as "check unavailable".
   -->
   <script slot="head" is:inline src={`${base}/pwned.js`}></script>
+  <script slot="head" is:inline src={`${base}/auth-pages.js`}></script>
   <section class="auth-wrap">
 
     <!--
@@ -626,35 +627,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         el('auth-link-dead').hidden = false;
       }
 
-      // ---- reveal a password field ----------------------------------------
-      //
-      // A typo in a password field is invisible. On sign-up it is worse than
-      // invisible: the account is created with a password the person cannot
-      // reproduce, and the only way back is a reset email.
-      //
-      // Delegated on document rather than bound per button, so it needs no
-      // ordering against the auth stack (which nav.js appends with defer) and
-      // keeps working if a panel is re-rendered.
-      document.addEventListener('click', function (e) {
-        var btn = e.target.closest && e.target.closest('.auth-pw-toggle');
-        if (!btn) return;
-
-        var input = document.getElementById(btn.getAttribute('data-pw-for'));
-        if (!input) return;
-
-        var reveal = input.type === 'password';
-        input.type = reveal ? 'text' : 'password';
-        btn.textContent = reveal ? 'Hide' : 'Show';
-        btn.setAttribute('aria-pressed', reveal ? 'true' : 'false');
-        btn.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-
-        // Clicking the button takes focus off the field. Put it back, caret at
-        // the end, so someone mid-way through typing is not interrupted.
-        var pos = input.value.length;
-        input.focus();
-        try { input.setSelectionRange(pos, pos); } catch (err) {}
-      });
-
+      // The password-reveal button and breachedMessage() live in
+      // public/auth-pages.js, shared with /account/.
+      var breachedMessage = window.AmplifiedAuthPages.breachedMessage;
 
       var panels = {
         loading: el('auth-loading'),
@@ -1233,22 +1208,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
       // ---- breached-password gate ------------------------------------------
       //
-      // Runs only where a password is CHOSEN — sign-up, and the new password
-      // after a reset. Never on sign-in: someone whose existing password turns
-      // out to be on a list needs to get in so they can change it, and refusing
-      // them at the door would lock them out of the only fix.
-      //
-      // Resolves null to proceed, or a message to show and stop. See
-      // public/pwned.js for why it fails open.
-      function breachedMessage(password) {
-        var p = window.AmplifiedPwned;
-        if (!p) return Promise.resolve(null);
-        return p.check(password).then(function (r) {
-          return r.breached ? p.message(r) : null;
-        });
-      }
-
       // ---- submit ---------------------------------------------------------
+      // breachedMessage() runs only where a password is CHOSEN — sign-up, and
+      // the new password after a reset — never on sign-in. See auth-pages.js.
 
       el('auth-form').addEventListener('submit', function (e) {
         e.preventDefault();

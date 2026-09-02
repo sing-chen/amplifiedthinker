@@ -147,11 +147,8 @@
 
   /* ── rendering ─────────────────────────────────────────────────────────── */
 
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js owns the one escaper — see AmplifiedNav.escapeHtml.
+  function esc(s) { return global.AmplifiedNav.escapeHtml(s); }
 
   // "Review" once finished, "Resume" mid-way, "Start" when untouched — the verb
   // is the state, so the row still reads correctly in greyscale. Filled for the
