@@ -584,23 +584,19 @@
       });
   }
 
-  // Waits for BOTH globals. nav.js appends the auth stack with defer, and
-  // skills-progress.js is a sibling <script> on this page — neither has
-  // necessarily run when this file does. Bounded like progress.js: if they
-  // never arrive we say so rather than leaving a spinner up for ever.
-  var waited = 0;
+  // Needs BOTH globals. skills-progress.js is a sibling <script> on this page
+  // and has run by now; the auth stack is appended by nav.js with defer, and
+  // AmplifiedNav.whenAuth calls back from its load event — or with null if it
+  // never arrives, in which case we say so rather than leaving a spinner up.
   (function start() {
-    var auth = global.AmplifiedAuth;
-    if (!auth || !model()) {
-      waited += 60;
-      if (waited > 6000) { show('error'); return; }
-      global.setTimeout(start, 60);
-      return;
-    }
-
-    auth.onAuthChange(function (session) {
-      if (!session) { show('signed-out'); return; }
-      load(auth);
+    var nav = global.AmplifiedNav;
+    if (!model() || !nav || typeof nav.whenAuth !== 'function') { show('error'); return; }
+    nav.whenAuth(function (auth) {
+      if (!auth) { show('error'); return; }
+      auth.onAuthChange(function (session) {
+        if (!session) { show('signed-out'); return; }
+        load(auth);
+      });
     });
   })();
 })(window);

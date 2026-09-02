@@ -836,10 +836,11 @@
      as a guest sees it. Same shape as progress.js's whenAuth.
   ─────────────────────────────────────────────────────────────────────── */
   function start() {
-    var waited = 0;
-    (function poll() {
-      var auth = global.AmplifiedAuth;
-      if (auth) {
+    var nav = global.AmplifiedNav;
+    if (!nav || typeof nav.whenAuth !== 'function') return;
+    nav.whenAuth(function (auth) {
+      if (!auth) return;   // no stack on this page load: the page stays as a guest sees it
+      {
         auth.onAuthChange(function (session) {
           /* ⚠️ A NULL SESSION IS AN EVENT, not just an absence. It arrives both
              for a reader who was never signed in AND for one who has just
@@ -866,12 +867,8 @@
             if (parts[0]) { try { paint(parts[0], parts[1]); } catch (e) { teardown(); } }
           });
         });
-        return;
       }
-      waited += 60;
-      if (waited > 6000) return;
-      global.setTimeout(poll, 60);
-    })();
+    });
   }
 
   if (doc.readyState === 'loading') {

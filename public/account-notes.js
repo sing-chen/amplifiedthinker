@@ -660,17 +660,13 @@
      page IS on nav.js's `pageNeedsAuth()` allowlist — it has something to say to
      a signed-out visitor and renders a signed-out state of its own — so the auth
      stack always arrives and the poll always resolves. */
-  var POLL_MS = 60;
-  var POLL_LIMIT_MS = 6000;
-
   function whenAuthReady(fn) {
-    var waited = 0;
-    (function poll() {
-      if (auth()) { fn(auth()); return; }
-      waited += POLL_MS;
-      if (waited > POLL_LIMIT_MS) return;
-      global.setTimeout(poll, POLL_MS);
-    })();
+    // AmplifiedNav.whenAuth calls back from auth.js's own load event, or with
+    // null if the stack fails to arrive — in which case /account/ shows its
+    // signed-out panel from auth.js's absence, and there is nothing to paint.
+    var nav = global.AmplifiedNav;
+    if (!nav || typeof nav.whenAuth !== 'function') return;
+    nav.whenAuth(function (a) { if (a) fn(a); });
   }
 
   function paint() {

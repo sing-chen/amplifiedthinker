@@ -97,12 +97,16 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    ⚠️ user_news.pinned is ONE READER'S pin. news_stories.pinned is EDITORIAL,
                    admin-set, one site-wide. Both render in the same list wearing the same icon,
                    which is exactly where they get conflated. This file writes only the first
-                   ⚠️ IT POLLS FOR window.AmplifiedAuth AND MUST. nav.js appends the auth stack
+                   ⚠️ IT WAITS FOR window.AmplifiedAuth AND MUST. nav.js appends the auth stack
                    with async=false, which preserves order but does NOT delay DOMContentLoaded,
                    so auth.js can land after any body script has run. Reading the global once and
                    giving up leaves the personal layer unpainted FOR SIGNED-IN READERS ONLY —
-                   the entire audience for it. progress.js and learning.js poll for the same
-                   reason. Short-circuit on <html data-session="out"> so guests never poll
+                   the entire audience for it. Since 2026-09-02 the wait is
+                   AmplifiedNav.whenAuth(fn): nav.js creates the auth.js <script> tag, so it
+                   calls back from that tag's own load event, at once with null on a page that
+                   never loads the stack (a guest), and with null on error. Eight files used to
+                   poll every 60ms with their own bounds instead; a new signed-in surface calls
+                   whenAuth and keeps its own onAuthChange subscription
 src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.astro are live;
                  blog and admin still to come. Both scaffolds were deleted 2026-08-19 —
                  auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is

@@ -1484,9 +1484,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }
       }
 
-      function start() {
-        var auth = window.AmplifiedAuth;
-        if (!auth) { setTimeout(start, 60); return; }
+      // nav.js calls back when the auth stack it appended has loaded — with
+      // null if it never does, in which case the page stays on "Loading…"
+      // exactly as its unbounded 60ms poll used to leave it, minus the poll.
+      window.AmplifiedNav.whenAuth(start);
+      function start(auth) {
+        if (!auth) return;
 
         // A backstop, no longer the mechanism. PASSWORD_RECOVERY does arrive
         // when supabase-js has consumed a reset link, but it arrives too late
@@ -1508,7 +1511,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         auth.onAuthChange(settle);
       }
 
-      start();
     })();
   </script>
 </BaseLayout>

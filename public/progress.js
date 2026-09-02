@@ -97,37 +97,33 @@
     }
   }
 
-  // Polls for the global because nav.js appends the auth stack with `defer`, so
-  // it lands after this file has run. Bounded: if the stack never arrives —
-  // blocked host, offline, a CSP — we settle as a guest rather than leaving the
-  // page waiting forever with no progress restored.
+  // nav.js appends the auth stack with `defer`, so it lands after this file has
+  // run; AmplifiedNav.whenAuth() calls back from the script's own load event,
+  // or with null if the stack never arrives — blocked host, offline, a CSP —
+  // and then we settle as a guest rather than leaving the page waiting with no
+  // progress restored. (This file used to poll every 60ms for six seconds.)
   function whenAuth(fn) {
     if (mode !== 'pending') { fn(authSession); return; }
     authWaiters.push(fn);
     if (authWaiters.length > 1) return;
 
-    var waited = 0;
-    (function poll() {
-      var auth = global.AmplifiedAuth;
-      if (auth) {
-        auth.onAuthChange(function (session) {
-          if (mode === 'pending') { settleAuth(session); return; }
-          /* ⚠️ NOT ONLY THE FIRST ANSWER. Signing out from the nav does not
-             reload the page, so without this the mode stayed 'account' with a
-             stale session: every later save was refused by RLS and retried on
-             each scroll, and flushOnHide() still POSTed with the old token —
-             writing the reader's place into the account they had just left.
-             settleAuth() with no waiters queued only updates the answer. */
-          var nextId = session && session.user ? session.user.id : null;
-          var curId = authSession && authSession.user ? authSession.user.id : null;
-          if (nextId !== curId) settleAuth(session);
-        });
-        return;
-      }
-      waited += 60;
-      if (waited > 6000) { settleAuth(null); return; }
-      global.setTimeout(poll, 60);
-    })();
+    var nav = global.AmplifiedNav;
+    if (!nav || typeof nav.whenAuth !== 'function') { settleAuth(null); return; }
+    nav.whenAuth(function (auth) {
+      if (!auth) { settleAuth(null); return; }
+      auth.onAuthChange(function (session) {
+        if (mode === 'pending') { settleAuth(session); return; }
+        /* ⚠️ NOT ONLY THE FIRST ANSWER. Signing out from the nav does not
+           reload the page, so without this the mode stayed 'account' with a
+           stale session: every later save was refused by RLS and retried on
+           each scroll, and flushOnHide() still POSTed with the old token —
+           writing the reader's place into the account they had just left.
+           settleAuth() with no waiters queued only updates the answer. */
+        var nextId = session && session.user ? session.user.id : null;
+        var curId = authSession && authSession.user ? authSession.user.id : null;
+        if (nextId !== curId) settleAuth(session);
+      });
+    });
   }
 
   /* ── telling a guest that nothing is being kept ────────────────────────── */
@@ -497,38 +493,13 @@
   }
 
   // ⚠️ Not `toLocaleDateString`, and the reason is width rather than taste.
-  // `{ month: 'short' }` under en-GB returns "Sept" for September — four
-  // letters, where every other month gives three. A fixed table gives every
-  // month the same width; padding the day does the same at the other end.
-  var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-  // ONE FORMAT, ALWAYS: DD Mmm YYYY. It renders in the rail pill, which has
-  // 212px to work with, and in the completion control at the foot of the page.
-  //
-  // ⚠️ It used to drop the year for dates in the current year, on the reasoning
-  // that a bare year reads as clutter on something finished last week. That was
-  // a trap, not a nicety: the long form only appeared once a completion was no
-  // longer from this year, so "Completed 30 September 2025" — 231px in a 212px
-  // rail — would have looked perfect for months and first overflowed in
-  // January, on a date nobody would connect to a layout change.
-  //
-  // One format cannot do that. Every date is the same shape and the same width,
-  // so what is measured today is what renders in any month of any year.
+  // ONE FORMAT, ALWAYS: DD Mmm YYYY, from AmplifiedNav.formatDate — the one
+  // implementation, since 2026-09-02, of what used to be an identical copy
+  // here and in skills-progress.js. The reasoning (fixed month table, padded
+  // day, never dropping the year) lives on the function in nav.js.
   function completionDate(iso) {
-    try {
-      // ⚠️ The falsy check is not redundant with the isNaN below it.
-      // `new Date(null)` is the epoch, not an invalid date, so a null would
-      // render as "01 Jan 1970" — a plausible-looking date rather than an
-      // obvious failure. No caller passes one today; this is so none can.
-      if (!iso) return '';
-
-      var d = new Date(iso);
-      if (isNaN(d.getTime())) return '';
-      var dd = d.getDate();
-      return (dd < 10 ? '0' : '') + dd + ' ' +
-             MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
-    } catch (e) { return ''; }
+    var n = global.AmplifiedNav;
+    return n && typeof n.formatDate === 'function' ? n.formatDate(iso) : '';
   }
 
   var TICK = '<span class="ac-tick" aria-hidden="true"><svg viewBox="0 0 24 24">' +

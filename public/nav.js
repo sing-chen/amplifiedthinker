@@ -755,8 +755,83 @@
       s.src = root(file);
       s.async = false;
       s.defer = true;
+      // auth.js is the last of the three, and async=false keeps the order, so
+      // its load event is the moment AmplifiedAuth exists — see whenAuth().
+      if (file === 'auth.js') { s.onload = settleAuthWaiters; s.onerror = settleAuthWaiters; }
       document.head.appendChild(s);
     });
+    // A stalled download fires neither event for a long time; nothing on the
+    // site should wait longer than this to learn there is no answer.
+    window.setTimeout(settleAuthWaiters, 10000);
+  }
+
+  /* ── waiting for the auth stack ────────────────────────────────────────
+     auth.js is appended above with async=false, which keeps the three files
+     in order but does NOT hold DOMContentLoaded — so any body script can run
+     before AmplifiedAuth exists. Until 2026-09-02 eight files each polled for
+     it every 60ms with their own bound, and two with none. This file creates
+     the <script> tag, so it is the one place that KNOWS when the stack lands:
+     waiters are called from that tag's own load and error events.
+
+     fn(auth) is called exactly once:
+       - at once with AmplifiedAuth, if it is already there;
+       - at once with null, if this page never asked for the stack — a guest
+         on a page with no signed-in state, the answer data-session="out"
+         already gave, which is what the callers' short-circuits used to test;
+       - on load with AmplifiedAuth; on error, or after the stall bound above,
+         with null.
+     Callers keep their own onAuthChange subscription: this answers "is the
+     library here", not "who is signed in". */
+  var authWaiters = [];
+  var authSettled = false;
+
+  function settleAuthWaiters() {
+    if (authSettled) return;
+    authSettled = true;
+    var list = authWaiters;
+    authWaiters = [];
+    var auth = window.AmplifiedAuth || null;
+    for (var i = 0; i < list.length; i++) {
+      try { list[i](auth); } catch (e) { /* one waiter must not stop the rest */ }
+    }
+  }
+
+  function whenAuth(fn) {
+    if (window.AmplifiedAuth) { fn(window.AmplifiedAuth); return; }
+    if (authSettled || !window.__amplifiedAuthStack) { fn(null); return; }
+    authWaiters.push(fn);
+  }
+
+  /* ── ONE DATE FORMAT for every completion and "last read" stamp ────────
+     DD Mmm YYYY, always. It renders in the skill rail pill (212px), the
+     completion control, the library cards and /learning/. Two identical copies
+     lived in progress.js and skills-progress.js until 2026-09-02 with a note
+     saying "if either changes, change both"; this is the one that exists now.
+
+     `{ month: 'short' }` under en-GB returns "Sept" for September — four
+     letters where every other month gives three — so the table is fixed, and
+     the day is padded, so every date is the same width.
+
+     ⚠️ It used to drop the year for the current year. That was a trap: the
+     long form only appeared once a completion was no longer from this year,
+     so a 231px date in a 212px rail would have looked perfect for months and
+     first overflowed in January. One shape, measured once, holds in any
+     month of any year. */
+  var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function formatDate(iso) {
+    try {
+      // ⚠️ The falsy check is not redundant with the isNaN below it:
+      // new Date(null) is the epoch, not an invalid date, and would render
+      // "01 Jan 1970" — a plausible-looking date rather than an obvious failure.
+      if (!iso) return '';
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      var dd = d.getDate();
+      return (dd < 10 ? '0' : '') + dd + ' ' +
+             MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
+    } catch (e) { return ''; }
   }
 
   /* ⚠️ THE NOTE STACK LOADS THE SAME WAY AND FOR THE SAME REASON — so that a
@@ -970,7 +1045,11 @@
     // here and read there.
     returnParam: returnParam,
     // The site's one HTML escaper — see the note on the function.
-    escapeHtml: escapeHtml
+    escapeHtml: escapeHtml,
+    // Called once with AmplifiedAuth, or with null if it will not arrive.
+    whenAuth: whenAuth,
+    // DD Mmm YYYY, the one date format for completion and "last read" stamps.
+    formatDate: formatDate
   };
 
   /* ── Entry point ─────────────────────────────────────────────────────── */

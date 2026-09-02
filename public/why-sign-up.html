@@ -438,16 +438,14 @@
 
   apply(true);
 
-  // Correct the guess once the real session is known. Bounded by the same
-  // condition that made us optimistic in the first place.
-  var waited = 0;
-  (function poll() {
-    var auth = window.AmplifiedAuth;
-    if (auth) { auth.onAuthChange(function (s) { apply(Boolean(s)); }); return; }
-    waited += 60;
-    if (waited > 6000) return;                // leave the optimistic view; harmless
-    window.setTimeout(poll, 60);
-  })();
+  // Correct the guess once the real session is known. nav.js calls back when
+  // the auth stack it appended has loaded; with null if it never does, which
+  // leaves the optimistic view — harmless.
+  if (typeof nav.whenAuth === 'function') {
+    nav.whenAuth(function (auth) {
+      if (auth) auth.onAuthChange(function (s) { apply(Boolean(s)); });
+    });
+  }
 })();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>

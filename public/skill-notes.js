@@ -631,22 +631,13 @@
      SIGNED-IN READERS ONLY, which is the entire audience for it and the one
      least likely to report it. progress.js, learning.js and news-actions.js all
      poll for exactly this reason and all say so. */
-  var POLL_MS = 60;
-  var POLL_LIMIT_MS = 6000;
-
   function whenAuthReady(fn) {
-    // ⚠️ Match 'out' EXPLICITLY. nav.js publishes 'unknown' as-is, and a
-    // `!== 'in'` test would treat it as a guest. For a genuine guest nav.js
-    // never loads the auth stack at all, so this also avoids six seconds of
-    // pointless polling on every guest page view.
-    if (doc.documentElement.getAttribute('data-session') === 'out') return;
-    var waited = 0;
-    (function poll() {
-      if (auth()) { fn(auth()); return; }
-      waited += POLL_MS;
-      if (waited > POLL_LIMIT_MS) return;
-      global.setTimeout(poll, POLL_MS);
-    })();
+    // AmplifiedNav.whenAuth calls back from auth.js's own load event, and at
+    // once with null for a guest whose page never loads the stack — the case
+    // the old data-session="out" short-circuit here used to test.
+    var nav = global.AmplifiedNav;
+    if (!nav || typeof nav.whenAuth !== 'function') return;
+    nav.whenAuth(function (a) { if (a) fn(a); });
   }
 
   function teardown() {
