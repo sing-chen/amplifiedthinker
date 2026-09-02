@@ -76,9 +76,11 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
         <div id="adm-ann-status" class="auth-status" role="status"></div>
 
-        <div id="adm-ann-list" aria-live="polite">
-          <p class="auth-muted" id="adm-ann-empty" hidden>Nothing in the table yet.</p>
-        </div>
+        <div id="adm-ann-list" aria-live="polite"></div>
+        <!-- A sibling of the list, not a child: loadList() replaces the list's
+             innerHTML wholesale, and a child would be destroyed on the first
+             render and then dereferenced. -->
+        <p class="auth-muted" id="adm-ann-empty" hidden>Nothing in the table yet.</p>
 
         <div class="auth-actions">
           <button type="button" class="auth-btn" id="adm-ann-new">New announcement</button>
@@ -107,8 +109,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <label for="adm-f-text">Text (HTML)</label>
           <textarea id="adm-f-text" spellcheck="true"></textarea>
           <p class="auth-hint">
-            Trusted HTML, rendered unescaped on the homepage &mdash; that is how
-            <code>&lt;b&gt;</code> bolding works. Keep it to inline markup.
+            Trusted HTML, rendered unescaped on the homepage &mdash; that is how <code>&lt;b&gt;</code> bolding works. Keep it to inline markup.
           </p>
 
           <div class="adm-field-pair">
@@ -241,10 +242,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           .then(function (r) {
             if (r.error) { setListStatus('Could not read the table: ' + r.error.message, true); return; }
             rows = r.data || [];
-            var list = el('adm-ann-list');
-            list.innerHTML = rows.map(rowHTML).join('');
+            el('adm-ann-list').innerHTML = rows.map(rowHTML).join('');
             el('adm-ann-empty').hidden = rows.length !== 0;
-            if (!rows.length) list.appendChild(el('adm-ann-empty'));
           });
       }
 
@@ -316,7 +315,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         windowTouched = Boolean(row);
         el('adm-ann-form-title').textContent = row ? 'Edit announcement' : 'New announcement';
         el('adm-f-type').value = row ? row.type : 'feature';
-        el('adm-f-date').value = row ? (row.announce_date || '') : new Date().toISOString().slice(0, 10);
+        // Local calendar day, not toISOString()'s UTC one — after 23:00 BST
+        // the UTC date is still yesterday, and the announce date is a UK fact.
+        el('adm-f-date').value = row ? (row.announce_date || '') : toLocalInput(new Date()).slice(0, 10);
         el('adm-f-text').value = row ? (row.text_html || '') : '';
         el('adm-f-href').value = row && row.link_href ? row.link_href : '';
         el('adm-f-label').value = row && row.link_label ? row.link_label : '';
