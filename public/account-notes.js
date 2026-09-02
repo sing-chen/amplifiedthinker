@@ -35,13 +35,8 @@
   function client() { var a = auth(); return a ? a.client() : null; }
   function userId() { var a = auth(); var u = a && a.user(); return u ? u.id : null; }
   function editorLib() { return global.AmplifiedNoteEditor || null; }
-  function esc(s) {
-    var E = editorLib();
-    if (E && E.esc) return E.esc(s);
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js owns the one escaper — see AmplifiedNav.escapeHtml.
+  function esc(s) { return global.AmplifiedNav.escapeHtml(s); }
 
   var state = { notes: [], stories: {}, catalogue: null, editors: [], picked: {}, status: '', filter: 'all' };
 

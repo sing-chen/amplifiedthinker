@@ -559,8 +559,17 @@
     return /\/(sign-in|account|learning)(\/|$)/i.test(pathname);
   }
 
+  /* ⚠️ THE ONE HTML ESCAPER FOR EVERY BROWSER SCRIPT ON THE SITE. Exported on
+     AmplifiedNav below because this file is the first script in <body> on all
+     19 pages and BaseLayout, so it is the one global every later script can
+     rely on. Until 2026-09-02 twelve files carried their own copy, one of
+     which (search.html) had quietly stopped escaping quotes. null and
+     undefined escape to '' — every caller that formats optional data wants
+     that, and "null" in a heading was the alternative.
+     src/lib/news-render.mjs keeps its own: it runs on the server, where there
+     is no window and no nav. */
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
@@ -951,7 +960,9 @@
     // the sign-in link without it. Same rule as initialFor/labelFor above: the
     // two files paint the same control, so anything about it is defined once
     // here and read there.
-    returnParam: returnParam
+    returnParam: returnParam,
+    // The site's one HTML escaper — see the note on the function.
+    escapeHtml: escapeHtml
   };
 
   /* ── Entry point ─────────────────────────────────────────────────────── */

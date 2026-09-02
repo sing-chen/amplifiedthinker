@@ -30,19 +30,17 @@
   // 20260826120000_notes_body_length.sql — and a number written down in two
   // files is a number that will eventually disagree with itself.
 
-  var STAR = '<path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>';
-  var PIN = '<path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Z"/><circle cx="12" cy="9" r="2.5"/>';
-  var NOTE = '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><polyline points="14 4 14 10 20 10"/>';
-
-  function icon(paths) {
-    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + paths + '</svg>';
+  /* ⚠️ THE ICONS ARE NOT DRAWN HERE. news-render.mjs emits the three paths
+     once, as <symbol>s in a hidden sprite inside the actions panel it paints,
+     and this file references them by id. The paths used to be retyped in this
+     file, which is how the server's Featured pin and the reader's Pin button
+     could have drifted apart without anything failing. */
+  function icon(name) {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#na-icon-' + name + '"/></svg>';
   }
 
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js owns the one escaper — see AmplifiedNav.escapeHtml.
+  function esc(s) { return global.AmplifiedNav.escapeHtml(s); }
 
   function auth() { return global.AmplifiedAuth || null; }
   function client() { var a = auth(); return a ? a.client() : null; }
@@ -303,10 +301,18 @@
 
   /* ── markup ──────────────────────────────────────────────────────────────── */
 
-  function guestHTML() {
-    return '<p class="story-actions-invite">Save this story, pin it to the top of your feed, or keep a private note on it.</p>' +
-      '<a class="story-action-btn story-action-signin" href="/sign-in/" data-signin-return>Sign in</a>';
+  /* ⚠️ THE GUEST MARKUP IS NOT WRITTEN HERE EITHER. The server paints it
+     into the slot (news-render.mjs actionsHTML) before this file runs, and
+     news-app.js repaints it from the same function on every story swap; this
+     file captures the first paint and hands it back on sign-out. A retyped
+     copy lived here until 2026-09-02 — identical that day, and a drift away
+     from being a different invite for guests who had signed out. */
+  var guestMarkup = null;
+  function rememberGuestMarkup() {
+    var target = slot();
+    if (guestMarkup === null && target && !target.querySelector('[data-action]')) guestMarkup = target.innerHTML;
   }
+  function guestHTML() { return guestMarkup || ''; }
 
   /* ── the note panel ───────────────────────────────────────────────────────
      ⚠️ THE EDITOR LIVES IN note-editor.js AND IS NOT REIMPLEMENTED HERE. The
@@ -325,15 +331,15 @@
       '<div class="story-actions-row">' +
         '<button type="button" class="story-action-btn" data-action="favorite"' +
           ' aria-pressed="' + (state.favorited ? 'true' : 'false') + '">' +
-          icon(STAR) + '<span data-label>' + (state.favorited ? 'Saved' : 'Save') + '</span>' +
+          icon('star') + '<span data-label>' + (state.favorited ? 'Saved' : 'Save') + '</span>' +
         '</button>' +
         '<button type="button" class="story-action-btn" data-action="pin"' +
           ' aria-pressed="' + (state.pinned ? 'true' : 'false') + '">' +
-          icon(PIN) + '<span data-label>' + (state.pinned ? 'Pinned' : 'Pin') + '</span>' +
+          icon('pin') + '<span data-label>' + (state.pinned ? 'Pinned' : 'Pin') + '</span>' +
         '</button>' +
         '<button type="button" class="story-action-btn" data-action="note"' +
           ' aria-expanded="false">' +
-          icon(NOTE) + '<span data-label>' + noteButtonLabel(state) + '</span>' +
+          icon('note') + '<span data-label>' + noteButtonLabel(state) + '</span>' +
         '</button>' +
         '<span class="story-action-status" role="status" aria-live="polite"></span>' +
       '</div>' +
@@ -447,6 +453,7 @@
     var box = container();
     var target = slot();
     if (!box || !target) return;
+    rememberGuestMarkup();
 
     var storyId = box.getAttribute('data-story-id');
     // A message belongs to the story it was raised on. Moving on discards it.

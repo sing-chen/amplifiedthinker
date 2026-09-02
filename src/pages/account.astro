@@ -26,6 +26,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   <link slot="head" rel="stylesheet" href={`${base}/auth-pages.css`} />
   <!-- is:inline for the same reason as every other script here — see pwned.js. -->
   <script slot="head" is:inline src={`${base}/pwned.js`}></script>
+  <script slot="head" is:inline src={`${base}/auth-pages.js`}></script>
 
   <!-- ⚠️ ORDER MATTERS, AND IT IS NOT ALPHABETICAL. note-editor.js publishes
        window.AmplifiedNoteEditor and account-notes.js reads it. Both are classic
@@ -441,46 +442,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       fromHash();
       window.addEventListener('hashchange', fromHash);
 
-      // ---- reveal a password field ----------------------------------------
-      //
-      // A typo in a password field is invisible. On sign-up it is worse than
-      // invisible: the account is created with a password the person cannot
-      // reproduce, and the only way back is a reset email.
-      //
-      // Delegated on document rather than bound per button, so it needs no
-      // ordering against the auth stack (which nav.js appends with defer) and
-      // keeps working if a panel is re-rendered.
-      document.addEventListener('click', function (e) {
-        var btn = e.target.closest && e.target.closest('.auth-pw-toggle');
-        if (!btn) return;
-
-        var input = document.getElementById(btn.getAttribute('data-pw-for'));
-        if (!input) return;
-
-        var reveal = input.type === 'password';
-        input.type = reveal ? 'text' : 'password';
-        btn.textContent = reveal ? 'Hide' : 'Show';
-        btn.setAttribute('aria-pressed', reveal ? 'true' : 'false');
-        btn.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-
-        // Clicking the button takes focus off the field. Put it back, caret at
-        // the end, so someone mid-way through typing is not interrupted.
-        var pos = input.value.length;
-        input.focus();
-        try { input.setSelectionRange(pos, pos); } catch (err) {}
-      });
-
-
-      // Resolves null to proceed, or a message to show and stop. Only ever
-      // called with a password being CHOSEN, never one being proved — see the
-      // note in sign-in.astro and public/pwned.js.
-      function breachedMessage(password) {
-        var p = window.AmplifiedPwned;
-        if (!p) return Promise.resolve(null);
-        return p.check(password).then(function (r) {
-          return r.breached ? p.message(r) : null;
-        });
-      }
+      // The password-reveal button and breachedMessage() live in
+      // public/auth-pages.js, shared with /sign-in/. Only ever called with a
+      // password being CHOSEN, never one being proved.
+      var breachedMessage = window.AmplifiedAuthPages.breachedMessage;
 
       // Terminal state. Once the account is deleted nothing may move the page
       // off this panel — including the sign-out that deletion itself triggers.

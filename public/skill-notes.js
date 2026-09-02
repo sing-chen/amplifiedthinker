@@ -49,13 +49,8 @@
   function auth() { return global.AmplifiedAuth || null; }
   function client() { var a = auth(); return a ? a.client() : null; }
   function userId() { var a = auth(); var u = a && a.user(); return u ? u.id : null; }
-  function esc(s) {
-    var E = global.AmplifiedNoteEditor;
-    if (E && E.esc) return E.esc(s);
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js owns the one escaper — see AmplifiedNav.escapeHtml.
+  function esc(s) { return global.AmplifiedNav.escapeHtml(s); }
 
   /* ── what a note may be about ──────────────────────────────────────────────
      ⚠️ THE NAV RAIL IS THE SOURCE OF TRUTH, and it is the same one

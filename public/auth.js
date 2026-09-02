@@ -162,11 +162,9 @@
       '</div>';
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js owns the one escaper (see AmplifiedNav.escapeHtml). Only ever
+  // called from renderNavAuth, after it has checked nav() exists.
+  function escapeHtml(s) { return nav().escapeHtml(s); }
 
   function escapeAttr(s) { return escapeHtml(s); }
 

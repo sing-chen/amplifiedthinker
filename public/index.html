@@ -370,11 +370,8 @@
   // icons asked the reader to learn three glyphs these words replace.
   var TYPE_LABELS = { feature: 'New feature', skill: 'New skill', story: 'New story' };
 
-  function escapeHTML(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
+  // nav.js, loaded at the top of <body>, owns the one escaper.
+  function escapeHTML(s) { return window.AmplifiedNav.escapeHtml(s); }
 
   /* ⚠️ SITE ANNOUNCEMENTS SHOW A MONTH, NEWS STORIES SHOW A DAY, AND THAT IS
      NOT AN INCONSISTENCY — it is the fix for one.

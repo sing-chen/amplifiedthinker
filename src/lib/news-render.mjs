@@ -447,6 +447,16 @@ export function storyHTML(story, prevSlug, nextSlug) {
 function actionsHTML(story) {
   return '<div class="story-actions" data-story-id="' + escapeHTML(story.id || '') + '"' +
     ' data-story-slug="' + escapeHTML(story.slug) + '">' +
+    // ⚠️ THE SPRITE public/news-actions.js DRAWS ITS BUTTONS FROM. That file is
+    // a classic script and cannot import the paths above, so they are emitted
+    // here once, as symbols, and referenced there by id — one copy of each
+    // icon for the server's Featured badge, the list's pin mark and the
+    // reader's buttons. Outside the slot, so a repaint of the slot keeps it.
+    '<svg hidden aria-hidden="true" class="story-actions-sprite">' +
+    '<symbol id="na-icon-star" viewBox="0 0 24 24">' + STAR_ICON_PATH + '</symbol>' +
+    '<symbol id="na-icon-pin" viewBox="0 0 24 24">' + PIN_ICON_PATH + '</symbol>' +
+    '<symbol id="na-icon-note" viewBox="0 0 24 24">' + NOTE_ICON_PATH + '</symbol>' +
+    '</svg>' +
     '<div class="story-actions-slot" data-actions-slot>' +
     '<p class="story-actions-invite">Save this story, pin it to the top of your feed, or keep a private note on it.</p>' +
     // ⚠️ `data-signin-return` opts this link into nav.js's activation-time href

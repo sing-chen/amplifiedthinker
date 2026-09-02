@@ -8,6 +8,12 @@
       "port": 4321
     },
     {
+      "name": "site-system-ca",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--use-system-ca", "node_modules/astro/bin/astro.mjs", "dev"],
+      "port": 4321
+    },
+    {
       "name": "built",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["astro", "preview", "--port", "4322"],

@@ -54,6 +54,19 @@ const OUT = resolve(process.argv[2] || join(ROOT, 'specimen-note-editor.html'));
 // The real files, read rather than copied. Inlined instead of linked so the
 // page works from file:// with no server.
 const editorJs = readFileSync(join(ROOT, 'public/note-editor.js'), 'utf8');
+
+// note-editor.js escapes through AmplifiedNav.escapeHtml, the site's one
+// escaper, and this page does not load nav.js (it would inject a nav bar over
+// the specimen). So the REAL function is lifted out of nav.js's source and
+// published under the same name — same argument as the completion specimen
+// lifting COMPLETION_CSS: a copy typed here would pass while the original rots.
+const navSrc = readFileSync(join(ROOT, 'public/nav.js'), 'utf8');
+const escapeFn = navSrc.match(/function escapeHtml\(s\) \{[\s\S]*?\n {2}\}/);
+if (!escapeFn) {
+  console.error('Could not lift escapeHtml() out of public/nav.js — has it moved?');
+  process.exit(1);
+}
+const navStub = 'window.AmplifiedNav = { escapeHtml: (function () { ' + escapeFn[0] + ' return escapeHtml; })() };';
 const newsCss = readFileSync(join(ROOT, 'public/news-app.css'), 'utf8');
 
 // ⚠️ styles.css IS NOT OPTIONAL HERE, AND LEAVING IT OUT PRODUCED A FALSE
@@ -106,6 +119,7 @@ ${CASES.map(c => `  <section class="case">
   </section>`).join('\n')}
 </div>
 
+<script>${navStub}</script>
 <script>${editorJs}</script>
 <script>
   var failing = false;
