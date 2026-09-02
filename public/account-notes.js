@@ -114,26 +114,20 @@
   }
 
   /* ── naming what a note is attached to ─────────────────────────────────────
-     ⚠️ THE SKILL NAME COMES FROM skills-progress.js, not from a copy of its
-     derivation. That module owns it precisely so a third surface cannot
-     disagree — see the comment on `nameFor` there. */
-  /* \u26a0\ufe0f TITLE CASE HERE, SENTENCE CASE ON /learning/, AND THAT IS A DELIBERATE
-     DIVERGENCE RATHER THAN DRIFT. `nameFor` returns "Analytical thinking",
-     which is right for the dashboard's prose headings and documented there as
-     matching the site's own. This is a table of LINKS to named artefacts, and
-     the site titles those "Analytical Thinking" \u2014 the plan page's own <title>
-     does. The shared module still owns the slug-to-words derivation; only the
-     casing is decided here. */
-  function titleCase(s) {
-    return String(s).split(' ').map(function (w) {
+     A slug is words joined by hyphens, and this page shows them in TITLE CASE:
+     it is a table of LINKS to named artefacts, and the site titles those
+     "Analytical Thinking" — the plan page's own <title> does. /learning/ shows
+     the same slugs in sentence case for its prose headings, and that is a
+     deliberate divergence rather than drift.
+
+     Until 2026-09-02 this said the derivation came from skills-progress.js.
+     It never did: /account/ does not load that module, so the "fallback" was
+     the only path that ever ran, and the two agreed by coincidence. One honest
+     function beats a dependency the page does not have. */
+  function skillName(slug) {
+    return String(slug).split('-').map(function (w) {
       return w ? w.charAt(0).toUpperCase() + w.slice(1) : w;
     }).join(' ');
-  }
-
-  function skillName(slug) {
-    var m = global.AmplifiedSkillsProgress;
-    var words = (m && m.nameFor) ? m.nameFor(slug) : String(slug).replace(/-/g, ' ');
-    return titleCase(words);
   }
 
   /* The catalogue names every plan section and every primer slide. It is a

@@ -51,17 +51,9 @@
   /* Slug → display name. MOVED to skills-progress.js on 2026-08-27, when the
      account Notes tab needed the same answer and would otherwise have been the
      third copy. Delegated rather than deleted so this file keeps reading the
-     same way, and falls back if the module is unavailable — the surrounding
-     code already copes with a missing model. */
-  function nameFor(slug) {
-    var m = model();
-    if (m && m.nameFor) return m.nameFor(slug);
-    var words = String(slug).split('-');
-    var first = words[0] || '';
-    return [first.charAt(0).toUpperCase() + first.slice(1)]
-      .concat(words.slice(1))
-      .join(' ');
-  }
+     same way. No fallback: start() below refuses to run until model() is
+     non-null, so a local derivation here could never be reached. */
+  function nameFor(slug) { return model().nameFor(slug); }
 
   function show(which) {
     ['learn-loading', 'learn-signed-out', 'learn-error', 'learn-empty', 'learn-main']

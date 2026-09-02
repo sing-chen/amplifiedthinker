@@ -23,6 +23,9 @@ let failure = null;
 try {
   stories = await fetchPublishedStories(hostnameFor(Astro.request, Astro.url));
 } catch (err) {
+  // Logged as the index route and the /api/ routes log theirs: a 503 here
+  // otherwise leaves nothing in the function log to say why.
+  console.error('[news] /news/<slug> could not read news_stories:', err);
   failure = err;
 }
 

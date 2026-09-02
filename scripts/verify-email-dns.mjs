@@ -343,4 +343,6 @@ console.log(
     (failed.length ? `\n\nFailed:\n${failed.map((r) => `  - ${r.label}`).join('\n')}` : '') +
     '\n'
 );
-process.exit(failed.length ? 1 : 0);
+// exitCode, not exit(): after network I/O process.exit() has aborted node 24 on
+// Windows with exit 127 (see verify-news-duplicates.mjs).
+process.exitCode = failed.length ? 1 : 0;

@@ -85,11 +85,12 @@ writeFileSync(file, JSON.stringify(record, null, 2));
 console.log(`\n${paths.length * originCount} fetches, ${failures} not served. Written to ${file}`);
 
 // ── Compare, when running "after" ─────────────────────────────────────────
-if (mode === 'after') {
-  if (!existsSync(join(REPO,'baseline-before.json'))) {
-    console.log('\nNo baseline-before.json to compare against.');
-    process.exit(0);
-  }
+// No process.exit() past this point: after a fetch it has aborted node 24 on
+// Windows with exit 127 (see verify-news-duplicates.mjs), so the early return
+// is an if/else rather than an exit.
+if (mode === 'after' && !existsSync(join(REPO,'baseline-before.json'))) {
+  console.log('\nNo baseline-before.json to compare against.');
+} else if (mode === 'after') {
   const before = JSON.parse(readFileSync(join(REPO,'baseline-before.json'), 'utf8'));
   const changed = [];
   const vanished = [];

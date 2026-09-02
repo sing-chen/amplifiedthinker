@@ -61,11 +61,13 @@ export async function GET({ request, url }) {
   let ok = true;
   try {
     stories = await fetchPublishedStories(hostnameFor(request, url));
-  } catch {
+  } catch (err) {
     // ⚠️ Still serve the static half rather than 500. A sitemap missing its
     // story URLs for one fetch is a crawl that finds slightly less; a 500 is a
     // crawler told the whole file is broken. The failure is not silent either
-    // way — the pages themselves answer 503 when the same read fails.
+    // way — the pages themselves answer 503 when the same read fails — but it
+    // is logged here too, so a sitemap-only failure has a trace of its own.
+    console.error('[sitemap] /sitemap.xml could not read news_stories:', err);
     ok = false;
   }
 

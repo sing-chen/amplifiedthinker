@@ -159,8 +159,6 @@ export function findPinned(stories) {
   return null;
 }
 
-// The reading order the Previous/Next buttons walk: the pinned story first,
-// then everything else newest-first. `stories` is already sorted by the query.
 /**
  * The one archive group to hold open: the group the given story sits in.
  * Today is never a collapsible group and the pinned story sits above them all,
@@ -177,6 +175,8 @@ export function expandedFor(stories, story) {
   return key === 'Today' ? null : key;
 }
 
+// The reading order the Previous/Next buttons walk: the pinned story first,
+// then everything else newest-first. `stories` is already sorted by the query.
 export function navigableSlugs(stories, state) {
   if (state.query) return stories.filter((s) => matchesFilter(s, state)).map((s) => s.slug);
   const pinned = findPinned(stories);

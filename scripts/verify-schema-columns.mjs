@@ -162,14 +162,20 @@ async function probe({ table, column }, url, key) {
 const seen = new Map();
 const results = [];
 
+// The key check runs over every host BEFORE the first fetch, so its
+// process.exit() is still safe — after a fetch it has aborted node 24 on
+// Windows with exit 127 (see verify-news-duplicates.mjs). Inside the probe
+// loop below it would have run after the first host's probes.
 for (const entry of HOSTS) {
   const cfg = configFor(entry.host);
-
   if (/^sb_secret_/.test(cfg.key) || /service_role/.test(cfg.key)) {
     console.error(`\n${entry.host} resolves to a privileged key. Stopping — see the note at the top of this file.\n`);
     process.exit(2);
   }
+}
 
+for (const entry of HOSTS) {
+  const cfg = configFor(entry.host);
   const ref = (cfg.url.match(/https:\/\/([^.]+)\./) || [])[1] || cfg.url;
 
   if (!seen.has(ref)) {
