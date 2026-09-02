@@ -165,11 +165,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
       function el(id) { return document.getElementById(id); }
 
-      function escapeHTML(s) {
-        return String(s).replace(/[&<>"']/g, function (c) {
-          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-        });
-      }
+      // nav.js, loaded at the top of <body> by BaseLayout, owns the one escaper.
+      function escapeHTML(s) { return window.AmplifiedNav.escapeHtml(s); }
 
       // The old EXPIRY_DAYS type defaults, kept as form CONVENIENCE only —
       // the stored truth is each row's own window.
