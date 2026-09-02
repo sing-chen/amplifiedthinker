@@ -1,0 +1,58 @@
+---
+// The site's own not-found page. Astro prerenders this to 404.html and the
+// Vercel adapter serves it for every path nothing else matches — a mistyped
+// .html name, an old link, a probe. Until 2026-09-02 those got Vercel's bare
+// "404: Not Found" with no nav and no way back; only /news/<unknown-slug> had
+// a page of its own (NewsNotFound.astro, which this deliberately echoes).
+//
+// `noindex`: a URL that will never resolve should not accumulate in an index.
+// Every <script> carries is:inline. See BaseLayout.astro.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<BaseLayout
+  title="Page not found · Amplified Thinker"
+  description="That page is not here. The library, the news and the people are."
+  noindex={true}
+>
+  <style slot="head" is:inline>
+    /* Tokens only, and this is not a skill page, so they flip in dark. */
+    .nf-wrap{max-width:var(--col);margin:0 auto;padding:var(--space-9) var(--space-5) var(--space-10)}
+    .nf-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
+    .nf-title{font-family:var(--font-editorial);font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1.12;letter-spacing:-.034em;color:var(--fg-heading);text-wrap:balance}
+    [data-theme="dark"] .nf-title{font-weight:420}
+    .nf-lede{font-size:17px;line-height:1.6;color:var(--fg-2);margin-top:18px;max-width:52ch}
+    .nf-links{list-style:none;margin:32px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+    .nf-links a{font-family:var(--font-display);font-weight:600;font-size:15px;color:var(--fg-brand);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+    .nf-links a:hover{text-decoration:underline;text-underline-offset:3px}
+    .nf-links svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .nf-path{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--fg-2);margin-top:28px;word-break:break-all}
+    @media(max-width:700px){.nf-wrap{padding-left:20px;padding-right:20px}}
+  </style>
+
+  <section class="nf-wrap" aria-labelledby="nf-heading">
+    <p class="nf-eyebrow">Amplified Thinker</p>
+    <h1 class="nf-title" id="nf-heading">That page isn&rsquo;t here</h1>
+    <p class="nf-lede">The address may be mistyped, or the page may have moved. Everything on the site is one link away from the three below.</p>
+    <ul class="nf-links">
+      <li><a href={`${base}/future-skills.html`}><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>Future Skills library</a></li>
+      <li><a href={`${base}/news/`}><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>News</a></li>
+      <li><a href={`${base}/my-people.html`}><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>My People</a></li>
+    </ul>
+    <!-- Filled by the script below with the path that failed, so the reader
+         can see the typo. Empty until then, and harmless if the script never runs. -->
+    <p class="nf-path" id="nf-path" hidden></p>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var el = document.getElementById('nf-path');
+      if (!el) return;
+      el.textContent = 'Nothing lives at ' + window.location.pathname;
+      el.hidden = false;
+    })();
+  </script>
+</BaseLayout>
