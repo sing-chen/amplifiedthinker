@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import { writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -134,6 +134,14 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
   devToolbar: { enabled: false },
+  // ⚠️ NO IMAGE SERVICE. Nothing in src/ uses astro:assets, <Image> or
+  // <Picture> — every image is a hand-written <img> under public/ — yet the
+  // default service bundled sharp and libvips into the serverless function:
+  // 19.2 MB of a 23.2 MB artifact, measured 2026-09-02, for a /_image route
+  // nothing calls. The passthrough service ships none of it. If a page ever
+  // does import an image through astro:assets, remove this line and the
+  // default comes back.
+  image: { service: passthroughImageService() },
   integrations: [buildStamp()],
   vite: {
     define: {
