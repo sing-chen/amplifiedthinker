@@ -79,8 +79,12 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    supabase-client.js  picks dev or prod BY HOSTNAME at runtime — no env vars
                    auth.js             session state site-wide, and the nav auth control
                    pwned.js            breach check; auth surfaces ONLY, not loaded by nav.js
-                   auth-pages.js       the password-reveal button and breachedMessage(), same
-                                       scoping rule — shared by the two pages since 2026-09-02
+                   auth-pages.js       the password-reveal button, breachedMessage() and the
+                                       Turnstile widget factory, same scoping rule — shared by
+                                       the two pages since 2026-09-02
+                   auth-doc-modal.js   ⚠️ /sign-in/ ONLY: the terms/privacy reader dialog, lifted
+                                       out of sign-in.astro the same day. Not in auth-pages.js
+                                       because /account/ has no such modal to pay for
                    auth-pages.css      styling for /sign-in/ and /account/, same scoping rule
                    learning.js/.css    ⚠️ /learning/ ONLY, same scoping rule as the two above.
                                        Owns NO definitions — what "complete" means and what
