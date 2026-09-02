@@ -10,8 +10,8 @@
 
    Paths inside url() resolve against THIS FILE, not the linking page, so one
    copy works from public/ and from public/skills/<skill>/ alike. The <link> in
-   each page is page-relative, which is what keeps the Pages origin's
-   /amplifiedthinker/ base working without an absolute path.
+   each page is page-relative, which is what would keep a sub-path deployment
+   (ASTRO_BASE, see astro.config.mjs) working without an absolute path.
 
    ── Why one variable font rather than eight statics ──────────────────────────
    The site uses weights 400, 500, 600 and 700, plus italic 400. As static cuts

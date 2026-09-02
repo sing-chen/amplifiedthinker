@@ -67,9 +67,11 @@
      recorded in the design doc as a judgment call; the no-blur fallback
      reads ~4.9:1). */
   .announce-card{grid-column:2;grid-row:1 / 4;position:relative;z-index:3;border-radius:var(--radius-xl);padding:24px 26px 22px;background:rgba(31,60,55,.94);border:1px solid rgba(238,242,239,.16);box-shadow:0 16px 44px -20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.1)}
-  /* display is never set on the card or the stepper, so the UA [hidden]
-     rule holds — said explicitly anyway, because the next `display` added
-     to either block would reopen that trap silently */
+  /* The card sets no display of its own, but the stepper below is
+     display:flex — so BOTH carry an explicit [hidden] rule with the higher
+     specificity, because the UA [hidden] rule loses to any author display
+     and the next `display` added to either block would reopen that trap
+     silently */
   .announce-card[hidden]{display:none}
   @supports ((backdrop-filter:blur(16px)) or (-webkit-backdrop-filter:blur(16px))){
     .announce-card{background:linear-gradient(180deg,rgba(238,242,239,.07),rgba(238,242,239,.02));-webkit-backdrop-filter:blur(16px) saturate(1.25) brightness(1.08);backdrop-filter:blur(16px) saturate(1.25) brightness(1.08)}

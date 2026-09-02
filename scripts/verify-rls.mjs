@@ -68,7 +68,16 @@ const TABLES = [
   { name: 'blog_posts', read: 'empty' },
   { name: 'blog_categories', read: 'empty' },
   { name: 'site_updates', read: 'empty' },
-  { name: 'announcements', read: 'empty' },
+  // ⚠️ NOT 'empty', BECAUSE PHASE 7 SEEDS THIS TABLE and an emptiness
+  // assertion would fail the day it does — the same limit news_stories hit.
+  // `announcements_public_read` lets anon see rows that are active AND inside
+  // their [starts_at, expires_at) window, so the assertion is that predicate,
+  // row by row, and it is equally true of the empty table main has today and
+  // the seeded one Phase 7 brings. Unlike news_stories there is no
+  // "actually returned rows" companion: visibility here is a time window, and
+  // a quiet month with nothing live is a legitimate steady state, not a gate
+  // failure — so the row count is reported, never required.
+  { name: 'announcements', read: { window: true } },
 ];
 
 // Minimal bodies that would satisfy each table's NOT NULL constraints, so a
@@ -164,7 +173,7 @@ if (!URL_BASE || !ANON_KEY) {
 // Two key formats to recognise, and the prefix check has to come FIRST. The newer
 // `sb_secret_…` keys are not JWTs, so a decode-and-inspect approach throws, lands
 // in the catch, and waves them through - which is precisely backwards. Kept in
-// step with keyProblem() in src/pages/auth-test.astro.
+// step with the same guard in keepalive.mjs, verify-completion.mjs and astro.config.mjs.
 function keyProblem(key) {
   if (/^sb_secret_/i.test(key)) return 'that is a secret key';
   if (/^service_role/i.test(key)) return 'that is a service_role key';
@@ -269,6 +278,26 @@ for (const { name, read } of TABLES) {
       `${name}: anon SELECT actually returned rows to judge`,
       populated ? `${rows.length} row(s)` : 'zero rows - the check above proved nothing'
     );
+  } else if (read && read.window) {
+    // Every row anon can see must be active and inside its display window.
+    // The comparison is made here, against the same clock the request was
+    // made on, so a row that expired between two runs cannot flap the gate.
+    const now = Date.now();
+    const { status: st, body: rows } = await readTable(name, 'active,starts_at,expires_at');
+    const outside = Array.isArray(rows)
+      ? rows.filter((r) =>
+          r?.active !== true ||
+          !(Date.parse(r.starts_at) <= now) ||
+          (r.expires_at != null && !(Date.parse(r.expires_at) > now)))
+      : null;
+    const ok = st === 200 && Array.isArray(rows) && outside && outside.length === 0;
+    record(
+      ok,
+      `${name}: anon SELECT returns only active rows inside their window`,
+      ok
+        ? `HTTP 200, ${rows.length} row(s)${rows.length ? '' : ' - nothing live today, predicate untested'}`
+        : `HTTP ${st}, ${outside ? `${outside.length} row(s) outside the window: ${JSON.stringify(outside).slice(0, 200)}` : `body ${JSON.stringify(rows)?.slice(0, 120)}`}`
+    );
   } else {
     const empty = status === 200 && Array.isArray(body) && body.length === 0;
     record(
@@ -343,7 +372,9 @@ if (failed.length) {
   console.log(
     '\nThis gate is the phase. Do not merge, and do not insert any data, until it is green.'
   );
-  process.exit(1);
+  // exitCode, not exit(): see verify-news-duplicates.mjs — process.exit() after
+  // a fetch has aborted node 24 on Windows with exit 127, destroying the answer.
+  process.exitCode = 1;
 }
 
 console.log('Gate green: with the anon key alone, nothing reads and nothing writes.');

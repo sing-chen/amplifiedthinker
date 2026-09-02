@@ -18,7 +18,7 @@
 
 import {
   filterBarHTML, headlineListHTML, storyHTML,
-  navigableSlugs, pickDefault, matchesFilter, bucketKey, daysAgo, findPinned,
+  navigableSlugs, pickDefault, matchesFilter, expandedFor as expandedGroupFor,
   storyPath
 } from '../lib/news-render.mjs';
 
@@ -64,15 +64,9 @@ import {
   /* ── the one archive group that is open ────────────────────────────────────
      Opening the group the current story lives in, and closing the rest, is what
      makes Previous/Next feel like walking a list rather than jumping around.
-     Today is never a collapsible group, and the pinned story sits above them
-     all, so both resolve to "nothing expanded". */
-  function expandedFor(story) {
-    if (!story) return null;
-    var pinned = findPinned(stories);
-    if (pinned && story.slug === pinned.slug) return null;
-    var key = bucketKey(daysAgo(story.date));
-    return key === 'Today' ? null : key;
-  }
+     The rule itself lives in news-render.mjs, where NewsView.astro reads it
+     for the first paint — so the two sides cannot drift. */
+  function expandedFor(story) { return expandedGroupFor(stories, story); }
 
   function activeStory() {
     return state.activeSlug ? bySlug[state.activeSlug] || null : null;

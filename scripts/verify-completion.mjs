@@ -35,10 +35,22 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PROBE_SLUG = 'zzz-verify-completion-probe';
 const PROBE_KIND = 'plan';
 
-// From public/supabase-client.js. Kept here as a REF rather than a full URL so
-// the check still fires if the URL is given with a trailing slash or a
-// different scheme.
-const PROD_REF = 'spehmrgmcdenqdftkyrt';
+// The production project REF, parsed out of public/supabase-client.js — the one
+// copy of that table, which keepalive.mjs and astro.config.mjs read the same way.
+// A ref rather than a full URL, so the guard still fires if SUPABASE_URL is given
+// with a trailing slash or a different scheme. If the parse fails the guard
+// refuses to run rather than guessing: a rotated project would otherwise pass
+// straight through the one check that keeps this off real reading history.
+const PROD_REF = (() => {
+  const source = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');
+  const block = source.match(/prod:\s*\{([\s\S]*?)\n {4}\}/);
+  const url = block && block[1].match(/url:\s*'https:\/\/([^.']+)\./);
+  if (!url) {
+    console.error('Could not read the prod project ref out of public/supabase-client.js; refusing to run.');
+    process.exit(2);
+  }
+  return url[1];
+})();
 
 // ---------------------------------------------------------------------------
 
@@ -236,7 +248,7 @@ async function deleteProbe() {
 // Start from nothing, whatever a previous run left behind.
 await deleteProbe();
 
-console.log(`\nSigned in as ${EMAIL} on ${URL_BASE.replace(/^https?:\/\//, '')}`);
+console.log(`\nSigned in as ${EMAIL || '(the session behind TEST_ACCESS_TOKEN)'} on ${URL_BASE.replace(/^https?:\/\//, '')}`);
 console.log(`Probe row: ${PROBE_SLUG} / ${PROBE_KIND}\n`);
 
 // ---------------------------------------------------------------------------

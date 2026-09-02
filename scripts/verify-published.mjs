@@ -108,9 +108,9 @@ if (mode === 'after') {
   console.log(`no longer served: ${vanished.length}`);
   vanished.forEach((v) => console.log(`  ! ${v}`));
 
-  // ⚠️ Change is EXPECTED here, not alarming: this phase edits nav.js,
-  // progress.js and all ten skill pages. What matters is that the list matches
-  // what the branch actually touched, and that nothing has stopped being served.
-  console.log('\nExpected to change: nav.js, progress.js, and the 10 skill pages.');
-  console.log('Anything else on that list, or anything at all in "no longer served", is a problem.');
+  // ⚠️ Change is EXPECTED here, not alarming. What matters is that the list
+  // matches what the branch actually touched (git diff --stat main -- public/),
+  // and that nothing has stopped being served.
+  console.log('\nCompare "changed" against `git diff --stat main -- public/` for the branch.');
+  console.log('Anything changed that the branch did not touch, or anything at all in "no longer served", is a problem.');
 }

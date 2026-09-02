@@ -99,13 +99,13 @@ try {
   failed = true;
 }
 
-// How far along the schema is - context, never a pass/fail. Before the migration
-// this is 0 and that is correct; after it, 9.
+// Whether the schema is there at all - context, never a pass/fail. A project
+// rebuilt from scratch answers 404 here until the migrations are applied.
 try {
   const res = await fetch(`${url}/rest/v1/news_stories?select=id&limit=1`, { headers });
   console.log(
     res.status === 404
-      ? '\nschema  : not applied yet (news_stories not found) - stage C is next'
+      ? '\nschema  : not applied yet (news_stories not found) - apply supabase/migrations/ first'
       : `\nschema  : applied (news_stories responds HTTP ${res.status})`
   );
 } catch {
@@ -113,4 +113,6 @@ try {
 }
 
 console.log(failed ? '\nSomething is wrong with the connection.' : '\nConnection good.');
-process.exit(failed ? 1 : 0);
+// exitCode, not exit(): see verify-news-duplicates.mjs — process.exit() after a
+// fetch has aborted node 24 on Windows with exit 127, destroying the answer.
+process.exitCode = failed ? 1 : 0;

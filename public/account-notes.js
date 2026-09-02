@@ -210,22 +210,6 @@
     return story && story.slug ? '../news/' + story.slug : null;
   }
 
-  // Groups keyed by target, ordered by the most recently touched note in each,
-  // so the thing you were last thinking about is at the top.
-  function group(notes) {
-    var map = {};
-    notes.forEach(function (n) {
-      var key = n.target_type + '|' + n.target_id;
-      if (!map[key]) map[key] = { key: key, sample: n, notes: [] };
-      map[key].notes.push(n);
-    });
-    return Object.keys(map).map(function (k) { return map[k]; }).sort(function (a, b) {
-      var at = a.notes.map(recency).sort().pop();
-      var bt = b.notes.map(recency).sort().pop();
-      return String(bt).localeCompare(String(at));
-    });
-  }
-
   function recency(n) { return n.updated_at || n.created_at || ''; }
 
   /* ── writes ────────────────────────────────────────────────────────────── */
@@ -659,10 +643,10 @@
     if (what === 'bulk-yes') { cancelBulk(); return doBulkDelete(); }
     if (what === 'bulk-clear') {
       state.picked = {};
-      Array.prototype.forEach.call(doc.querySelectorAll('[data-pick]'), function (x) { x.checked = false; });
-      Array.prototype.forEach.call(doc.querySelectorAll('.acct-note-item'), function (x) {
-        x.classList.remove('is-selected');
-      });
+      // syncPicks() unticks the boxes AND clears .is-selected on the rows. A
+      // hand-rolled version here once targeted `.acct-note-item`, a class
+      // nothing renders, so every row stayed highlighted after "Clear".
+      syncPicks();
       cancelBulk();
       refreshBulk();
     }
@@ -746,10 +730,12 @@
 
   function start() {
     whenAuthReady(function (a) {
+      // onAuthChange() calls back at once when the answer is already known, so
+      // there is no separate "already signed in" load to make — it was a second
+      // identical fetch and render on every page open.
       a.onAuthChange(function (session) {
         if (session) paint(); else teardown();
       });
-      if (a.isSignedIn()) paint();
     });
   }
 

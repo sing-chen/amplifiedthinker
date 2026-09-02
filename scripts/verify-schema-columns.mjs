@@ -140,7 +140,12 @@ async function probe({ table, column }, url, key) {
     });
   } catch (err) {
     const advice = tlsAdvice(err);
-    if (advice) { console.error(advice); process.exit(2); }
+    // A TLS failure is environmental and stops the run: rethrow so the top
+    // level reports it and sets the exit code. Never process.exit() here —
+    // after a fetch that has aborted node 24 on Windows with exit 127 (see
+    // verify-news-duplicates.mjs), which would turn "cannot verify" into
+    // "command not found".
+    if (advice) throw new Error(advice);
     return { ok: false, note: `network error: ${err?.cause?.code || err.message}` };
   }
   const body = await res.text();
@@ -205,4 +210,7 @@ console.log(
       : '\n✅ Every project has every column. Safe to merge on this check.\n'
 );
 
-process.exit(prodMissing ? 1 : 0);
+// exitCode, not exit(): see verify-news-duplicates.mjs — process.exit() after a
+// fetch has aborted node 24 on Windows with exit 127, which would make "not
+// safe to merge" and "safe" report the same code.
+process.exitCode = prodMissing ? 1 : 0;

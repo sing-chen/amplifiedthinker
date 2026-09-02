@@ -66,9 +66,11 @@
   var pathname = window.location.pathname;
 
   var activePage = (function () {
+    // News first: story slugs are free text, and /news/the-future-skills-report
+    // would otherwise light up Future Skills.
+    if (/\/news/i.test(pathname))                    return 'news';
     if (/future-skills/i.test(pathname))             return 'future-skills';
     if (/my-people/i.test(pathname))                 return 'my-people';
-    if (/\/news/i.test(pathname))                    return 'news';
     if (/about/i.test(pathname))                     return 'about';
     if (/\/search/i.test(pathname))                  return 'search';
     if (/\/skills\//i.test(pathname))                return 'skill';
@@ -486,7 +488,7 @@
   }
 
   /* ── Auth stack ───────────────────────────────────────────────────────
-     Loaded from here so all 16 pages get auth from one edit, which is the
+     Loaded from here so all 19 pages get auth from one edit, which is the
      same reason the nav itself is injected rather than copied.
 
      ⚠️ THE LIBRARY IS 53 KB GZIPPED AND MOST VISITORS NEVER NEED IT. From

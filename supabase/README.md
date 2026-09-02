@@ -38,6 +38,17 @@ Migrations apply **in filename order**, and each assumes the ones before it:
 | `20260819080000_delete_own_account.sql` | Phase 5 — the self-service delete control |
 | `20260819120000_delete_own_account_reauth.sql` | Phase 5 — requires a recent password sign-in before that delete. `create or replace`, so it is safe whether or not the one above was applied |
 | `20260819140000_display_name_not_null.sql` | Phase 5 — `profiles.display_name` becomes `not null`, and the signup trigger derives a placeholder when a signup supplies no name |
+| `20260820070000_profiles_wants_updates.sql` | Phase 5 follow-on — `profiles.wants_updates` and its trigger-stamped `updates_consent_at` |
+| `20260826120000_notes_body_length.sql` | Phase 6 — bounds a note's length; one note per person per story |
+| `20260826140000_user_news_single_pin.sql` | Phase 6 — at most one pinned story per reader (`user_news.pinned`) |
+| `20260826160000_notes_one_per_target_news_only.sql` | Phase 6 — scopes the one-note-per-target index to news, so primers and plans can carry several |
+| `20260826180000_news_stories_merged_into.sql` | Phase 6 — `merged_into`, where an archived story's old links land |
+| `20260827090000_notes_anchor.sql` | Notes on primers and plans — the `anchor` column and its index |
+
+`supabase/rollback/` holds one `_down.sql` per file above. Run them in **reverse** order: two of
+them recreate what an earlier migration changed (`display_name_not_null_down` restores the
+signup trigger `profiles_wants_updates` later replaced), so out of order they leave the wrong
+version behind.
 
 ### When each project gets a migration
 
@@ -83,10 +94,12 @@ the build, and Vercel and GitHub Actions must never run it.
 
 ### Rolling back
 
-`rollback/…_down.sql`, run the same way. **Safe only while the tables are empty**,
-which is all of Phase 3 — this phase inserts no rows anywhere. From Phase 5 it
-destroys real user data. A Vercel rollback restores code, never schema, which is
-why this file exists at all.
+`rollback/…_down.sql`, run the same way, in reverse filename order. **The initial
+schema's rollback drops every table**, and since Phase 5 those tables hold real
+accounts, progress and notes — so it is a rebuild tool, not an undo button. The
+later rollbacks each carry their own warning about what they destroy; read the file
+before running it. A Vercel rollback restores code, never schema, which is why
+these files exist at all.
 
 ---
 
@@ -325,7 +338,7 @@ content, and it read all-green on every Brevo message while all three defects we
 `d=amazonses.com` — Amazon signing its own outbound. It passes, it is not yours, and it cannot
 align with `header.from`. After a broken selector, the raw source will still show a `dkim=pass`.
 
-**Trigger the sends from a clean `/auth-test/` URL** with no `#` fragment in the address bar.
+**Trigger the sends from a clean `/sign-in/` URL** with no `#` fragment in the address bar.
 The page builds its redirect target from `origin + pathname`, but production carries the older
 `window.location.href` version until Phase 4 merges, and that produces a `##` link that supabase-js
 cannot parse.
@@ -556,7 +569,7 @@ which is the actual cost of the split.
 | | How |
 |---|---|
 | **Project creation settings** | ⚠️ **Two of the defaults are wrong** — see below. Set them at creation. |
-| Schema, RLS, policies, functions | **Free.** Replay both migrations in order — `20260817120000_initial_schema.sql`, then `20260817140000_harden_function_grants.sql`. This is what they were kept in the repo for. |
+| Schema, RLS, policies, functions | **Free.** Replay every file in `migrations/` in filename order (the table at the top of this document), then the seeds in `seed/`. This is what they were kept in the repo for. |
 | Redirect allowlist | Two entries, below. |
 | Custom SMTP | Its own Resend key, below. |
 | Email rate limit | 100/hour, same as prod. |
@@ -677,7 +690,8 @@ written down. If this list ever grows a second entry, that entry is signal.
 the exposed schema (`create schema private; alter function public.is_admin() set schema private;`)
 and recreate the six policies that reference it. Policies can call functions in unexposed schemas
 perfectly well. That was weighed and deferred: it costs a migration and six policy rewrites to
-remove an exposure that reveals nothing, and it would break the `/auth-test` page's check 4.
+remove an exposure that reveals nothing, and `auth.js`'s `isAdmin()` reads through the policy
+that calls it, so the function has to stay callable by `authenticated` wherever it lives.
 
 ---
 
@@ -846,20 +860,35 @@ key and asserts, table by table, that nothing reads and nothing writes. It refus
 run if handed a `service_role` key, which would bypass RLS and report a green board
 while proving nothing.
 
-Two different passing states, and the distinction matters:
+Three different passing states, and the distinction matters:
 
 - **`denied`** — `profiles`, `skill_progress`, `user_news`, `notes`. `anon` holds no
   SELECT grant at all, so PostgREST refuses before RLS is consulted. Permanent.
-- **`empty`** — the five content tables. `anon` may SELECT; the tables are empty, so
-  the result is `[]`. **This assertion is time-limited**: from Phase 6, `news_stories`
-  legitimately returns published rows to anonymous callers. That is the design, not a
-  regression. Only the `denied` rows are an invariant.
+- **a predicate on the rows returned** — `news_stories` (every row is `published` or
+  `archived`, never `draft`, and the table actually returned rows to judge) and
+  `announcements` (every row is active and inside its `starts_at`/`expires_at` window,
+  which holds of the empty table today and of the seeded one Phase 7 brings). These
+  assert what the RLS policy promises rather than the absence of data.
+- **`empty`** — `blog_posts`, `blog_categories`, `site_updates`. `anon` may SELECT and
+  the tables have nothing in them yet. **This assertion is time-limited by nature**:
+  the day a phase fills one of these, its row moves to a predicate like the two above,
+  as `news_stories` did on 2026-08-26.
 
-### Signed in — `/auth-test`
+### Signed in — the two-account proof
 
-`npm run dev` → <http://localhost:4321/auth-test>. The script cannot reach the
-signed-in half: session handling, the signup trigger, the `is_admin` guard, and the
-redirect allowlist, which only fails on a real origin in a real browser.
+The script above never authenticates, so it cannot see the half of the model that
+matters most: that a signed-in reader gets **their own** rows and nobody else's. Every
+client on the site filters by `user_id` itself, so a policy of `using (true)` would look
+identical from inside the application — the client filter masks it completely. Proving it
+means making the request the app never makes, from a **second** account:
+`supabase/verify/two-account-rls-proof.js`, run in a browser console while signed in as
+account B, asserts that account A's notes, saves and progress do not come back. With one
+owner, "only mine" and "everything" are the same result, which is why it takes two.
+
+Two gates cover the rest of the signed-in surface and are documented in their own headers:
+`npm run verify:completion` (an authenticated session's writes to `skill_progress`, dev
+only — it refuses production) and `npm run verify:redirects` (the auth redirect allowlist
+on both projects, with no email sent).
 
 ### ⚠️ Testing a FAILURE against Supabase — supabase-js retries, and it will fool you
 
@@ -908,26 +937,3 @@ failure-test says nothing.
 Writes are never retried (`POST`, `PATCH`, `DELETE` are outside the safelist), so
 `public/progress.js` keeps its own pending-and-reschedule. Do not remove it believing
 the library covers it.
-
-**The page takes the project URL and anon key at runtime**, in two fields, stored in
-`localStorage` for that origin. It does *not* read them from the build. That is what
-lets it run unchanged on all four origins — localhost, the Vercel preview,
-`amplifiedthinker.com` and the Pages origin — with **no environment variables
-configured anywhere**. The alternative was `PUBLIC_` vars in three build configs
-(`.env`, Vercel's dashboard, and `.github/workflows/pages.yml`) for a page marked for
-deletion, plus remembering to unpick all three afterwards.
-
-Two consequences worth knowing:
-
-- `localStorage` is per-origin, so you paste the credentials once per origin — four
-  times in total, and never into a config file.
-- After merge the page is live but **inert**: with no credentials baked in it does
-  nothing at all for a stray visitor. It also refuses a `service_role` or `sb_secret_`
-  key, mirroring the guard in `verify-rls.mjs`, because such a key would bypass RLS and
-  turn every check green while proving nothing.
-
-Run it on **both** production origins after merge, not just Vercel. Phase 1 and Phase 0
-each ended with a defect that only a human looking at a browser found.
-
-Delete `src/pages/auth-test.astro` at the end of Phase 5, once `auth.js` and
-`supabase-client.js` exist and the real sign-in UI is in `nav.js`.

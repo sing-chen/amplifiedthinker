@@ -11,7 +11,7 @@
 //
 // ⚠️ The Turnstile widget is deliberately NOT loaded here. It belongs on the
 // sign-in surface only. Loading it from the nav would add a third-party request
-// to challenges.cloudflare.com on all 16 pages for every guest; scoped to one
+// to challenges.cloudflare.com on all 19 pages for every guest; scoped to one
 // page, a network that blocks that host costs account creation and nothing else.
 
 (function (global) {
@@ -22,6 +22,7 @@
   var ready = false;
   var listeners = [];
   var adminCache = null;
+  var settled = false;   // has the first real answer (in or out) been given
 
   function nav() {
     return global.AmplifiedNav || null;
@@ -56,7 +57,11 @@
   }
 
   function setSession(next) {
-    var changedUser = (next && next.user && next.user.id) !== (session && session.user && session.user.id);
+    var nextId = next && next.user ? next.user.id : null;
+    var prevId = session && session.user ? session.user.id : null;
+    var changedUser = nextId !== prevId;
+    var firstAnswer = !settled;
+    settled = true;
     session = next || null;
     if (changedUser) adminCache = null;
 
@@ -69,7 +74,18 @@
     } catch (e) { /* ignore */ }
 
     renderNavAuth();
-    notify();
+
+    /* ⚠️ LISTENERS HEAR ABOUT A CHANGE OF PERSON, NOT EVERY AUTH EVENT. The
+       nav above repaints on every event, which is cheap and keeps a changed
+       display name current. The listeners are not cheap: news-actions.js,
+       skill-notes.js and account-notes.js each treat a call as "someone
+       signed in" and rebuild their panels — destroying whatever note was
+       being typed. supabase-js fires INITIAL_SESSION on subscribe AND
+       getSession() resolves, so every page used to get two identical calls
+       at load, then another on each hourly TOKEN_REFRESHED. A guest's first
+       answer is null-to-null and must still go out, or every page waiting to
+       learn "signed out" would wait for ever. */
+    if (changedUser || firstAnswer) notify();
   }
 
   // ---- rendering the nav control ----------------------------------------

@@ -12,7 +12,7 @@
 
 import {
   filterBarHTML, headlineListHTML, storyHTML,
-  navigableSlugs, bucketKey, daysAgo, findPinned
+  navigableSlugs, expandedFor
 } from '../lib/news-render.mjs';
 
 interface Props {
@@ -24,18 +24,13 @@ interface Props {
 
 const { stories, active, showDetail = false } = Astro.props;
 
-// Mirrors expandedFor() in the client script: open the archive group the current
-// story sits in, and only that one. Today is not collapsible and the pinned
-// story sits above the groups, so both mean "nothing expanded".
-const pinned = findPinned(stories);
-const expanded = (() => {
-  if (!active) return null;
-  if (pinned && active.slug === pinned.slug) return null;
-  const key = bucketKey(daysAgo(active.date));
-  return key === 'Today' ? null : key;
-})();
-
-const state = { tag: 'all', query: '', expanded, activeSlug: active ? active.slug : null };
+// Which archive group is open comes from the shared module, the same call the
+// client script makes on every story swap — one implementation, not a mirror.
+const state = {
+  tag: 'all', query: '',
+  expanded: expandedFor(stories, active),
+  activeSlug: active ? active.slug : null
+};
 
 const slugs = active ? navigableSlugs(stories, state) : [];
 const at = active ? slugs.indexOf(active.slug) : -1;

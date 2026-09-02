@@ -232,13 +232,14 @@
     var uid = userId();
     if (!sb || !uid) return Promise.reject(new Error('signed out'));
 
-    var state = cache[storyId] || { favorited: false, pinned: false };
-    var row = {
-      user_id: uid,
-      story_id: storyId,
-      favorited: patch.favorited != null ? patch.favorited : state.favorited,
-      pinned: patch.pinned != null ? patch.pinned : state.pinned
-    };
+    // ⚠️ ONLY THE COLUMN THAT CHANGED. The upsert merges into an existing row,
+    // so an omitted column keeps its stored value and a new row takes the
+    // column default (false). Sending both flags from the cache used to clobber
+    // the other one whenever the cache was stale — after a failed read, a Save
+    // click would upsert {favorited: true, pinned: false} over a real pin.
+    var row = { user_id: uid, story_id: storyId };
+    if (patch.favorited != null) row.favorited = patch.favorited;
+    if (patch.pinned != null) row.pinned = patch.pinned;
     return sb.from('user_news').upsert(row, { onConflict: 'user_id,story_id' })
       .then(function (r) { if (r.error) throw r.error; return r; });
   }
@@ -656,8 +657,9 @@
         if (session) loadPersonal(); else clearPersonal();
         paint();
       });
-      paint();
-      if (a.isSignedIn()) loadPersonal();
+      // No trailing paint()/loadPersonal(): onAuthChange() calls back at once
+      // when the answer is already known, and the server has already painted
+      // the guest state for the case where it is not.
     });
   }
 

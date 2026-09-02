@@ -58,8 +58,8 @@
      ⚠️ THE DATE IS DELIBERATELY NOT SHOWN ON AN ENTRY. The month heading is
      the only date on the page, and each entry carries a title instead. If a
      day ever needs to be visible again, it is already in `updates.json` —
-     but note that `index.html`'s announcement banner states the same dates
-     independently, and nothing checks the two agree. */
+     but note that the homepage announce card in index.html states the same
+     dates independently, and nothing checks the two agree. */
   .wn-months{display:flex;flex-direction:column;gap:14px;margin-top:44px}
   .wn-month{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-surface)}
   /* The header carries a tint of its own so an expanded month still reads as a
@@ -82,12 +82,12 @@
   .wn-month-body{padding:24px 20px 22px 48px;display:flex;flex-direction:column;gap:22px}
   /* ── CATEGORY PILLS ──
      ⚠️ `feature`, `skill` and `story` are index.html's vocabulary, reused
-     deliberately — its banner already labels items from a `type`, and one
-     update announced in both places must not be a "New feature" on the
+     deliberately — its announce card already labels items from a `type`, and
+     one update announced in both places must not be a "New feature" on the
      homepage and something else here. Their labels are copied from that file's
-     PILL_LABELS and have to move with it. `improvement` and `milestone` are
-     this page's own: the banner never carried them because neither is a new
-     thing to go and look at, and the banner only runs for a fortnight anyway.
+     TYPE_LABELS and have to move with it. `improvement` and `milestone` are
+     this page's own: the card never carried them because neither is a new
+     thing to go and look at, and a card item only runs for a few weeks anyway.
 
      The colours are pairs already shipped and proven in both themes — the
      three about.html audience tints, plus the .doc-btn brand fill for the
@@ -215,8 +215,8 @@
                 'July','August','September','October','November','December'];
 
   /* An entry's `type` decides its pill. ⚠️ `skill`, `feature` and `story` are
-     the same three keys index.html's ANNOUNCEMENTS uses, and their labels are
-     its PILL_LABELS verbatim — the two surfaces describe the same updates, so
+     the same three keys index.html's announce card uses, and their labels are
+     its TYPE_LABELS verbatim — the two surfaces describe the same updates, so
      they say the same words. `story` has no colour class of its own yet and
      falls to the neutral pill; give it one when the first story entry lands.
      An entry with no `type`, or one this map does not know, gets no pill at
