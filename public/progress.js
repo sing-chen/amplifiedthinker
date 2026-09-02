@@ -544,11 +544,13 @@
 
       var isPrimer = store.kind === 'primer';
 
-      // A plan is worked through; a ten-minute deck is finished. "Worked all the
+      // A plan is worked through; a ten-minute deck is completed. "Worked all the
       // way through this primer" overstates what it asks of someone, and the
-      // slide has no room for the longer line anyway.
+      // slide has no room for the longer line anyway. "Completed" is the site's
+      // one verb for this state (decided 2026-09-02) — the button, the stamp,
+      // /learning/ and why-sign-up all say it.
       var prompt = isPrimer
-        ? 'Finished this primer?'
+        ? 'Completed this primer?'
         : 'Worked all the way through this learning plan?';
 
       // Narrower and tighter, so the last slide does not start scrolling.

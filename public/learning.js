@@ -97,7 +97,7 @@
       // completedAt when finished, updated_at otherwise — the same choice the
       // library makes, so one row never carries two different dates.
       when: done
-        ? (a.completedAt ? 'Finished ' + M.formatDate(a.completedAt) : 'Finished')
+        ? (a.completedAt ? 'Completed ' + M.formatDate(a.completedAt) : 'Completed')
         : (a.updatedAt ? 'Read ' + M.formatDate(a.updatedAt) : 'Not opened yet'),
       // No fragment. The page restores its own position from the same table via
       // progress.js, and a competing #hash would fight that restore.

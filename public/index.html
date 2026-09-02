@@ -400,12 +400,11 @@
             'August', 'September', 'October', 'November', 'December'][d.getMonth()];
   }
 
+  // DD Mmm YYYY, the site's one date format, from nav.js (loaded above). It
+  // used to say "Tue 2 Sep" here alone, with no year and a weekday nothing
+  // else on the site shows.
   function formatAnnounceDate(dateStr) {
-    var d = new Date(dateStr + 'T00:00:00');
-    if (isNaN(d)) return '';
-    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    return window.AmplifiedNav.formatDate(dateStr + 'T00:00:00');
   }
 
   function daysSince(dateStr) {
