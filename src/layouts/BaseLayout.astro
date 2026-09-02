@@ -131,6 +131,14 @@ const {
   <slot />
 </main>
 
+<!-- Vercel Web Analytics, exactly as every hand-written page carries it at the
+     foot of <body>. ⚠️ privacy.html §3 says "Every page includes Vercel Web
+     Analytics" — this layout was the six routes that made that sentence false
+     (/news/, /news/<slug>, /sign-in/, /account/, /learning/, /admin/) until
+     2026-09-02. Vercel injects the script at serve time; it 404s under
+     `astro dev`, which dev-workflow.md's origin table already records. -->
+<script defer src="/_vercel/insights/script.js" is:inline></script>
+
 <footer class="site-footer">
   <div class="fi">
     <div class="footer-inner">

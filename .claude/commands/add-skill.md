@@ -192,7 +192,7 @@ Once both files are built (and, if you ran a browser check, verified working), p
 
 **5a. Register the skill in nav.js**
 
-Add `'[skill-slug]': '[Skill Name]'` to the `names` map in [nav.js](public/nav.js) (currently around line 60) — a one-line addition to the existing object literal.
+Add `'[skill-slug]': '[Skill Name]'` to the `names` map in [nav.js](public/nav.js) (search for `var names = {`) — a one-line addition to the existing object literal.
 
 **5b. Flip the skill's card in [public/future-skills.html](public/future-skills.html) from "coming soon" to available**
 
@@ -290,7 +290,7 @@ repo can see them.
 Before running this on a new skill, check the prompt against the source rather than trusting it:
 
 ```bash
-grep -o -- "--\(deep-teal\|terracotta\|teal\|sage\|amber\|charcoal\):#[0-9A-Fa-f]*" public/styles.css
+grep -o -- "--\(deep-teal\|mid-teal\|teal\|sage\|light-sage\|warm-cream\|charcoal\):#[0-9A-Fa-f]*" public/styles.css
 ```
 
 ⚠️ **Terracotta is deliberately left wrong, and the reason applies to deep teal too — read this

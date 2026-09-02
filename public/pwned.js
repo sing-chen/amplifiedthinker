@@ -1,7 +1,7 @@
 // Refuses passwords that already appear in a public breach corpus.
 //
 // Loaded ONLY by the two auth surfaces — /sign-in/ and /account/ — not from
-// nav.js. It has no reader on the other 14 pages, and this is the same call
+// nav.js. It has no reader on the other 17 pages, and this is the same call
 // auth-pages.css makes for the same reason.
 //
 // ── Why this exists in the page at all ────────────────────────────────────

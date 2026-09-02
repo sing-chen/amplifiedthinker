@@ -161,6 +161,22 @@ export function findPinned(stories) {
 
 // The reading order the Previous/Next buttons walk: the pinned story first,
 // then everything else newest-first. `stories` is already sorted by the query.
+/**
+ * The one archive group to hold open: the group the given story sits in.
+ * Today is never a collapsible group and the pinned story sits above them all,
+ * so both resolve to null — nothing expanded.
+ *
+ * Shared by NewsView.astro (first paint) and news-app.js (every swap) so the
+ * server and the client cannot disagree about which group is open.
+ */
+export function expandedFor(stories, story) {
+  if (!story) return null;
+  const pinned = findPinned(stories);
+  if (pinned && story.slug === pinned.slug) return null;
+  const key = bucketKey(daysAgo(story.date));
+  return key === 'Today' ? null : key;
+}
+
 export function navigableSlugs(stories, state) {
   if (state.query) return stories.filter((s) => matchesFilter(s, state)).map((s) => s.slug);
   const pinned = findPinned(stories);

@@ -45,7 +45,7 @@ function prodConfig() {
   return { url: url[1], key: key[1] };
 }
 
-// Mirrors the guard in verify-rls.mjs and the /auth-test page. A service_role
+// Mirrors the guard in verify-rls.mjs and astro.config.mjs. A service_role
 // key would work perfectly here, which is exactly why it must be refused: this
 // script runs unattended in CI, and a privileged key committed to a public repo
 // is the one mistake with no cheap recovery.

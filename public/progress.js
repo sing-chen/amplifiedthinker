@@ -111,7 +111,16 @@
       var auth = global.AmplifiedAuth;
       if (auth) {
         auth.onAuthChange(function (session) {
-          if (mode === 'pending') settleAuth(session);
+          if (mode === 'pending') { settleAuth(session); return; }
+          /* ⚠️ NOT ONLY THE FIRST ANSWER. Signing out from the nav does not
+             reload the page, so without this the mode stayed 'account' with a
+             stale session: every later save was refused by RLS and retried on
+             each scroll, and flushOnHide() still POSTed with the old token —
+             writing the reader's place into the account they had just left.
+             settleAuth() with no waiters queued only updates the answer. */
+          var nextId = session && session.user ? session.user.id : null;
+          var curId = authSession && authSession.user ? authSession.user.id : null;
+          if (nextId !== curId) settleAuth(session);
         });
         return;
       }

@@ -91,7 +91,8 @@ Before converting, check for overlap in both directions and surface anything fou
 npm run verify:news-dupes -- dev
 ```
 
-  Use `dev` before the Phase 6 merge and `prod` after it. It reads `news_stories` with the anon key
+  `prod` is the live site, so that is the one to check; `dev` only if the two are being kept in
+  step. It reads `news_stories` with the anon key
   (`news_stories_public_read` already allows it, so there is no new credential) and never writes.
   It reports three things: one URL published under two stories, a story in the file whose URL is
   already live under a different slug, and rows in the database that are **not in the file at all**.
@@ -104,8 +105,8 @@ npm run verify:news-dupes -- dev
   different slug and inserts a *second* one. Neither raises anything. A duplicate story is not a
   duplicate slug.
 
-  ⚠️ **An empty table is reported as "not a pass", not as clean** — prod's is empty until the merge,
-  and with no rows every comparison would come back green.
+  ⚠️ **An empty table is reported as "not a pass", not as clean** — with no rows every comparison
+  would come back green, and a rebuilt or unseeded project looks exactly like a clean one.
 
 If you find overlap, tell the user what you found and ask whether to: keep both, cut one, or merge multiple digest entries into a single news.json story (one `source`/`url`, one combined `summary`/`implications` referencing the multiple angles — see the McKinsey HR Monitor merge from 2026-07-10 in content/news.json for the pattern). Don't merge or cut unilaterally.
 
@@ -186,18 +187,9 @@ key is refused by RLS, correctly, and there is no service key. Say plainly that 
 live until they do, and paste the verification queries from the foot of the generated file so they
 can confirm the row count themselves rather than trusting "Success. No rows returned".
 
-⚠️ **WHICH PROJECT DEPENDS ON WHETHER PHASE 6 HAS MERGED, AND GETTING IT WRONG IS SILENT BOTH
-WAYS.** Check `git log origin/main --oneline -1` if unsure.
-
-| when | where the SQL goes | why |
-|---|---|---|
-| **Before the stage 17 merge** | **dev**, and nowhere else | Prod is still serving the old site and its `news_stories` is empty by design. Loading a single day into prod would put one story on a page nothing links to yet. ⚠️ **Prod needs no dashboard step at all in this window** — the story is already in `content/news.json`, so stage 17's full seed picks it up on its own |
-| **After the stage 17 merge** | **prod** — and dev too, if you want them to match | Prod is the live site. This is the steady state |
-
-⚠️ **Do not run a partial against prod before the merge and then also let stage 17's full seed
-run.** Both are idempotent on `slug`, so nothing breaks and nothing warns — but the day's stories
-then exist because of a step nobody recorded, and the row count in the stage 17 checklist will not
-be the number that stage predicted.
+**The SQL goes to prod** — that is the live site, and has been since Phase 6 merged on
+2026-08-26. Run it against dev too if the two projects are being kept in step; nothing on the
+site reads dev's `news_stories`, so skipping it costs nothing but a drift between the two.
 
 ## Step 5 — Pin (optional)
 

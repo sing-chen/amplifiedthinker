@@ -108,11 +108,17 @@
      `mode` stays null until progress.js settles the question. Null means "not
      known yet", and the prompt stays silent — telling a reader their place is
      saved before knowing whether it is would be worse than saying nothing. */
-  var mode = null;
-
   var progress = global.AmplifiedProgress;
-  if (progress && typeof progress.whenAuth === 'function') {
-    progress.whenAuth(function (session) { mode = session ? 'account' : 'guest'; });
+
+  /* Read LIVE from progress.js, never cached here. Signing out from the nav
+     does not reload the page, so a value captured once would keep telling a
+     now-signed-out reader "your place is saved" for the rest of the visit.
+     progress.js reports 'pending' until the stack settles, which is this
+     file's null. */
+  function mode() {
+    if (!progress || typeof progress.mode !== 'function') return null;
+    var m = progress.mode();
+    return m === 'account' || m === 'guest' ? m : null;
   }
 
   // The SAME store the page is using — forPage() is cached, so this neither
@@ -152,11 +158,11 @@
      rather than an oversight. */
   function shouldAsk() {
     if (isComplete()) return false;
-    return mode === 'guest' ? true : !asked;
+    return mode() === 'guest' ? true : !asked;
   }
 
   function ready() {
-    return engaged && !leaving && mode !== null && shouldAsk();
+    return engaged && !leaving && mode() !== null && shouldAsk();
   }
 
   /* ── the dialog ────────────────────────────────────────────────────────── */
@@ -349,7 +355,8 @@
 
   function open(onLeave) {
     var d = build();
-    var copy = COPY[mode];
+    var who = mode();
+    var copy = COPY[who];
 
     d.querySelector('#egTitle').textContent = copy.title;
     d.querySelector('#egBody').textContent = copy.body;
@@ -360,7 +367,7 @@
     // reader back to offset 0 — the exact defect CLAUDE.md records twice
     // against the nav's own sign-in control.
     var signIn = d.querySelector('#egSignIn');
-    if (mode === 'guest') {
+    if (who === 'guest') {
       var nav = global.AmplifiedNav;
       var href = nav && nav.root ? nav.root('sign-in/') : '/sign-in/';
       if (nav && nav.returnParam) href += nav.returnParam();
@@ -456,8 +463,12 @@
      carries most of the value and none of this. */
   var trapped = false;
 
+  // Whether the gate has already been spent is ready()'s job — the caller below
+  // checks it before arming. (This line once named an undeclared `spent`, which
+  // threw a ReferenceError from the capture-phase listener on every click and
+  // keypress, so the trap never armed at all. node --check cannot see that.)
   function armBackTrap() {
-    if (trapped || !engaged || spent) return;
+    if (trapped || !engaged) return;
     trapped = true;
     try { global.history.pushState({ exitGuard: 1 }, ''); } catch (err) { trapped = false; }
   }

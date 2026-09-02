@@ -42,9 +42,11 @@ REM    --all       stage everything, including paths outside public/ and docs/
 REM    --yes       skip the confirmation prompt (for non-interactive use)
 REM    --no-build  skip the build gate
 REM
-REM  Called by .claude/commands/add-news.md Step 5 as `deploy.bat "msg"`, which
-REM  still works unchanged -- if you alter the argument shape, fix that too.
-REM  Structural changes orphaning .claude/commands/ is a repeat offence here.
+REM  No longer called by .claude/commands/add-news.md: since Phase 6 that
+REM  command's commit touches content/ and supabase/seed/, which guard 2 refuses
+REM  by design, so it commits with git directly. If the argument shape changes,
+REM  check the commands anyway -- structural changes orphaning
+REM  .claude/commands/ is a repeat offence here.
 REM ============================================================================
 
 set "MSG="

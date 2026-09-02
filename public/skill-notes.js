@@ -413,12 +413,22 @@
        it cancels one of its own confirmations, so the first Escape backs out of
        "Delete this note permanently?" and only the second closes the panel.
        That ordering is the whole reason the editor binds to its own root. */
+    wireDocument();
+    measureRail();
+  }
+
+  // Document-level listeners are registered ONCE, not per build(): teardown()
+  // on sign-out nulls `root` but cannot unregister a closure it never kept, so
+  // a second build() after signing back in used to stack a second pair, and
+  // Escape pressed while signed out threw on the null root.
+  var documentWired = false;
+  function wireDocument() {
+    if (documentWired) return;
+    documentWired = true;
     doc.addEventListener('keydown', function (e) {
-      if (e.key !== 'Escape') return;
+      if (e.key !== 'Escape' || !root) return;
       if (!root.querySelector('#skn-panel').hasAttribute('hidden')) open(false);
     });
-
-    measureRail();
     global.addEventListener('resize', measureRail, { passive: true });
   }
 
@@ -680,7 +690,8 @@
            repeating. */
         if (session) paint(); else teardown();
       });
-      if (a.isSignedIn()) paint();
+      // No trailing paint(): onAuthChange() calls back at once when the answer
+      // is already known, so that was a second identical load every time.
     });
   }
 

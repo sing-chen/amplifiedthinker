@@ -130,12 +130,14 @@ for (const group of groups) {
   const stories = Array.isArray(group.stories) ? group.stories : [];
 
   stories.forEach((story, index) => {
-    // ⚠️ `index` IS THE ARRAY POSITION IN THE FILE, AND NOTHING ELSE.
-    // `news.html`'s buildFlatStories() builds `group.date + '-' + i` the same
-    // way, and `middleware.js` parses it by splitting on the LAST '-'. This is
-    // the only value in this script that cannot be recomputed later: get it
-    // wrong and every previously shared link resolves to a DIFFERENT story,
-    // silently. Do not sort, filter or dedupe before this point.
+    // ⚠️ `index` IS THE ARRAY POSITION IN THE FILE, AND NOTHING ELSE. It is
+    // the `<date>-<index>` id the retired news.html minted for every link
+    // shared before Phase 6, and src/lib/news-data.mjs's slugForLegacyId()
+    // resolves those links through the STORED column, never by recomputing
+    // the position. This is the only value in this script that cannot be
+    // recomputed later: get it wrong and every previously shared link resolves
+    // to a DIFFERENT story, silently. Do not sort, filter or dedupe before
+    // this point.
     const legacyId = `${date}-${index}`;
     const titleSlug = slugifyTitle(story.title);
 

@@ -1,6 +1,6 @@
 /* Shared styling for the auth surfaces: /sign-in/ and /account/.
  *
- * Deliberately NOT in styles.css. That file is loaded by all 16 hand-written
+ * Deliberately NOT in styles.css. That file is loaded by all 19 hand-written
  * pages, and none of them need any of this — putting it there would add weight
  * to every page on the site to style two.
  *
@@ -14,7 +14,7 @@
    --bg-surface — fine for a border or a fill, short of the 4.5:1 that 15px text
    needs. This is a real gap in the palette rather than a local preference, and
    it was already affecting .auth-status.bad before the delete button existed.
-   Scoped here rather than added to styles.css, which all 16 pages load, until
+   Scoped here rather than added to styles.css, which all 19 pages load, until
    something outside the auth surfaces needs it too.
 
    Light is unchanged from the token; only dark is lightened. 6.9:1 on
@@ -86,7 +86,7 @@
  *
  * `!important` on purpose, and the one place in this file it is warranted:
  * `hidden` means "this must not render", and no layout rule may outrank it.
- * Scoped to the auth surfaces, so it cannot reach the other 14 pages.
+ * Scoped to the auth surfaces, so it cannot reach the other 17 pages.
  *
  * The two `[hidden]` rules further down are now redundant. Kept because they
  * document intent at the element they belong to. */
