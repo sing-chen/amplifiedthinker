@@ -620,10 +620,12 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       // `signInWithPassword` is captcha-protected — so both need a token. A
       // widget is bound to one container element, so they cannot share one.
       //
-      // ⚠️ Built as a factory rather than duplicated. This code has three
-      // separate traps in it (single-use tokens, the reset-before-execute rule,
-      // and the 30s stall) and a second hand-copied version would drift from
-      // this one at the first fix.
+      // ⚠️ The widget itself is AmplifiedAuthPages.turnstile(), shared with
+      // /sign-in/ since 2026-09-02. It has three separate traps in it
+      // (single-use tokens, the reset-before-execute rule, and the 30s stall)
+      // and the hand-copied version this page carried before would have
+      // drifted from sign-in's at the first fix. What stays here is the
+      // per-page part: which panels have a widget, and when api.js loads.
       //
       // The api.js SCRIPT is still loaded once and shared; only the render is
       // per-panel. window.onAcctTurnstileLoad fires once, so every widget
@@ -654,52 +656,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
 
       function makeTurnstile(selector) {
-        var id = null;
-        var pending = null;
-        var solved = false;
-
-        function deliver(token) {
-          if (token) solved = true;
-          if (pending) { var fn = pending; pending = null; fn(token); }
-        }
-
-        function render() {
-          if (id !== null || !window.turnstile) return;
-
-          var cfg = window.AmplifiedSupabase && window.AmplifiedSupabase.config();
-          if (!cfg || !cfg.turnstileSiteKey) return;
-
-          id = window.turnstile.render(selector, {
-            sitekey: cfg.turnstileSiteKey,
-            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
-            appearance: 'interaction-only',
-            execution: 'execute',
-            callback: deliver,
-            'expired-callback': function () { deliver(null); },
-            'timeout-callback': function () { deliver(null); },
-            'error-callback': function () { deliver(null); }
-          });
-        }
-
-        // ⚠️ Tokens are single-use. Reusing one gives `timeout-or-duplicate`,
-        // which reads as a captcha fault rather than as a spent token — the
-        // exact confusion that cost a day earlier in this phase. Reset before
-        // every execute once one has already been solved.
-        function fresh() {
-          return new Promise(function (resolve) {
-            if (!window.turnstile || id === null) { resolve(null); return; }
-            pending = resolve;
-            try {
-              if (solved) window.turnstile.reset(id);
-              window.turnstile.execute(id);
-            } catch (e) { pending = null; resolve(null); return; }
-            setTimeout(function () {
-              if (pending) { pending = null; resolve(null); }
-            }, 30000);
-          });
-        }
-
-        var w = { render: render, fresh: fresh };
+        var w = window.AmplifiedAuthPages.turnstile(selector);
         turnstileWidgets.push(w);
         return w;
       }

@@ -64,5 +64,81 @@
     });
   }
 
-  global.AmplifiedAuthPages = { breachedMessage: breachedMessage };
+  // ---- a Turnstile widget -------------------------------------------------
+  //
+  // One widget per container element, returned as { render, fresh }. Both
+  // auth pages had this verbatim until 2026-09-02, three traps and all:
+  //
+  // ⚠️ A Turnstile token is single-use AND expires after about 5 minutes.
+  // Solving the challenge on page load looks tidy and is wrong: someone who
+  // takes their time over the form submits a token that has already aged
+  // out, and Supabase rejects it with
+  //     captcha protection: request disallowed (timeout-or-duplicate)
+  // which reads like a broken captcha rather than a stale one. So the widget
+  // is rendered with `execution: 'execute'` — it does nothing until asked —
+  // and fresh() fetches a token at the moment of submit, so every attempt
+  // gets its own.
+  //
+  // ⚠️ RESET ONLY AFTER A PREVIOUS SOLVE. turnstile.reset() on a widget that
+  // has never executed leaves it in a state where the next execute() yields a
+  // token Cloudflare rejects as `timeout-or-duplicate` — which reads as "your
+  // captcha is broken" and cost an hour of looking at token lifetimes. reset()
+  // re-arms a spent widget; it does not initialise a fresh one.
+  //
+  // ⚠️ AND A 30s STALL BOUND. If an interactive challenge is shown, the
+  // visitor may simply not finish it; fresh() resolves null rather than
+  // leaving a submit button disabled for ever. It never rejects: the caller
+  // shows a message either way.
+  //
+  // Depends on window.turnstile (the page decides when to load api.js) and on
+  // AmplifiedSupabase.config() for the site key, both looked up at call time.
+  function turnstile(selector) {
+    var id = null;
+    var pending = null;
+    var solved = false;
+
+    function deliver(token) {
+      if (token) solved = true;
+      if (pending) { var fn = pending; pending = null; fn(token); }
+    }
+
+    function render() {
+      if (id !== null || !global.turnstile) return;
+      var cfg = global.AmplifiedSupabase && global.AmplifiedSupabase.config();
+      if (!cfg || !cfg.turnstileSiteKey || /_PENDING$/.test(cfg.turnstileSiteKey)) return;
+
+      id = global.turnstile.render(selector, {
+        sitekey: cfg.turnstileSiteKey,
+        theme: global.document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
+        // Show nothing unless a challenge is actually required. Managed mode
+        // resolves silently for most visitors, but Turnstile still reserves a
+        // 73px box for a widget it never draws — measured, and it left a
+        // visible hole between the password field and the button.
+        appearance: 'interaction-only',
+        execution: 'execute',
+        callback: deliver,
+        'expired-callback': function () { deliver(null); },
+        'timeout-callback': function () { deliver(null); },
+        'error-callback': function () { deliver(null); }
+      });
+    }
+
+    function fresh() {
+      return new Promise(function (resolve) {
+        if (!global.turnstile || id === null) { resolve(null); return; }
+        pending = resolve;
+        try {
+          if (solved) global.turnstile.reset(id);
+          global.turnstile.execute(id);
+        } catch (e) { pending = null; resolve(null); return; }
+        global.setTimeout(function () {
+          if (pending) { pending = null; resolve(null); }
+        }, 30000);
+      });
+    }
+
+    return { render: render, fresh: fresh };
+  }
+
+  global.AmplifiedAuthPages = { breachedMessage: breachedMessage, turnstile: turnstile };
 })(window);

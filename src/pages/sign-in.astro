@@ -748,8 +748,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         if (hash === '#forgot') return 'forgot';
         return 'signin';
       })();
-      var captchaToken = null;
-      var widgetId = null;
 
       function show(name) {
         Object.keys(panels).forEach(function (k) {
@@ -881,77 +879,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       }
 
       // ---- Turnstile ------------------------------------------------------
-
-      // ⚠️ A Turnstile token is single-use AND expires after about 5 minutes.
       //
-      // Solving the challenge on page load looks tidy and is wrong: someone who
-      // takes their time over the form submits a token that has already aged
-      // out, and Supabase rejects it with
-      //
-      //     captcha protection: request disallowed (timeout-or-duplicate)
-      //
-      // which reads like a broken captcha rather than a stale one. Found by
-      // clicking Create account on a page that had been open a while.
-      //
-      // So the widget is rendered with `execution: 'execute'` - it does nothing
-      // until asked - and a fresh token is fetched at the moment of submit.
-      // That also removes the duplicate half of the same error, because every
-      // attempt gets its own token.
-      function renderTurnstile() {
-        if (!window.turnstile || widgetId !== null) return;
-        var cfg = window.AmplifiedSupabase && window.AmplifiedSupabase.config();
-        if (!cfg || /_PENDING$/.test(cfg.turnstileSiteKey)) return;
-
-        widgetId = window.turnstile.render('#auth-turnstile', {
-          sitekey: cfg.turnstileSiteKey,
-          theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
-          // Show nothing unless a challenge is actually required. Managed mode
-          // resolves silently for most visitors, but Turnstile still reserves a
-          // 73px box for a widget it never draws - measured, and it left a
-          // visible hole between the password field and the button.
-          appearance: 'interaction-only',
-          execution: 'execute',
-          callback: function (token) { deliver(token); },
-          'expired-callback': function () { deliver(null); },
-          'timeout-callback': function () { deliver(null); },
-          'error-callback': function () { deliver(null); }
-        });
-      }
-
-      var pending = null;
-      var hasSolved = false;
-
-      function deliver(token) {
-        captchaToken = token;
-        if (token) hasSolved = true;
-        if (pending) { var f = pending; pending = null; f(token); }
-        window.__lastCaptchaToken = token;   // diagnostics only
-      }
-
-      // Resolves with a token seconds old, or null if the challenge could not
-      // be completed. Never rejects: the caller shows a message either way.
-      //
-      // ⚠️ RESET ONLY AFTER A PREVIOUS SOLVE. Calling turnstile.reset() on a
-      // widget that has never executed leaves it in a state where the next
-      // execute() yields a token Cloudflare then rejects as
-      // `timeout-or-duplicate` - which reads as "your captcha is broken" and
-      // sent me looking at token lifetimes for an hour. reset() is for
-      // re-arming a spent widget, not for initialising a fresh one.
-      function freshToken() {
-        return new Promise(function (resolve) {
-          if (!window.turnstile || widgetId === null) { resolve(null); return; }
-
-          pending = resolve;
-          try {
-            if (hasSolved) window.turnstile.reset(widgetId);
-            window.turnstile.execute(widgetId);
-          } catch (e) { deliver(null); return; }
-
-          // If an interactive challenge is shown, the visitor may simply not
-          // finish it. Give up rather than leaving the button disabled forever.
-          setTimeout(function () { if (pending) deliver(null); }, 30000);
-        });
-      }
+      // The widget — single-use tokens fetched at submit, reset only after a
+      // solve, a 30s stall bound — is AmplifiedAuthPages.turnstile(), shared
+      // with /account/ since 2026-09-02; the three traps are written up there.
+      // Found originally by clicking Create account on a page that had been
+      // open a while: the token had aged out.
+      var captcha = window.AmplifiedAuthPages.turnstile('#auth-turnstile');
+      function renderTurnstile() { captcha.render(); }
+      function freshToken() { return captcha.fresh(); }
 
       document.addEventListener('amplified:turnstile-ready', renderTurnstile);
 
