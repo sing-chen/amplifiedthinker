@@ -152,6 +152,7 @@
     '}',
     '.snav-search:hover { background: rgba(255,255,255,0.08); color: #fff; }',
     '.snav-search.snav-search-active { color: #ACC4B6; }',
+    '.snav-search{position:relative}.snav-search::after{content:"";position:absolute;inset:-5px}',
     '.snav-search svg {',
     '  width: 18px; height: 18px;',
     '  stroke: currentColor; fill: none;',
@@ -159,6 +160,7 @@
     '}',
 
     /* Theme (light/dark) toggle */
+    '.snav-theme-toggle{position:relative}.snav-theme-toggle::after{content:"";position:absolute;inset:-5px}',
     '.snav-theme-toggle {',
     '  display: flex;',
     '  align-items: center; justify-content: center;',
@@ -386,7 +388,7 @@
     '  <a href="' + root('search.html') + '" class="snav-search' + searchActiveCls + '" aria-label="Search">',
     '    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>',
     '  </a>',
-    '  <button type="button" id="snav-theme-toggle" class="snav-theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">',
+    '  <button type="button" id="snav-theme-toggle" class="snav-theme-toggle" aria-label="Dark mode" aria-pressed="false">',
     '    <svg class="snav-theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
     '    <svg class="snav-theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>',
     '  </button>',
@@ -727,7 +729,7 @@
     } else if (peek.state === 'in') {
       slot.innerHTML =
         '<button type="button" class="snav-auth-avatar" id="snav-auth-avatar"' +
-        ' aria-expanded="false" aria-haspopup="true"' +
+        ' aria-expanded="false"' +
         ' title="' + escapeHtml(labelFor(peek.name, peek.email)) + '">' +
         escapeHtml(initialFor(peek.name, peek.email)) + '</button>';
     }
@@ -882,6 +884,9 @@
         var isOpen = nav.classList.toggle('menu-open');
         toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        // The toggle is AFTER the links in the DOM, so Tab from it would leave
+        // the menu behind; move into it, and let Escape return to the toggle.
+        if (isOpen) { var first = nav.querySelector('.snav-links a'); if (first) first.focus(); }
         return;
       }
 
@@ -920,8 +925,11 @@
     if (!btn) return;
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+    // One accessible name ("Dark mode") with the state in aria-pressed; the
+    // verb-form label is the tooltip only. Swapping both read as
+    // "Switch to light mode, pressed".
     btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-    btn.setAttribute('aria-label', label);
+    btn.setAttribute('aria-label', 'Dark mode');
     btn.setAttribute('title', label);
   }
 

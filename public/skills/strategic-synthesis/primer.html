@@ -129,7 +129,7 @@
     margin-bottom: 4px;
   }
   .nav-type {
-    font-size: 11px; color: rgba(255,255,255,0.35);
+    font-size: 11px; color: rgba(255,255,255,0.62);
     letter-spacing: 0.04em;
   }
   .nav-items { list-style: none; padding: 0 12px; flex: 1; }
@@ -139,7 +139,7 @@
     padding: 8px 12px; border-radius: var(--radius);
     font-family:var(--font-body);
     font-size: 12.5px; font-weight: 400;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.72);
     text-decoration: none; cursor: pointer;
     transition: all 0.15s; border: none; background: none;
     width: 100%; text-align: left;
@@ -150,7 +150,7 @@
   .nav-num {
     font-family:var(--font-display);font-variant-numeric:tabular-nums;
     font-size: 10px; font-weight: 600;
-    color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.62);
     min-width: 18px; flex-shrink: 0;
     transition: color 0.15s;
   }
@@ -635,7 +635,8 @@
   .skip-link:focus { top: 0; }
 
   /* ── FOCUS STYLES ────────────────────────────── */
-  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  :focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 3px; border-radius: 3px; }
+  [data-theme="dark"] :focus-visible { outline-color: var(--d-teal-stroke); }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   .nav-arrow:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
@@ -1139,7 +1140,7 @@
     <div class="pull-quote" style="max-width:780px;margin-bottom:28px;">
       <p>Strategic Synthesis &amp; Decision-Making is the discipline of turning incomplete information into one defensible direction. It means naming the trade-off out loud, testing the choice against futures rather than forecasts, and framing it so someone else can act on it without you in the room.</p>
     </div>
-    <p class="t-body" style="max-width:640px;opacity:0.75;">The output isn't a better analysis — it's a decision other people can move on.</p>
+    <p class="t-body" style="max-width:640px;opacity:0.9;">The output isn't a better analysis — it's a decision other people can move on.</p>
     <!-- Filled by progress.js, which owns the markup so ten pages do not each
          carry a copy. Empty and inert for a guest, and if that file is
          unavailable. It takes the compact variant here: a slide is a fixed

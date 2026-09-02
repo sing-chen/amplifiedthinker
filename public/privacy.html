@@ -91,6 +91,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
   /* ── TABLES ── */
   .doc-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .doc-table-wrap:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
   .doc-table{width:100%;min-width:460px;border-collapse:collapse;font-family:var(--font-body);font-size:14.5px}
   .doc-table th,.doc-table td{text-align:left;padding:12px 14px;border-bottom:1px solid rgba(172,196,182,.35);vertical-align:top;line-height:1.55}
   .doc-table thead th{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);border-bottom-width:2px}
@@ -249,7 +250,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
     <p>The first four rows apply to everyone, account or not. The rest apply only once you have an account — a contract is a basis we can rely on only where there is one, and reading the site is not a contract.</p>
 
-    <div class="doc-table-wrap">
+    <div class="doc-table-wrap" tabindex="0" role="region" aria-label="Table, scrolls sideways">
       <table class="doc-table">
         <thead>
           <tr><th scope="col">What for</th><th scope="col">Our legal basis (UK GDPR Article 6)</th></tr>
@@ -326,7 +327,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
     <p>Up to five things, all written by your own browser and none of them readable by anyone else. The first two happen whether or not you have an account:</p>
 
-    <div class="doc-table-wrap">
+    <div class="doc-table-wrap" tabindex="0" role="region" aria-label="Table, scrolls sideways">
       <table class="doc-table">
         <thead>
           <tr><th scope="col">Item</th><th scope="col">What it is</th><th scope="col">How long</th></tr>
@@ -391,7 +392,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
     <p>We do not sell your information and we do not share it for marketing. The site is run by one person, so a handful of services do the work that would otherwise need a server room. Each does one job:</p>
 
-    <div class="doc-table-wrap">
+    <div class="doc-table-wrap" tabindex="0" role="region" aria-label="Table, scrolls sideways">
       <table class="doc-table">
         <thead>
           <tr><th scope="col">Service</th><th scope="col">What it does</th><th scope="col">Who it affects</th></tr>

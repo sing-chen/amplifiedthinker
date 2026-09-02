@@ -261,8 +261,10 @@
         '<button type="button" class="' + btn + ' is-danger" data-action="confirm-yes" data-confirm="' + esc(action) + '">' +
           esc(confirmLabel) + '</button>' +
         '<button type="button" class="' + btn + '" data-action="confirm-no">Cancel</button>';
-      var yes = bar.querySelector('[data-action="confirm-yes"]');
-      if (yes) { try { yes.focus({ preventScroll: true }); } catch (e) { yes.focus(); } }
+      // Focus lands on the SAFE option, as progress.js and exit-guard.js
+      // already argue: Enter must not confirm a delete the reader has not read.
+      var no = bar.querySelector('[data-action="confirm-no"]');
+      if (no) { try { no.focus({ preventScroll: true }); } catch (e) { no.focus(); } }
     }
 
     function cancelConfirm() {

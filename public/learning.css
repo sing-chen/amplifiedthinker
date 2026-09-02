@@ -4,10 +4,11 @@
    and nothing else on the site needs a stacked bar chart. Adding these rules
    to the shared file would put weight on every page to serve one.
 
-   Everything here consumes the semantic tokens from styles.css, so dark mode
-   comes for free from the [data-theme="dark"] block there. The one exception
-   is the data-viz layer below, which needs colours the brand palette does not
-   carry — see the note on it.
+   Everything here consumes tokens from styles.css. Dark mode comes from the
+   [data-theme="dark"] block there for the semantic ones — and NOT for
+   --text-muted/--text-dark, which are raw palette values; the .learn dark
+   block below re-points those two. The other exception is the data-viz layer,
+   which needs colours the brand palette does not carry — see the note on it.
 ──────────────────────────────────────────────────────────────────────────── */
 
 /* ── data-viz colours ──────────────────────────────────────────────────────
@@ -38,6 +39,15 @@
   --dv-idle-ink: var(--text-muted);
 }
 [data-theme="dark"] .learn {
+  /* ⚠️ --text-muted and --text-dark are RAW palette tokens, not semantic ones:
+     styles.css redefines only the --fg and --bg families in dark, so the twelve
+     rules below that use them kept #4A5C55 and #1F4D4A on a #142320 page —
+     captions at 2.3:1, the legend and bar names at 1.5:1. Re-pointed here,
+     scoped to the page, so light mode does not move by a single value.
+     (Never write a glob like "fg-STAR-slash" inside a CSS comment: the
+     star-slash pair closes the comment and eats the next declaration.) */
+  --text-muted: var(--fg-2);
+  --text-dark: var(--fg-1);
   --dv-read: var(--teal);
   --dv-doing: #E0B073;
   --dv-doing-fill: #D9A05B;

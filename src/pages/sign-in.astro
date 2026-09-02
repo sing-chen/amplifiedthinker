@@ -762,6 +762,29 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         statusEl.className = 'auth-status' + (kind ? ' ' + kind : '');
       }
 
+      // A validation message names a FIELD as well as a problem: the input is
+      // marked invalid, described by the status line, and given focus, so a
+      // screen-reader user hears which box to fix rather than only that one
+      // exists. Cleared on the next attempt so a corrected field is not still
+      // announced as wrong.
+      function fieldError(id, text) {
+        clearFieldErrors();
+        var input = el(id);
+        setStatus(text, 'bad');
+        if (!input) return;
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', 'auth-status');
+        try { input.focus({ preventScroll: false }); } catch (e) { input.focus(); }
+      }
+      function clearFieldErrors() {
+        ['auth-name', 'auth-email', 'auth-password'].forEach(function (id) {
+          var input = el(id);
+          if (!input) return;
+          input.removeAttribute('aria-invalid');
+          input.removeAttribute('aria-describedby');
+        });
+      }
+
       /* ---- resending a confirmation --------------------------------------
        *
        * ⚠️ /auth/v1/resend is captcha-protected, confirmed from the auth logs
@@ -1206,8 +1229,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         setMode(next);
       });
 
-      // ---- breached-password gate ------------------------------------------
-      //
       // ---- submit ---------------------------------------------------------
       // breachedMessage() runs only where a password is CHOSEN — sign-up, and
       // the new password after a reset — never on sign-in. See auth-pages.js.
@@ -1225,13 +1246,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         // exactly what the box showed at the moment the button was pressed.
         var wantsUpdates = el('auth-updates').checked;
 
+        clearFieldErrors();
         if (mode === 'signup' && !name) {
-          setStatus('Enter a first name, so your emails are not addressed to nobody.', 'bad');
+          fieldError('auth-name', 'Enter a first name, so your emails are not addressed to nobody.');
           return;
         }
-        if (!email) { setStatus('Enter your email address.', 'bad'); return; }
+        if (!email) { fieldError('auth-email', 'Enter your email address.'); return; }
         if (mode !== 'forgot' && password.length < 8) {
-          setStatus('Passwords are at least 8 characters.', 'bad'); return;
+          fieldError('auth-password', 'Passwords are at least 8 characters.'); return;
         }
         submitBtn.disabled = true;
         setStatus('Working...');

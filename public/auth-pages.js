@@ -35,8 +35,9 @@
     var reveal = input.type === 'password';
     input.type = reveal ? 'text' : 'password';
     btn.textContent = reveal ? 'Hide' : 'Show';
+    // A toggle button keeps ONE accessible name and reports state through
+    // aria-pressed; swapping the label as well read as "Hide password, pressed".
     btn.setAttribute('aria-pressed', reveal ? 'true' : 'false');
-    btn.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
 
     // Clicking the button takes focus off the field. Put it back, caret at
     // the end, so someone mid-way through typing is not interrupted.

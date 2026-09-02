@@ -332,6 +332,7 @@
   .content { max-width: calc(var(--content-max) + 160px); padding: 0 80px 120px; width: 100%; counter-reset: section-counter; }
 
   .section {
+    scroll-margin-top: 96px;
     padding-top: 96px;
     padding-bottom: 16px;
   }
@@ -573,7 +574,7 @@
   .model-header:hover .accordion-toggle { color: var(--deep-teal); }
   .principle-header:focus-visible,
   .model-header:focus-visible {
-    outline: 2px solid var(--teal);
+    outline: 2px solid var(--deep-teal);
     outline-offset: 2px;
   }
   @media (max-width: 560px) {
@@ -595,7 +596,7 @@
     font-weight: 700;
     letter-spacing:.1em;
     text-transform: uppercase;
-    color: var(--amber);
+    color: var(--terracotta);
     white-space: nowrap;
     padding-top: 2px;
   }
@@ -1501,7 +1502,8 @@
   .skip-link:focus { top: 0; }
 
   /* ── FOCUS STYLES ────────────────────────────── */
-  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  :focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 3px; border-radius: 3px; }
+  [data-theme="dark"] :focus-visible { outline-color: var(--d-teal-stroke); }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
 

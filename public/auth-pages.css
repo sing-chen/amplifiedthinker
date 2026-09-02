@@ -44,8 +44,9 @@
    ⚠️ Note that --accent-cool needs no partner: it is `var(--teal)` in both
    themes and is unusable as text on a light panel at 2.81:1, so anything
    wanting a cool accent AS TEXT should use --fg-brand, which does flip. */
-:root { --accent-warm-text: #8A4B2C; }
-:root[data-theme="dark"] { --accent-warm-text: #E7A57C; }
+/* --accent-warm-text moved to styles.css on 2026-09-02, when the homepage
+   tiles and the news page needed the same correction; the reasoning above
+   still holds and is why the name stays distinct. */
 
 /* ⚠️ AND A THIRD TIME, FOR THE SUPPORT ACCENT. --accent-support is #8AA35E in
    dark, which is legible on the panel (5.09:1) and NOT on its own 20% tint,

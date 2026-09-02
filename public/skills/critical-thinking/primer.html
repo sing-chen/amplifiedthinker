@@ -135,7 +135,7 @@
     padding: 8px 12px; border-radius: var(--radius);
     font-family:var(--font-body);
     font-size: 12.5px; font-weight: 400;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.72);
     text-decoration: none; cursor: pointer;
     transition: all 0.15s; border: none; background: none;
     width: 100%; text-align: left;
@@ -146,7 +146,7 @@
   .nav-num {
     font-family:var(--font-display);font-variant-numeric:tabular-nums;
     font-size: 10px; font-weight: 600;
-    color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.62);
     min-width: 18px; flex-shrink: 0;
     transition: color 0.15s;
   }
@@ -617,7 +617,8 @@
   .skip-link:focus { top: 0; }
 
   /* ── FOCUS STYLES ────────────────────────────── */
-  :focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 3px; }
+  :focus-visible { outline: 2px solid var(--deep-teal); outline-offset: 3px; border-radius: 3px; }
+  [data-theme="dark"] :focus-visible { outline-color: var(--d-teal-stroke); }
   .nav-link:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   .nav-arrow:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
   .rail-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
@@ -1089,7 +1090,7 @@
     <div class="pull-quote" style="max-width:760px;margin-bottom:28px;">
       <p>Critical Thinking is the discipline of testing whether a conclusion holds before deciding what to trust. It means separating what's claimed from what's evidenced, checking that evidence against its source, method, currency, and motive, watching for bias in the source, the data, and yourself, and tracing surprising conclusions back to the point where an assumption took over from observation.</p>
     </div>
-    <p class="t-body" style="max-width:640px;opacity:0.75;">The output is a judgment — sound, questionable, missing — not a fix. What you do with that judgment is a different skill; this one gives you the confidence to know which parts of the picture you can actually stand on.</p>
+    <p class="t-body" style="max-width:640px;opacity:0.9;">The output is a judgment — sound, questionable, missing — not a fix. What you do with that judgment is a different skill; this one gives you the confidence to know which parts of the picture you can actually stand on.</p>
     <!-- Filled by progress.js, which owns the markup so ten pages do not each
          carry a copy. Empty and inert for a guest, and if that file is
          unavailable. It takes the compact variant here: a slide is a fixed

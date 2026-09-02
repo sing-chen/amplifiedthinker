@@ -49,6 +49,7 @@
   .bento-standard .bento-tile{height:200px}
   .bento-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .4s cubic-bezier(.2,.7,.3,1)}
   .bento-tile:hover img{transform:scale(1.06)}
+  @media (prefers-reduced-motion:reduce){.bento-tile img,.bento-tile,.work-cover-img{transition:none}.bento-tile:hover img{transform:none}.work-cover-card:hover .work-cover-img{transform:none}}
   .bento-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,18,16,.82) 100%);z-index:1}
   .bento-tile-body{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;z-index:2;color:#fff;text-align:left}
   .bento-tile.large .bento-tile-body{padding:22px 24px}
@@ -70,9 +71,11 @@
   .pp-ai         {background:#EDE5C5;color:#5A3A00}
 
   /* ── DETAIL MODAL ── */
-  .modal-scrim{position:fixed;inset:0;background:rgba(20,30,27,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:24px}
-  .modal-scrim.open{display:flex}
+  .modal-scrim{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;color:inherit;background:rgba(20,30,27,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:24px}
+  .modal-scrim[open]{display:flex}
+  .modal-scrim::backdrop{background:transparent}
   .modal{background:var(--bg-surface);border-radius:var(--radius-xl);max-width:640px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:var(--shadow-lg)}
+  .modal-close::after{content:'';position:absolute;inset:-6px}
   .modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(10,20,18,.4);color:#fff;font-size:18px;line-height:1;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center}
   .modal-close:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
   .modal-photo{aspect-ratio:16/7;overflow:hidden;position:relative}
@@ -82,7 +85,7 @@
   /* name + external link */
   .pname{font-family:var(--font-display);letter-spacing:-.014em;font-size:19px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-bottom:8px}
   .ppills{margin-bottom:8px}
-  .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:13px;font-weight:700;color:#5BA79F;text-decoration:none;margin-top:10px}
+  .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--fg-brand);text-decoration:none;margin-top:10px}
   .pext-link:hover{color:#26605B;text-decoration:underline}
   .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
   .pext-link svg{width:13px;height:13px;flex-shrink:0;opacity:.7}
@@ -94,7 +97,7 @@
   .pquote{margin:0 0 16px;padding:0}
   .pquote-mark{font-family:var(--font-display);font-size:44px;font-weight:700;line-height:1;color:#ACC4B6;display:block;margin-bottom:-10px;user-select:none}
   .pquote-text{font-family:var(--font-body);font-size:13.5px;font-style:italic;line-height:1.6;color:#1F4D4A}
-  .pquote-source{font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:6px;opacity:.75}
+  .pquote-source{font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:6px}
 
   /* description */
   .pdesc{font-family:var(--font-body);font-size:13.5px;line-height:1.65;color:var(--navy);margin-bottom:18px}
@@ -215,9 +218,9 @@
 
 </main>
 
-<div class="modal-scrim" id="modal-scrim">
-  <div class="modal" id="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-name"></div>
-</div>
+<dialog class="modal-scrim" id="modal-scrim" aria-labelledby="modal-name">
+  <div class="modal" id="modal-content"></div>
+</dialog>
 
 <footer class="site-footer">
   <div class="fi">
@@ -503,13 +506,13 @@
     }
 
     renderModal(person);
-    modalScrim.classList.add('open');
+    if (!modalScrim.open) modalScrim.showModal();
     document.getElementById('modal-close-btn').focus();
   }
 
   function closeModal(opts) {
     opts = opts || {};
-    modalScrim.classList.remove('open');
+    if (modalScrim.open) modalScrim.close();
     if (!opts.skipHistory) {
       var url = new URL(window.location.href);
       url.searchParams.delete('person');
@@ -531,18 +534,19 @@
     if (e.target === modalScrim) closeModal();
   });
 
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && modalScrim.classList.contains('open')) closeModal();
-  });
+  // Escape arrives as the dialog's own `cancel` event. Intercepted so the
+  // history entry is unwound the same way as every other close.
+  modalScrim.addEventListener('cancel', function (e) { e.preventDefault(); closeModal(); });
 
   window.addEventListener('popstate', function () {
     var params = new URLSearchParams(window.location.search);
     var id = params.get('person');
     if (id && PEOPLE.some(function (p) { return p.id === id; })) {
       renderModal(PEOPLE.filter(function (p) { return p.id === id; })[0]);
-      modalScrim.classList.add('open');
-    } else {
-      modalScrim.classList.remove('open');
+      if (!modalScrim.open) modalScrim.showModal();
+      document.getElementById('modal-close-btn').focus();
+    } else if (modalScrim.open) {
+      modalScrim.close();
     }
   });
 

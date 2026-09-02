@@ -553,8 +553,10 @@
       '<button type="button" class="story-action-btn is-danger" data-action="pin-replace-yes">' +
         esc(confirmLabel) + '</button>' +
       '<button type="button" class="story-action-btn" data-action="pin-replace-no">Cancel</button>';
-    var yes = row.querySelector('[data-action="pin-replace-yes"]');
-    if (yes) yes.focus();
+    // The safe option takes focus, so Enter cannot replace a pin unread —
+    // the same rule progress.js and exit-guard.js apply to their confirmations.
+    var no = row.querySelector('[data-action="pin-replace-no"]');
+    if (no) no.focus();
   }
 
   function cancelPinConfirm() {
