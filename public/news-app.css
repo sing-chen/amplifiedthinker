@@ -33,6 +33,7 @@
 .news-main{max-width:var(--page-max);margin:0 auto;padding:32px 40px 88px}
 .filter-bar-wrap{position:relative}
 .filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;position:sticky;top:var(--site-total-offset,56px);background:var(--bg-page);padding:14px 0;z-index:10}
+.filter-scroll-btn::after{content:'';position:absolute;inset:-9px}
 .filter-scroll-btn{display:none;position:absolute;top:28px;transform:translateY(-50%);align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--bg-surface);border:1px solid rgba(31,77,74,.2);box-shadow:0 2px 8px rgba(27,74,68,.15);color:var(--fg-brand);cursor:pointer;z-index:11;padding:0}
 .filter-scroll-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
 .filter-scroll-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
@@ -108,13 +109,13 @@
 .story-nav-btn:hover:not(.is-disabled){background:var(--bg-page);border-color:rgba(31,77,74,.4)}
 .story-nav-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
 /* An anchor cannot be `:disabled`, so the end of the list renders as a <span>. */
-.story-nav-btn.is-disabled{opacity:.35;cursor:default}
+.story-nav-btn.is-disabled{opacity:var(--disabled-opacity);cursor:default}
 .story-title{font-family:var(--font-editorial);font-size:26px;font-weight:600;line-height:1.25;letter-spacing:-.024em;color:var(--navy);margin:0 0 14px}
 .story-summary{font-family:var(--font-body);font-size:15.5px;line-height:1.75;color:var(--text-muted);margin-bottom:22px}
 .story-implications{border-left:3px solid var(--light-sage);padding-left:14px;margin-bottom:22px}
 .story-implications-label{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:6px}
 .story-implications p{font-family:var(--font-body);font-size:14px;line-height:1.7;color:var(--text-muted);font-style:italic;margin:0}
-.story-source-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);letter-spacing:-.006em;font-size:13px;font-weight:600;color:var(--tag-text, var(--mid-teal));text-decoration:none;margin-bottom:22px}
+.story-source-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);letter-spacing:-.006em;font-size:13px;font-weight:600;color:var(--tag-text, var(--fg-brand));text-decoration:none;margin-bottom:22px}
 .story-source-link:hover{color:var(--terracotta)}
 .story-source-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
 .story-tags{display:flex;flex-wrap:wrap;gap:6px}
@@ -164,7 +165,7 @@
    disabled whenever there is nothing to save — empty, or unchanged from what is
    stored — and without this it stayed fully solid and simply did nothing when
    pressed, which reads as a broken feature rather than a considered state. */
-.story-action-btn:disabled{opacity:.45;cursor:default}
+.story-action-btn:disabled{opacity:var(--disabled-opacity);cursor:default}
 .story-action-btn:disabled:hover{border-color:rgba(31,77,74,.2);background:var(--bg-surface)}
 .story-action-btn.is-primary:disabled:hover{background:var(--mid-teal);border-color:var(--mid-teal)}
 
@@ -226,11 +227,12 @@
 [data-theme="dark"] .filter-chip:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
 [data-theme="dark"] .headline-col{border-color:var(--line)}
 [data-theme="dark"] .headline-search-wrap{border-bottom-color:var(--line)}
-[data-theme="dark"] .headline-search-icon{color:var(--fg-2)}
+[data-theme="dark"] .headline-search-icon{stroke:var(--fg-2)}
 [data-theme="dark"] .headline-search-input{border-color:var(--line)}
 [data-theme="dark"] .headline-pin-icon{color:var(--accent-warm)}
 [data-theme="dark"] .headline-divider{background:var(--line)}
 [data-theme="dark"] .headline-item{color:var(--fg-2)}
+[data-theme="dark"] .headline-item.active{border-left-color:var(--accent-warm)}
 [data-theme="dark"] .headline-item.pinned{background:rgba(201,122,74,.12)}
 [data-theme="dark"] .headline-item.pinned:hover{background:rgba(201,122,74,.2)}
 [data-theme="dark"] .headline-item.pinned.active{background:rgba(201,122,74,.24)}
@@ -243,8 +245,8 @@
    news.html, which was still live at the time and got the same fix; that page
    has since been deleted. */
 [data-theme="dark"] .story-panel{border-color:var(--line)}
-[data-theme="dark"] .story-source{color:var(--accent-warm)}
-[data-theme="dark"] .story-pinned-badge{color:var(--accent-warm)}
+[data-theme="dark"] .story-source{color:var(--accent-warm-text)}
+[data-theme="dark"] .story-pinned-badge{color:var(--accent-warm-text)}
 [data-theme="dark"] .story-nav-btn{border-color:var(--line)}
 [data-theme="dark"] .story-nav-btn:hover:not(.is-disabled){border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
 [data-theme="dark"] .story-title{color:var(--fg-heading)}
@@ -259,7 +261,7 @@
 [data-theme="dark"] .story-action-status{color:var(--fg-2)}
 [data-theme="dark"] .story-note-input{border-color:var(--line)}
 [data-theme="dark"] .story-note-count{color:var(--fg-2)}
-[data-theme="dark"] .story-note-count.is-near{color:var(--accent-warm)}
+[data-theme="dark"] .story-note-count.is-near{color:var(--accent-warm-text)}
 [data-theme="dark"] .story-action-btn:disabled:hover{border-color:var(--line);background:var(--bg-surface)}
 [data-theme="dark"] .story-action-btn.is-danger{background:var(--accent-warm);border-color:var(--accent-warm);color:#241A12}
 [data-theme="dark"] .story-action-btn.is-danger:hover{background:#D89468;border-color:#D89468}
@@ -273,3 +275,5 @@
 [data-theme="dark"] .theme-leadership-and-culture{--tag-bg:#332712;--tag-text:#D9BB6E}
 [data-theme="dark"] .theme-macro-signals{--tag-bg:#2A2D28;--tag-text:#B8BBB0}
 [data-theme="dark"] .theme-research-and-insights{--tag-bg:#33231A;--tag-text:#E8C9AE}
+
+@media (prefers-reduced-motion:reduce){.headline-item,.filter-chip,.story-action-btn,.story-nav-btn,.filter-scroll-btn{transition:none}}

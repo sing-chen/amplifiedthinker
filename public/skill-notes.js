@@ -624,29 +624,21 @@
 
   /* ── lifecycle ─────────────────────────────────────────────────────────── */
 
-  /* ⚠️ POLL FOR `AmplifiedAuth`; DO NOT READ IT ONCE AND GIVE UP. nav.js appends
+  /* ⚠️ WAIT FOR `AmplifiedAuth`; DO NOT READ IT ONCE AND GIVE UP. nav.js appends
      the auth stack with `async = false`, which preserves execution order but
      does NOT delay DOMContentLoaded — so auth.js can land after this file has
      run. Reading the global once would leave the panel permanently absent for
      SIGNED-IN READERS ONLY, which is the entire audience for it and the one
-     least likely to report it. progress.js, learning.js and news-actions.js all
-     poll for exactly this reason and all say so. */
-  var POLL_MS = 60;
-  var POLL_LIMIT_MS = 6000;
-
+     least likely to report it. AmplifiedNav.whenAuth is the wait, called back
+     from the script tag's own load event (this file polled every 60ms for six
+     seconds until 2026-09-02, as did seven others). */
   function whenAuthReady(fn) {
-    // ⚠️ Match 'out' EXPLICITLY. nav.js publishes 'unknown' as-is, and a
-    // `!== 'in'` test would treat it as a guest. For a genuine guest nav.js
-    // never loads the auth stack at all, so this also avoids six seconds of
-    // pointless polling on every guest page view.
-    if (doc.documentElement.getAttribute('data-session') === 'out') return;
-    var waited = 0;
-    (function poll() {
-      if (auth()) { fn(auth()); return; }
-      waited += POLL_MS;
-      if (waited > POLL_LIMIT_MS) return;
-      global.setTimeout(poll, POLL_MS);
-    })();
+    // AmplifiedNav.whenAuth calls back from auth.js's own load event, and at
+    // once with null for a guest whose page never loads the stack — the case
+    // the old data-session="out" short-circuit here used to test.
+    var nav = global.AmplifiedNav;
+    if (!nav || typeof nav.whenAuth !== 'function') return;
+    nav.whenAuth(function (a) { if (a) fn(a); });
   }
 
   function teardown() {
@@ -671,7 +663,7 @@
       if (!root) return;
       rows = [];
       render();
-      setStatus('Could not load your notes. ' + (err && err.message ? err.message : ''));
+      setStatus('Could not load your notes. Check your connection and reload the page.');
     });
   }
 

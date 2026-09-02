@@ -147,7 +147,7 @@
 
     slot.innerHTML =
       '<button type="button" class="snav-auth-avatar" id="snav-auth-avatar"' +
-      ' aria-expanded="false" aria-haspopup="true"' +
+      ' aria-expanded="false"' +
       ' title="' + escapeAttr(n.labelFor(name, email())) + '">' +
       escapeHtml(n.initialFor(name, email())) + '</button>' +
       '<div class="snav-auth-menu" id="snav-auth-menu" hidden>' +

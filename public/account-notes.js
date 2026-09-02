@@ -114,26 +114,20 @@
   }
 
   /* ── naming what a note is attached to ─────────────────────────────────────
-     ⚠️ THE SKILL NAME COMES FROM skills-progress.js, not from a copy of its
-     derivation. That module owns it precisely so a third surface cannot
-     disagree — see the comment on `nameFor` there. */
-  /* \u26a0\ufe0f TITLE CASE HERE, SENTENCE CASE ON /learning/, AND THAT IS A DELIBERATE
-     DIVERGENCE RATHER THAN DRIFT. `nameFor` returns "Analytical thinking",
-     which is right for the dashboard's prose headings and documented there as
-     matching the site's own. This is a table of LINKS to named artefacts, and
-     the site titles those "Analytical Thinking" \u2014 the plan page's own <title>
-     does. The shared module still owns the slug-to-words derivation; only the
-     casing is decided here. */
-  function titleCase(s) {
-    return String(s).split(' ').map(function (w) {
+     A slug is words joined by hyphens, and this page shows them in TITLE CASE:
+     it is a table of LINKS to named artefacts, and the site titles those
+     "Analytical Thinking" — the plan page's own <title> does. /learning/ shows
+     the same slugs in sentence case for its prose headings, and that is a
+     deliberate divergence rather than drift.
+
+     Until 2026-09-02 this said the derivation came from skills-progress.js.
+     It never did: /account/ does not load that module, so the "fallback" was
+     the only path that ever ran, and the two agreed by coincidence. One honest
+     function beats a dependency the page does not have. */
+  function skillName(slug) {
+    return String(slug).split('-').map(function (w) {
       return w ? w.charAt(0).toUpperCase() + w.slice(1) : w;
     }).join(' ');
-  }
-
-  function skillName(slug) {
-    var m = global.AmplifiedSkillsProgress;
-    var words = (m && m.nameFor) ? m.nameFor(slug) : String(slug).replace(/-/g, ' ');
-    return titleCase(words);
   }
 
   /* The catalogue names every plan section and every primer slide. It is a
@@ -548,7 +542,7 @@
       state.status = 'Note deleted.';
       render();
     }).catch(function (err) {
-      setStatus('Could not delete. ' + (err && err.message ? err.message : ''));
+      setStatus('Could not delete. Check your connection and try again.');
     });
   }
 
@@ -572,7 +566,7 @@
       setStatus(removed === 1 ? 'Note deleted.' : removed + ' notes deleted.');
     }).catch(function (err) {
       cancelBulk();
-      setStatus('Could not delete. ' + (err && err.message ? err.message : ''));
+      setStatus('Could not delete. Check your connection and try again.');
     });
   }
 
@@ -657,26 +651,23 @@
 
   /* ── lifecycle ─────────────────────────────────────────────────────────── */
 
-  /* ⚠️ POLL FOR AmplifiedAuth. nav.js appends the auth stack with async=false,
+  /* ⚠️ WAIT FOR AmplifiedAuth. nav.js appends the auth stack with async=false,
      which preserves order but does not delay DOMContentLoaded, so auth.js can
-     land after this file has run. progress.js, learning.js, news-actions.js and
-     skill-notes.js all poll for the same reason.
+     land after this file has run. AmplifiedNav.whenAuth is the wait, called
+     back from the script tag's own load event (every consumer polled for six
+     seconds until 2026-09-02).
 
      ⚠️ NO `data-session="out"` SHORT-CIRCUIT HERE, unlike skill-notes.js. This
      page IS on nav.js's `pageNeedsAuth()` allowlist — it has something to say to
      a signed-out visitor and renders a signed-out state of its own — so the auth
      stack always arrives and the poll always resolves. */
-  var POLL_MS = 60;
-  var POLL_LIMIT_MS = 6000;
-
   function whenAuthReady(fn) {
-    var waited = 0;
-    (function poll() {
-      if (auth()) { fn(auth()); return; }
-      waited += POLL_MS;
-      if (waited > POLL_LIMIT_MS) return;
-      global.setTimeout(poll, POLL_MS);
-    })();
+    // AmplifiedNav.whenAuth calls back from auth.js's own load event, or with
+    // null if the stack fails to arrive — in which case /account/ shows its
+    // signed-out panel from auth.js's absence, and there is nothing to paint.
+    var nav = global.AmplifiedNav;
+    if (!nav || typeof nav.whenAuth !== 'function') return;
+    nav.whenAuth(function (a) { if (a) fn(a); });
   }
 
   function paint() {
@@ -703,8 +694,7 @@
          look is the worse of the two. */
       var root = el('acct-notes-root');
       if (root) {
-        root.innerHTML = '<p class="auth-status bad">Could not load your notes. ' +
-          esc(err && err.message ? err.message : '') + '</p>';
+        root.innerHTML = '<p class="auth-status bad">Could not load your notes. Check your connection and reload the page.</p>';
       }
       setCount(0);
     });

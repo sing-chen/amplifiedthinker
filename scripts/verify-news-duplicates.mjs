@@ -34,32 +34,25 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { projects, keyProblem } from './lib/supabase.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CLIENT = join(REPO, 'public', 'supabase-client.js');
 const SOURCE = join(REPO, 'content', 'news.json');
 
 const target = process.argv.slice(2).find((a) => a === 'dev' || a === 'prod') ?? 'prod';
 
-/* ── the project, parsed from the file the browser uses ──────────────────────
-   ⚠️ NOT retyped here. astro.config.mjs parses the same file for the same
-   reason: a second copy of a URL and a key is a second thing to rotate, and the
-   one that gets missed is the one nothing reads on a normal day. */
-const client = readFileSync(CLIENT, 'utf8');
-const segment = client.split(target + ':')[1] ?? '';
-const url = (segment.match(/url:\s*'([^']+)'/) ?? [])[1];
-const key = (segment.match(/(?:anonKey|key):\s*'([^']+)'/) ?? [])[1];
-
-if (!url || !key) {
-  console.error(`\nCould not parse the ${target} project out of public/supabase-client.js.`);
-  process.exit(2);
-}
+/* ── the project, from the file the browser uses ────────────────────────────
+   ⚠️ NOT retyped here. scripts/lib/supabase.mjs runs the real file, so a
+   second copy of a URL and a key — the one nothing reads on a normal day — can
+   never exist to go stale. */
+const { url, key } = projects()[target];
 
 // ⚠️ A secret here would be a secret in a repo that is PUBLIC. The publishable
 // key is meant to ship to browsers; a `service_role` one is not, and would also
 // bypass the RLS this check relies on being in force.
-if (/sb_secret_|service_role/.test(key)) {
-  console.error('\nThat is not a publishable key. Refusing to run.\n');
+const keyIssue = keyProblem(key);
+if (keyIssue) {
+  console.error(`\nRefusing to run: ${keyIssue}. That is not a publishable key.\n`);
   process.exit(2);
 }
 

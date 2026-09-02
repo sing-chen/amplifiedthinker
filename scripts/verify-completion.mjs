@@ -25,48 +25,25 @@
 // also uses a slug no real skill has, so it can never touch real progress even
 // on the project it is allowed to run against.
 
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+import { projects, projectRef, keyProblem, loadDotEnv } from './lib/supabase.mjs';
 
 // A slug with no page behind it. Real progress is never in range.
 const PROBE_SLUG = 'zzz-verify-completion-probe';
 const PROBE_KIND = 'plan';
 
-// The production project REF, parsed out of public/supabase-client.js — the one
-// copy of that table, which keepalive.mjs and astro.config.mjs read the same way.
-// A ref rather than a full URL, so the guard still fires if SUPABASE_URL is given
-// with a trailing slash or a different scheme. If the parse fails the guard
+// The production project REF, from the file the browser uses (via
+// scripts/lib/supabase.mjs, which runs that file rather than parsing it). A
+// ref rather than a full URL, so the guard still fires if SUPABASE_URL is given
+// with a trailing slash or a different scheme. If it cannot be read the guard
 // refuses to run rather than guessing: a rotated project would otherwise pass
 // straight through the one check that keeps this off real reading history.
-const PROD_REF = (() => {
-  const source = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');
-  const block = source.match(/prod:\s*\{([\s\S]*?)\n {4}\}/);
-  const url = block && block[1].match(/url:\s*'https:\/\/([^.']+)\./);
-  if (!url) {
-    console.error('Could not read the prod project ref out of public/supabase-client.js; refusing to run.');
-    process.exit(2);
-  }
-  return url[1];
-})();
+const PROD_REF = projectRef(projects().prod.url);
+if (!PROD_REF) {
+  console.error('Could not read the prod project ref out of public/supabase-client.js; refusing to run.');
+  process.exit(2);
+}
 
 // ---------------------------------------------------------------------------
-
-function loadDotEnv() {
-  try {
-    const text = readFileSync(join(ROOT, '.env'), 'utf8');
-    for (const line of text.split(/\r?\n/)) {
-      const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line);
-      if (!match) continue;
-      const value = match[2].trim().replace(/^["']|["']$/g, '');
-      if (!(match[1] in process.env)) process.env[match[1]] = value;
-    }
-  } catch {
-    // No .env is fine - the values may come from the real environment.
-  }
-}
 
 loadDotEnv();
 
@@ -134,26 +111,8 @@ if (URL_BASE.includes(PROD_REF)) {
   process.exit(2);
 }
 
-// Same reasoning as verify:rls, and the same ordering trap: the prefix check has
-// to come before the JWT decode, because sb_secret_… keys are not JWTs and would
-// otherwise fall through the catch and be waved past. A privileged key here
-// bypasses RLS, so assertion 5 would report a false PASS.
-function keyProblem(key) {
-  if (/^sb_secret_/i.test(key)) return 'that is a secret key';
-  if (/^service_role/i.test(key)) return 'that is a service_role key';
-  const parts = key.split('.');
-  if (parts.length !== 3) return null;
-  try {
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
-    if (payload.role && payload.role !== 'anon') {
-      return `that key has role "${payload.role}", not "anon"`;
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
-
+// Same guard as verify:rls, from scripts/lib/supabase.mjs. A privileged key
+// here bypasses RLS, so assertion 5 would report a false PASS.
 const problem = keyProblem(ANON_KEY);
 if (problem) {
   console.error(`Refusing to run: ${problem}. This gate must run as a real user, not above RLS.`);

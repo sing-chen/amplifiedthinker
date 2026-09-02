@@ -66,22 +66,10 @@
      They must produce identical output — a completion showing "21 Aug 2026" on
      one surface and "21 August 2026" on another is the same class of
      inconsistency this module exists to prevent. If either changes, change both. */
-  var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-  function formatDate(iso) {
-    try {
-      // ⚠️ The falsy check is not redundant with the isNaN below it:
-      // new Date(null) is the epoch, not an invalid date, and would render
-      // "01 Jan 1970" rather than nothing.
-      if (!iso) return '';
-      var d = new Date(iso);
-      if (isNaN(d.getTime())) return '';
-      var dd = d.getDate();
-      return (dd < 10 ? '0' : '') + dd + ' ' +
-             MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
-    } catch (e) { return ''; }
-  }
+  // Since 2026-09-02 the implementation is AmplifiedNav.formatDate, which
+  // nav.js carries to every page; this module keeps exporting it so its
+  // consumers read as they always did.
+  function formatDate(iso) { return global.AmplifiedNav.formatDate(iso); }
 
   /* ── the catalogue ──────────────────────────────────────────────────────
      Derived from the pages by npm run build:catalogue and served as a static

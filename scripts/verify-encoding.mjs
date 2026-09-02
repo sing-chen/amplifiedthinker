@@ -32,10 +32,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FIX = process.argv.includes('--fix');
 
 // Roots worth scanning. Deliberately a fixed list rather than `git ls-files`:
-// this runs as prebuild on both Vercel and GitHub Actions, and must not depend
-// on a usable git checkout in the build image.
+// this runs as prebuild on Vercel, and must not depend on a usable git
+// checkout in the build image.
 const ROOTS = ['public', 'src', 'docs', 'scripts', 'supabase', '.claude'];
-const ROOT_FILES = ['CLAUDE.md', 'BACKLOG.md', 'README.md', 'middleware.js'];
+const ROOT_FILES = ['CLAUDE.md', 'BACKLOG.md', 'README.md'];
 
 // ⚠️ 'worktrees' matters: .claude/worktrees/<name> IS a full checkout of this
 // repo, so walking into it would rescan everything under a second root.

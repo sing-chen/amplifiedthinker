@@ -106,8 +106,11 @@
     .chart-img{transition:none}
     .chart-zoom-trigger:hover .chart-img,.chart-zoom-trigger:focus-visible .chart-img{transform:none}
   }
-  .chart-modal{position:fixed;inset:0;background:rgba(27,74,68,.88);display:flex;align-items:center;justify-content:center;padding:32px;z-index:1000;opacity:0;transition:opacity .18s ease}
-  .chart-modal[hidden]{display:none}
+  .chart-modal{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;color:inherit;background:rgba(27,74,68,.88);display:flex;align-items:center;justify-content:center;padding:32px;z-index:1000;opacity:0;transition:opacity .18s ease}
+  .chart-modal:not([open]){display:none}
+  .chart-modal::backdrop{background:transparent}
+  @media(prefers-reduced-motion:reduce){.chart-modal{transition:none}}
+  #main-content{scroll-margin-top:110px}
   .chart-modal.is-open{opacity:1}
   .chart-modal-inner{position:relative;max-width:1400px;max-height:90vh;width:100%}
   .chart-modal-img{display:block;width:100%;height:auto;max-height:90vh;object-fit:contain;border-radius:8px;background:var(--off-white)}
@@ -213,7 +216,7 @@
   .lcard{background:var(--warm-cream);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-lg);padding:14px 16px;text-decoration:none;display:block;transition:border-color .15s,background .15s,transform .1s}
   .lcard:hover{border-color:color-mix(in srgb, var(--deep-teal) 45%, transparent);background:var(--bg-surface);transform:translateY(-1px)}
   .lcard.primary{background:var(--deep-teal);border-color:transparent}
-  .lcard.primary:hover{background:var(--teal)}
+  .lcard.primary:hover{background:color-mix(in srgb, var(--deep-teal) 82%, #000)}
   .lctype{font-family:var(--font-display);letter-spacing:-.006em;font-size:13px;font-weight:600;color:var(--fg-heading);margin-bottom:4px;line-height:1.3}
   .lcard.primary .lctype{color:var(--white)}
   .lcdesc{font-family:var(--font-body);font-size:12px;color:var(--text-muted);line-height:1.5}
@@ -222,7 +225,7 @@
   .lctime svg{width:11px;height:11px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .lcard.primary .lctime{color:rgba(255,255,255,.75)}
   .lccta{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--fg-brand);margin-top:6px;display:flex;align-items:center;gap:4px}
-  .lcard.primary .lccta{color:var(--sage)}
+  .lcard.primary .lccta{color:rgba(255,255,255,.85)}
   .lcc-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;transition:transform .15s}
   .lcc-icon svg{width:11px;height:11px;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
   .lccta .lcc-icon{background:#BFDACB}
@@ -282,7 +285,7 @@
     .intro-grid{grid-template-columns:1fr;gap:32px}
     .slaunch{width:100%}
   }
-  @media(max-width:640px){
+  @media(max-width:700px){
     .hero,.why,.library,.chart-section{padding-left:20px;padding-right:20px}
     .intro-inner{padding:0 20px}
     .signal-bar{padding-left:0;padding-right:0;position:relative}
@@ -293,8 +296,9 @@
     .sb-stat{scroll-snap-align:start;min-width:100vw;width:100vw;border-right:none;border-bottom:1px solid rgba(255,255,255,.06);padding:28px 32px 24px;box-sizing:border-box}
     .sb-stat:last-child{border-bottom:none}
     /* Dot indicators */
-    .sb-dots{display:flex;justify-content:center;gap:6px;padding:0 0 16px;position:absolute;bottom:0;left:0;right:0}
-    .sb-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;flex-shrink:0}
+    .sb-dots{display:flex;justify-content:center;gap:18px;padding:0 0 16px;position:absolute;bottom:0;left:0;right:0}
+    .sb-dot{position:relative;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);border:none;padding:0;cursor:pointer;transition:background .2s,transform .2s;flex-shrink:0}
+    .sb-dot::after{content:'';position:absolute;inset:-9px}
     .sb-dot.active{background:var(--sage);transform:scale(1.25)}
     .sb-dot:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:50%}
     .chart-inner{padding:0 20px}
@@ -512,12 +516,12 @@
       <div class="sb-source"><a href="https://business.udemy.com/2026-global-learning-skills-trends-report" target="_blank" rel="noopener noreferrer">Udemy Global Learning & Skills Trends 2026</a></div>
     </div>
   </div>
-  <div class="sb-dots" aria-hidden="true">
-    <button class="sb-dot active" type="button" aria-label="Stat 1"></button>
-    <button class="sb-dot" type="button" aria-label="Stat 2"></button>
-    <button class="sb-dot" type="button" aria-label="Stat 3"></button>
-    <button class="sb-dot" type="button" aria-label="Stat 4"></button>
-    <button class="sb-dot" type="button" aria-label="Stat 5"></button>
+  <div class="sb-dots" role="group" aria-label="Which statistic is showing">
+    <button class="sb-dot active" type="button" aria-label="Stat 1" aria-pressed="true"></button>
+    <button class="sb-dot" type="button" aria-label="Stat 2" aria-pressed="false"></button>
+    <button class="sb-dot" type="button" aria-label="Stat 3" aria-pressed="false"></button>
+    <button class="sb-dot" type="button" aria-label="Stat 4" aria-pressed="false"></button>
+    <button class="sb-dot" type="button" aria-label="Stat 5" aria-pressed="false"></button>
   </div>
 </div>
 
@@ -530,7 +534,7 @@
       <div class="why-body">
         <p>These capabilities aren't new, and they were never optional. What's new is how visible their absence has become.</p>
         <p>Entry-level tasks — synthesising research, producing first-pass analysis, organising information — were never just grunt work. They were how professionals developed judgment, pattern recognition, and the ability to distinguish what matters from what doesn't.</p>
-        <p>As AI handles more of that work, the pipeline that turned junior contributors into strategic thinkers is breaking down. <strong>Heavy reliance on AI tools correlates with declining critical thinking abilities</strong>, driven by cognitive offloading.<sup><a href="#cite-4" aria-label="Citation 4" style="color:var(--teal);text-decoration:none;font-family:var(--font-display);font-size:9px;font-weight:600;vertical-align:super;margin-left:1px">4</a></sup> The capability that took years to build is now going unexercised.</p>
+        <p>As AI handles more of that work, the pipeline that turned junior contributors into strategic thinkers is breaking down. <strong>Heavy reliance on AI tools correlates with declining critical thinking abilities</strong>, driven by cognitive offloading.<sup><a href="#cite-4" aria-label="Citation 4" style="color:var(--fg-brand);text-decoration:none;font-family:var(--font-display);font-size:9px;font-weight:600;vertical-align:super;margin-left:1px">4</a></sup> The capability that took years to build is now going unexercised.</p>
         <p>This library addresses that gap directly. Each skill is grounded in the WEF Core Skills 2030 framework and cross-referenced with research from McKinsey, Udemy, and Microsoft on what employers are actually struggling to find. They're not new skills. They're the ones organisations kept treating as optional, and can no longer afford to.</p>
       </div>
     </div>
@@ -609,7 +613,7 @@
         <button class="chart-zoom-trigger" type="button" aria-haspopup="dialog" aria-controls="chart-modal">
           <picture>
             <source srcset="images/wef-core-skills-2030.webp" type="image/webp">
-            <img class="chart-img" src="images/wef-core-skills-2030.png" width="1400" height="933" alt="Scatter chart titled '2030 Future Skills: Priority and Expected Growth', plotting WEF skill categories by share of employers considering each a core skill in 2025 versus share expecting increasing use by 2030. Analytical Thinking, Creative Thinking, Resilience, Leadership, Systems Thinking, Curiosity and Lifelong Learning, Talent Management, Motivation, and Empathy all sit in the top-right 'Core Skills in 2030' quadrant. Source: World Economic Forum, Future of Jobs Report 2025.">
+            <img class="chart-img" src="images/wef-core-skills-2030.png" width="1400" height="933" loading="lazy" alt="Scatter chart titled '2030 Future Skills: Priority and Expected Growth', plotting WEF skill categories by share of employers considering each a core skill in 2025 versus share expecting increasing use by 2030. Analytical Thinking, Creative Thinking, Resilience, Leadership, Systems Thinking, Curiosity and Lifelong Learning, Talent Management, Motivation, and Empathy all sit in the top-right 'Core Skills in 2030' quadrant. Source: World Economic Forum, Future of Jobs Report 2025.">
           </picture>
           <span class="chart-zoom-hint">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
@@ -622,7 +626,7 @@
 </section>
 
 <!-- ── ENLARGED CHART MODAL ── -->
-<div class="chart-modal" id="chart-modal" role="dialog" aria-modal="true" aria-label="Enlarged chart: 2030 Future Skills, Priority and Expected Growth" hidden>
+<dialog class="chart-modal" id="chart-modal" aria-label="Enlarged chart: 2030 Future Skills, Priority and Expected Growth">
   <button class="chart-modal-close" type="button" aria-label="Close enlarged chart">✕</button>
   <div class="chart-modal-inner">
     <picture>
@@ -630,7 +634,7 @@
       <img class="chart-modal-img" src="images/wef-core-skills-2030.png" width="1400" height="933" alt="Scatter chart titled '2030 Future Skills: Priority and Expected Growth', plotting WEF skill categories by share of employers considering each a core skill in 2025 versus share expecting increasing use by 2030. Analytical Thinking, Creative Thinking, Resilience, Leadership, Systems Thinking, Curiosity and Lifelong Learning, Talent Management, Motivation, and Empathy all sit in the top-right 'Core Skills in 2030' quadrant. Source: World Economic Forum, Future of Jobs Report 2025.">
     </picture>
   </div>
-</div>
+</dialog>
 
 <!-- ── ABOUT THE LIBRARY ── -->
 <section class="intro" aria-labelledby="about-heading" id="about-the-library">
@@ -677,10 +681,10 @@
     <p class="section-label">The library</p>
     <h2 class="stitle">Browse by skill</h2>
     <div class="filter-bar" role="group" aria-label="Filter skills by category">
-      <button class="ftab active" data-filter="all">All</button>
-      <button class="ftab" data-filter="cognitive">Cognitive</button>
-      <button class="ftab" data-filter="self-efficacy">Self-Efficacy</button>
-      <button class="ftab" data-filter="engagement">Engagement</button>
+      <button class="ftab active" data-filter="all" aria-pressed="true">All</button>
+      <button class="ftab" data-filter="cognitive" aria-pressed="false">Cognitive</button>
+      <button class="ftab" data-filter="self-efficacy" aria-pressed="false">Self-Efficacy</button>
+      <button class="ftab" data-filter="engagement" aria-pressed="false">Engagement</button>
     </div>
   </div>
   <!-- Guest only. The top of the Library is the one place on this site where
@@ -707,7 +711,7 @@
 
     <!-- ANALYTICAL THINKING — available -->
     <div class="scard active" id="s-analytical" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-analytical')" aria-expanded="false" aria-controls="sb-analytical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-analytical')">
+      <div class="sheader" onclick="toggleSkill('s-analytical')" aria-expanded="false" aria-controls="sb-analytical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-analytical')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -726,7 +730,7 @@
         <div class="sdef">
           <div class="sdef-inner">
             <div class="sthumb">
-              <img src="skills/analytical-thinking/video-thumbnail.png" alt="Analytical Thinking skill thumbnail" width="140" height="79" loading="lazy">
+              <picture><source srcset="skills/analytical-thinking/video-thumbnail.webp" type="image/webp"><img src="skills/analytical-thinking/video-thumbnail.png" alt="Analytical Thinking skill thumbnail" width="140" height="79" loading="lazy"></picture>
             </div>
             <div class="sdtext">"Analytical Thinking is the discipline of breaking complexity into its parts before drawing conclusions from it."</div>
           </div>
@@ -756,7 +760,7 @@
 
     <!-- CREATIVE THINKING — available -->
     <div class="scard active" id="s-creative" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-creative')" aria-expanded="false" aria-controls="sb-creative" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-creative')">
+      <div class="sheader" onclick="toggleSkill('s-creative')" aria-expanded="false" aria-controls="sb-creative" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-creative')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><path d="M9 21h6"/><path d="M12 3a6 6 0 0 1 6 6c0 2.22-1.2 4.16-3 5.2V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-2.8C7.2 13.16 6 11.22 6 9a6 6 0 0 1 6-6z"/></svg>
@@ -775,7 +779,7 @@
         <div class="sdef">
           <div class="sdef-inner">
             <div class="sthumb">
-              <img src="skills/creative-thinking/video-thumbnail.png" alt="Creative Thinking skill thumbnail" width="140" height="79" loading="lazy">
+              <picture><source srcset="skills/creative-thinking/video-thumbnail.webp" type="image/webp"><img src="skills/creative-thinking/video-thumbnail.png" alt="Creative Thinking skill thumbnail" width="140" height="79" loading="lazy"></picture>
             </div>
             <div class="sdtext">"Creative Thinking is the practice of generating original ideas by deliberately breaking pattern, recombining unrelated concepts, and expanding a problem's solution space — before narrowing to what's worth pursuing."</div>
           </div>
@@ -805,7 +809,7 @@
 
     <!-- CRITICAL THINKING — available -->
     <div class="scard active" id="s-critical" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-critical')" aria-expanded="false" aria-controls="sb-critical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-critical')">
+      <div class="sheader" onclick="toggleSkill('s-critical')" aria-expanded="false" aria-controls="sb-critical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-critical')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="3" x2="12" y2="21"/><path d="M5 21h14"/><path d="M5 8l-3 6a3 3 0 0 0 6 0L5 8z"/><path d="M19 8l-3 6a3 3 0 0 0 6 0L19 8z"/><line x1="5" y1="8" x2="19" y2="8"/></svg>
@@ -824,7 +828,7 @@
         <div class="sdef">
           <div class="sdef-inner">
             <div class="sthumb">
-              <img src="skills/critical-thinking/video-thumbnail.png" alt="Critical Thinking skill thumbnail" width="140" height="79" loading="lazy">
+              <picture><source srcset="skills/critical-thinking/video-thumbnail.webp" type="image/webp"><img src="skills/critical-thinking/video-thumbnail.png" alt="Critical Thinking skill thumbnail" width="140" height="79" loading="lazy"></picture>
             </div>
             <div class="sdtext">"Critical Thinking is the discipline of testing whether a conclusion holds — checking its evidence, its reasoning, and its bias — before deciding what to trust, what to question, and what's still missing."</div>
           </div>
@@ -926,7 +930,7 @@
 
     <!-- STRATEGIC SYNTHESIS & DECISION MAKING — available -->
     <div class="scard active" id="s-strategic" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-strategic')" aria-expanded="false" aria-controls="sb-strategic" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-strategic')">
+      <div class="sheader" onclick="toggleSkill('s-strategic')" aria-expanded="false" aria-controls="sb-strategic" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-strategic')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -945,7 +949,7 @@
         <div class="sdef">
           <div class="sdef-inner">
             <div class="sthumb">
-              <img src="skills/strategic-synthesis/video-thumbnail.png" alt="Strategic Synthesis &amp; Decision-Making skill thumbnail" width="140" height="79" loading="lazy">
+              <picture><source srcset="skills/strategic-synthesis/video-thumbnail.webp" type="image/webp"><img src="skills/strategic-synthesis/video-thumbnail.png" alt="Strategic Synthesis &amp; Decision-Making skill thumbnail" width="140" height="79" loading="lazy"></picture>
             </div>
             <div class="sdtext">"Strategic Synthesis &amp; Decision-Making is the practice of converging incomplete, conflicting inputs into a single defensible direction — by naming the trade-off explicitly, stress-testing the choice against plausible futures, and framing it so others can act on it."</div>
           </div>
@@ -975,7 +979,7 @@
 
     <!-- SYSTEMS THINKING — available -->
     <div class="scard active" id="s-systems" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-systems')" aria-expanded="false" aria-controls="sb-systems" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')toggleSkill('s-systems')">
+      <div class="sheader" onclick="toggleSkill('s-systems')" aria-expanded="false" aria-controls="sb-systems" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-systems')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -994,7 +998,7 @@
         <div class="sdef">
           <div class="sdef-inner">
             <div class="sthumb">
-              <img src="skills/systems-thinking/video-thumbnail.png" alt="Systems Thinking skill thumbnail" width="140" height="79" loading="lazy">
+              <picture><source srcset="skills/systems-thinking/video-thumbnail.webp" type="image/webp"><img src="skills/systems-thinking/video-thumbnail.png" alt="Systems Thinking skill thumbnail" width="140" height="79" loading="lazy"></picture>
             </div>
             <div class="sdtext">"Systems Thinking is the practice of holding a picture of the wider system — the interdependencies, the feedback loops, the ripple effects — wide enough to catch what's connected before it becomes a surprise, whether that's a recurring problem's root cause or a dependency nobody's named yet."</div>
           </div>
@@ -1056,20 +1060,24 @@
   if(!trigger || !modal) return;
   var closeBtn = modal.querySelector('.chart-modal-close');
   var lastFocused = null;
-  function onKeydown(e){ if(e.key === 'Escape') closeModal(); }
+  // A native <dialog>: showModal() traps focus, makes the page inert and
+  // handles Escape (as a `cancel` event, intercepted below so the fade-out
+  // runs). What stays hand-written is returning focus to the trigger.
   function openModal(){
     lastFocused = document.activeElement;
-    modal.hidden = false;
+    if(!modal.open) modal.showModal();
     requestAnimationFrame(function(){ modal.classList.add('is-open'); });
     closeBtn.focus();
-    document.addEventListener('keydown', onKeydown);
   }
   function closeModal(){
     modal.classList.remove('is-open');
-    modal.hidden = true;
-    document.removeEventListener('keydown', onKeydown);
-    if(lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+    if(modal.open) modal.close();
+    // Back to wherever focus was — or to the trigger, for a browser that does
+    // not focus a button on click (Safari), where activeElement was <body>.
+    var back = lastFocused && lastFocused !== document.body ? lastFocused : trigger;
+    if(back && typeof back.focus === 'function') back.focus();
   }
+  modal.addEventListener('cancel', function(e){ e.preventDefault(); closeModal(); });
   trigger.addEventListener('click', openModal);
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
@@ -1126,6 +1134,7 @@ sortSkillCards();
 function filterSkills(filter) {
   document.querySelectorAll('.ftab').forEach(function(tab) {
     tab.classList.toggle('active', tab.dataset.filter === filter);
+    tab.setAttribute('aria-pressed', tab.dataset.filter === filter ? 'true' : 'false');
   });
   var cards = document.querySelectorAll('.scard');
   var visible = 0;
@@ -1186,6 +1195,7 @@ window.addEventListener('hashchange', openSkillFromHash);
     var active = getActiveDot();
     dots.forEach(function (dot, i) {
       dot.classList.toggle('active', i === active);
+      dot.setAttribute('aria-pressed', i === active ? 'true' : 'false');
     });
   }
 

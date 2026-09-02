@@ -22,6 +22,13 @@
   --fg-1:var(--charcoal);--fg-2:var(--warm-gray);--fg-heading:var(--navy);
   --fg-brand:var(--deep-teal);--fg-on-brand:var(--off-white);--fg-on-inverse:var(--off-white);
   --accent-warm:var(--terracotta);--accent-cool:var(--teal);--accent-support:var(--moss);
+  /* The warm accent AS TEXT. --accent-warm is #C97A4A in dark, 4.33:1 on
+     --bg-surface, and three surfaces wanted it as small text; auth-pages.css
+     coined this pair for its own chips on 2026-08-27 and the homepage tiles and
+     the news page needed the same answer, so it lives here now. Kept as a
+     separate name from --status-error-text, which holds the same two values
+     but means a different thing. */
+  --accent-warm-text:var(--terracotta);
   --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
 
   /* ── Status colors — all re-checked at 4.5:1+ against --bg-page/white ── */
@@ -34,6 +41,9 @@
   /* ── Radius scale — --radius/-lg/-xl above are kept as-is (already in use);
      these fill the gaps in the 6-step scale ─────────────────────────────── */
   --radius-xs:2px;--radius-sm:4px;--radius-md:6px;--radius-pill:999px;
+  /* Disabled controls dim to this, everywhere (2026-09-02): it was .35, .45,
+     .55 and .6 across four files. Lands in the ten skill :root blocks too. */
+  --disabled-opacity:.5;
 
   /* ── Shadow scale — navy-tinted, replaces the site's ad hoc shadow values ── */
   --shadow-xs:0 1px 2px rgba(31,77,74,.06);
@@ -84,11 +94,20 @@
   --fg-1:#E7EDE9;--fg-2:#9BAAA3;--fg-heading:#DCEAE3;
   --fg-brand:var(--sage);--fg-on-brand:#0E1917;--fg-on-inverse:var(--navy);
   --accent-warm:#C97A4A;--accent-cool:var(--teal);--accent-support:#8AA35E;
+  --accent-warm-text:#E7A57C;
   --line-soft:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--line-strong:rgba(255,255,255,.22);
   --status-ok:#4FA89E;--status-warn:#D1A73B;--status-error:#C97A4A;--status-info:#7C9CD1;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+/* Smooth scrolling is motion: every anchor, ToC and skip-link jump animates.
+   Honour the OS preference here, on the shared rule — the plan pages already
+   guard their own copy. */
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* ⚠️ THE MOBILE BREAKPOINT IS 700px ON EVERY PAGE (decided 2026-09-02). Side
+   padding drops 40→20px there, on every surface. It was 600, 640, 700 and 720
+   across pages, so a 650px viewport changed gutter between Home and About.
+   A media query cannot read a token, so this is a convention, written here. */
 body{font-family:var(--font-body);color:var(--text-dark);background:var(--bg-page);font-size:16px;line-height:1.65}
 /* var(--text-dark) is a raw palette color (=navy), never remapped by the
    :root override above — needs its own dark-mode substitute here.
@@ -98,6 +117,11 @@ button,input,select,textarea{font-family:inherit}
 .skip-link{position:absolute;top:-44px;left:0;background:var(--mid-teal);color:var(--white);font-size:14px;font-weight:600;padding:10px 18px;z-index:9999;text-decoration:none;border-radius:0 0 var(--radius) 0;transition:top .15s}
 .skip-link:focus{top:0}
 :focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:3px}
+/* --mid-teal (#26605B) is not redefined in dark, so the ring above measured
+   2.25:1 on --bg-page and 1.98:1 on --bg-surface — a keyboard user's focus
+   was near-invisible on every page in dark mode. --sage flips to 7:1 and is
+   what the nav and footer already use for theirs. */
+:root[data-theme="dark"] :focus-visible{outline-color:var(--sage)}
 /* Keep skip-link jump targets from landing under the fixed nav.js site bar (WCAG 2.4.11) */
 #main-content,#results-region{scroll-margin-top:var(--site-total-offset,56px)}
 

@@ -51,17 +51,9 @@
   /* Slug → display name. MOVED to skills-progress.js on 2026-08-27, when the
      account Notes tab needed the same answer and would otherwise have been the
      third copy. Delegated rather than deleted so this file keeps reading the
-     same way, and falls back if the module is unavailable — the surrounding
-     code already copes with a missing model. */
-  function nameFor(slug) {
-    var m = model();
-    if (m && m.nameFor) return m.nameFor(slug);
-    var words = String(slug).split('-');
-    var first = words[0] || '';
-    return [first.charAt(0).toUpperCase() + first.slice(1)]
-      .concat(words.slice(1))
-      .join(' ');
-  }
+     same way. No fallback: start() below refuses to run until model() is
+     non-null, so a local derivation here could never be reached. */
+  function nameFor(slug) { return model().nameFor(slug); }
 
   function show(which) {
     ['learn-loading', 'learn-signed-out', 'learn-error', 'learn-empty', 'learn-main']
@@ -105,7 +97,7 @@
       // completedAt when finished, updated_at otherwise — the same choice the
       // library makes, so one row never carries two different dates.
       when: done
-        ? (a.completedAt ? 'Finished ' + M.formatDate(a.completedAt) : 'Finished')
+        ? (a.completedAt ? 'Completed ' + M.formatDate(a.completedAt) : 'Completed')
         : (a.updatedAt ? 'Read ' + M.formatDate(a.updatedAt) : 'Not opened yet'),
       // No fragment. The page restores its own position from the same table via
       // progress.js, and a competing #hash would fight that restore.
@@ -592,23 +584,19 @@
       });
   }
 
-  // Waits for BOTH globals. nav.js appends the auth stack with defer, and
-  // skills-progress.js is a sibling <script> on this page — neither has
-  // necessarily run when this file does. Bounded like progress.js: if they
-  // never arrive we say so rather than leaving a spinner up for ever.
-  var waited = 0;
+  // Needs BOTH globals. skills-progress.js is a sibling <script> on this page
+  // and has run by now; the auth stack is appended by nav.js with defer, and
+  // AmplifiedNav.whenAuth calls back from its load event — or with null if it
+  // never arrives, in which case we say so rather than leaving a spinner up.
   (function start() {
-    var auth = global.AmplifiedAuth;
-    if (!auth || !model()) {
-      waited += 60;
-      if (waited > 6000) { show('error'); return; }
-      global.setTimeout(start, 60);
-      return;
-    }
-
-    auth.onAuthChange(function (session) {
-      if (!session) { show('signed-out'); return; }
-      load(auth);
+    var nav = global.AmplifiedNav;
+    if (!model() || !nav || typeof nav.whenAuth !== 'function') { show('error'); return; }
+    nav.whenAuth(function (auth) {
+      if (!auth) { show('error'); return; }
+      auth.onAuthChange(function (session) {
+        if (!session) { show('signed-out'); return; }
+        load(auth);
+      });
     });
   })();
 })(window);

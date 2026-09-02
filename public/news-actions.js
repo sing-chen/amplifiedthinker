@@ -507,7 +507,9 @@
       cache[storyId] = state;
       reflectFlag(btn, field, !next);
       updatePersonal(slug, field, !next);
-      setStatus('Could not save that. ' + (err && err.message ? err.message : ''));
+      // No backend text: "new row violates row-level security policy" is not
+      // something a reader can act on. The button has already been reverted.
+      setStatus('Could not save that. Check your connection and try again.');
     });
   }
 
@@ -553,8 +555,10 @@
       '<button type="button" class="story-action-btn is-danger" data-action="pin-replace-yes">' +
         esc(confirmLabel) + '</button>' +
       '<button type="button" class="story-action-btn" data-action="pin-replace-no">Cancel</button>';
-    var yes = row.querySelector('[data-action="pin-replace-yes"]');
-    if (yes) yes.focus();
+    // The safe option takes focus, so Enter cannot replace a pin unread —
+    // the same rule progress.js and exit-guard.js apply to their confirmations.
+    var no = row.querySelector('[data-action="pin-replace-no"]');
+    if (no) no.focus();
   }
 
   function cancelPinConfirm() {
@@ -623,20 +627,16 @@
   // than polling or observing the DOM.
   doc.addEventListener('amplified:story-rendered', paint);
 
-  /* ⚠️ POLL FOR `AmplifiedAuth`; DO NOT READ IT ONCE AND GIVE UP.
+  /* ⚠️ WAIT FOR `AmplifiedAuth`; DO NOT READ IT ONCE AND GIVE UP.
      nav.js appends the auth stack with `async = false`, which preserves
      execution order but does NOT delay DOMContentLoaded — so auth.js can land
      after this file has run and after DOMContentLoaded has fired. Reading the
      global once and returning would have left the personal layer permanently
      unpainted **for signed-in readers only**, which is the audience the whole
-     feature is for and the one least likely to report it as a bug. progress.js
-     and learning.js both poll for exactly this reason and say so.
-
-     Bounded, so a blocked host or a CSP settles as a guest rather than leaving
-     the page waiting for ever. */
-  var POLL_MS = 60;
-  var POLL_LIMIT_MS = 6000;
-
+     feature is for and the one least likely to report it as a bug.
+     AmplifiedNav.whenAuth is the wait: nav.js owns the <script> tag, so it
+     calls back from the tag's load event. (This file polled every 60ms for
+     six seconds until 2026-09-02, as did seven others.) */
   function whenAuthReady(fn) {
     /* ⚠️ nav.js publishes its synchronous peek on <html data-session>, and
        'unknown' is published AS-IS rather than collapsed to 'out'. So match
@@ -644,15 +644,11 @@
        show the sign-in invite to someone who is signed in. For a genuine guest
        nav.js never loads the auth stack at all, so short-circuiting here also
        avoids six seconds of pointless polling on every guest page view. */
-    if (doc.documentElement.getAttribute('data-session') === 'out') return;
-
-    var waited = 0;
-    (function poll() {
-      if (auth()) { fn(auth()); return; }
-      waited += POLL_MS;
-      if (waited > POLL_LIMIT_MS) return;   // guest markup stands
-      global.setTimeout(poll, POLL_MS);
-    })();
+    var nav = global.AmplifiedNav;
+    if (!nav || typeof nav.whenAuth !== 'function') return;
+    // Called with null for a guest whose page never loads the stack, and on a
+    // failed load: either way the guest markup stands.
+    nav.whenAuth(function (a) { if (a) fn(a); });
   }
 
   function start() {

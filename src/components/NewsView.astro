@@ -76,7 +76,7 @@ const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
       <svg class="headline-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="search" id="headline-search" class="headline-search-input" placeholder="Filter headlines" aria-label="Filter headlines by title">
     </div>
-    <nav class="headline-panel" id="headline-panel" aria-label="Story list" set:html={headlines}></nav>
+    <nav class="headline-panel" id="headline-panel" aria-label="Story list" tabindex="-1" set:html={headlines}></nav>
   </div>
   <article class="story-panel" id="story-panel" set:html={story}></article>
 </div>
@@ -88,15 +88,14 @@ const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
   import '../scripts/news-app.js';
 </script>
 
-<!-- ⚠️ `is:inline`, and a plain <script> rather than an import. news-actions.js
-     is a classic script that hangs nothing off a module scope and reads
-     `window.AmplifiedAuth`, which nav.js injects as a plain script too. Bundled
-     as a module it would run before that exists on some loads and silently
-     leave every reader looking signed out. Same reasoning as BaseLayout's note. -->
-<!-- ⚠️ ORDER MATTERS AND IS NOT ALPHABETICAL. note-editor.js publishes
-     `window.AmplifiedNoteEditor`, which news-actions.js reads at paint time.
-     Both are classic scripts, so the browser runs them in document order and
-     this is the only thing keeping that guarantee. If the note panel ever opens
-     empty with no controls in it, check this line before anything else. -->
-<script src="/note-editor.js" is:inline></script>
-<script src="/news-actions.js" is:inline></script>
+<!-- ⚠️ NO note-editor.js OR news-actions.js TAG HERE ANY MORE (2026-09-02).
+     nav.js appends both — in that order, with async=false, which is the only
+     thing keeping the guarantee that note-editor.js has published
+     `window.AmplifiedNoteEditor` before news-actions.js reads it — and only
+     when a stored session peeks as signed in or unknown, exactly as it already
+     did for the skill pages. A guest's browser never fetches either: 18 KB and
+     two requests that a guest's news-actions.js only ever short-circuited out
+     of. The server-painted guest markup in the actions panel stands on its own.
+     If the note panel ever opens empty with no controls in it, check
+     noteStackFiles() in nav.js before anything else. -->
+

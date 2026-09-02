@@ -21,25 +21,12 @@
 // an empty answer rather than a failed connection - a whole table of blank
 // results that reads as data. node's fetch has no such trouble.
 
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { projects as projectTable } from './lib/supabase.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CLIENT = join(ROOT, 'public', 'supabase-client.js');
-
-// Same single source of truth as keepalive.mjs: the file the browser reads.
+// The two project URLs, from the file the browser reads (scripts/lib/supabase.mjs).
 function projects() {
-  const source = readFileSync(CLIENT, 'utf8');
-  const out = {};
-  for (const env of ['prod', 'dev']) {
-    const block = source.match(new RegExp(`${env}:\\s*\\{([\\s\\S]*?)\\n {4}\\}`));
-    if (!block) throw new Error(`could not find the ${env} block in public/supabase-client.js`);
-    const url = block[1].match(/url:\s*'([^']+)'/);
-    if (!url) throw new Error(`no url in the ${env} block`);
-    out[env] = url[1];
-  }
-  return out;
+  const p = projectTable();
+  return { prod: p.prod.url, dev: p.dev.url };
 }
 
 // `allowed` must be honoured; `rejected` must fall back to the Site URL.

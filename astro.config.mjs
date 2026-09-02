@@ -1,19 +1,19 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import vercel from '@astrojs/vercel';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { projects, keyProblem } from './scripts/lib/supabase.mjs';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The Supabase project table, lifted out of the file the BROWSER already reads.
 //
-// ⚠️ WHY IT IS PARSED RATHER THAN RETYPED. `public/supabase-client.js` is a
+// ⚠️ WHY IT IS READ RATHER THAN RETYPED. `public/supabase-client.js` is a
 // plain <script> IIFE that hangs itself off `window` — there is nothing for a
 // server module to import. Retyping the two url/key pairs here would put a
 // second copy of them in the repo, and the copy that goes stale is always the
-// one nobody looks at. `keepalive.mjs` and `verify-redirects.mjs` already treat
-// that file as the single source of truth by regex; this is the third caller
-// and it uses the same shape deliberately.
+// one nobody looks at. scripts/lib/supabase.mjs runs the real file against a
+// stub window and asks its own config(), and every script that needs the table
+// reads it there — this is one more caller of the same module.
 //
 // ⚠️ IT IS READ AT BUILD TIME, NOT AT REQUEST TIME. `public/` is not part of a
 // Vercel serverless bundle, so a `readFileSync` inside the server route would
@@ -24,21 +24,16 @@ import { fileURLToPath } from 'node:url';
 // already. A `service_role` key must never reach this file — see the guard.
 // ─────────────────────────────────────────────────────────────────────────────
 function supabaseProjects() {
-  const path = fileURLToPath(new URL('public/supabase-client.js', import.meta.url));
-  const source = readFileSync(path, 'utf8');
+  const table = projects();
   const out = {};
   for (const env of ['prod', 'dev']) {
-    const block = source.match(new RegExp(`${env}:\\s*\\{([\\s\\S]*?)\\n {4}\\}`));
-    if (!block) throw new Error(`could not find the ${env} block in public/supabase-client.js`);
-    const url = block[1].match(/url:\s*'([^']+)'/);
-    const key = block[1].match(/key:\s*'([^']+)'/);
-    if (!url || !key) throw new Error(`could not read url/key from the ${env} block`);
-    // Same refusal as keepalive.mjs and verify-rls.mjs. A privileged key would
-    // work here, which is exactly why the build must stop rather than inline it.
-    if (/^(sb_secret_|service_role)/i.test(key[1])) {
-      throw new Error(`the ${env} key in public/supabase-client.js is a secret key — it must never be built into a server bundle`);
+    // A privileged key would work here, which is exactly why the build must
+    // stop rather than inline it.
+    const problem = keyProblem(table[env].key);
+    if (problem) {
+      throw new Error(`the ${env} key in public/supabase-client.js is not a publishable key (${problem}) — it must never be built into a server bundle`);
     }
-    out[env] = { url: url[1], key: key[1] };
+    out[env] = { url: table[env].url, key: table[env].key };
   }
   return out;
 }
@@ -139,6 +134,14 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
   devToolbar: { enabled: false },
+  // ⚠️ NO IMAGE SERVICE. Nothing in src/ uses astro:assets, <Image> or
+  // <Picture> — every image is a hand-written <img> under public/ — yet the
+  // default service bundled sharp and libvips into the serverless function:
+  // 19.2 MB of a 23.2 MB artifact, measured 2026-09-02, for a /_image route
+  // nothing calls. The passthrough service ships none of it. If a page ever
+  // does import an image through astro:assets, remove this line and the
+  // default comes back.
+  image: { service: passthroughImageService() },
   integrations: [buildStamp()],
   vite: {
     define: {

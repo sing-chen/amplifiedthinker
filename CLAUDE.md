@@ -52,7 +52,12 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    is a separate file. The site is Inter and only Inter; Poppins and Source
                    Serif 4 were retired the same day, and there is no third-party font request
                    left to make. Regenerating the woff2 files is a documented command inside
-                   fonts.css — ⚠️ never subset without --layout-features, see the traps below
+                   fonts.css — ⚠️ never subset without --layout-features, see the traps below.
+                   ⚠️ Since 2026-09-02 vercel.json caches /fonts/ (and the two vendored .min.js
+                   files) for a day with stale-while-revalidate, because the filenames are not
+                   content-hashed: a regenerated woff2 under the same name reaches a returning
+                   visitor within 24 hours, not on their next load. Everything else keeps
+                   Vercel's default revalidate-every-time policy
                  — including skills-catalogue.json, which is GENERATED from the plan and primer
                    pages and committed because the site serves it. ⚠️ Never hand-edit it; run
                    npm run build:catalogue. It holds counts only — display names, categories and
@@ -79,8 +84,12 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    supabase-client.js  picks dev or prod BY HOSTNAME at runtime — no env vars
                    auth.js             session state site-wide, and the nav auth control
                    pwned.js            breach check; auth surfaces ONLY, not loaded by nav.js
-                   auth-pages.js       the password-reveal button and breachedMessage(), same
-                                       scoping rule — shared by the two pages since 2026-09-02
+                   auth-pages.js       the password-reveal button, breachedMessage() and the
+                                       Turnstile widget factory, same scoping rule — shared by
+                                       the two pages since 2026-09-02
+                   auth-doc-modal.js   ⚠️ /sign-in/ ONLY: the terms/privacy reader dialog, lifted
+                                       out of sign-in.astro the same day. Not in auth-pages.js
+                                       because /account/ has no such modal to pay for
                    auth-pages.css      styling for /sign-in/ and /account/, same scoping rule
                    learning.js/.css    ⚠️ /learning/ ONLY, same scoping rule as the two above.
                                        Owns NO definitions — what "complete" means and what
@@ -97,12 +106,16 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    ⚠️ user_news.pinned is ONE READER'S pin. news_stories.pinned is EDITORIAL,
                    admin-set, one site-wide. Both render in the same list wearing the same icon,
                    which is exactly where they get conflated. This file writes only the first
-                   ⚠️ IT POLLS FOR window.AmplifiedAuth AND MUST. nav.js appends the auth stack
+                   ⚠️ IT WAITS FOR window.AmplifiedAuth AND MUST. nav.js appends the auth stack
                    with async=false, which preserves order but does NOT delay DOMContentLoaded,
                    so auth.js can land after any body script has run. Reading the global once and
                    giving up leaves the personal layer unpainted FOR SIGNED-IN READERS ONLY —
-                   the entire audience for it. progress.js and learning.js poll for the same
-                   reason. Short-circuit on <html data-session="out"> so guests never poll
+                   the entire audience for it. Since 2026-09-02 the wait is
+                   AmplifiedNav.whenAuth(fn): nav.js creates the auth.js <script> tag, so it
+                   calls back from that tag's own load event, at once with null on a page that
+                   never loads the stack (a guest), and with null on error. Eight files used to
+                   poll every 60ms with their own bounds instead; a new signed-in surface calls
+                   whenAuth and keeps its own onAuthChange subscription
 src/pages/       new Astro surfaces. sign-in.astro, account.astro and learning.astro are live;
                  blog and admin still to come. Both scaffolds were deleted 2026-08-19 —
                  auth-test.astro at 84566e4, shell-test.astro at b03e6f2, if either is
@@ -204,7 +217,13 @@ supabase/        migrations/ (the schema's source of truth), rollback/, and READ
                  email-templates/ — the two auth emails. CONFIGURATION, not code: nothing
                  reads them, Supabase serves them from its dashboard, and they are committed
                  because a rebuilt project has none of them
-scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls),
+scripts/         lib/supabase.mjs — ⚠️ THE ONE PLACE A NODE SCRIPT LEARNS THE PROJECT TABLE. It runs
+                 public/supabase-client.js against a stub window and asks its own config(), so it
+                 cannot drift from that file's syntax or its blocklist; keyProblem() and loadDotEnv()
+                 live there too. Until 2026-09-02 seven scripts parsed the file by regex in three
+                 shapes. astro.config.mjs imports it as well. Node only — nothing under public/ or
+                 src/ may import it
+                 backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls),
                  verify-email-dns.mjs (npm run verify:email) — the mail DNS gate, needs no credential
                  verify-redirects.mjs (npm run verify:redirects) — the redirect allowlist, both
                  projects, no email sent. Run it FIRST whenever an auth link lands in the wrong place

@@ -53,11 +53,7 @@ const HOSTS = [
   { label: 'dev',  host: 'localhost',           note: 'what localhost and previews use' },
 ];
 
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+import { configFor, keyProblem } from './lib/supabase.mjs';
 
 // What each migration added, so a run says which one is missing rather than
 // just which column. Add a row here whenever a migration adds a column.
@@ -75,19 +71,9 @@ const EXPECTED = [
   { table: 'notes',    column: 'anchor',             since: '20260827090000_notes_anchor' },
 ];
 
-const clientSrc = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');
-
-// Runs the real file against a stub `window`. It only touches `location` and
-// `console`, and returns null rather than throwing when it cannot build a
-// client — so nothing here needs a browser.
-function configFor(hostname) {
-  const stub = {
-    location: { hostname, protocol: 'https:' },
-    console: { warn() {} },
-  };
-  new Function('window', clientSrc)(stub);
-  return stub.AmplifiedSupabase.config();
-}
+// configFor() runs the real public/supabase-client.js against a stub window and
+// asks its own config() for each hostname — the approach this script
+// introduced, now shared from scripts/lib/supabase.mjs.
 
 // ---------------------------------------------------------------------------
 // TLS interception, which is an environment problem wearing a code problem's
@@ -162,14 +148,20 @@ async function probe({ table, column }, url, key) {
 const seen = new Map();
 const results = [];
 
+// The key check runs over every host BEFORE the first fetch, so its
+// process.exit() is still safe — after a fetch it has aborted node 24 on
+// Windows with exit 127 (see verify-news-duplicates.mjs). Inside the probe
+// loop below it would have run after the first host's probes.
 for (const entry of HOSTS) {
-  const cfg = configFor(entry.host);
-
-  if (/^sb_secret_/.test(cfg.key) || /service_role/.test(cfg.key)) {
-    console.error(`\n${entry.host} resolves to a privileged key. Stopping — see the note at the top of this file.\n`);
+  const issue = keyProblem(configFor(entry.host).key);
+  if (issue) {
+    console.error(`\n${entry.host} resolves to a privileged key (${issue}). Stopping — see the note at the top of this file.\n`);
     process.exit(2);
   }
+}
 
+for (const entry of HOSTS) {
+  const cfg = configFor(entry.host);
   const ref = (cfg.url.match(/https:\/\/([^.]+)\./) || [])[1] || cfg.url;
 
   if (!seen.has(ref)) {

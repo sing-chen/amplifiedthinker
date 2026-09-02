@@ -14,41 +14,24 @@
 //
 // Never prints the key.
 
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { keyProblem, loadDotEnv } from './lib/supabase.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+loadDotEnv();
 
-const env = {};
-try {
-  for (const line of readFileSync(join(ROOT, '.env'), 'utf8').split(/\r?\n/)) {
-    const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line);
-    if (m) env[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
-  }
-} catch {
-  // fall through to the environment
-}
-
-const url = (process.env.SUPABASE_URL || env.PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
-const key = process.env.SUPABASE_ANON_KEY || env.PUBLIC_SUPABASE_ANON_KEY || '';
+const url = (process.env.SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL || '').replace(/\/+$/, '');
+const key = process.env.SUPABASE_ANON_KEY || process.env.PUBLIC_SUPABASE_ANON_KEY || '';
 
 if (!url || !key) {
   console.error('Missing SUPABASE_URL / SUPABASE_ANON_KEY. Copy .env.example to .env and fill it in.');
   process.exit(2);
 }
 
+// The same guard every other script uses, read back as a label for the report.
 function keyKind(k) {
-  if (/^sb_secret_/i.test(k)) return { label: 'SECRET - WRONG KEY, it bypasses RLS', ok: false };
+  const problem = keyProblem(k);
+  if (problem) return { label: `WRONG KEY - ${problem}, it bypasses RLS`, ok: false };
   if (/^sb_publishable_/i.test(k)) return { label: 'publishable', ok: true };
-  if (k.split('.').length === 3) {
-    try {
-      const role = JSON.parse(Buffer.from(k.split('.')[1], 'base64url').toString('utf8')).role;
-      return { label: `legacy JWT, role "${role}"`, ok: role === 'anon' };
-    } catch {
-      return { label: 'JWT, undecodable', ok: true };
-    }
-  }
+  if (k.split('.').length === 3) return { label: 'legacy JWT, role "anon"', ok: true };
   return { label: 'unrecognised format', ok: true };
 }
 

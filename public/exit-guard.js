@@ -15,8 +15,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // THREE THINGS THIS FILE DELIBERATELY DOES NOT DO. Read before extending it.
 //
-// 1. ⚠️ IT DERIVES NOTHING ABOUT PROGRESS. Guest-vs-account comes from
-//    `AmplifiedProgress.whenAuth`, which already owns that answer for the whole
+// 1. ⚠️ IT DERIVES NOTHING ABOUT PROGRESS. Guest-vs-account is read live from
+//    `AmplifiedProgress.mode()`, which already owns that answer for the whole
 //    site. It is not recomputed here, and no section count is quoted. A second
 //    implementation of "how far are they" is exactly the defect CLAUDE.md
 //    records against learning.js: two readers of the same account disagreed
@@ -232,7 +232,7 @@
       '#exitGuard a.eg-signin{background:transparent;color:var(--fg-brand,#26605B);' +
         'border-color:var(--fg-brand,#26605B)}' +
       '#exitGuard button:focus-visible,#exitGuard a.eg-btn:focus-visible{' +
-        'outline:2px solid var(--accent-cool,#5BA79F);outline-offset:2px}' +
+        'outline:2px solid var(--fg-brand,#26605B);outline-offset:2px}' +
       '@media (max-width:420px){#exitGuard .eg-actions{flex-direction:column-reverse}' +
         '#exitGuard .eg-actions>*{justify-content:center;width:100%}}' +
 

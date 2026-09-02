@@ -33,6 +33,16 @@ try {
 // serving "no stories" with a 200 tells a crawler the feed is genuinely empty.
 if (failure) Astro.response.status = 503;
 
+// ⚠️ EDGE-CACHED FOR ONE MINUTE (decided 2026-09-02), never in the browser.
+// This HTML is identical for every reader — the personal layer is painted by
+// news-actions.js after load — so the CDN may answer for it; a story published
+// a minute ago appearing a minute late is invisible against a weekly cadence,
+// and the three JSON endpoints already work this way. The 503 is never cached:
+// a cached outage would outlive the outage.
+Astro.response.headers.set('cache-control', failure
+  ? 'no-store'
+  : 'public, max-age=0, s-maxage=60, stale-while-revalidate=600');
+
 // The pinned story if there is one, otherwise the newest. Same choice the
 // browser makes, from the same function.
 const active = stories.length ? pickDefault(stories, { tag: 'all', query: '' }) : null;

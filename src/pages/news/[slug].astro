@@ -23,6 +23,9 @@ let failure = null;
 try {
   stories = await fetchPublishedStories(hostnameFor(Astro.request, Astro.url));
 } catch (err) {
+  // Logged as the index route and the /api/ routes log theirs: a 503 here
+  // otherwise leaves nothing in the function log to say why.
+  console.error('[news] /news/<slug> could not read news_stories:', err);
   failure = err;
 }
 
@@ -34,6 +37,13 @@ const active = failure ? null : stories.find((s) => s.slug === slug) || null;
 // engines index a page that says nothing, for every typo anyone ever shares.
 if (failure) Astro.response.status = 503;
 else if (!active) Astro.response.status = 404;
+
+// Same one-minute edge cache as /news/ — see the note there. A 404 is cached
+// too: an unknown slug stays unknown for the minute, and every typo anyone
+// shares would otherwise be a function invocation and a database read.
+Astro.response.headers.set('cache-control', failure
+  ? 'no-store'
+  : 'public, max-age=0, s-maxage=60, stale-while-revalidate=600');
 
 const title = active ? `${active.title} · News · Amplified Thinker` : 'Story not found · News · Amplified Thinker';
 const canonical = active

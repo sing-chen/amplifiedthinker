@@ -85,16 +85,30 @@ function icon(paths) {
    different bucket server-side than it does for a reader several timezones
    away. The client re-renders the list on load from the same functions, which
    corrects it — that correction is one of the reasons this module is shared. */
+// ⚠️ THE SITE'S ONE DATE FORMAT IS DD Mmm YYYY (decided 2026-09-02), and this
+// is the server-side copy of AmplifiedNav.formatDate — the same reason this
+// module carries its own escaper: it runs where there is no window. Fixed
+// month table rather than toLocaleDateString, whose en-GB short month gives
+// "Sept" (four letters where every other month gives three) and whose en-US
+// long form this used to emit as "Tuesday, September 2, 2026" on a UK site.
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function dayMon(d) {
+  return String(d.getDate()).padStart(2, '0') + ' ' + MONTHS_SHORT[d.getMonth()];
+}
+
 export function fmtDateLong(iso) {
   const d = new Date(iso + 'T00:00:00');
   if (isNaN(d)) return iso;
-  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  return dayMon(d) + ' ' + d.getFullYear();
 }
 
+// The headline list's prefix: the same format with the year left off, because
+// every story in a group is the same year and the column is 320px wide.
 export function fmtDatePrefix(iso) {
   const d = new Date(iso + 'T00:00:00');
   if (isNaN(d)) return iso;
-  return String(d.getDate()).padStart(2, '0') + ' ' + d.toLocaleDateString('en-US', { month: 'short' });
+  return dayMon(d);
 }
 
 export function daysAgo(iso, now) {
@@ -159,8 +173,6 @@ export function findPinned(stories) {
   return null;
 }
 
-// The reading order the Previous/Next buttons walk: the pinned story first,
-// then everything else newest-first. `stories` is already sorted by the query.
 /**
  * The one archive group to hold open: the group the given story sits in.
  * Today is never a collapsible group and the pinned story sits above them all,
@@ -177,6 +189,8 @@ export function expandedFor(stories, story) {
   return key === 'Today' ? null : key;
 }
 
+// The reading order the Previous/Next buttons walk: the pinned story first,
+// then everything else newest-first. `stories` is already sorted by the query.
 export function navigableSlugs(stories, state) {
   if (state.query) return stories.filter((s) => matchesFilter(s, state)).map((s) => s.slug);
   const pinned = findPinned(stories);

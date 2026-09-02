@@ -132,7 +132,7 @@
     '.snav-links a {',
     '  font-size: 13px; font-weight: 500;',
     '  color: rgba(255,255,255,0.88);',
-    '  padding: 5px 12px; border-radius: 5px;',
+    '  padding: 5px 12px; border-radius: 6px;',
     '  transition: color 0.15s, background 0.15s;',
     '  white-space: nowrap;',
     '}',
@@ -144,7 +144,7 @@
     '  display: flex;',
     '  align-items: center; justify-content: center;',
     '  width: 34px; height: 34px;',
-    '  background: none; border: none; border-radius: 5px;',
+    '  background: none; border: none; border-radius: 6px;',
     '  color: rgba(255,255,255,0.75); cursor: pointer; padding: 0;',
     '  margin-left: 4px; flex-shrink: 0;',
     '  text-decoration: none;',
@@ -152,6 +152,7 @@
     '}',
     '.snav-search:hover { background: rgba(255,255,255,0.08); color: #fff; }',
     '.snav-search.snav-search-active { color: #ACC4B6; }',
+    '.snav-search{position:relative}.snav-search::after{content:"";position:absolute;inset:-5px}',
     '.snav-search svg {',
     '  width: 18px; height: 18px;',
     '  stroke: currentColor; fill: none;',
@@ -159,11 +160,12 @@
     '}',
 
     /* Theme (light/dark) toggle */
+    '.snav-theme-toggle{position:relative}.snav-theme-toggle::after{content:"";position:absolute;inset:-5px}',
     '.snav-theme-toggle {',
     '  display: flex;',
     '  align-items: center; justify-content: center;',
     '  width: 34px; height: 34px;',
-    '  background: none; border: none; border-radius: 5px;',
+    '  background: none; border: none; border-radius: 6px;',
     '  color: rgba(255,255,255,0.75); cursor: pointer; padding: 0;',
     '  margin-left: 4px; flex-shrink: 0;',
     '  transition: background 0.15s, color 0.15s;',
@@ -195,7 +197,7 @@
     '.snav-auth-signin {',
     '  font-size: 12.5px; font-weight: 500;',
     '  color: #ACC4B6;',
-    '  padding: 5px 12px; border-radius: 5px;',
+    '  padding: 5px 12px; border-radius: 6px;',
     '  border: 1px solid rgba(172,196,182,0.35);',
     '  white-space: nowrap;',
     '  transition: color 0.15s, background 0.15s, border-color 0.15s;',
@@ -242,7 +244,7 @@
     '  font-size: 13px; font-weight: 500;',
     '  color: rgba(255,255,255,0.88);',
     '  background: none; border: none;',
-    '  text-align: left; padding: 8px; border-radius: 5px;',
+    '  text-align: left; padding: 8px; border-radius: 6px;',
     '  cursor: pointer;',
     '}',
     '.snav-auth-menu a:hover, .snav-auth-menu button:hover {',
@@ -254,7 +256,7 @@
     '  display: none;',
     '  align-items: center; justify-content: center;',
     '  width: 36px; height: 36px;',
-    '  background: none; border: none; border-radius: 5px;',
+    '  background: none; border: none; border-radius: 6px;',
     '  color: #fff; cursor: pointer; padding: 0;',
     '  margin-left: 8px; flex-shrink: 0;',
     '  transition: background 0.15s;',
@@ -386,7 +388,7 @@
     '  <a href="' + root('search.html') + '" class="snav-search' + searchActiveCls + '" aria-label="Search">',
     '    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>',
     '  </a>',
-    '  <button type="button" id="snav-theme-toggle" class="snav-theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">',
+    '  <button type="button" id="snav-theme-toggle" class="snav-theme-toggle" aria-label="Dark mode" aria-pressed="false">',
     '    <svg class="snav-theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
     '    <svg class="snav-theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>',
     '  </button>',
@@ -727,7 +729,7 @@
     } else if (peek.state === 'in') {
       slot.innerHTML =
         '<button type="button" class="snav-auth-avatar" id="snav-auth-avatar"' +
-        ' aria-expanded="false" aria-haspopup="true"' +
+        ' aria-expanded="false"' +
         ' title="' + escapeHtml(labelFor(peek.name, peek.email)) + '">' +
         escapeHtml(initialFor(peek.name, peek.email)) + '</button>';
     }
@@ -753,8 +755,83 @@
       s.src = root(file);
       s.async = false;
       s.defer = true;
+      // auth.js is the last of the three, and async=false keeps the order, so
+      // its load event is the moment AmplifiedAuth exists — see whenAuth().
+      if (file === 'auth.js') { s.onload = settleAuthWaiters; s.onerror = settleAuthWaiters; }
       document.head.appendChild(s);
     });
+    // A stalled download fires neither event for a long time; nothing on the
+    // site should wait longer than this to learn there is no answer.
+    window.setTimeout(settleAuthWaiters, 10000);
+  }
+
+  /* ── waiting for the auth stack ────────────────────────────────────────
+     auth.js is appended above with async=false, which keeps the three files
+     in order but does NOT hold DOMContentLoaded — so any body script can run
+     before AmplifiedAuth exists. Until 2026-09-02 eight files each polled for
+     it every 60ms with their own bound, and two with none. This file creates
+     the <script> tag, so it is the one place that KNOWS when the stack lands:
+     waiters are called from that tag's own load and error events.
+
+     fn(auth) is called exactly once:
+       - at once with AmplifiedAuth, if it is already there;
+       - at once with null, if this page never asked for the stack — a guest
+         on a page with no signed-in state, the answer data-session="out"
+         already gave, which is what the callers' short-circuits used to test;
+       - on load with AmplifiedAuth; on error, or after the stall bound above,
+         with null.
+     Callers keep their own onAuthChange subscription: this answers "is the
+     library here", not "who is signed in". */
+  var authWaiters = [];
+  var authSettled = false;
+
+  function settleAuthWaiters() {
+    if (authSettled) return;
+    authSettled = true;
+    var list = authWaiters;
+    authWaiters = [];
+    var auth = window.AmplifiedAuth || null;
+    for (var i = 0; i < list.length; i++) {
+      try { list[i](auth); } catch (e) { /* one waiter must not stop the rest */ }
+    }
+  }
+
+  function whenAuth(fn) {
+    if (window.AmplifiedAuth) { fn(window.AmplifiedAuth); return; }
+    if (authSettled || !window.__amplifiedAuthStack) { fn(null); return; }
+    authWaiters.push(fn);
+  }
+
+  /* ── ONE DATE FORMAT for every completion and "last read" stamp ────────
+     DD Mmm YYYY, always. It renders in the skill rail pill (212px), the
+     completion control, the library cards and /learning/. Two identical copies
+     lived in progress.js and skills-progress.js until 2026-09-02 with a note
+     saying "if either changes, change both"; this is the one that exists now.
+
+     `{ month: 'short' }` under en-GB returns "Sept" for September — four
+     letters where every other month gives three — so the table is fixed, and
+     the day is padded, so every date is the same width.
+
+     ⚠️ It used to drop the year for the current year. That was a trap: the
+     long form only appeared once a completion was no longer from this year,
+     so a 231px date in a 212px rail would have looked perfect for months and
+     first overflowed in January. One shape, measured once, holds in any
+     month of any year. */
+  var MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  function formatDate(iso) {
+    try {
+      // ⚠️ The falsy check is not redundant with the isNaN below it:
+      // new Date(null) is the epoch, not an invalid date, and would render
+      // "01 Jan 1970" — a plausible-looking date rather than an obvious failure.
+      if (!iso) return '';
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '';
+      var dd = d.getDate();
+      return (dd < 10 ? '0' : '') + dd + ' ' +
+             MONTHS_SHORT[d.getMonth()] + ' ' + d.getFullYear();
+    } catch (e) { return ''; }
   }
 
   /* ⚠️ THE NOTE STACK LOADS THE SAME WAY AND FOR THE SAME REASON — so that a
@@ -775,6 +852,18 @@
   function isSkillArtefact() {
     return /\/skills\/[a-z0-9-]+\/(plan|primer)(\.html)?$/i.test(window.location.pathname);
   }
+  function isNewsPage() {
+    return /^\/news(\/|$)/i.test(window.location.pathname);
+  }
+  // The per-page half of the note stack: the editor is shared, the surface
+  // that mounts it is not. /news/ carried both of its files as static <script>
+  // tags for every guest until 2026-09-02 — 18 KB and two requests that a
+  // guest's news-actions.js only ever short-circuited out of.
+  function noteStackFiles() {
+    if (isNewsPage()) return ['note-editor.js', 'news-actions.js'];
+    if (isSkillArtefact()) return ['note-editor.js', 'skill-notes.js'];
+    return [];
+  }
 
   function loadNoteStack() {
     if (window.__amplifiedNoteStack) return;
@@ -782,9 +871,9 @@
 
     // ⚠️ Same `async = false` discipline as the auth stack, and it is
     // load-bearing here too: note-editor.js publishes window.AmplifiedNoteEditor
-    // and skill-notes.js reads it. Without this the two race and the panel can
+    // and skill-notes.js / news-actions.js read it. Without this the two race and the panel can
     // come up with no editor in it.
-    ['note-editor.js', 'skill-notes.js'].forEach(function (file) {
+    noteStackFiles().forEach(function (file) {
       var s = document.createElement('script');
       s.src = root(file);
       s.async = false;
@@ -829,7 +918,7 @@
        reader with no notes control at all, silently, on the one page they went
        looking for it. Erring the other way costs a guest-who-looked-signed-in
        two script downloads and nothing else. */
-    if (peek.state !== 'out' && isSkillArtefact()) loadNoteStack();
+    if (peek.state !== 'out' && noteStackFiles().length) loadNoteStack();
   }
 
   /* ── Guard against the Primer bundle wiping the nav ─────────────────────
@@ -882,6 +971,9 @@
         var isOpen = nav.classList.toggle('menu-open');
         toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        // The toggle is AFTER the links in the DOM, so Tab from it would leave
+        // the menu behind; move into it, and let Escape return to the toggle.
+        if (isOpen) { var first = nav.querySelector('.snav-links a'); if (first) first.focus(); }
         return;
       }
 
@@ -920,8 +1012,11 @@
     if (!btn) return;
     var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     var label = isDark ? 'Switch to light mode' : 'Switch to dark mode';
+    // One accessible name ("Dark mode") with the state in aria-pressed; the
+    // verb-form label is the tooltip only. Swapping both read as
+    // "Switch to light mode, pressed".
     btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-    btn.setAttribute('aria-label', label);
+    btn.setAttribute('aria-label', 'Dark mode');
     btn.setAttribute('title', label);
   }
 
@@ -962,7 +1057,11 @@
     // here and read there.
     returnParam: returnParam,
     // The site's one HTML escaper — see the note on the function.
-    escapeHtml: escapeHtml
+    escapeHtml: escapeHtml,
+    // Called once with AmplifiedAuth, or with null if it will not arrive.
+    whenAuth: whenAuth,
+    // DD Mmm YYYY, the one date format for completion and "last read" stamps.
+    formatDate: formatDate
   };
 
   /* ── Entry point ─────────────────────────────────────────────────────── */

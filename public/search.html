@@ -103,7 +103,7 @@
   appearance: none;
 }
 #search-input::placeholder {
-  color: rgba(255,255,255,.38);
+  color: rgba(255,255,255,0.6);
 }
 #search-input:focus {
   border-color: var(--sage);
@@ -112,6 +112,7 @@
 #search-input:focus-visible {
   outline: none; /* handled by border-color above */
 }
+.search-clear::after { content: ''; position: absolute; inset: -7px; }
 .search-clear {
   position: absolute;
   right: 12px;
@@ -148,7 +149,7 @@
   margin-top: 12px;
   font-family:var(--font-body);
   font-size: 13px;
-  color: rgba(255,255,255,.5);
+  color: rgba(255,255,255,0.6);
   min-height: 18px;
 }
 
@@ -558,7 +559,7 @@
 [data-theme="dark"] .rc-type-news { color: #A8C0D9; }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .search-hero { padding: 48px 20px 40px; }
   .search-body { padding: 28px 20px 60px; }
   .search-footer { padding: 28px 20px; }
@@ -655,7 +656,7 @@
   </div>
 
   <!-- Results list -->
-  <ul id="results-list" role="listbox" aria-label="Search results" aria-live="polite"></ul>
+  <ul id="results-list" aria-label="Search results"></ul>
 
 </main>
 
@@ -995,7 +996,6 @@
         : escHtml(rawDesc);
 
       var li = document.createElement('li');
-      li.setAttribute('role', 'option');
 
       var a = document.createElement('a');
       a.href = item.url;

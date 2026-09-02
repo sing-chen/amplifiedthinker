@@ -84,7 +84,8 @@
   .ac-step{display:flex;align-items:center;gap:8px}
   .ac-step[hidden]{display:none}
   .ac-count{font-family:var(--font-body);font-size:12.5px;font-weight:600;color:rgba(238,242,239,.55);font-variant-numeric:tabular-nums;letter-spacing:.02em;min-width:38px;text-align:center}
-  .ac-btn{width:27px;height:27px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid rgba(172,196,182,.3);border-radius:6px;color:var(--sage);cursor:pointer;padding:0;transition:background .15s,border-color .15s}
+  .ac-btn{position:relative;width:27px;height:27px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid rgba(172,196,182,.3);border-radius:6px;color:var(--sage);cursor:pointer;padding:0;transition:background .15s,border-color .15s}
+  .ac-btn::after{content:'';position:absolute;inset:-9px}
   .ac-btn:hover{background:rgba(172,196,182,.12);border-color:rgba(172,196,182,.7)}
   .ac-btn:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
   .ac-btn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
@@ -109,7 +110,7 @@
      section instead of scattered per property. */
   .explore{padding:48px 40px 88px;max-width:var(--page-max);margin:0 auto;
     --hue-skills:var(--deep-teal);--hue-people:var(--moss);--hue-news:var(--terracotta)}
-  [data-theme="dark"] .explore{--hue-skills:#7FC4B8;--hue-people:#9BB577;--hue-news:#C97A4A}
+  [data-theme="dark"] .explore{--hue-skills:#7FC4B8;--hue-people:#9BB577;--hue-news:var(--accent-warm-text)}
   .tiles-kicker{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin:0 0 12px}
   .tiles-title{font-family:var(--font-editorial);font-size:clamp(22px,2.6vw,30px);font-weight:380;letter-spacing:-.024em;line-height:1.25;color:var(--fg-heading);margin:0 0 36px}
   /* editorial weight carries the standard +40 dark compensation */
@@ -198,23 +199,23 @@
 <section class="explore" aria-labelledby="explore-label">
   <p class="tiles-kicker">Explore</p>
   <p class="tiles-title" id="explore-label">Skills to build. Thinkers worth knowing. News worth tracking.</p>
-  <div class="explore-grid" role="list">
+  <div class="explore-grid">
 
-    <a href="future-skills.html" class="tile tile-skills" role="listitem">
+    <a href="future-skills.html" class="tile tile-skills">
       <p class="tile-eyebrow">Future skills</p>
       <p class="tile-title">The library of what holds its value</p>
       <p class="tile-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more.</p>
       <span class="tile-cta">Browse the library <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
     </a>
 
-    <a href="my-people.html" class="tile tile-people" role="listitem">
+    <a href="my-people.html" class="tile tile-people">
       <p class="tile-eyebrow">My people</p>
       <p class="tile-title">The people whose work I keep turning to</p>
       <p class="tile-desc">The thinkers, coaches, and practitioners who've shaped how I lead, communicate, and build capability.</p>
       <span class="tile-cta">Meet them <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
     </a>
 
-    <a href="news/" class="tile tile-news" role="listitem">
+    <a href="news/" class="tile tile-news">
       <p class="tile-eyebrow">News</p>
       <p class="tile-title">The stories reshaping how we work</p>
       <p class="tile-desc">A curated feed of the skills and workplace shifts worth knowing about.</p>
@@ -399,12 +400,11 @@
             'August', 'September', 'October', 'November', 'December'][d.getMonth()];
   }
 
+  // DD Mmm YYYY, the site's one date format, from nav.js (loaded above). It
+  // used to say "Tue 2 Sep" here alone, with no year and a weekday nothing
+  // else on the site shows.
   function formatAnnounceDate(dateStr) {
-    var d = new Date(dateStr + 'T00:00:00');
-    if (isNaN(d)) return '';
-    var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    return window.AmplifiedNav.formatDate(dateStr + 'T00:00:00');
   }
 
   function daysSince(dateStr) {

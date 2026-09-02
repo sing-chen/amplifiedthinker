@@ -261,8 +261,10 @@
         '<button type="button" class="' + btn + ' is-danger" data-action="confirm-yes" data-confirm="' + esc(action) + '">' +
           esc(confirmLabel) + '</button>' +
         '<button type="button" class="' + btn + '" data-action="confirm-no">Cancel</button>';
-      var yes = bar.querySelector('[data-action="confirm-yes"]');
-      if (yes) { try { yes.focus({ preventScroll: true }); } catch (e) { yes.focus(); } }
+      // Focus lands on the SAFE option, as progress.js and exit-guard.js
+      // already argue: Enter must not confirm a delete the reader has not read.
+      var no = bar.querySelector('[data-action="confirm-no"]');
+      if (no) { try { no.focus({ preventScroll: true }); } catch (e) { no.focus(); } }
     }
 
     function cancelConfirm() {
@@ -293,7 +295,7 @@
         setStatus(opts.savedText || 'Note saved.');
         if (opts.onSaved) opts.onSaved(value, extra);
       }).catch(function (err) {
-        setStatus('Could not save your note. ' + (err && err.message ? err.message : ''));
+        setStatus('Could not save your note. Your text is still here — check your connection and try again.');
       });
     }
 
@@ -309,7 +311,7 @@
         setStatus(opts.deletedText || 'Note deleted.');
         if (opts.onDeleted) opts.onDeleted();
       }).catch(function (err) {
-        setStatus('Could not delete your note. ' + (err && err.message ? err.message : ''));
+        setStatus('Could not delete your note. Check your connection and try again.');
       });
     }
 

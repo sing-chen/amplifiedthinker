@@ -12,11 +12,7 @@
 // .env file. Never give it the service_role key: that key bypasses RLS entirely,
 // so it would pass this suite while proving nothing.
 
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+import { projects, keyProblem, loadDotEnv } from './lib/supabase.mjs';
 
 // ---------------------------------------------------------------------------
 // What each table should do for an anonymous caller.
@@ -110,20 +106,6 @@ const WRITE_PROBES = {
 // Config
 // ---------------------------------------------------------------------------
 
-function loadDotEnv() {
-  try {
-    const text = readFileSync(join(ROOT, '.env'), 'utf8');
-    for (const line of text.split(/\r?\n/)) {
-      const match = /^\s*([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line);
-      if (!match) continue;
-      const value = match[2].trim().replace(/^["']|["']$/g, '');
-      if (!(match[1] in process.env)) process.env[match[1]] = value;
-    }
-  } catch {
-    // No .env is fine - the values may come from the real environment.
-  }
-}
-
 loadDotEnv();
 
 /* ── `dev` / `prod`, overriding .env ──────────────────────────────────────────
@@ -140,14 +122,7 @@ loadDotEnv();
    exactly as before. */
 const target = process.argv.slice(2).find((a) => a === 'dev' || a === 'prod');
 if (target) {
-  const client = readFileSync(join(ROOT, 'public', 'supabase-client.js'), 'utf8');
-  const segment = client.split(target + ':')[1] ?? '';
-  const url = (segment.match(/url:\s*'([^']+)'/) ?? [])[1];
-  const key = (segment.match(/(?:anonKey|key):\s*'([^']+)'/) ?? [])[1];
-  if (!url || !key) {
-    console.error(`\nCould not parse the ${target} project out of public/supabase-client.js.`);
-    process.exit(2);
-  }
+  const { url, key } = projects()[target];
   process.env.SUPABASE_URL = url;
   process.env.SUPABASE_ANON_KEY = key;
   console.log(`\nTarget: ${target} (${url}) - from public/supabase-client.js, not .env`);
@@ -170,28 +145,8 @@ if (!URL_BASE || !ANON_KEY) {
 // false PASS and the gate would certify nothing - the single worst outcome for a
 // script whose entire job is proving the security model.
 //
-// Two key formats to recognise, and the prefix check has to come FIRST. The newer
-// `sb_secret_…` keys are not JWTs, so a decode-and-inspect approach throws, lands
-// in the catch, and waves them through - which is precisely backwards. Kept in
-// step with the same guard in keepalive.mjs, verify-completion.mjs and astro.config.mjs.
-function keyProblem(key) {
-  if (/^sb_secret_/i.test(key)) return 'that is a secret key';
-  if (/^service_role/i.test(key)) return 'that is a service_role key';
-
-  const parts = key.split('.');
-  if (parts.length !== 3) return null; // not a JWT we can read - allow
-
-  try {
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
-    if (payload.role && payload.role !== 'anon') {
-      return `that key has role "${payload.role}", not "anon"`;
-    }
-  } catch {
-    return null; // undecodable - allow, the assertions themselves still hold
-  }
-  return null;
-}
-
+// The guard itself lives in scripts/lib/supabase.mjs, shared with keepalive,
+// verify-completion, verify-news-duplicates, verify-schema-columns and the build.
 const problem = keyProblem(ANON_KEY);
 if (problem) {
   console.error(`Refusing to run: ${problem}.`);
