@@ -204,7 +204,13 @@ supabase/        migrations/ (the schema's source of truth), rollback/, and READ
                  email-templates/ — the two auth emails. CONFIGURATION, not code: nothing
                  reads them, Supabase serves them from its dashboard, and they are committed
                  because a rebuilt project has none of them
-scripts/         backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls),
+scripts/         lib/supabase.mjs — ⚠️ THE ONE PLACE A NODE SCRIPT LEARNS THE PROJECT TABLE. It runs
+                 public/supabase-client.js against a stub window and asks its own config(), so it
+                 cannot drift from that file's syntax or its blocklist; keyProblem() and loadDotEnv()
+                 live there too. Until 2026-09-02 seven scripts parsed the file by regex in three
+                 shapes. astro.config.mjs imports it as well. Node only — nothing under public/ or
+                 src/ may import it
+                 backup-to-drive.ps1 (npm run backup), verify-rls.mjs (npm run verify:rls),
                  verify-email-dns.mjs (npm run verify:email) — the mail DNS gate, needs no credential
                  verify-redirects.mjs (npm run verify:redirects) — the redirect allowlist, both
                  projects, no email sent. Run it FIRST whenever an auth link lands in the wrong place

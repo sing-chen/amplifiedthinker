@@ -21,51 +21,15 @@
 // The DEV project is deliberately NOT kept alive. It is allowed to pause; that
 // is what makes the two-project free tier workable alongside another site.
 
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { projects, keyProblem } from './lib/supabase.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CLIENT = join(ROOT, 'public', 'supabase-client.js');
-
-// Read the credentials out of the file the browser already uses, rather than
-// repeating them here. They are public by design, so there is nothing to hide -
-// the reason for parsing is that two copies drift, and the copy that goes stale
-// is always the one nobody looks at. If the project ref ever changes, this
-// follows it automatically.
-function prodConfig() {
-  const source = readFileSync(CLIENT, 'utf8');
-  const block = source.match(/prod:\s*\{([\s\S]*?)\n {4}\}/);
-  if (!block) throw new Error('could not find the prod block in public/supabase-client.js');
-
-  const url = block[1].match(/url:\s*'([^']+)'/);
-  const key = block[1].match(/key:\s*'([^']+)'/);
-  if (!url || !key) throw new Error('could not read url/key from the prod block');
-
-  return { url: url[1], key: key[1] };
-}
-
-// Mirrors the guard in verify-rls.mjs and astro.config.mjs. A service_role
-// key would work perfectly here, which is exactly why it must be refused: this
-// script runs unattended in CI, and a privileged key committed to a public repo
-// is the one mistake with no cheap recovery.
-function keyProblem(key) {
-  if (/^sb_secret_/i.test(key)) return 'that is a secret key';
-  if (/^service_role/i.test(key)) return 'that is a service_role key';
-
-  const parts = key.split('.');
-  if (parts.length !== 3) return null;
-
-  try {
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
-    if (payload.role && payload.role !== 'anon') {
-      return `that key has role "${payload.role}", not "anon"`;
-    }
-  } catch {
-    return null;
-  }
-  return null;
-}
+// The credentials come out of the file the browser already uses, via
+// scripts/lib/supabase.mjs, rather than being repeated here. They are public
+// by design, so there is nothing to hide - the reason for reading the file is
+// that two copies drift. The key guard lives in the same module: this script
+// runs unattended in CI, and a privileged key committed to a public repo is
+// the one mistake with no cheap recovery.
+function prodConfig() { return projects().prod; }
 
 async function main() {
   const { url, key } = prodConfig();
