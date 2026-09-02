@@ -651,10 +651,11 @@
 
   /* ── lifecycle ─────────────────────────────────────────────────────────── */
 
-  /* ⚠️ POLL FOR AmplifiedAuth. nav.js appends the auth stack with async=false,
+  /* ⚠️ WAIT FOR AmplifiedAuth. nav.js appends the auth stack with async=false,
      which preserves order but does not delay DOMContentLoaded, so auth.js can
-     land after this file has run. progress.js, learning.js, news-actions.js and
-     skill-notes.js all poll for the same reason.
+     land after this file has run. AmplifiedNav.whenAuth is the wait, called
+     back from the script tag's own load event (every consumer polled for six
+     seconds until 2026-09-02).
 
      ⚠️ NO `data-session="out"` SHORT-CIRCUIT HERE, unlike skill-notes.js. This
      page IS on nav.js's `pageNeedsAuth()` allowlist — it has something to say to

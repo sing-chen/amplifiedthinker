@@ -52,7 +52,12 @@ public/          the 19 hand-written pages, shipped byte-for-byte untouched by A
                    is a separate file. The site is Inter and only Inter; Poppins and Source
                    Serif 4 were retired the same day, and there is no third-party font request
                    left to make. Regenerating the woff2 files is a documented command inside
-                   fonts.css — ⚠️ never subset without --layout-features, see the traps below
+                   fonts.css — ⚠️ never subset without --layout-features, see the traps below.
+                   ⚠️ Since 2026-09-02 vercel.json caches /fonts/ (and the two vendored .min.js
+                   files) for a day with stale-while-revalidate, because the filenames are not
+                   content-hashed: a regenerated woff2 under the same name reaches a returning
+                   visitor within 24 hours, not on their next load. Everything else keeps
+                   Vercel's default revalidate-every-time policy
                  — including skills-catalogue.json, which is GENERATED from the plan and primer
                    pages and committed because the site serves it. ⚠️ Never hand-edit it; run
                    npm run build:catalogue. It holds counts only — display names, categories and

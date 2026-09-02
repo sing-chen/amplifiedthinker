@@ -624,13 +624,14 @@
 
   /* ── lifecycle ─────────────────────────────────────────────────────────── */
 
-  /* ⚠️ POLL FOR `AmplifiedAuth`; DO NOT READ IT ONCE AND GIVE UP. nav.js appends
+  /* ⚠️ WAIT FOR `AmplifiedAuth`; DO NOT READ IT ONCE AND GIVE UP. nav.js appends
      the auth stack with `async = false`, which preserves execution order but
      does NOT delay DOMContentLoaded — so auth.js can land after this file has
      run. Reading the global once would leave the panel permanently absent for
      SIGNED-IN READERS ONLY, which is the entire audience for it and the one
-     least likely to report it. progress.js, learning.js and news-actions.js all
-     poll for exactly this reason and all say so. */
+     least likely to report it. AmplifiedNav.whenAuth is the wait, called back
+     from the script tag's own load event (this file polled every 60ms for six
+     seconds until 2026-09-02, as did seven others). */
   function whenAuthReady(fn) {
     // AmplifiedNav.whenAuth calls back from auth.js's own load event, and at
     // once with null for a guest whose page never loads the stack — the case
