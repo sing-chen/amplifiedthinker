@@ -842,7 +842,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         }).then(function (r) {
           if (!r) return;
           if (r.error) {
-            out.textContent = r.error.message;
+            out.textContent = window.AmplifiedAuthPages.plainError(r.error.message);
             out.className = 'auth-status bad';
             el('auth-resend').disabled = false;
             return;
@@ -1083,7 +1083,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
                        email, true, true, 0);
               return;
             }
-            setStatus(r.error.message, 'bad');
+            setStatus(window.AmplifiedAuthPages.plainError(r.error.message), 'bad');
             return;
           }
 
@@ -1147,7 +1147,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           if (!r) return;
           el('auth-recover-submit').disabled = false;
           if (r.error) {
-            out.textContent = r.error.message;
+            out.textContent = window.AmplifiedAuthPages.plainError(r.error.message);
             out.className = 'auth-status bad';
             return;
           }

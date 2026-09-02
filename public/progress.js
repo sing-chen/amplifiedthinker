@@ -317,14 +317,14 @@
     S + '.ac-tick svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:3;' +
       'stroke-linecap:round;stroke-linejoin:round}' +
     S + '.ac-btn{margin-top:14px;font-family:var(--font-display);font-size:13px;font-weight:600;' +
-      'color:#fff;background:var(--deep-teal,#26605B);border:0;border-radius:6px;' +
+      'color:#fff;background:var(--deep-teal,#26605B);border:0;border-radius:var(--radius-md,6px);' +
       'padding:10px 20px;cursor:pointer;transition:background .15s}' +
     S + '.ac-btn:hover:not(:disabled){background:var(--teal,#5BA79F)}' +
-    S + '.ac-btn:disabled{opacity:.6;cursor:default}' +
+    S + '.ac-btn:disabled{opacity:var(--disabled-opacity,.5);cursor:default}' +
     S + '.ac-undo{margin-top:12px;display:inline-block;font-family:var(--font-display);' +
       'font-size:12.5px;font-weight:600;color:var(--deep-teal,#26605B);background:none;' +
       'border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}' +
-    S + '.ac-undo:disabled{opacity:.6;cursor:default}' +
+    S + '.ac-undo:disabled{opacity:var(--disabled-opacity,.5);cursor:default}' +
     // ⚠️ NOT --warm-gray. That is #6E6D68, which is 3.46:1 on this white card —
     // under AA for 13px text. It reads as the obvious "muted text" choice and
     // is used as such elsewhere, but not on a ground this light. --text-muted

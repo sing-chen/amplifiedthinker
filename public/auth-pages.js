@@ -140,5 +140,29 @@
     return { render: render, fresh: fresh };
   }
 
-  global.AmplifiedAuthPages = { breachedMessage: breachedMessage, turnstile: turnstile };
+  // ---- what the backend said, in our words ------------------------------
+  //
+  // Supabase's messages are accurate and written for developers: "Invalid
+  // login credentials", "User already registered", "captcha protection:
+  // request disallowed (timeout-or-duplicate)". Until 2026-09-02 they reached
+  // the status line verbatim. Each known one maps to a sentence a reader can
+  // act on; anything unrecognised falls through as the backend wrote it,
+  // because a wrong translation is worse than an ugly true one.
+  var PLAIN = [
+    [/invalid login credentials/i, 'That email and password do not match. Check both, or reset your password below.'],
+    [/user already registered|already been registered/i, 'There is already an account for that email. Sign in instead, or reset the password if you have forgotten it.'],
+    [/email not confirmed/i, 'That account has not confirmed its email yet. Use the link in the email you were sent, or ask for it again below.'],
+    [/rate limit|too many requests/i, 'Too many attempts in a short time. Wait a few minutes and try again.'],
+    [/captcha/i, 'The security check did not complete. Try again, and if it keeps failing, reload the page.'],
+    [/new password should be different/i, 'That is the password you already have. Choose a different one.'],
+    [/password should be at least|password is too short/i, 'Passwords are at least 8 characters.'],
+    [/failed to fetch|network|load failed/i, 'Could not reach the server. Check your connection and try again.']
+  ];
+  function plainError(message) {
+    var text = String(message || '');
+    for (var i = 0; i < PLAIN.length; i++) if (PLAIN[i][0].test(text)) return PLAIN[i][1];
+    return text || 'Something went wrong. Try again.';
+  }
+
+  global.AmplifiedAuthPages = { breachedMessage: breachedMessage, turnstile: turnstile, plainError: plainError };
 })(window);

@@ -295,7 +295,7 @@
         setStatus(opts.savedText || 'Note saved.');
         if (opts.onSaved) opts.onSaved(value, extra);
       }).catch(function (err) {
-        setStatus('Could not save your note. ' + (err && err.message ? err.message : ''));
+        setStatus('Could not save your note. Your text is still here — check your connection and try again.');
       });
     }
 
@@ -311,7 +311,7 @@
         setStatus(opts.deletedText || 'Note deleted.');
         if (opts.onDeleted) opts.onDeleted();
       }).catch(function (err) {
-        setStatus('Could not delete your note. ' + (err && err.message ? err.message : ''));
+        setStatus('Could not delete your note. Check your connection and try again.');
       });
     }
 

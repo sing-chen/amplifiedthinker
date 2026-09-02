@@ -663,7 +663,7 @@
       if (!root) return;
       rows = [];
       render();
-      setStatus('Could not load your notes. ' + (err && err.message ? err.message : ''));
+      setStatus('Could not load your notes. Check your connection and reload the page.');
     });
   }
 

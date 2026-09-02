@@ -542,7 +542,7 @@
       state.status = 'Note deleted.';
       render();
     }).catch(function (err) {
-      setStatus('Could not delete. ' + (err && err.message ? err.message : ''));
+      setStatus('Could not delete. Check your connection and try again.');
     });
   }
 
@@ -566,7 +566,7 @@
       setStatus(removed === 1 ? 'Note deleted.' : removed + ' notes deleted.');
     }).catch(function (err) {
       cancelBulk();
-      setStatus('Could not delete. ' + (err && err.message ? err.message : ''));
+      setStatus('Could not delete. Check your connection and try again.');
     });
   }
 
@@ -694,8 +694,7 @@
          look is the worse of the two. */
       var root = el('acct-notes-root');
       if (root) {
-        root.innerHTML = '<p class="auth-status bad">Could not load your notes. ' +
-          esc(err && err.message ? err.message : '') + '</p>';
+        root.innerHTML = '<p class="auth-status bad">Could not load your notes. Check your connection and reload the page.</p>';
       }
       setCount(0);
     });

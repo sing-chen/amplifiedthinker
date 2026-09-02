@@ -486,7 +486,7 @@
 .auth-panel button[type="submit"] { width: 100%; }
 .auth-panel button[type="submit"]:hover, .auth-btn:hover { filter: brightness(1.08); }
 .auth-panel button[type="submit"]:disabled,
-.auth-btn:disabled { opacity: .55; cursor: not-allowed; filter: none; }
+.auth-btn:disabled { opacity: var(--disabled-opacity); cursor: not-allowed; filter: none; }
 
 .auth-btn-quiet {
   background: transparent;
@@ -906,7 +906,7 @@
 
 /* Disabled means "you have none of these", not "this is broken" — quiet, not
    greyed to the point of looking like a fault. */
-.acct-filter-chip:disabled { opacity: .45; cursor: default; }
+.acct-filter-chip:disabled { opacity: var(--disabled-opacity); cursor: default; }
 
 /* The count sits on the chip's own tint, so it needs a fill of its own to stay
    readable rather than inheriting whatever is behind it. */

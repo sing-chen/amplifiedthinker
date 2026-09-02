@@ -109,7 +109,7 @@
 .story-nav-btn:hover:not(.is-disabled){background:var(--bg-page);border-color:rgba(31,77,74,.4)}
 .story-nav-btn:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
 /* An anchor cannot be `:disabled`, so the end of the list renders as a <span>. */
-.story-nav-btn.is-disabled{opacity:.35;cursor:default}
+.story-nav-btn.is-disabled{opacity:var(--disabled-opacity);cursor:default}
 .story-title{font-family:var(--font-editorial);font-size:26px;font-weight:600;line-height:1.25;letter-spacing:-.024em;color:var(--navy);margin:0 0 14px}
 .story-summary{font-family:var(--font-body);font-size:15.5px;line-height:1.75;color:var(--text-muted);margin-bottom:22px}
 .story-implications{border-left:3px solid var(--light-sage);padding-left:14px;margin-bottom:22px}
@@ -165,7 +165,7 @@
    disabled whenever there is nothing to save — empty, or unchanged from what is
    stored — and without this it stayed fully solid and simply did nothing when
    pressed, which reads as a broken feature rather than a considered state. */
-.story-action-btn:disabled{opacity:.45;cursor:default}
+.story-action-btn:disabled{opacity:var(--disabled-opacity);cursor:default}
 .story-action-btn:disabled:hover{border-color:rgba(31,77,74,.2);background:var(--bg-surface)}
 .story-action-btn.is-primary:disabled:hover{background:var(--mid-teal);border-color:var(--mid-teal)}
 

@@ -527,7 +527,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
           out.textContent = 'Saving...';
           return auth.updatePassword(pw).then(function (u) {
-            if (u.error) { bad(u.error.message); return; }
+            if (u.error) { bad(window.AmplifiedAuthPages.plainError(u.error.message)); return; }
 
             el('acct-password-submit').disabled = false;
             el('acct-current-password').value = '';
@@ -731,7 +731,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
           out.textContent = 'Deleting...';
           return auth.deleteAccount().then(function (d) {
-            if (d.error) { endBusy(d.error.message, 'bad'); return; }
+            if (d.error) { endBusy(window.AmplifiedAuthPages.plainError(d.error.message), 'bad'); return; }
 
             // No redirect. The confirmation IS the destination — being bounced
             // to the home page gives no acknowledgement that anything happened,

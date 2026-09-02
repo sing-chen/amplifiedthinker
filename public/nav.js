@@ -132,7 +132,7 @@
     '.snav-links a {',
     '  font-size: 13px; font-weight: 500;',
     '  color: rgba(255,255,255,0.88);',
-    '  padding: 5px 12px; border-radius: 5px;',
+    '  padding: 5px 12px; border-radius: 6px;',
     '  transition: color 0.15s, background 0.15s;',
     '  white-space: nowrap;',
     '}',
@@ -144,7 +144,7 @@
     '  display: flex;',
     '  align-items: center; justify-content: center;',
     '  width: 34px; height: 34px;',
-    '  background: none; border: none; border-radius: 5px;',
+    '  background: none; border: none; border-radius: 6px;',
     '  color: rgba(255,255,255,0.75); cursor: pointer; padding: 0;',
     '  margin-left: 4px; flex-shrink: 0;',
     '  text-decoration: none;',
@@ -165,7 +165,7 @@
     '  display: flex;',
     '  align-items: center; justify-content: center;',
     '  width: 34px; height: 34px;',
-    '  background: none; border: none; border-radius: 5px;',
+    '  background: none; border: none; border-radius: 6px;',
     '  color: rgba(255,255,255,0.75); cursor: pointer; padding: 0;',
     '  margin-left: 4px; flex-shrink: 0;',
     '  transition: background 0.15s, color 0.15s;',
@@ -197,7 +197,7 @@
     '.snav-auth-signin {',
     '  font-size: 12.5px; font-weight: 500;',
     '  color: #ACC4B6;',
-    '  padding: 5px 12px; border-radius: 5px;',
+    '  padding: 5px 12px; border-radius: 6px;',
     '  border: 1px solid rgba(172,196,182,0.35);',
     '  white-space: nowrap;',
     '  transition: color 0.15s, background 0.15s, border-color 0.15s;',
@@ -244,7 +244,7 @@
     '  font-size: 13px; font-weight: 500;',
     '  color: rgba(255,255,255,0.88);',
     '  background: none; border: none;',
-    '  text-align: left; padding: 8px; border-radius: 5px;',
+    '  text-align: left; padding: 8px; border-radius: 6px;',
     '  cursor: pointer;',
     '}',
     '.snav-auth-menu a:hover, .snav-auth-menu button:hover {',
@@ -256,7 +256,7 @@
     '  display: none;',
     '  align-items: center; justify-content: center;',
     '  width: 36px; height: 36px;',
-    '  background: none; border: none; border-radius: 5px;',
+    '  background: none; border: none; border-radius: 6px;',
     '  color: #fff; cursor: pointer; padding: 0;',
     '  margin-left: 8px; flex-shrink: 0;',
     '  transition: background 0.15s;',
@@ -852,6 +852,18 @@
   function isSkillArtefact() {
     return /\/skills\/[a-z0-9-]+\/(plan|primer)(\.html)?$/i.test(window.location.pathname);
   }
+  function isNewsPage() {
+    return /^\/news(\/|$)/i.test(window.location.pathname);
+  }
+  // The per-page half of the note stack: the editor is shared, the surface
+  // that mounts it is not. /news/ carried both of its files as static <script>
+  // tags for every guest until 2026-09-02 — 18 KB and two requests that a
+  // guest's news-actions.js only ever short-circuited out of.
+  function noteStackFiles() {
+    if (isNewsPage()) return ['note-editor.js', 'news-actions.js'];
+    if (isSkillArtefact()) return ['note-editor.js', 'skill-notes.js'];
+    return [];
+  }
 
   function loadNoteStack() {
     if (window.__amplifiedNoteStack) return;
@@ -859,9 +871,9 @@
 
     // ⚠️ Same `async = false` discipline as the auth stack, and it is
     // load-bearing here too: note-editor.js publishes window.AmplifiedNoteEditor
-    // and skill-notes.js reads it. Without this the two race and the panel can
+    // and skill-notes.js / news-actions.js read it. Without this the two race and the panel can
     // come up with no editor in it.
-    ['note-editor.js', 'skill-notes.js'].forEach(function (file) {
+    noteStackFiles().forEach(function (file) {
       var s = document.createElement('script');
       s.src = root(file);
       s.async = false;
@@ -906,7 +918,7 @@
        reader with no notes control at all, silently, on the one page they went
        looking for it. Erring the other way costs a guest-who-looked-signed-in
        two script downloads and nothing else. */
-    if (peek.state !== 'out' && isSkillArtefact()) loadNoteStack();
+    if (peek.state !== 'out' && noteStackFiles().length) loadNoteStack();
   }
 
   /* ── Guard against the Primer bundle wiping the nav ─────────────────────

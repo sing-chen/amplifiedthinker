@@ -117,7 +117,7 @@
 .learn-card {
   background: var(--bg-surface);
   border: 1px solid var(--line-soft);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--space-5);
 }
@@ -510,7 +510,7 @@
     letter-spacing: .1em; text-transform: uppercase; color: var(--fg-brand); margin-bottom: 8px;
   }
 }
-@media (max-width: 720px) {
+@media (max-width: 700px) {
   .learn { padding: var(--space-6) 20px var(--space-7); }
   .learn-donut { width: 150px; height: 150px; }
   .learn-cell-inner { flex-wrap: wrap; }

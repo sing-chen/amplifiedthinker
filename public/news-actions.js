@@ -507,7 +507,9 @@
       cache[storyId] = state;
       reflectFlag(btn, field, !next);
       updatePersonal(slug, field, !next);
-      setStatus('Could not save that. ' + (err && err.message ? err.message : ''));
+      // No backend text: "new row violates row-level security policy" is not
+      // something a reader can act on. The button has already been reverted.
+      setStatus('Could not save that. Check your connection and try again.');
     });
   }
 
