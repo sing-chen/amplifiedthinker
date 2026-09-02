@@ -49,6 +49,21 @@ const story = storyHTML(
 // escaped because a story summary containing that text would otherwise close
 // this tag early — the tags are editorial free text and nothing stops it.
 const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
+
+// ⚠️ NO note-editor.js OR news-actions.js <script> TAG IN THIS TEMPLATE
+// (2026-09-02). nav.js appends both — in that order, with async=false, which
+// is the only thing keeping the guarantee that note-editor.js has published
+// `window.AmplifiedNoteEditor` before news-actions.js reads it — and only when
+// a stored session peeks as signed in or unknown, exactly as it already did
+// for the skill pages. A guest's browser never fetches either: 18 KB and two
+// requests that a guest's news-actions.js only ever short-circuited out of.
+// The server-painted guest markup in the actions panel stands on its own.
+// If the note panel ever opens empty with no controls in it, check
+// noteStackFiles() in nav.js before anything else.
+//
+// (This note lives in the frontmatter rather than as an HTML comment in the
+// template because Astro ships template comments to the client: the first
+// version of it added ~700 bytes to every /news/ response.)
 ---
 
 <section class="hero" aria-label="Introduction">
@@ -88,14 +103,4 @@ const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
   import '../scripts/news-app.js';
 </script>
 
-<!-- ⚠️ NO note-editor.js OR news-actions.js TAG HERE ANY MORE (2026-09-02).
-     nav.js appends both — in that order, with async=false, which is the only
-     thing keeping the guarantee that note-editor.js has published
-     `window.AmplifiedNoteEditor` before news-actions.js reads it — and only
-     when a stored session peeks as signed in or unknown, exactly as it already
-     did for the skill pages. A guest's browser never fetches either: 18 KB and
-     two requests that a guest's news-actions.js only ever short-circuited out
-     of. The server-painted guest markup in the actions panel stands on its own.
-     If the note panel ever opens empty with no controls in it, check
-     noteStackFiles() in nav.js before anything else. -->
 
