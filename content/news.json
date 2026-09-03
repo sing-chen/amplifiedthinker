@@ -1,5 +1,83 @@
 [
   {
+    "date": "2026-09-03",
+    "stories": [
+      {
+        "title": "Spot New Tech Skills Emerging From the Workforce",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/spot-new-tech-skills-emerging-from-the-workforce/",
+        "summary": "Field research inside an Italian furniture manufacturer adopting new production technology found that the skills workers actually developed were almost never the ones forecast in the training plan. Real capability emerged bottom-up as teams improvised to make new tools fit existing work, and it only became durable where a manager noticed it and pushed for structural changes to support it. The skills had no job descriptions and appeared in no competency framework.",
+        "implications": "Capability builders should treat skills taxonomies as lagging indicators during a technology rollout and build a route for emergent, improvised capability to be spotted and formalised — otherwise the most valuable skills developed go unrecognised because no framework had a name for them.",
+        "tags": ["skills development", "workforce transformation", "leadership and culture", "research and insights"]
+      },
+      {
+        "title": "Dethroning Loyalty",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/dethroning-loyalty/",
+        "summary": "Survey research identifies four distinct forms of workplace allegiance — coerced allegiance (compliance through fear), sycophantic allegiance (fawning for advancement), idealised devotion (mission-first, burnout-producing), and shared principled commitment (mutual respect around purpose). Only the fourth correlates with significantly higher performance. Fewer than a quarter of US employees trust leadership or believe their organisation values their wellbeing.",
+        "implications": "A diagnostic for leaders whose teams look committed but are running on fear, advancement-seeking or self-sacrifice — none of which surfaces in a performance review until late, and none of which an engagement score distinguishes from the real thing. Whether dissent is read as disloyalty is the tell.",
+        "tags": ["leadership and culture", "workforce transformation", "research and insights"]
+      },
+      {
+        "title": "Why Cash Rewards Don't Always Produce Better Ideas",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/why-cash-rewards-dont-always-produce-better-ideas",
+        "summary": "Analysis of 2,376 observations of individual inventors at publicly listed Chinese firms found that identical financial incentives produced opposite behaviours depending on the inventor's professional identity. Specialists with narrow technical focus produced fewer inventions but ones that were more novel and technically significant; generalists spanning multiple domains responded by increasing volume.",
+        "implications": "Incentives do not simply raise innovation, they steer what kind of innovation gets pursued — so anyone designing an innovation reward should know whether they are paying specialists or generalists, because the same scheme pulls the two toward depth and breadth respectively.",
+        "tags": ["leadership and culture", "skills development", "research and insights"]
+      },
+      {
+        "title": "Middle Managers Will Make or Break AI Adoption",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/middle-managers-will-make-or-break-ai-adoption",
+        "summary": "Argues the common failure point in generative AI deployment is neither strategy nor tooling but the manager layer that has to convert executive ambition into daily behaviour. Even where leadership has funded, selected and mandated AI use, managers determine whether it becomes embedded practice, a marginal experiment, a compliance chore, or quietly abandoned. Draws on McKinsey work on managers as the unlock for generative AI, and sets out five manager archetypes.",
+        "implications": "Relocates the pilot-to-production bottleneck to the manager layer: an AI rollout that funds licences and mandates without equipping managers is buying tooling and leaving adoption to chance. Commentary rather than primary research.",
+        "tags": ["workforce transformation", "leadership and culture"]
+      },
+      {
+        "title": "Research: How Curveball Questions Can Surface the Insight You're Looking For",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/research-how-curveball-questions-can-surface-the-insight-youre-looking-for",
+        "summary": "Conventional advice says to ask tough questions to get past rehearsed answers. This research finds that unexpected questions grounded in the specific context outperform generic hard-hitting ones, because rehearsed material simply doesn't apply to them. The effect holds across interviews, performance conversations and negotiations.",
+        "implications": "A rare instance of the analytical-thinking and judgment cluster being operationalised into something practisable: swapping one prepared hard question for one specific, unexpected one is a cheap and immediately testable upgrade to any information-gathering conversation.",
+        "tags": ["skills development", "research and insights"]
+      },
+      {
+        "title": "Which Skills Will Help People Most in an AI-Driven Future?",
+        "source": "World Economic Forum",
+        "url": "https://www.weforum.org/stories/artificial-intelligence/skills-people-ai-driven-future/",
+        "summary": "The piece contrasts divergent national approaches to AI in schools and traces the implication forward to the workforces those systems produce. Its core claim is that as access to frontier models becomes near-universal and undifferentiated, the scarce inputs shift to human judgement and originality — the parts of the work that cannot be recovered from a prompt.",
+        "implications": "Sharpens the AI-fluency versus AI-literacy distinction by arguing fluency commoditises and judgement does not: tool familiarity is table stakes conferring no advantage, and the capability worth protecting is forming an independent view before consulting a model.",
+        "tags": ["skills development", "macro signals"]
+      },
+      {
+        "title": "Develop Your Team's Social Capital, Not Just Their Skills",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/develop-your-teams-social-capital-not-just-their-skills/",
+        "summary": "Qualitative research with 21 professionals across functions and career stages found that organisations systematically build technical skill and job performance while neglecting social capital — the trust, credibility and advocacy that determine whether performance becomes visible. Participants described it not as networking but as concrete organisational dynamics: who gets extended trust, whose advice is sought, who gets argued for when they are not in the room.",
+        "implications": "Exposes the blind spot in skills-based workforce models — a taxonomy captures capability but not the relational infrastructure that converts capability into opportunity, so a development plan that is only a list of skills leaves the variable that actually moves people to chance.",
+        "tags": ["skills development", "leadership and culture", "research and insights"]
+      },
+      {
+        "title": "AI Helps Workers Most When Paired With Experience",
+        "source": "Information Systems Research (via Phys.org)",
+        "url": "https://phys.org/news/2026-08-ai-workers-paired.html",
+        "summary": "A randomised field study of roughly 6,000 Instacart shoppers across around 160 stores found AI navigation and product-location guidance cut refund rates 3.83%, improved picking speed 3.29% and raised productivity 3.16%. The gains were concentrated among experienced workers, who selectively combined algorithmic guidance with their own judgment; less-experienced workers leaned on the system more heavily and did not consistently get better outcomes.",
+        "implications": "Contradicts the reading that AI levels the playing field for novices, and sharpens the capability-versus-readiness gap: the binding constraint here is human expertise rather than model quality, so deploying the tool without funding experience-building leaves most of the value unrealised.",
+        "tags": ["skills development", "workforce transformation", "research and insights"],
+        "pinned": true
+      },
+      {
+        "title": "AI Transformation Requires Redesigning Work, Not Cutting Roles",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/08/ai-transformation-requires-redesigning-work-not-cutting-roles",
+        "summary": "The authors argue much of the current layoff wave is \"AI-washing\" — routine restructuring rebranded as AI-driven to read as forward-thinking to investors. They cite Goldman Sachs data putting AI's actual drag at roughly 16,000 jobs per month of US payroll growth, about 0.1 points on unemployment, and conclude the narrative has run well ahead of the reality.",
+        "implications": "Gives leaders a test to apply to their own AI announcements and to those of their competitors: a plan that names headcount targets but no redesigned workflows is a cost exercise, whatever capability shift it advertises.",
+        "tags": ["workforce transformation", "leadership and culture"]
+      }
+    ]
+  },
+  {
     "date": "2026-08-25",
     "stories": [
       {
@@ -8,8 +86,7 @@
         "url": "https://hrexecutive.com/great-flattening-is-shrinking-management-without-preparing-those-who-remain/",
         "summary": "Only 6% of leaders say their middle managers are prepared to lead through change across most of the organization; roughly 19% say managers are unprepared company-wide and another 19% simply don't know. Two-thirds of organizations provide manager development resources and half offer coaching, yet just 10% systematically use span-of-control data to track how management roles are actually changing.",
         "implications": "Organizational leaders flattening structures are removing a layer whose replacement capability they cannot measure — span-of-control instrumentation is the missing diagnostic before further delayering.",
-        "tags": ["leadership and culture", "workforce transformation"],
-        "pinned": true
+        "tags": ["leadership and culture", "workforce transformation"]
       }
     ]
   },
