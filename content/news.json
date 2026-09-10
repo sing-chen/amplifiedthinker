@@ -134,8 +134,7 @@
           "skills development",
           "workforce transformation",
           "research and insights"
-        ],
-        "pinned": true
+        ]
       },
       {
         "title": "AI Transformation Requires Redesigning Work, Not Cutting Roles",
@@ -1204,6 +1203,77 @@
           "skills development",
           "workforce transformation",
           "leadership and culture"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-10",
+    "stories": [
+      {
+        "title": "Employees Disengaged? Show Them How They Add Value",
+        "source": "Harvard Business School Working Knowledge",
+        "url": "https://www.library.hbs.edu/working-knowledge/employees-disengaged-show-them-how-they-add-value",
+        "summary": "Researchers ran a two-arm communication experiment at a 292-employee, 12-site building-materials firm after it introduced broad-based equity. Employees who got a letter naming the specific daily behaviours that build company value were 13 percentage points less likely to leave than those who got values-and-mission messaging. The effect was strongest during organisational disruption.",
+        "implications": "If you can't draw the line from what you did this week to something the business actually values, that gap is a documented driver of your own disengagement — not a motivation failing. Write that line yourself if no one hands it to you, and use it in your next check-in rather than waiting for leadership to supply the narrative.",
+        "tags": [
+          "research and insights"
+        ]
+      },
+      {
+        "title": "Gartner Identifies 4 Shifts Shaping the Future of Work",
+        "source": "Gartner",
+        "url": "https://www.gartner.com/en/newsroom/press-releases/2026-09-09-gartner-identifies-four-shifts-shaping-the-future-of-work",
+        "summary": "Gartner reframes the current phase as workforce amplification rather than automation, with early AI investments entering the Trough of Disillusionment. Two of the four named shifts are expanding human capability through the human–AI relationship (strengthening judgment, creativity and decision-making while preserving accountability) and building a workforce that adapts, not just adopts. Gartner predicts that by 2029, 30% of employees laid off as AI replacements will need rehiring, often at higher cost.",
+        "implications": "\"Adapt, not adopt\" is the distinction to hold onto — tool fluency is table stakes, and the differentiator is being the person who redesigns how a process runs end-to-end. If you're in a function under displacement pressure, the rehiring forecast is a reason to document what only you can adjudicate, not to compete on speed of tool use.",
+        "tags": [
+          "workforce transformation",
+          "skills development"
+        ],
+        "pinned": true
+      },
+      {
+        "title": "Developing and Validating a Career Competency Framework for the Fourth Industrial Revolution",
+        "source": "Frontiers in Organizational Psychology",
+        "url": "https://www.frontiersin.org/journals/organizational-psychology/articles/10.3389/forgp.2026.1823243/full",
+        "summary": "A two-round modified Delphi study narrowed 38 candidate competencies to 26, split into 12 critical core and 14 important contributors. The core tier: career adaptability, ethical behaviour, digital literacy, continuous learning, resilience, complex problem-solving, critical thinking, virtual collaboration, collaboration, diversity, communication and work–life integration. Notably, networking and goal-setting — staples of conventional career advice — were de-emphasised, and ethical behaviour was treated as a core competency rather than an add-on.",
+        "implications": "Check your development plan against that core tier before adding another tool certification — adaptability and judgment rank above the specialised capabilities most plans lead with. If you've been treating networking as the main lever on your career, this panel of practitioners who actually made 4IR transitions ranked it below the ability to keep learning and to reason through messy problems.",
+        "tags": [
+          "skills development",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-09",
+    "stories": [
+      {
+        "title": "AI Can Enhance Every Stage of Teamwork—Under Two Conditions",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/ai-can-enhance-every-stage-of-teamwork-under-two-conditions",
+        "summary": "Drawing on work with more than 300 managers across 35 organizations, the authors argue that most AI deployment treats the tool as a solo productivity aid and ignores the collaborative arc entirely. They map AI to three distinct stages: before a meeting to sharpen preparation and pressure-test ideas, during it to challenge assumptions and broaden perspectives, and after it to force reflection and convert lessons into reusable practice. The gains depend on two conditions — intentionality and craft — not on tool access.",
+        "implications": "If your AI use stops at drafting your own work, you're leaving the higher-value application untouched — try using it to pressure-test your position before your next contentious meeting, and to interrogate what actually happened after one. Notice which of the three stages you never use it for; that gap is where the compounding return sits.",
+        "tags": [
+          "skills development",
+          "workforce transformation",
+          "leadership and culture"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-08",
+    "stories": [
+      {
+        "title": "AI Could Undermine Managers' Judgement Unless Used Carefully, University of Bath-Led Study Warns",
+        "source": "University of Bath",
+        "url": "https://www.bath.ac.uk/announcements/ai-could-undermine-managers-judgement-unless-used-carefully-university-of-bath-led-study-warns/",
+        "summary": "The paper theorises two opposing pathways for what generative AI does to phronesis — the practical wisdom built through experience, reflection and human interaction. \"Epistemic deskilling\" happens when people outsource enough of their thinking that they stop exercising their own judgement; \"epistemic upskilling\" happens when AI is used as a prompt for reflection. The decisive variable is accountability: where people must justify and explain their reasoning to others, AI use tends to deepen judgement rather than replace it.",
+        "implications": "Change what you ask AI for — instead of an answer, ask it to argue against your position, then find the gaps in its reasoning, because those gaps are exactly where your own judgement has to do the work. If nobody currently asks you to justify your decisions, build that structure yourself: write down your reasoning before you prompt, and compare.",
+        "tags": [
+          "skills development",
+          "research and insights"
         ]
       }
     ]
