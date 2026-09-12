@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/verify-catalogue.mjs && node scripts/verify-signin-return.mjs && node scripts/verify-encoding.mjs",
+    "prebuild": "node scripts/verify-catalogue.mjs && node scripts/verify-signin-return.mjs && node scripts/verify-encoding.mjs && node scripts/verify-workflow-docs.mjs",
     "verify:signin-return": "node scripts/verify-signin-return.mjs",
     "verify:encoding": "node scripts/verify-encoding.mjs",
     "fix:encoding": "node scripts/verify-encoding.mjs --fix",
@@ -28,6 +28,7 @@
     "specimen:circles": "node scripts/dev/build-circle-specimen.mjs",
     "build:news-seed": "node scripts/build-news-seed.mjs",
     "verify:news-dupes": "node scripts/verify-news-duplicates.mjs",
+    "verify:workflow-docs": "node scripts/verify-workflow-docs.mjs",
     "specimen:note-editor": "node scripts/dev/build-note-editor-specimen.mjs",
     "specimen:skill-notes": "node scripts/dev/build-skill-notes-specimen.mjs",
     "specimen:library-notes": "node scripts/dev/build-library-notes-specimen.mjs"

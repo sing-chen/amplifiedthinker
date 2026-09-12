@@ -7,7 +7,8 @@ You are helping curate the News page — `/news/` and `/news/<slug>`, server-ren
 `news_stories` table — with [content/news.json](content/news.json) as the authoring file.
 
 ⚠️ **The human-facing version of this is [docs/adding-news.md](docs/adding-news.md)** — same workflow,
-written to be read rather than executed. Keep the two in step; they describe one process.
+written to be read rather than executed. Keep the two in step; they describe one process — `npm run verify:workflow-docs`
+enforces the parts of that a machine can see, and runs as `prebuild`.
 
 ## ⚠️ How news actually gets published now, and why this changed
 
@@ -198,7 +199,7 @@ npm run build:news-seed -- --only <YYYY-MM-DD> --write
 ```
 
 That writes `supabase/seed/news_add_<date>.sql`. ⚠️ **Use `--only`, not a bare `--write`.** A bare
-`--write` regenerates all 100 rows, which was right for the original bulk load and wrong for every
+`--write` regenerates **every** row, which was right for the original bulk load and wrong for every
 run after it — see the Phase 7 warning above. A `--only` date that matches nothing exits non-zero
 rather than emitting an empty file, because SQL that runs and publishes nothing is the failure this
 whole command is arranged around.

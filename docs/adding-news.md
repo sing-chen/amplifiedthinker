@@ -172,8 +172,8 @@ Open the **Supabase SQL editor**, paste the generated file, run it.
 
 ## Step 6 — Verify
 
-⚠️ **Do not check `count(*)`.** A total of 81 is satisfied by 81 rows in *any* status, so it reads
-as a pass on a load that silently published rows meant to be archived. Check the **split**:
+⚠️ **Do not check `count(*)`.** The total you are expecting is satisfied by that many rows in *any*
+status, so it reads as a pass on a load that silently published rows meant to be archived. Check the **split**:
 
 ```bash
 npm run verify:news-dupes -- prod
@@ -253,6 +253,7 @@ one does.
 | `column news_stories.merged_into does not exist` | That project has not had migration `20260826180000` applied |
 | `there is no unique or exclusion constraint matching the ON CONFLICT specification` | Something is upserting against a **partial** index. Postgres can only infer one for `ON CONFLICT` if the statement carries the index's own `WHERE`, and PostgREST does not emit one |
 | A duplicate key error naming `news_stories_single_pinned_idx` | Two Featured stories. Regenerate rather than hand-editing the SQL |
+| The build fails on `verify:workflow-docs` | This file and `.claude/commands/add-news.md` have drifted apart, or out of step with the repo. The output names the line and the fix. It checks that every `npm run` they cite exists, that they pass the same arguments to the same script, that their links resolve, that neither pins a live row count into prose, and that pinning is still sequenced before the SQL is generated |
 | The build fails on `verify:encoding` | Something re-encoded a file. `npm run fix:encoding` repairs it |
 | Everything green, story not on the site | **Step 5 did not happen.** This is the default failure of this workflow |
 
