@@ -1277,5 +1277,33 @@
         ]
       }
     ]
+  },
+  {
+    "date": "2026-09-12",
+    "stories": [
+      {
+        "title": "When AI Disruption Never Ends",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/when-ai-disruption-never-ends/",
+        "summary": "Rory McDonald and Will Drover argue AI has produced perpetual rather than episodic disruption, which breaks conventional change management built on the assumption that transitions eventually conclude. They set out three “steady-state disruption” practices: permanent AI infrastructure instead of rolling pilots, split cadences for initiatives moving at different speeds, and embedded learning held as standing capacity. Their core claim is that optimising for speed alone produces organisational fatigue and loses to organisations built for endurance.",
+        "implications": "If you have been waiting for tooling to stabilise before investing in depth, stop — there is no settling point to wait for, so build learning into your weekly cadence rather than treating it as a project with an end date. Notice too whether your organisation runs everything at one urgent tempo; that is the pattern the authors identify as the fatigue driver, and it is worth naming when you scope your own work.",
+        "tags": [
+          "workforce transformation",
+          "leadership and culture"
+        ]
+      },
+      {
+        "title": "Right-Sizing AI at Work: Workforce Transformation and Human-Machine Partnerships in Ireland",
+        "source": "Trinity College Dublin",
+        "url": "https://www.tcd.ie/news_events/top-stories/featured/new-research-from-technology-ireland-digital-skillnet-/",
+        "summary": "Survey research from the Centre for Sociology of Humans and Machines, a joint centre at Trinity College Dublin and TU Dublin led by Taha Yasseri, finds AI’s effect on Irish workplaces is currently task and workflow transformation rather than large-scale job elimination. 47.4% of workers use AI tools daily, 64.7% describe themselves as confident and 69% feel prepared to adapt their skills — but the study identifies a clear gap between that confidence and participation in formal training. Workers increasingly occupy review, verification, coordination and judgement roles over AI-supported output, which the researchers say calls for structured, role-specific skills development rather than general AI literacy.",
+        "implications": "Self-taught confidence is not the same as verified competence — if your AI-assisted work has never been checked against a standard, you are inside the gap this study measures, so seek role-specific practice and real feedback rather than more tool exposure. Recognise too that the task mix is shifting toward verification and judgement: the skill that pays is the domain depth that lets you spot a plausible-but-wrong answer.",
+        "tags": [
+          "research and insights",
+          "workforce transformation",
+          "skills development"
+        ]
+      }
+    ]
   }
 ]
