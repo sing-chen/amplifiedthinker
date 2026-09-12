@@ -88,7 +88,7 @@ Before converting, check for overlap in both directions and surface anything fou
 - **Against the database itself** — ⚠️ **the file is not the whole picture and will get worse**:
 
 ```bash
-npm run verify:news-dupes -- dev
+npm run verify:news-dupes -- prod
 ```
 
   `prod` is the live site, so that is the one to check; `dev` only if the two are being kept in
@@ -158,40 +158,7 @@ but only after the damage is written.
 
 Show the user a short summary of what you're about to add (titles + date) before writing the file.
 
-## Step 4 — Generate the SQL and load it — ⚠️ **this is the step that publishes**
-
-Dry run first. It validates the whole file, not just today's stories, and prints what it found:
-
-```bash
-npm run build:news-seed
-```
-
-Check three things in that output before going further: the story count went up by what you added,
-there are **no problems reported**, and the non-ASCII sample lines read as real text rather than
-mojibake.
-
-Then emit **only** the day you just authored:
-
-```bash
-npm run build:news-seed -- --only <YYYY-MM-DD> --write
-```
-
-That writes `supabase/seed/news_add_<date>.sql`. ⚠️ **Use `--only`, not a bare `--write`.** A bare
-`--write` regenerates all 81+ rows, which is right for the stage 17 first load and wrong for every
-run after it — see the Phase 7 warning above. A `--only` date that matches nothing exits non-zero
-rather than emitting an empty file, because SQL that runs and publishes nothing is the failure this
-whole command is arranged around.
-
-**Then hand it to the user to run**, in the Supabase SQL editor. **You cannot run it** — the anon
-key is refused by RLS, correctly, and there is no service key. Say plainly that the story is not
-live until they do, and paste the verification queries from the foot of the generated file so they
-can confirm the row count themselves rather than trusting "Success. No rows returned".
-
-**The SQL goes to prod** — that is the live site, and has been since Phase 6 merged on
-2026-08-26. Run it against dev too if the two projects are being kept in step; nothing on the
-site reads dev's `news_stories`, so skipping it costs nothing but a drift between the two.
-
-## Step 5 — Pin (optional)
+## Step 4 — Pin (optional) — ⚠️ **decide this before generating any SQL**
 
 Ask whether any story just added should be **Featured** — the site-wide editorial pin, shown in its
 own band at the top of `/news/` and used as the default story on load. Offer the newly-added titles,
@@ -210,11 +177,46 @@ rather than the problem.
 
 If they pick none, leave every `pinned` field alone.
 
+⚠️ **This step comes before step 5 because the pin is baked into the generated SQL.** Settle it while the file is still the only thing that has changed. Deciding it afterwards means regenerating and asking the user to run a second load — and if they have already run the first, the wrong story is Featured on the live site in the meantime.
+
+## Step 5 — Generate the SQL and load it — ⚠️ **this is the step that publishes**
+
+Dry run first. It validates the whole file, not just today's stories, and prints what it found:
+
+```bash
+npm run build:news-seed
+```
+
+Check three things in that output before going further: the story count went up by what you added,
+there are **no problems reported**, and the non-ASCII sample lines read as real text rather than
+mojibake.
+
+Then emit **only** the day you just authored:
+
+```bash
+npm run build:news-seed -- --only <YYYY-MM-DD> --write
+```
+
+That writes `supabase/seed/news_add_<date>.sql`. ⚠️ **Use `--only`, not a bare `--write`.** A bare
+`--write` regenerates all 100 rows, which was right for the original bulk load and wrong for every
+run after it — see the Phase 7 warning above. A `--only` date that matches nothing exits non-zero
+rather than emitting an empty file, because SQL that runs and publishes nothing is the failure this
+whole command is arranged around.
+
+**Then hand it to the user to run**, in the Supabase SQL editor. **You cannot run it** — the anon
+key is refused by RLS, correctly, and there is no service key. Say plainly that the story is not
+live until they do, and paste the verification queries from the foot of the generated file so they
+can confirm the row count themselves rather than trusting "Success. No rows returned".
+
+**The SQL goes to prod** — that is the live site, and has been since Phase 6 merged on
+2026-08-26. Run it against dev too if the two projects are being kept in step; nothing on the
+site reads dev's `news_stories`, so skipping it costs nothing but a drift between the two.
+
 ## Step 6 — Commit
 
 `content/news.json` and the generated SQL are both outside `public/`, so **`deploy.bat` will refuse
 this commit** — its second guard rejects a dirty tree outside `public/`/`docs/`. That is the guard
 working, not a fault here. Commit with `git` directly, and ask the user first as always.
 
-Nothing about this commit affects what the site serves. The deploy is incidental; the SQL in step 4
+Nothing about this commit affects what the site serves. The deploy is incidental; the SQL in step 5
 is the publication.

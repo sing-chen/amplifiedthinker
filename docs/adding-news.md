@@ -126,6 +126,10 @@ Nothing is written by a dry run.
 
 ## Step 4 — Generate the SQL
 
+⚠️ **Settle the Featured story first** — see [Setting the Featured story](#setting-the-featured-story).
+The pin is baked into the SQL this step emits, so changing it afterwards means regenerating and
+running a second load.
+
 ```bash
 npm run build:news-seed -- --only 2026-08-27 --write
 ```
@@ -233,6 +237,11 @@ Set `"pinned": true` on the chosen story and remove it from whichever story had 
 **regenerate** — the generator emits the `set pinned = false` that clears the old one. Hand-writing
 an `update` instead hits `news_stories_single_pinned_idx` and rolls the whole load back, with an
 error naming an index rather than the problem.
+
+⚠️ **Do this before step 4, not after.** It reads like a finishing touch and it is not: the pin is
+part of the generated SQL. Decided afterwards, it costs a regeneration and a second load — and if
+the first load has already run, the wrong story sits Featured on the live site until the second
+one does.
 
 ---
 
