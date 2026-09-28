@@ -33,7 +33,7 @@ position it does not have.
 | 9 | The tiles go quiet — hue at four signal points, never as fill | 2026-08-28 | `82e5f5a` |
 | 10 | The Amplitude hero, with the announce card | 2026-08-28 | `058fdad` |
 | 11 | The two-tone wordmark | 2026-08-28 | `1b987ba` |
-| 12 | Asymmetric tiles — Future Skills leads | merge pending | `feat/asymmetric-tiles` |
+| 12 | Asymmetric tiles — Future Skills leads | 2026-09-28 | `929d473` |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Pieces 9–11 were built on `feat/amplitude` and merged to `main` on 2026-08-28. ⚠️ Remaining
@@ -388,7 +388,7 @@ this piece; it is a separate decision with its own fallback stack, and it has no
 
 ---
 
-## Piece 12 — asymmetric tiles (`feat/asymmetric-tiles`, merge pending)
+## Piece 12 — asymmetric tiles (landed 2026-09-28, `929d473`)
 
 `public/index.html` only, CSS plus nothing else. Prompted by a `taste-skill` audit on 2026-09-28,
 whose clearest finding was the three equal tiles: identical height, side by side, all text on
@@ -416,8 +416,9 @@ a new reason:**
   itself.
 
 Verification: tile heights and gaps measured at 1280, 920 (narrowest two-column width), 768 and
-375, dark mode at 375, no horizontal overflow at any of them. ⚠️ Still to do at merge: the
-production eye pass, both themes.
+375, dark mode at 375, no horizontal overflow at any of them. ✅ Production eye pass done the
+same day, after `verify:stamp` confirmed `929d473` was live: 1280 in both themes (544 / 260 / 260,
+title 420 in dark) and 375 in light, no overflow.
 
 ---
 
