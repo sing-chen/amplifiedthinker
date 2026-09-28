@@ -119,7 +119,7 @@
   }
   .nav-series {
     font-family:var(--font-display);
-    font-size: 10px; font-weight:650;
+    font-size: 11px; font-weight:650;
     letter-spacing:.1em; text-transform: uppercase;
     color: var(--sage); margin-bottom: 6px;
   }
@@ -150,13 +150,18 @@
   .nav-link.visited { color: rgba(255,255,255,0.65); }
   .nav-num {
     font-family:var(--font-display);font-variant-numeric:tabular-nums;
-    font-size: 10px; font-weight: 600;
+    font-size: 11px; font-weight: 600;
     color: rgba(255,255,255,0.62);
     min-width: 18px; flex-shrink: 0;
     transition: color 0.15s;
   }
-  .nav-link.active .nav-num  { color:var(--fg-brand); }
-  .nav-link.visited .nav-num { color: var(--sage); opacity: 0.7; }
+  /* 2026-09-28: the rail is --charcoal in both themes, so --fg-brand (deep
+     teal) was dark-on-dark at 1.26:1 — the current slide's number was the one
+     you could not read. --fg-on-inverse matches the active label (8.02:1). */
+  .nav-link.active .nav-num  { color:var(--fg-on-inverse); }
+  /* 2026-09-28: .8, not .7 — .7 was 4.25:1 on the rail; .8 is 5.06:1 and still
+     reads quieter than the active number. */
+  .nav-link.visited .nav-num { color: var(--sage); opacity: 0.8; }
   /* Three states, told apart by SHAPE as much as colour. At this size two
      similar greens are not distinguishable on their own, and the previous
      version differed only in colour — a filled dot at 15% white, sage at 60%
@@ -327,6 +332,11 @@
   .t-terra { color: var(--terracotta); }
   .t-teal  { color: var(--deep-teal); }
   .t-meta  { font-size: 13px; color: var(--warm-gray); }
+  /* 2026-09-28: --warm-gray is 3.83:1 on the --light-sage slide. It is shared
+     with styles.css, so darkening it here would split one token into two;
+     instead the sage slide mixes it a third of the way to --fg-1 (4.99:1).
+     Same specificity as the dark .t-meta rule below, which wins by order. */
+  .slide-sage .t-meta { color: color-mix(in srgb, var(--fg-2) 70%, var(--fg-1)); }
 
   /* accent bar */
   .accent-bar {
@@ -361,7 +371,7 @@
   }
   .callout-label {
     font-family:var(--font-display);
-    font-size: 10px; font-weight:650;
+    font-size: 11px; font-weight:650;
     letter-spacing:.1em; text-transform: uppercase;
     color: var(--deep-teal); margin-bottom: 8px;
   }
@@ -401,7 +411,7 @@
   .comp-with    { background: rgba(197,221,217,0.35); border-top: 3px solid var(--teal); }
   .comp-label {
     font-family:var(--font-display);
-    font-size: 10px; font-weight: 700;
+    font-size: 11px; font-weight: 700;
     letter-spacing:.1em; text-transform: uppercase;
     margin-bottom: 14px;
   }
@@ -476,7 +486,9 @@
   /* next-step card (summary slide) */
   .next-step-card  { background: rgba(27,74,68,0.08); border-left: 3px solid var(--deep-teal); }
   .next-step-label { color: var(--deep-teal); }
-  .next-step-body  { color: var(--navy); }
+  /* 2026-09-28: sizing moved here from an inline style, which no stylesheet
+     rule can override — it kept this line at 14px under the phone type floor. */
+  .next-step-body  { color: var(--navy); font-family:var(--font-body); font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
 
   /* ── PREV / NEXT ARROWS ─────────────────────── */
   .nav-arrows {
@@ -758,6 +770,18 @@
      .hero h1 — they are the same role. */
   [data-theme="dark"] .h-display,
   [data-theme="dark"] .hero h1 { font-weight:420 }
+
+  /* ── TYPE FLOOR (2026-09-28) ─────────────────────────────────
+     Owner decision. No rule on this page sets text below 11px: every former
+     10px label, eyebrow, rail number and comparison label was raised in place
+     to 11px, at all widths, keeping its weight and tracking. Below the 768px
+     breakpoint, running body copy that rendered under 15px is raised to 15px
+     with normal tracking. Diagram labels, captions and .t-meta lines are not
+     body copy and keep their sizes. Slides already scroll on a phone, so the
+     extra height is absorbed there. Raise only, never lower. */
+  @media (max-width: 768px) {
+    .next-step-body { font-size: 15px; }
+  }
 </style>
   <style id="site-nav-overrides">
     /* Site nav offset — injected by wrapper */
@@ -1088,7 +1112,7 @@
 
     <div class="next-step-card" style="margin-top:40px;padding:24px 28px;border-radius:0 8px 8px 0;max-width:560px;">
       <p class="next-step-label" style="font-family:var(--font-display);font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.02em;text-transform:uppercase;">Ready to go deeper?</p>
-      <p class="next-step-body" style="font-family:var(--font-body);font-size:14px;line-height:1.6;margin-bottom:16px;">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
+      <p class="next-step-body">The Full Learning Plan covers first principles, mental models, behavioural indicators, and a 5-day habit builder — around 60–75 minutes of structured practice.</p>
       <a href="plan.html" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--white);background:var(--deep-teal);padding:10px 20px;border-radius:6px;text-decoration:none;transition:background .15s;" onmouseover="this.style.background='#5BA79F'" onmouseout="this.style.background='var(--deep-teal)'">Open Full Learning Plan <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
     </div>
   </div>

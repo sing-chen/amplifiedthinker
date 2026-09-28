@@ -56,7 +56,10 @@
   .sb-stat:hover .sb-num{font-size:36px;color:#C8DFCF}
   .sb-label{font-family:var(--font-body);font-size:12px;line-height:1.5;color:rgba(255,255,255,.90);max-width:180px;transition:color .2s ease}
   .sb-stat:hover .sb-label{color:rgba(255,255,255,1)}
-  .sb-source{font-family:var(--font-display);font-size:10px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.50);margin-top:2px;transition:color .2s ease}
+  /* 2026-09-28: was 10px at .50 white, 4.17:1 on the #163F39 band. .62 is
+     5.53:1, and 11px is the site's floor for any label (nothing renders below
+     it). The band is fixed dark in both themes, so one value serves both. */
+  .sb-source{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.62);margin-top:2px;transition:color .2s ease}
   .sb-stat:hover .sb-source{color:rgba(255,255,255,.75)}
   .sb-source a{color:inherit;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .15s}
   .sb-source a:hover{border-bottom-color:rgba(255,255,255,.40)}
@@ -184,12 +187,22 @@
   /* ── SKILL CARDS ── */
   .skill-list{display:flex;flex-direction:column;gap:16px}
   .scard{background:var(--bg-surface);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s}
-  .scard.cs:hover{border-color:color-mix(in srgb, var(--deep-teal) 30%, transparent)}
   .scard.active{border-color:color-mix(in srgb, var(--deep-teal) 40%, transparent);box-shadow:0 4px 24px rgba(27,74,68,.07)}
   .scard.active:hover{border-color:color-mix(in srgb, var(--deep-teal) 55%, transparent);box-shadow:0 10px 30px rgba(27,74,68,.12);transform:translateY(-3px)}
   .scard.active:hover .sstatus-strip{width:7px}
   .scard.active:hover .skill-icon{transform:scale(1.08)}
-  .scard.cs{opacity:.68}
+  /* ── COMING SOON (2026-09-28) ──
+     These cards used to be faded whole (opacity:.68), which put every word on
+     them at 2-3.3:1 — the name, the summary and the "Coming soon" badge that
+     is the only thing the reader needs from the card. Faded text reads as
+     broken, not as "not yet". The card now says it structurally instead:
+     a DASHED border (unfinished), no status strip, no hover response, a
+     neutral icon and pills, and a solid badge. Every word is full contrast.
+     They were never interactive — no onclick, no tabindex, toggleSkill() and
+     openSkillFromHash() both return early on .cs — and that stays: there is
+     nothing behind them to open. The badge is real text, so a screen reader
+     hears "Coming soon" as part of the list item. */
+  .scard.cs{border-style:dashed;border-color:var(--line-strong)}
   .sheader{display:flex;align-items:stretch;cursor:pointer;min-height:72px}
   .scard.cs .sheader{cursor:default}
   .sstatus-strip{width:5px;flex-shrink:0;transition:width .2s}
@@ -206,7 +219,7 @@
   .shc{flex:1;display:flex;align-items:center;gap:16px;padding:18px 22px;flex-wrap:wrap}
   .stb{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px}
   .skill-pills{display:flex;flex-wrap:wrap;gap:5px}
-  .skill-pill{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill);background:var(--light-sage);color:var(--mid-teal)}
+  .skill-pill{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill);background:var(--light-sage);color:var(--mid-teal)}
   .skill-pill.sp-cognitive   {background:#C5DDD9;color:#26605B}
   .skill-pill.sp-self-efficacy{background:#EDD5CB;color:#1F4D4A}
   .skill-pill.sp-engagement  {background:#F2DDB8;color:#2D3330}
@@ -215,27 +228,28 @@
   .scard.cs .skill-pill.sp-cognitive,
   .scard.cs .skill-pill.sp-self-efficacy,
   .scard.cs .skill-pill.sp-engagement,
-  .scard.cs .skill-pill.sp-technology{background:color-mix(in srgb, var(--warm-gray) 10%, transparent);color:var(--warm-gray)}
+  .scard.cs .skill-pill.sp-technology{background:color-mix(in srgb, var(--warm-gray) 10%, transparent);color:var(--text-muted)}
   .sname{font-family:var(--font-display);letter-spacing:-.014em;font-size:16px;font-weight:600;color:var(--fg-heading);line-height:1.2}
   .scard.cs .sname{color:var(--text-muted)}
   .ssum{font-family:var(--font-body);font-size:13.5px;line-height:1.55;color:var(--text-muted);max-width:400px;flex:2}
-  .scard.cs .ssum{color:color-mix(in srgb, var(--warm-gray) 70%, transparent)}
   .ssum em{font-style:italic}
   .sstatus{font-family:var(--font-display);font-size:11px;font-weight:600;padding:4px 11px;border-radius:var(--radius-pill);white-space:nowrap;flex-shrink:0}
   .ss-avail{background:color-mix(in srgb, var(--deep-teal) 12%, transparent);color:var(--mid-teal)}
-  .ss-soon{background:color-mix(in srgb, var(--warm-gray) 10%, transparent);color:var(--warm-gray)}
+  /* Solid and bordered, not a grey tint: on a quiet card the badge is the
+     loudest thing, on purpose. --fg-1 on --bg-sunken is 9.9:1 light, 15:1 dark. */
+  .ss-soon{background:var(--bg-sunken);color:var(--fg-1);box-shadow:inset 0 0 0 1px var(--line-strong)}
   .stoggle{display:flex;align-items:center;padding:0 18px;color:var(--text-muted);transition:transform .2s;flex-shrink:0}
   .stoggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .scard.open .stoggle{transform:rotate(180deg)}
   .sbody{display:none;border-top:1px solid rgba(172,196,182,.2);padding:28px 28px 28px 28px;gap:40px;align-items:flex-start}
   .scard.open .sbody{display:flex;flex-wrap:wrap}
   .sdef{flex:1;min-width:280px}
-  .sdl{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:10px}
+  .sdl{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:10px}
   .sdtext{font-family:var(--font-body);font-size:15px;font-style:italic;line-height:1.7;color:var(--fg-heading);border-left:3px solid var(--sage);padding-left:18px;margin-bottom:20px}
   .swhat{font-family:var(--font-body);font-size:14px;line-height:1.75;color:var(--navy)}
   .swhat p+p{margin-top:12px}
   .slaunch{width:252px;flex-shrink:0}
-  .ltitle{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
+  .ltitle{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
   .lcards{display:flex;flex-direction:column;gap:10px}
   .lcard{background:var(--warm-cream);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-lg);padding:14px 16px;text-decoration:none;display:block;transition:border-color .15s,background .15s,transform .1s}
   .lcard:hover{border-color:color-mix(in srgb, var(--deep-teal) 45%, transparent);background:var(--bg-surface);transform:translateY(-1px)}
@@ -298,7 +312,7 @@
   .sc-body{padding:20px 20px 22px;background:var(--bg-surface)}
   .sc-body ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:cite}
   .sc-body li{counter-increment:cite;display:flex;gap:10px;font-family:var(--font-body);font-size:12px;line-height:1.65;color:var(--text-muted)}
-  .sc-body li::before{content:counter(cite)'.';font-family:var(--font-display);font-size:10px;font-weight:600;color:var(--fg-brand);min-width:14px;padding-top:1px;flex-shrink:0}
+  .sc-body li::before{content:counter(cite)'.';font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--fg-brand);min-width:14px;padding-top:1px;flex-shrink:0}
   .sc-body a{color:var(--navy);text-decoration:none;border-bottom:1px solid rgba(31,77,74,.25);transition:border-color .15s,color .15s}
   .sc-body a:hover{color:var(--deep-teal);border-bottom-color:var(--deep-teal)}
   .sc-body a:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px;border-radius:2px}
@@ -335,7 +349,13 @@
     .shc{padding:14px 16px}
     .ssum{display:block}
     .ssum .ssum-desc{display:none}
-    .ssum em{font-size:12px;color:var(--text-muted)}
+    .ssum em{font-size:15px;color:var(--text-muted)}
+    /* Type floor on phones, 2026-09-28: running copy that rendered at 12-14px
+       here goes to 15px; labels, titles, CTAs and meta (the ~10 minutes line,
+       the citation list) are not body copy and keep their sizes, which are
+       all 11px or more. Only ever raises. */
+    .wc-body,.how-step-sub,.lib-guest-note,.swhat,.lcdesc,.filter-empty{font-size:15px}
+    .sb-label{font-size:15px;max-width:280px}
     .sdef-inner{flex-direction:column}
     .sthumb{width:100%}
     .sdef .sdtext{flex:none}
@@ -364,6 +384,7 @@
   [data-theme="dark"] .how-step{border-color:var(--line)}
   [data-theme="dark"] .how-step-sub{color:var(--fg-2)}
   [data-theme="dark"] .scard{border-color:var(--line)}
+  [data-theme="dark"] .scard.cs{border-color:var(--line-strong)}
   [data-theme="dark"] .scard.cs .sname{color:var(--fg-2)}
   [data-theme="dark"] .ssum{color:var(--fg-2)}
   [data-theme="dark"] .stoggle{color:var(--fg-2)}
@@ -403,14 +424,25 @@
   [data-theme="dark"] .scard.cs .skill-pill.sp-self-efficacy,
   [data-theme="dark"] .scard.cs .skill-pill.sp-engagement,
   [data-theme="dark"] .scard.cs .skill-pill.sp-technology{background:rgba(255,255,255,.08);color:var(--fg-2)}
-  [data-theme="dark"] .scard.cs .ssum{color:rgba(255,255,255,.4)}
+  /* the phone-only .ssum em above is --text-muted, which does not flip: 2.01:1 here */
+  [data-theme="dark"] .ssum em{color:var(--fg-2)}
 
-  [data-theme="dark"] .ss-avail{background:color-mix(in srgb, var(--teal) 18%, transparent);color:var(--teal)}
-  [data-theme="dark"] .ss-soon{background:rgba(255,255,255,.08);color:var(--fg-2)}
+  /* Text was --teal, a fill (rule 4): 3.78:1. --fg-brand is sage in dark, 5.71:1
+     on the same tint. The tint stays --teal because it is a fill. */
+  [data-theme="dark"] .ss-avail{background:color-mix(in srgb, var(--teal) 18%, transparent);color:var(--fg-brand)}
 
   [data-theme="dark"] .lcard{background:#33231A;border-color:rgba(201,122,74,.3)}
   [data-theme="dark"] .lcard:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent);background:#3A281D}
   [data-theme="dark"] .lccta .lcc-icon{background:#1F3A34} [data-theme="dark"] .lccta .lcc-icon svg{stroke:#8FCFC3}
+  /* The Full Learning Plan card lost its fill in dark: [data-theme="dark"] .lcard
+     is the same (0,2,0) as .lcard.primary and comes later, so both cards
+     rendered terracotta and the primary's .75-white copy sat on it. Restated
+     here at (0,3,0). --bg-brand-soft is #26605B in dark, the light fill's own
+     hue; the text lifts to .85 white (5.75:1, 7.2:1 on hover) because
+     [data-theme="dark"] .lcdesc/.lctime (fg-2) would otherwise win too. */
+  [data-theme="dark"] .lcard.primary{background:var(--bg-brand-soft);border-color:transparent}
+  [data-theme="dark"] .lcard.primary:hover{background:color-mix(in srgb, var(--bg-brand-soft) 82%, #000);border-color:transparent}
+  [data-theme="dark"] .lcard.primary .lcdesc,[data-theme="dark"] .lcard.primary .lctime,[data-theme="dark"] .lcard.primary .lccta{color:rgba(255,255,255,.85)}
 
   [data-theme="dark"] .ftab:hover{background:var(--bg-sunken);border-color:color-mix(in srgb, var(--teal) 40%, transparent);color:var(--teal)}
 
@@ -561,7 +593,7 @@
       <div class="why-body">
         <p>These capabilities aren't new, and they were never optional. What's new is how visible their absence has become.</p>
         <p>Entry-level tasks — synthesising research, producing first-pass analysis, organising information — were never just grunt work. They were how professionals developed judgment, pattern recognition, and the ability to distinguish what matters from what doesn't.</p>
-        <p>As AI handles more of that work, the pipeline that turned junior contributors into strategic thinkers is breaking down. <strong>Heavy reliance on AI tools correlates with declining critical thinking abilities</strong>, driven by cognitive offloading.<sup><a href="#cite-4" aria-label="Citation 4" style="color:var(--fg-brand);text-decoration:none;font-family:var(--font-display);font-size:9px;font-weight:600;vertical-align:super;margin-left:1px">4</a></sup> The capability that took years to build is now going unexercised.</p>
+        <p>As AI handles more of that work, the pipeline that turned junior contributors into strategic thinkers is breaking down. <strong>Heavy reliance on AI tools correlates with declining critical thinking abilities</strong>, driven by cognitive offloading.<sup><a href="#cite-4" aria-label="Citation 4" style="color:var(--fg-brand);text-decoration:none;font-family:var(--font-display);font-size:11px;font-weight:600;vertical-align:super;margin-left:1px">4</a></sup> The capability that took years to build is now going unexercised.</p>
         <p>This library addresses that gap directly. Each skill is grounded in the WEF Core Skills 2030 framework and cross-referenced with research from McKinsey, Udemy, and Microsoft on what employers are actually struggling to find. They're not new skills. They're the ones organisations kept treating as optional, and can no longer afford to.</p>
       </div>
     </div>

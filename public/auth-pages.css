@@ -227,12 +227,15 @@
  * aria-hidden in the markup and gets no colour of its own in dark mode beyond
  * the token, which does flip. */
 
+/* Border --fg-2, not --line-strong: a field's edge needs 3:1 against what
+   surrounds it (WCAG 1.4.11), and --line-strong measured about 1.6:1.
+   2026-09-28, the owner's call alongside the News search box. */
 .auth-panel input {
   display: block;
   width: 100%;
   padding: 10px 12px;
   margin-bottom: var(--space-4);
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--fg-2);
   border-radius: var(--radius-md);
   background: var(--bg-page);
   color: var(--fg-1);
@@ -408,6 +411,9 @@
   gap: var(--space-2);
 }
 .auth-summary li { font-size: 13px; line-height: 1.55; color: var(--fg-1); }
+/* 2026-09-28: body copy is never below 15px on a phone. 700px, not the 720px
+   this file uses for its desktop step, to match the rest of the site. */
+@media (max-width: 700px) { .auth-summary li { font-size: 15px; } }
 .auth-summary li::marker { color: var(--fg-brand); }
 
 .auth-summary-foot {
@@ -650,7 +656,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--line);
+  border: 1px solid var(--fg-2);   /* 3:1 field edge, see .auth-panel input */
   border-radius: var(--radius-md);
   background: var(--bg-page);
   color: var(--fg-1);
@@ -806,7 +812,7 @@
   display: inline-block;
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 11px;   /* 2026-09-28: the site's 11px floor (was 10.5); a badge, tracking exempt */
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -947,3 +953,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) { .acct-filter-chip { transition: none; } }
+
+/* ⚠️ 16px on phones for every text field on these two pages (2026-09-28).
+   iOS zooms into any field under 16px when it is tapped and stays zoomed
+   afterwards. Scoped like the rules above: (0,1,1) and (0,1,0) are what set
+   the sizes being overridden. */
+@media (max-width: 700px) {
+  .auth-panel input:not([type="checkbox"]),
+  .acct-note-input { font-size: 16px; }
+}

@@ -60,9 +60,15 @@
      minimum. The featured row moved up too: Vanessa Van Edwards's pale
      backdrop left her 20px name at 2.60:1 under the old gradient, 6.45:1
      under its own below (Simon Sinek 4.67 -> 8.29).
-     Re-measure if a photo changes — a paler one lowers the floor. */
-  .bento-standard .bento-tile::before{background:linear-gradient(180deg,transparent 18%,rgba(10,18,16,.66) 46%,rgba(10,18,16,.9) 100%)}
-  .bento-featured .bento-tile::before{background:linear-gradient(180deg,transparent 30%,rgba(10,18,16,.62) 55%,rgba(10,18,16,.9) 100%)}
+     Re-measure if a photo changes — a paler one lowers the floor.
+     2026-09-28, by owner decision: started higher and deeper at the foot,
+     with an extra stop so the ramp is not a hard band across the faces. Also
+     needed for the phone type floor below, which lifts every name. Measured
+     as the 5th-percentile pixel under each name's glyph box, text hidden, on
+     all eight photos at 390 and 1280: worst name Brené Brown 5.76 -> 7.47:1,
+     featured Vanessa Van Edwards 6.60 -> 8.36:1, every quote and cue >= 7.4:1. */
+  .bento-standard .bento-tile::before{background:linear-gradient(180deg,transparent 10%,rgba(10,18,16,.4) 28%,rgba(10,18,16,.74) 46%,rgba(10,18,16,.94) 100%)}
+  .bento-featured .bento-tile::before{background:linear-gradient(180deg,transparent 22%,rgba(10,18,16,.4) 38%,rgba(10,18,16,.7) 55%,rgba(10,18,16,.94) 100%)}
   .bento-tile-body{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;z-index:2;color:#fff;text-align:left}
   .bento-tile.large .bento-tile-body{padding:22px 24px}
   .bento-name{display:block;font-family:var(--font-display);letter-spacing:-.006em;font-weight:600;font-size:14px;margin-bottom:6px;line-height:1.25}
@@ -79,7 +85,7 @@
   @media(max-width:520px){.bento-featured{grid-template-columns:1fr}.bento-standard{grid-template-columns:1fr}}
 
   /* category pill (shared bento tile + modal) */
-  .ppill{display:inline-block;font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill)}
+  .ppill{display:inline-block;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-pill)}
   .pp-leadership  {background:#C5DDD9;color:#1B4A44}
   .pp-communication{background:#F2DDB8;color:#5A3A00}
   .pp-influence   {background:#EDD5CB;color:#7A3A25}
@@ -93,7 +99,7 @@
   .modal-scrim::backdrop{background:transparent}
   .modal{background:var(--bg-surface);border-radius:var(--radius-xl);max-width:640px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:var(--shadow-lg)}
   .modal-close::after{content:'';position:absolute;inset:-6px}
-  .modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(10,20,18,.4);color:#fff;font-size:18px;line-height:1;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center}
+  .modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(10,20,18,.62);color:#fff;font-size:18px;line-height:1;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center}
   .modal-close:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
   .modal-photo{aspect-ratio:16/7;overflow:hidden;position:relative}
   .modal-photo img{width:100%;height:100%;object-fit:cover;object-position:center top}
@@ -117,19 +123,19 @@
   .pquote{margin:0 0 16px;padding:0}
   .pquote-mark{font-family:var(--font-display);font-size:44px;font-weight:700;line-height:1;color:var(--sage);display:block;margin-bottom:-10px;user-select:none}
   .pquote-text{font-family:var(--font-body);font-size:13.5px;font-style:italic;line-height:1.6;color:var(--navy)}
-  .pquote-source{font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:6px}
+  .pquote-source{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:6px}
 
   /* description */
   .pdesc{font-family:var(--font-body);font-size:13.5px;line-height:1.65;color:var(--navy);margin-bottom:18px}
 
   /* ── KEY WORKS — cover art ── */
-  .pworks-label{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:10px}
+  .pworks-label{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:10px}
   .works-covers{display:flex;flex-wrap:wrap;gap:14px}
   .work-cover-card{width:80px;text-decoration:none;display:block}
   .work-cover-img{width:80px;height:120px;border-radius:4px;overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:7px;background:var(--bg-sunken);transition:transform .18s,box-shadow .18s}
   .work-cover-card:hover .work-cover-img{transform:translateY(-3px);box-shadow:var(--shadow-md)}
   .work-cover-img img{width:100%;height:100%;object-fit:cover;display:block}
-  .work-cover-title{font-family:var(--font-body);font-size:10px;color:var(--text-muted);line-height:1.3;display:block}
+  .work-cover-title{font-family:var(--font-body);font-size:11px;color:var(--text-muted);line-height:1.3;display:block}
   .pworks-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
   .pwork-icon{width:12px;height:12px;flex-shrink:0;opacity:.7}
   .pwork-link{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:11px;color:var(--text-muted);background:rgba(172,196,182,.15);border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-pill);padding:3px 10px;line-height:1.6;text-decoration:none}
@@ -143,6 +149,12 @@
     .hero,.people-section{padding-left:20px;padding-right:20px}
     .site-footer{padding-left:20px;padding-right:20px}
     .modal-body{padding:22px 20px 26px}
+    /* Type floor on phones, 2026-09-28: running copy goes to 15px. The tile
+       quote was 11px (13.5 featured); at 15 its three clamped lines push the
+       name up the tile, so the standard tiles grow 200 -> 250px to keep the
+       name below the faces and inside the darkened half of the gradient. */
+    .bento-quote,.bento-tile.large .bento-quote,.pannotation,.pquote-text,.pdesc{font-size:15px}
+    .bento-standard .bento-tile{height:250px}
   }
 
   /* ── DARK MODE ──

@@ -267,9 +267,12 @@
     /* The editor's own classes, prefixed `skn`. Same shapes as news-app.css,
        written here because these pages have no stylesheet to share. */
     '.skn-note{display:flex;flex-direction:column;gap:8px}',
-    '.skn-note-label{font-family:var(--font-display,inherit);font-size:10.5px;font-weight:650;',
+    // 11px: the site-wide floor for labels (piece 13, 2026-09-28).
+    '.skn-note-label{font-family:var(--font-display,inherit);font-size:11px;font-weight:650;',
       'letter-spacing:.1em;text-transform:uppercase;color:var(--deep-teal,#26605B)}',
-    '.skn-note-input{width:100%;padding:9px 11px;border:1px solid rgba(31,77,74,.2);border-radius:var(--radius,8px);',
+    // Border --fg-2: a field's edge needs 3:1 (rgba .2 was about 1.4:1). The
+    // skill pages do not flip semantic tokens, so dark sets its own below.
+    '.skn-note-input{width:100%;padding:9px 11px;border:1px solid var(--fg-2,#4A5C55);border-radius:var(--radius,8px);',
       'font-family:var(--font-body,inherit);font-size:13.5px;line-height:1.6;color:#1B2B29;background:#FFFFFF;resize:vertical}',
     '.skn-note-input:focus-visible,.skn-note-input:focus{outline:2px solid var(--teal,#5BA79F);outline-offset:1px}',
     '.skn-note-read{font-family:var(--font-body,inherit);font-size:13.5px;line-height:1.65;color:#1B2B29;',
@@ -323,7 +326,9 @@
     '[data-theme="dark"] .skn-where{background:var(--d-teal-bg,#1C332E);color:var(--d-teal-stroke,#8FCFC3)}',
     '[data-theme="dark"] .skn-where.is-whole{background:transparent;border-color:var(--d-line,rgba(255,255,255,.2));color:var(--d-fg-2,#9BAAA3)}',
     '[data-theme="dark"] .skn-note-label{color:var(--d-fg-brand,#ACC4B6)}',
-    '[data-theme="dark"] .skn-note-input{background:var(--d-bg-surface,#1B2E29);border-color:var(--d-line,rgba(255,255,255,.12));color:var(--d-fg-1,#E7EDE9)}',
+    '[data-theme="dark"] .skn-note-input{background:var(--d-bg-surface,#1B2E29);border-color:var(--d-fg-2,#9BAAA3);color:var(--d-fg-1,#E7EDE9)}',
+    // 16px on phones: iOS zooms into any field under 16px when it is tapped.
+    '@media (max-width:768px){.skn-note-input{font-size:16px}}',
     '[data-theme="dark"] .skn-note-read{color:var(--d-fg-1,#E7EDE9)}',
     '[data-theme="dark"] .skn-note-count{color:var(--d-fg-2,#9BAAA3)}',
     '[data-theme="dark"] .skn-note-count.is-near{color:var(--d-terra-stroke,#E8C9AE)}',

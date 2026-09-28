@@ -97,8 +97,10 @@
      `.announce-icon` uses, and NOT about.html's `#9A5636`. That value is a 2px
      icon stroke there, where contrast rules do not bind it; as 10px text on
      this same tint it measures 4.06:1, under the 4.5 small text needs. All
-     eight pairs below were measured, not assumed — the lowest is 4.88:1. */
-  .wn-pill{display:inline-block;vertical-align:1px;margin-right:4px;padding:3px 9px;border-radius:999px;font-family:var(--font-display);font-size:10px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;background:rgba(172,196,182,.28);color:var(--text-muted)}
+     eight pairs below were measured, not assumed — the lowest is 4.88:1.
+     2026-09-28: 10px -> 11px, the site's type floor, desktop too. A badge, so
+     its tracking stays exempt from the ramp (rule 3); colours unchanged. */
+  .wn-pill{display:inline-block;vertical-align:1px;margin-right:4px;padding:3px 9px;border-radius:999px;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;background:rgba(172,196,182,.28);color:var(--text-muted)}
   .wn-pill-skill{background:#D4EAE7;color:#26605B}
   .wn-pill-feature{background:#EAD9C8;color:#8A4B2C}
   .wn-pill-improvement{background:#DCE3CC;color:#55643A}

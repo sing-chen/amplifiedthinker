@@ -81,10 +81,17 @@
     .announce-card{background:rgba(31,60,55,.96);-webkit-backdrop-filter:none;backdrop-filter:none}
   }
   .ac-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-  .ac-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.11em;text-transform:uppercase;color:var(--sage)}
+  /* 2026-09-28: --sage read 4.02:1 here on the frosted pane at 11px caps —
+     a fill colour misused as text (rule 4), so the label moves to the next
+     sage step up rather than the pane getting darker. --light-sage does not
+     flip, which is right for a band that is pine in both themes. 5.7:1. */
+  .ac-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.11em;text-transform:uppercase;color:var(--light-sage)}
   .ac-step{display:flex;align-items:center;gap:8px}
   .ac-step[hidden]{display:none}
-  .ac-count{font-family:var(--font-body);font-size:12.5px;font-weight:600;color:rgba(238,242,239,.55);font-variant-numeric:tabular-nums;letter-spacing:.02em;min-width:38px;text-align:center}
+  /* 2026-09-28: pure text, so the text lightens (rule 4). At .55 it read
+     3.1-3.3:1 on the frosted pane (4.36:1 only on the no-blur fallback); 80%
+     measures 4.77:1 at the pane's lightest pixel. Written as the token. */
+  .ac-count{font-family:var(--font-body);font-size:12.5px;font-weight:600;color:color-mix(in srgb, var(--off-white) 80%, transparent);font-variant-numeric:tabular-nums;letter-spacing:.02em;min-width:38px;text-align:center}
   .ac-btn{position:relative;width:27px;height:27px;display:flex;align-items:center;justify-content:center;background:none;border:1px solid rgba(172,196,182,.3);border-radius:6px;color:var(--sage);cursor:pointer;padding:0;transition:background .15s,border-color .15s}
   .ac-btn::after{content:'';position:absolute;inset:-9px}
   .ac-btn:hover{background:rgba(172,196,182,.12);border-color:rgba(172,196,182,.7)}
@@ -93,12 +100,18 @@
   .ac-view{overflow:hidden;position:relative}
   .ac-track{position:absolute;top:0;left:0;width:100%;transition:transform .28s ease}
   .ac-item{box-sizing:border-box;padding:2px 0 4px}
-  .ac-mark{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:#E29A6F;margin-bottom:10px;font-variant-numeric:tabular-nums}
+  /* ⚠️ THE CLAY WAS LIGHTENED 2026-09-28, #E29A6F -> #F0C5A6, closing the
+     last contrast judgment call in the design doc. #E29A6F had been accepted
+     at ~3.4:1 and measured 3.18:1 against the lightest 5% of the frosted pane
+     under the date line at 1280px. #F0C5A6 is 4.93:1 there and 5.45:1+ on
+     phones: margin for the cursor lamp, which lightens what sits under the
+     card. A literal, like every colour in this fixed pine hero. */
+  .ac-mark{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.09em;text-transform:uppercase;color:#F0C5A6;margin-bottom:10px;font-variant-numeric:tabular-nums}
   .ac-text{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-family:var(--font-body);font-size:15px;color:rgba(238,242,239,.86);line-height:1.6;letter-spacing:-.004em;margin-bottom:12px}
   .ac-text b{color:var(--off-white);font-weight:650}
-  .ac-go{font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#E29A6F;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
+  .ac-go{font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#F0C5A6;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
   .ac-go:hover{color:#EEDBC6}
-  .ac-go:focus-visible{outline:2px solid #E29A6F;outline-offset:3px;border-radius:2px}
+  .ac-go:focus-visible{outline:2px solid #F0C5A6;outline-offset:3px;border-radius:2px}
   /* The step announcement: read out, never shown. The counter above it
      used to be the live region, so a screen reader pressing Next heard
      "2 / 3" and nothing about the story it had moved to. */
@@ -141,7 +154,8 @@
   .tile-people,.tile-news{padding:26px 30px 24px}
   .tile-people{--hue:var(--hue-people)}
   .tile-news{--hue:var(--hue-news)}
-  .tile-eyebrow{font-family:var(--font-display);font-size:10.5px;font-weight:650;letter-spacing:.11em;text-transform:uppercase;color:var(--hue);margin:0 0 12px}
+  /* 2026-09-28: 11px is the site's type floor, desktop too (was 10.5px) */
+  .tile-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.11em;text-transform:uppercase;color:var(--hue);margin:0 0 12px}
   .tile-title{font-family:var(--font-editorial);font-size:22px;font-weight:380;letter-spacing:-.022em;line-height:1.3;color:var(--fg-heading);margin:0 0 12px;text-wrap:balance}
   /* the description is the flexible spacer: grid rows stretch the three
      tiles to one height, so flex:1 here lands every CTA on the same line */
@@ -168,6 +182,8 @@
        and it kept the Explore heading below the first screen */
     .hero-body{padding-top:48px;padding-bottom:56px}
     .site-footer{padding-left:20px;padding-right:20px}
+    /* 2026-09-28: body copy is never below 15px on a phone — both sat at 14 */
+    .hero-sub,.tile-desc{font-size:15px}
   }
   @media(prefers-reduced-motion:reduce){
     .tile,.tile::after,.tile-cta svg,.ac-track,.hero-cta,.hero-cta svg{transition:none}

@@ -463,6 +463,10 @@
   font-size: clamp(24px, 3vw, 34px); color: var(--fg-heading); line-height: 1.2;
 }
 .learn-msg p { color: var(--text-muted); font-size: 16px; margin-top: 14px; }
+/* 2026-09-28: the signed-out "Read what an account gets you" link had no colour
+   rule and wore the browser's #0000EE — 1.7:1 on the dark page. Same defect and
+   same fix as the auth-pages.css hint links. */
+.learn-msg p a { color: var(--fg-brand); }
 .learn-msg .learn-actions { display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-5); flex-wrap: wrap; }
 .learn-msg .learn-actions[hidden] { display: none !important; }
 .learn-btn {
@@ -512,6 +516,9 @@
 }
 @media (max-width: 700px) {
   .learn { padding: var(--space-6) 20px var(--space-7); }
+  /* 2026-09-28: body copy is never below 15px on a phone; the 1040px step
+     above takes these to 13.5 and this puts them back */
+  .learn-sub, .learn-note { font-size: 15px; }
   .learn-donut { width: 150px; height: 150px; }
   .learn-cell-inner { flex-wrap: wrap; }
 }

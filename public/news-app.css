@@ -70,10 +70,19 @@
 .headline-col{border:1px solid var(--light-sage);border-radius:var(--radius-lg);background:var(--bg-surface);display:flex;flex-direction:column;max-height:calc(100vh - var(--site-total-offset,56px) - 48px);overflow:hidden}
 .headline-search-wrap{position:relative;flex-shrink:0;border-bottom:1px solid var(--light-sage);padding:10px}
 .headline-search-icon{position:absolute;left:20px;top:50%;transform:translateY(-50%);width:14px;height:14px;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-.headline-search-input{width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:var(--font-body);font-size:13px;color:var(--fg-heading);background:var(--bg-page)}
+/* 2026-09-28: the field's boundary is --fg-2, not a faint line. At .18 (light)
+   and --line (dark) the box measured ~1.3:1 against the column, under the 3:1 a
+   form field's edge needs to be found at all. --fg-2 flips, so one rule serves
+   both themes: 5.2:1 / 4.6:1 against the column and its own fill in light,
+   5.9:1 / 6.7:1 in dark. The placeholder moves to the same token — the UA
+   grey #757575 was 4.1:1 on this fill in light. */
+.headline-search-input{width:100%;box-sizing:border-box;padding:8px 10px 8px 32px;border:1px solid var(--fg-2);border-radius:var(--radius);font-family:var(--font-body);font-size:13px;color:var(--fg-heading);background:var(--bg-page)}
+.headline-search-input::placeholder{color:var(--fg-2);opacity:1}
 .headline-search-input:focus-visible,.headline-search-input:focus{outline:2px solid var(--mid-teal);outline-offset:1px}
 .headline-panel{border:none;border-radius:0;background:none;flex:1;max-height:none;overflow-y:auto;scrollbar-gutter:stable;padding:8px}
-.headline-group-header{position:sticky;top:0;z-index:1;background:var(--bg-surface);padding:10px 12px 4px;font-family:var(--font-display);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
+/* 2026-09-28: 11px is the site's type floor, desktop too — this and .story-tag
+   were 10.5px */
+.headline-group-header{position:sticky;top:0;z-index:1;background:var(--bg-surface);padding:10px 12px 4px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
 .headline-date-prefix{color:var(--fg-brand);font-weight:600}
 .headline-pin-icon{display:inline-flex;vertical-align:-1px;color:var(--terracotta);margin-right:3px}
 .headline-pin-icon svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -119,7 +128,7 @@
 .story-source-link:hover{color:var(--terracotta)}
 .story-source-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
 .story-tags{display:flex;flex-wrap:wrap;gap:6px}
-.story-tag{font-family:var(--font-display);font-size:10.5px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:var(--radius-pill);background:var(--tag-bg, var(--light-sage));color:var(--tag-text, var(--navy))}
+.story-tag{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.02em;padding:4px 10px;border-radius:var(--radius-pill);background:var(--tag-bg, var(--light-sage));color:var(--tag-text, var(--navy))}
 
 /* ── THE PERSONAL LAYER: save, pin, note ──────────────────────────────────────
    Signed-in only. The server paints the invite; news-actions.js owns the slot.
@@ -154,7 +163,10 @@
 
 .story-note{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 .story-note-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
-.story-note-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid rgba(31,77,74,.18);border-radius:var(--radius);font-family:var(--font-body);font-size:14px;line-height:1.6;color:var(--fg-heading);background:var(--bg-page);resize:vertical}
+/* Border --fg-2, like the search box: a field's edge needs 3:1 to show where
+   to type (WCAG 1.4.11), and rgba(.18) was about 1.4:1. It flips with the
+   theme, so the dark override below no longer sets it. 2026-09-28. */
+.story-note-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--fg-2);border-radius:var(--radius);font-family:var(--font-body);font-size:14px;line-height:1.6;color:var(--fg-heading);background:var(--bg-page);resize:vertical}
 .story-note-input:focus-visible,.story-note-input:focus{outline:2px solid var(--mid-teal);outline-offset:1px}
 .story-note-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .story-note-count{font-family:var(--font-body);font-size:12px;color:var(--text-muted)}
@@ -201,6 +213,12 @@
 .story-title[tabindex="-1"]:focus{outline:none}
 
 @media(max-width:800px){
+  /* The headline rows are what this page is read by, so they take the 15px
+     body floor on phones (2026-09-28). The owner's call: they are body copy. */
+  .headline-item{font-size:15px}
+  /* 16px, not 15: iOS zooms into any field under 16px on focus and stays
+     zoomed after, which throws off the whole list layout. */
+  .headline-search-input,.story-note-input{font-size:16px}
   .news-layout{grid-template-columns:1fr}
   .headline-col{max-height:none}
   .story-panel{display:none}
@@ -210,6 +228,8 @@
   .story-panel{padding:24px 20px}
   .story-title{font-size:20px}
   .story-toprow{flex-wrap:wrap;gap:10px 12px}
+  /* 2026-09-28: body copy is never below 15px on a phone (14 / 13.5 / 14.5) */
+  .story-implications p,.story-actions-invite,.empty-state,.news-error p{font-size:15px}
   .filter-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:34px;padding-right:34px;mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent)}
   .filter-bar::-webkit-scrollbar{display:none}
   .filter-chip{flex-shrink:0}
@@ -234,11 +254,14 @@
 [data-theme="dark"] .headline-col{border-color:var(--line)}
 [data-theme="dark"] .headline-search-wrap{border-bottom-color:var(--line)}
 [data-theme="dark"] .headline-search-icon{stroke:var(--fg-2)}
-[data-theme="dark"] .headline-search-input{border-color:var(--line)}
 [data-theme="dark"] .headline-pin-icon{color:var(--accent-warm)}
 [data-theme="dark"] .headline-divider{background:var(--line)}
 [data-theme="dark"] .headline-item{color:var(--fg-2)}
-[data-theme="dark"] .headline-item.active{border-left-color:var(--accent-warm)}
+/* 2026-09-28: the colour is restated because the dark .headline-item rule above
+   ties .headline-item.active on specificity and comes later, so the ACTIVE row
+   wore --fg-2 in dark — 4.3:1 on the Featured tint, where light mode shows the
+   heading colour. The text token was wrong, not the tint: 8.4:1 now. */
+[data-theme="dark"] .headline-item.active{border-left-color:var(--accent-warm);color:var(--fg-heading)}
 [data-theme="dark"] .headline-item.pinned{background:rgba(201,122,74,.12)}
 [data-theme="dark"] .headline-item.pinned:hover{background:rgba(201,122,74,.2)}
 [data-theme="dark"] .headline-item.pinned.active{background:rgba(201,122,74,.24)}
@@ -265,7 +288,7 @@
 [data-theme="dark"] .story-action-btn{border-color:var(--line)}
 [data-theme="dark"] .story-action-btn:hover{border-color:color-mix(in srgb, var(--teal) 40%, transparent)}
 [data-theme="dark"] .story-action-status{color:var(--fg-2)}
-[data-theme="dark"] .story-note-input{border-color:var(--line)}
+/* border-color now comes from --fg-2 in both themes; see .story-note-input */
 [data-theme="dark"] .story-note-count{color:var(--fg-2)}
 [data-theme="dark"] .story-note-count.is-near{color:var(--accent-warm-text)}
 [data-theme="dark"] .story-action-btn:disabled:hover{border-color:var(--line);background:var(--bg-surface)}
