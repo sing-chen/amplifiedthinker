@@ -41,7 +41,10 @@
   .hero-hl{grid-column:1;grid-row:1;font-family:var(--font-display);font-size:clamp(38px,5.8vw,68px);color:var(--off-white);line-height:1.07;letter-spacing:-.038em;margin:0;max-width:840px}
   .h-quiet{display:block;font-weight:200;color:rgba(238,242,239,.6)}
   .h-loud{display:block;font-weight:800}
-  .hero-sub{grid-column:1;grid-row:2;font-family:var(--font-body);font-size:clamp(14px,1.1vw,16.5px);line-height:1.65;color:rgba(238,242,239,.74);max-width:560px;margin:22px 0 0}
+  /* 2026-09-28: was clamp(14px,1.1vw,16.5px), which read 14px at 1280 — a
+     laptop got a smaller intro than a phone (15px, below). 16px at 1280,
+     17px from 1360 up; the phone override at 700px still sets 15. */
+  .hero-sub{grid-column:1;grid-row:2;font-family:var(--font-body);font-size:clamp(15px,1.25vw,17px);line-height:1.65;color:rgba(238,242,239,.74);max-width:560px;margin:22px 0 0}
   .hero-ctas{grid-column:1;grid-row:3;display:flex;align-items:center;gap:26px;margin-top:30px;flex-wrap:wrap}
   .hero-cta{display:inline-flex;align-items:center;gap:9px;background:var(--sage);color:#0E1917;text-decoration:none;font-family:var(--font-display);font-size:14px;font-weight:650;letter-spacing:-.006em;padding:12px 21px 13px;border-radius:var(--radius-pill);box-shadow:0 10px 28px -12px rgba(0,0,0,.5);transition:transform .2s,box-shadow .2s,background-color .15s}
   .hero-cta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
@@ -217,7 +220,7 @@
           <span class="h-quiet">AI is raising the floor.</span>
           <span class="h-loud">Raise your ceiling.</span>
         </h1>
-        <p class="hero-sub">The skills that have always set people apart — taught as primers and plans you can actually finish, with the people worth reading and the news worth your time. Hand-built. Private. Free.</p>
+        <p class="hero-sub">The skills that have always set people apart, as primers and plans you can finish. Plus the people and news worth your time. Hand-built. Private. Free.</p>
         <div class="hero-ctas">
           <a href="future-skills.html" class="hero-cta">Start with a skill <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
@@ -249,7 +252,7 @@
     <a href="future-skills.html" class="tile tile-skills" aria-labelledby="tile-skills-eyebrow tile-skills-title" aria-describedby="tile-skills-desc">
       <p class="tile-eyebrow" id="tile-skills-eyebrow">Future skills</p>
       <h3 class="tile-title" id="tile-skills-title">The library of what holds its value</h3>
-      <p class="tile-desc" id="tile-skills-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more.</p>
+      <p class="tile-desc" id="tile-skills-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest, drawn from WEF, McKinsey, Deloitte, Udemy, and more.</p>
       <span class="tile-cta">Browse the library <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
     </a>
 
@@ -415,7 +418,8 @@
   var EXPIRY_DAYS = { feature: 14, skill: 21 };
   // The type is SAID in the mark rather than drawn — the banner's three
   // icons asked the reader to learn three glyphs these words replace.
-  var TYPE_LABELS = { feature: 'New feature', skill: 'New skill', story: 'New story' };
+  // `latest` is the fallback in newsItemsHTML(): an older story is not "new".
+  var TYPE_LABELS = { feature: 'New feature', skill: 'New skill', story: 'New story', latest: 'Latest story' };
 
   // nav.js, loaded at the top of <body>, owns the one escaper.
   function escapeHTML(s) { return window.AmplifiedNav.escapeHtml(s); }
@@ -493,20 +497,33 @@
      the same traversal the old grouped version did — a date group is contiguous
      in that order, so stopping at the first story past the window stops at the
      same place the group-level check did. Only the source and the link format
-     changed, which is what makes "visitors see no difference" checkable. */
-  function newsItemsHTML() {
+     changed, which is what makes "visitors see no difference" checkable.
+
+     ⚠️ THE EMPTY CARD, 2026-09-28. With every announcement expired and no
+     story inside the window, the card hid itself and left the right half of
+     the desktop hero as bare pine. Found by a taste-skill review: all eight
+     announcements had lapsed by 17 September and the newest story was 18
+     days old. So when `fallback` is set (nothing curated survived) the single
+     newest story shows anyway, marked "Latest story" with its full date, so
+     its age is stated rather than disguised. One item means no stepper. The
+     endpoint returns the newest 20 regardless of age, so data[0] is it. */
+  function newsItemsHTML(fallback) {
     return fetch('/api/news/recent.json')
       .then(function (r) { return r.ok ? r.json() : []; })
       .then(function (data) {
-        var stories = [];
+        var stories = [], type = 'story';
         (data || []).some(function (s) {
           if (daysSince(s.date) > NEWS_MAX_AGE_DAYS) return true;
           stories.push(s);
           return stories.length >= NEWS_MAX_COUNT;
         });
+        if (!stories.length && fallback && data && data[0]) {
+          stories.push(data[0]);
+          type = 'latest';
+        }
 
         return stories.map(function (s) {
-          return itemHTML('story', formatAnnounceDate(s.date), escapeHTML(s.title || ''),
+          return itemHTML(type, formatAnnounceDate(s.date), escapeHTML(s.title || ''),
             '/news/' + encodeURIComponent(s.slug), 'Read it');
         }).join('');
       })
@@ -590,7 +607,7 @@
   track.innerHTML = curatedItemsHTML();
   refresh();
 
-  newsItemsHTML().then(function (newsHTML) {
+  newsItemsHTML(track.children.length === 0).then(function (newsHTML) {
     if (!newsHTML) return;
     track.insertAdjacentHTML('beforeend', newsHTML);
     refresh();

@@ -35,6 +35,7 @@ position it does not have.
 | 11 | The two-tone wordmark | 2026-08-28 | `1b987ba` |
 | 12 | Asymmetric tiles — Future Skills leads | 2026-09-28 | `929d473` |
 | 13 | Coming-soon affordance, label contrast, type floor, field edges | 2026-09-28 | `a3d2178` |
+| 14 | Home: the announce card never empties, a larger and shorter intro | 2026-09-28 | this commit |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Pieces 9–11 were built on `feat/amplitude` and merged to `main` on 2026-08-28. ⚠️ Remaining
@@ -475,6 +476,33 @@ this piece is those decisions plus four follow-ups. Reviewed before merge on a b
 Exempt and left as they are: disabled Previous controls (WCAG exempts inactive controls), decorative
 separators, the decorative quote mark on My People, and the nav wordmark's "Thinker" at 4.48:1
 (logos are exempt, and the two-tone wordmark is piece 11's recorded choice).
+
+---
+
+## Piece 14 — the announce card's empty state, and the hero intro (2026-09-28)
+
+`public/index.html` only. From a second `taste-skill` pass on the homepage, same day as piece 12.
+
+- **The announce card no longer empties.** Every curated announcement had expired by 17 September
+  and the newest story was 18 days old, past the 14-day window, so the card hid itself and the
+  right half of the desktop hero was bare pine. Found by reading the dates, not by looking: the
+  specimens and every check since always had something fresh to show. Now, when no curated item
+  survives and no story is inside the window, the single newest story shows as **"Latest story"**
+  with its full date. It states its age instead of passing as new. The window, the cap and the
+  expiry rules are unchanged; a failed or empty feed still hides the card.
+- **The intro is `clamp(15px,1.25vw,17px)`**, was `clamp(14px,1.1vw,16.5px)`. It read 14px at
+  1280, smaller than the 15px phones get under rule 7. Now 16px at 1280 and 17px from 1360.
+- **The intro is 26 words, was 32**: *"The skills that have always set people apart, as primers and
+  plans you can finish. Plus the people and news worth your time. Hand-built. Private. Free."*
+  Five lines to four on a phone. "Hand-built. Private. Free." is unchanged and stays on the promise
+  list (piece 10). The em-dash here and the one in the Future Skills tile went at the owner's call.
+  ⚠️ CLAUDE.md's rule still stands: `taste-skill`'s em-dash ban is no reason to rewrite editorial
+  copy on its own.
+
+Checked and deliberately left: the lead tile's open space (piece 12), the tile eyebrows (piece 9),
+the lamp and entrance (piece 10), and the card's grid binding, which leaves a short single item
+with empty glass below it. Normal-length items fill it. The footer's `--charcoal` against the
+pine page was raised as a site-wide decision and is not part of this piece.
 
 ---
 
