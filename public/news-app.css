@@ -18,10 +18,14 @@
  */
 
 /* ── HERO ── */
-.hero{background:#1B4A44;padding:76px 40px 56px;position:relative;overflow:hidden}
+/* A short band, on purpose. This is a page people come back to for the
+   stories, and the hero used to take 291px on desktop and 327px on a phone
+   before any of them — with a label reading "Amplified Thinker", the name the
+   nav bar already shows. The label went on 2026-09-28 (here and on the 404
+   and 503 pages, which share this band); the padding tightened with it. */
+.hero{background:#1B4A44;padding:44px 40px 36px;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 500px at 80% 55%,color-mix(in srgb, var(--teal) 7%, transparent) 0%,transparent 68%);pointer-events:none}
 .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
-.eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:20px}
 .hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.6vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:16px;max-width:760px}
 .hero-sub{font-family:var(--font-body);font-size:16px;line-height:1.7;color:rgba(255,255,255,.75);max-width:600px}
 
@@ -237,6 +241,7 @@
 }
 @media(max-width:700px){
   .hero,.news-main{padding-left:20px;padding-right:20px}
+  .hero{padding-top:30px;padding-bottom:28px}
   .site-footer{padding-left:20px;padding-right:20px}
 }
 
