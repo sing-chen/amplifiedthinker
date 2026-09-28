@@ -29,10 +29,15 @@
   .hero{background:#1B4A44;padding:80px 40px 72px;padding-top:calc(80px + 38px);position:relative;overflow:hidden}
   .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 800px 600px at 80% 60%,color-mix(in srgb, var(--teal) 7%, transparent) 0%,transparent 70%);pointer-events:none}
   .hero-pattern{position:absolute;top:0;right:0;width:60%;height:100%;opacity:.07;pointer-events:none}
+  /* the pattern's colours, as the tokens they always were (design rule 6) —
+     SVG attributes cannot read var(), so the markup carries classes instead */
+  .hero-pattern .hp-lines{stroke:var(--teal)}
+  .hero-pattern .hp-teal{fill:var(--teal)}
+  .hero-pattern .hp-amber{fill:var(--amber)}
+  .hero-pattern .hp-clay{fill:var(--terracotta-icon)}
   .hi{max-width:var(--page-max);margin:0 auto;position:relative;z-index:1}
   .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
   .hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:20px;max-width:860px}
-  .hero-hl em{color:var(--sage);font-style:normal;font-weight:400}
   .hero-body{font-family:var(--font-body);font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:860px}
   /* The library is what this page is for, and it starts 2.6 screens down on
      desktop and 5.6 on a phone, behind the argument for it. This is the one
@@ -101,7 +106,7 @@
   .why-body p+p{margin-top:14px}
   .why-body strong{color:var(--fg-heading);font-weight:500}
   .why-cards{display:flex;flex-direction:column;gap:12px}
-  .wc{background:var(--bg-surface);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-lg);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .wc{background:var(--bg-surface);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
   .wc:hover{transform:translateY(-3px);box-shadow:0 12px 24px -8px rgba(20,40,35,.12);border-color:rgba(172,196,182,.5)}
   .wc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:transform .25s ease}
   .wc:hover .wc-icon{transform:scale(1.08)}
@@ -120,7 +125,7 @@
   .chart-hl{font-family:var(--font-display);font-size:clamp(20px,2.4vw,28px);font-weight:650;color:var(--fg-heading);line-height:1.2;letter-spacing:-.03em;margin-bottom:16px}
   .chart-body{font-family:var(--font-body);font-size:15px;line-height:1.8;color:var(--navy)}
   .chart-body p+p{margin-top:12px}
-  .chart-wrap{position:relative;background:var(--off-white);border-radius:var(--radius-lg);border:1px solid rgba(172,196,182,.25);padding:16px;overflow:hidden}
+  .chart-wrap{position:relative;background:var(--off-white);border-radius:var(--radius-xl);border:1px solid rgba(172,196,182,.25);padding:16px;overflow:hidden}
   .chart-img{display:block;width:100%;height:auto;border-radius:6px;transition:transform .35s ease}
   .chart-source{font-family:var(--font-body);font-size:11px;color:var(--fg-2);margin-top:12px;text-align:right}
   .chart-zoom-trigger{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;position:relative;border-radius:6px;overflow:hidden;transition:box-shadow .2s ease}
@@ -158,10 +163,10 @@
   .how-visual{display:flex;flex-direction:column;gap:0}
   .how-title{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:14px}
   .how-steps{display:flex;flex-direction:column;gap:0}
-  .how-step{background:var(--bg-surface);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-lg);padding:18px 20px;display:flex;gap:14px;align-items:flex-start;position:relative}
+  .how-step{background:var(--bg-surface);border:1px solid rgba(172,196,182,.25);border-radius:var(--radius-xl);padding:18px 20px;display:flex;gap:14px;align-items:flex-start;position:relative}
   .how-step+.how-step{margin-top:-1px;border-radius:0}
-  .how-step:first-child{border-radius:var(--radius-lg) var(--radius-lg) 0 0}
-  .how-step:last-child{border-radius:0 0 var(--radius-lg) var(--radius-lg)}
+  .how-step:first-child{border-radius:var(--radius-xl) var(--radius-xl) 0 0}
+  .how-step:last-child{border-radius:0 0 var(--radius-xl) var(--radius-xl)}
   .how-step-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
   .how-step-icon svg{width:15px;height:15px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .hs-primer .how-step-icon{background:#D4EAE7;} .hs-primer .how-step-icon svg{stroke:#26605B;}
@@ -299,7 +304,7 @@
   html[data-session="out"] .lib-guest-note{display:block}
 
   /* ── SOURCES CALLOUT ── */
-  .sources-callout{margin-top:40px;border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-lg);overflow:hidden}
+  .sources-callout{margin-top:40px;border:1px solid rgba(172,196,182,.3);border-radius:var(--radius-xl);overflow:hidden}
   .sources-callout summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;cursor:pointer;list-style:none;background:var(--light-sage);transition:background .15s}
   .sources-callout summary::-webkit-details-marker{display:none}
   .sources-callout summary:hover{background:#D0DFDA}
@@ -483,7 +488,7 @@
 
 <section class="hero" id="overview">
   <svg class="hero-pattern" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
-    <g stroke="#5BA79F" stroke-width="1.2" fill="none">
+    <g class="hp-lines" stroke-width="1.2" fill="none">
       <line x1="60" y1="70" x2="190" y2="30"/>
       <line x1="190" y1="30" x2="340" y2="75"/>
       <line x1="340" y1="75" x2="500" y2="45"/>
@@ -503,28 +508,28 @@
       <line x1="410" y1="315" x2="535" y2="365"/>
     </g>
     <g>
-      <circle cx="60" cy="70" r="5" fill="#5BA79F"/>
-      <circle cx="190" cy="30" r="7" fill="#5BA79F"/>
-      <circle cx="340" cy="75" r="5" fill="#5BA79F"/>
-      <circle cx="500" cy="45" r="4" fill="#5BA79F"/>
-      <circle cx="130" cy="170" r="4" fill="#D9A05B"/>
-      <circle cx="290" cy="195" r="7" fill="#5BA79F"/>
-      <circle cx="450" cy="155" r="5" fill="#5BA79F"/>
-      <circle cx="555" cy="255" r="4" fill="#9A5636"/>
-      <circle cx="85" cy="300" r="5" fill="#5BA79F"/>
-      <circle cx="250" cy="335" r="4" fill="#5BA79F"/>
-      <circle cx="410" cy="315" r="6" fill="#5BA79F"/>
-      <circle cx="535" cy="365" r="3" fill="#D9A05B"/>
-      <circle cx="160" cy="95" r="2" fill="#5BA79F" opacity=".5"/>
-      <circle cx="390" cy="185" r="2.5" fill="#9A5636" opacity=".45"/>
-      <circle cx="230" cy="260" r="2" fill="#5BA79F" opacity=".5"/>
-      <circle cx="480" cy="290" r="2" fill="#5BA79F" opacity=".4"/>
-      <circle cx="50" cy="210" r="2" fill="#5BA79F" opacity=".45"/>
+      <circle cx="60" cy="70" r="5" class="hp-teal"/>
+      <circle cx="190" cy="30" r="7" class="hp-teal"/>
+      <circle cx="340" cy="75" r="5" class="hp-teal"/>
+      <circle cx="500" cy="45" r="4" class="hp-teal"/>
+      <circle cx="130" cy="170" r="4" class="hp-amber"/>
+      <circle cx="290" cy="195" r="7" class="hp-teal"/>
+      <circle cx="450" cy="155" r="5" class="hp-teal"/>
+      <circle cx="555" cy="255" r="4" class="hp-clay"/>
+      <circle cx="85" cy="300" r="5" class="hp-teal"/>
+      <circle cx="250" cy="335" r="4" class="hp-teal"/>
+      <circle cx="410" cy="315" r="6" class="hp-teal"/>
+      <circle cx="535" cy="365" r="3" class="hp-amber"/>
+      <circle cx="160" cy="95" r="2" class="hp-teal" opacity=".5"/>
+      <circle cx="390" cy="185" r="2.5" class="hp-clay" opacity=".45"/>
+      <circle cx="230" cy="260" r="2" class="hp-teal" opacity=".5"/>
+      <circle cx="480" cy="290" r="2" class="hp-teal" opacity=".4"/>
+      <circle cx="50" cy="210" r="2" class="hp-teal" opacity=".45"/>
     </g>
   </svg>
   <div class="hi">
     <p class="eyebrow">Future Skills Library</p>
-    <h1 class="hero-hl">The skills that always set people apart<br /><em>and don't get automated away.</em></h1>
+    <h1 class="hero-hl">The skills that always set people apart, and don't get automated away.</h1>
     <p class="hero-body">Analytical reasoning, creative judgment, systems awareness, resilience. This research-grounded library is built for the capabilities that have always mattered, and that AI has simply made harder to keep neglecting as it handles more of the rest.</p>
     <a class="hero-cta" href="#the-library">Browse the skills <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
   </div>

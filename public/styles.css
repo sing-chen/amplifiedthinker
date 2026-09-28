@@ -10,6 +10,9 @@
   --deep-teal:#26605B;--mid-teal:#26605B;--teal:#5BA79F;--sage:#ACC4B6;
   --light-sage:#D8E4DD;--off-white:#EEF2EF;--warm-cream:#EAD9C8;--charcoal:#2D3330;
   --navy:#1F4D4A;--warm-gray:#6E6D68;--terracotta:#8A4B2C;--terracotta-icon:#9A5636;
+  /* the ten skill pages each define --amber locally with this same value; this
+     is the shared copy, for the hero network patterns — a FILL, never text */
+  --amber:#D9A05B;
   --moss:#55643A;--moss-tint:#DCE3CC;
   --text-dark:#1F4D4A;--text-mid:#1F4D4A;--text-muted:#4A5C55;--white:#FFFFFF;
   --page-max:1100px;--col:680px;--radius:6px;--radius-lg:10px;--radius-xl:14px;
