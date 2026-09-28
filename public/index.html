@@ -116,7 +116,6 @@
   .explore{padding:48px 40px 88px;max-width:var(--page-max);margin:0 auto;
     --hue-skills:var(--deep-teal);--hue-people:var(--moss);--hue-news:var(--terracotta)}
   [data-theme="dark"] .explore{--hue-skills:#7FC4B8;--hue-people:#9BB577;--hue-news:var(--accent-warm-text)}
-  .tiles-kicker{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin:0 0 12px}
   .tiles-title{font-family:var(--font-editorial);font-size:clamp(22px,2.6vw,30px);font-weight:380;letter-spacing:-.024em;line-height:1.25;color:var(--fg-heading);margin:0 0 36px}
   /* editorial weight carries the standard +40 dark compensation */
   [data-theme="dark"] .tiles-title,[data-theme="dark"] .tile-title{font-weight:420}
@@ -165,6 +164,9 @@
     .explore-grid{grid-template-columns:1fr}
     .tile-skills{padding:30px 28px 28px}
     .hero-body,.explore{padding-left:20px;padding-right:20px}
+    /* the desktop 96px above and below is a band of empty pine on a phone,
+       and it kept the Explore heading below the first screen */
+    .hero-body{padding-top:48px;padding-bottom:56px}
     .site-footer{padding-left:20px;padding-right:20px}
   }
   @media(prefers-reduced-motion:reduce){
@@ -221,7 +223,6 @@
 </section>
 
 <section class="explore" aria-labelledby="explore-label">
-  <p class="tiles-kicker">Explore</p>
   <h2 class="tiles-title" id="explore-label">Skills to build. Thinkers worth knowing. News worth tracking.</h2>
   <!-- Each tile is one link, so its accessible name was the whole card, about
        40 words for Future Skills. aria-labelledby names it by eyebrow and
@@ -271,7 +272,7 @@
         <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </nav>
     </div>
-    <div class="fn">© <span id="yr"></span> Sing Chen · <a href="whats-new.html">What's New</a> · <a href="why-sign-up.html">Why Sign Up</a> · <a href="privacy.html">Privacy &amp; Cookies</a> · <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+    <div class="fn"><span class="fn-copy">© <span id="yr"></span> Sing Chen</span> <span class="fn-sep" aria-hidden="true">·</span> <a href="whats-new.html">What's New</a> <span class="fn-sep" aria-hidden="true">·</span> <a href="why-sign-up.html">Why Sign Up</a> <span class="fn-sep" aria-hidden="true">·</span> <a href="privacy.html">Privacy &amp; Cookies</a> <span class="fn-sep" aria-hidden="true">·</span> <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
   </div>
 </footer>
 

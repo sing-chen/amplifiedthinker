@@ -168,3 +168,14 @@ button,input,select,textarea{font-family:inherit}
 .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
 .fn a:hover{color:rgba(255,255,255,.85)}
 .fn a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
+/* The copyright line wraps on phones the same way the links above it do, and
+   it left a "·" at a line edge the same way. Same answer as .footer-sep: the
+   separators are spans so they can go, the copyright takes its own line, and
+   the links space themselves. .fn-copy exists because a flex container would
+   otherwise split "©", the year and the name into three items with gaps
+   between them. Scoped to .site-footer: search.html's .fn has no such spans. */
+@media (max-width:520px){
+  .site-footer .fn{display:flex;flex-wrap:wrap;column-gap:16px;row-gap:6px}
+  .site-footer .fn-copy{flex-basis:100%}
+  .site-footer .fn-sep{display:none}
+}
