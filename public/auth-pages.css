@@ -153,6 +153,9 @@
 
 .auth-panel h1 { font-size: 1.5rem; color: var(--fg-heading); margin-bottom: var(--space-2); }
 .auth-panel h2 { font-size: 1.2rem; color: var(--fg-heading); margin-bottom: var(--space-2); }
+/* Headings take focus from script after a form or panel swap, so the change is
+   announced and Tab resumes inside the form. Not interactive, so no ring. */
+.auth-panel h1[tabindex="-1"]:focus { outline: none; }
 .auth-lede { color: var(--fg-1); margin-bottom: var(--space-5); }
 .auth-muted { color: var(--fg-2); font-size: var(--fs-label); margin-bottom: var(--space-4); }
 
@@ -260,10 +263,13 @@
 .auth-field .auth-pw { margin-bottom: 0; }
 .auth-pw input { margin-bottom: 0; padding-right: 4.25rem; }
 
+/* ⚠️ min-height is WCAG 2.2's 24px target minimum. At 3px padding it
+   measured 44x21. top moved 9px -> 8px to keep it centred on the input. */
 .auth-pw-toggle {
   position: absolute;
-  top: 9px;
+  top: 8px;
   right: 6px;
+  min-height: 24px;
   padding: 3px 6px;
   background: none;
   border: none;
@@ -544,6 +550,11 @@
   text-decoration: underline;
 }
 .auth-link[hidden] { display: none; }
+/* ⚠️ The stacked switch buttons measured 15px tall with 8px between them, which
+   fails WCAG 2.2's 24px minimum and its spacing exception. Scoped to the switch
+   row: .auth-link also sits inline inside sentences (account-notes.js), where a
+   min-height would open up the line. */
+.auth-switch .auth-link { min-height: 24px; }
 
 .auth-field-row { display: flex; justify-content: space-between; gap: var(--space-3); align-items: baseline; }
 .auth-field-row dt { font-size: var(--fs-label); color: var(--fg-2); }
