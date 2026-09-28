@@ -52,7 +52,12 @@ const STAR_ICON_PATH = '<path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2
 const TITLE_CASE_LOWER = { and: 1, or: 1, of: 1, the: 1, in: 1, on: 1 };
 
 export const ARCHIVE_CUTOFF_DAYS = 7;
-export const BUCKET_ORDER = ['Today', 'Yesterday', 'This Week', 'Older'];
+// The fixed groups at the head of the list. Everything past ARCHIVE_CUTOFF_DAYS
+// is grouped by MONTH after these, newest month first — the month keys are
+// built from the stories present, not listed here. 'Older' is only the
+// fallback for a date that will not parse, so no story can fall out of the list.
+export const BUCKET_ORDER = ['Today', 'Yesterday', 'This Week'];
+const FALLBACK_BUCKET = 'Older';
 
 export function escapeHTML(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -119,12 +124,35 @@ export function daysAgo(iso, now) {
   return Math.round((today - d) / 86400000);
 }
 
-export function bucketKey(days) {
-  if (days === null) return 'Older';
+/* ⚠️ THE ARCHIVE IS GROUPED BY MONTH, and it used to be one group. Everything
+   older than a week sat under a single "Older stories" toggle, 106 rows by
+   2026-09-28 in a 320px column with nothing to scan by, growing ~30 a month.
+   A month key is 'YYYY-MM' from the story's own date — which is why this takes
+   `iso` as well as `days`: the age says WHETHER a story is archived, the date
+   says WHICH month. Same grouping whats-new.html uses. */
+export function bucketKey(days, iso) {
+  if (days === null) return FALLBACK_BUCKET;
   if (days <= 0) return 'Today';
   if (days === 1) return 'Yesterday';
   if (days < ARCHIVE_CUTOFF_DAYS) return 'This Week';
-  return 'Older';
+  return /^\d{4}-\d{2}/.test(iso || '') ? iso.slice(0, 7) : FALLBACK_BUCKET;
+}
+
+const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+  'August', 'September', 'October', 'November', 'December'];
+
+function isMonthKey(key) { return /^\d{4}-\d{2}$/.test(key); }
+
+// "August", or "August 2025" once it is not this year's — the year only where
+// leaving it out would be ambiguous. The headline prefixes drop the year to
+// save width, so this heading is what supplies it.
+function groupLabel(key, now) {
+  if (key === FALLBACK_BUCKET) return 'Older stories';
+  if (!isMonthKey(key)) return key;
+  const year = Number(key.slice(0, 4));
+  const month = MONTHS_LONG[Number(key.slice(5, 7)) - 1] || key;
+  const thisYear = (now ? new Date(now) : new Date()).getFullYear();
+  return year === thisYear ? month : month + ' ' + year;
 }
 
 /* ── URLs ────────────────────────────────────────────────────────────────────
@@ -190,22 +218,22 @@ export function expandedFor(stories, story) {
   if (!story) return null;
   const pinned = findPinned(stories);
   if (pinned && story.slug === pinned.slug) return newestGroup(stories, pinned);
-  const key = bucketKey(daysAgo(story.date));
+  const key = bucketKey(daysAgo(story.date), story.date);
   return key === 'Today' ? null : key;
 }
 
 // The group holding the most recent story other than the pinned one. By date,
 // not by position: nothing here should depend on the query's sort order.
 function newestGroup(stories, pinned) {
-  let newest = null;
+  let newest = null, newestDate = null;
   stories.forEach((s) => {
     if (pinned && s.slug === pinned.slug) return;
     const d = daysAgo(s.date);
     if (d === null) return;
-    if (newest === null || d < newest) newest = d;
+    if (newest === null || d < newest) { newest = d; newestDate = s.date; }
   });
   if (newest === null) return null;
-  const key = bucketKey(newest);
+  const key = bucketKey(newest, newestDate);
   return key === 'Today' ? null : key;
 }
 
@@ -372,29 +400,36 @@ export function headlineListHTML(stories, state) {
       mine.map((s) => headlineHTML(s, activeSlug, true)).join('')
     : '';
 
-  const buckets = { Today: '', Yesterday: '', 'This Week': '', Older: '' };
-  const counts = { Today: 0, Yesterday: 0, 'This Week': 0, Older: 0 };
+  const buckets = {};
+  const counts = {};
 
   stories.forEach((s) => {
     if (pinned && s.slug === pinned.slug) return;
     if (mineSet[s.slug]) return;          // already shown under Your pins
     if (!matchesFilter(s, state)) return;
-    const key = bucketKey(daysAgo(s.date, state.now));
-    buckets[key] += headlineHTML(s, activeSlug);
-    counts[key]++;
+    const key = bucketKey(daysAgo(s.date, state.now), s.date);
+    buckets[key] = (buckets[key] || '') + headlineHTML(s, activeSlug);
+    counts[key] = (counts[key] || 0) + 1;
   });
 
+  // The fixed head, then the months present newest first ('YYYY-MM' sorts as
+  // text), then the unparseable-date fallback if anything landed there.
+  const order = BUCKET_ORDER.concat(
+    Object.keys(counts).filter(isMonthKey).sort().reverse(),
+    [FALLBACK_BUCKET]
+  );
+
   let rest = '';
-  BUCKET_ORDER.forEach((key) => {
+  order.forEach((key) => {
     if (!counts[key]) return;
     if (key === 'Today') {
       rest += '<div class="headline-group-header">Today</div>' + buckets[key];
       return;
     }
     const expanded = state.expanded === key;
-    const label = key === 'Older' ? 'Older stories' : key;
+    const label = groupLabel(key, state.now);
     rest += '<div class="headline-archive' + (expanded ? ' expanded' : '') + '">' +
-      '<button type="button" class="headline-archive-toggle" data-group-toggle="' + key + '"' +
+      '<button type="button" class="headline-archive-toggle" data-group-toggle="' + escapeHTML(key) + '"' +
       ' aria-expanded="' + (expanded ? 'true' : 'false') + '">' +
       escapeHTML(label) + ' (' + counts[key] + ')' + icon(CHEVRON_ICON_PATH) + '</button>' +
       '<div class="headline-archive-body">' + buckets[key] + '</div>' +
