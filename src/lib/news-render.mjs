@@ -175,8 +175,13 @@ export function findPinned(stories) {
 
 /**
  * The one archive group to hold open: the group the given story sits in.
- * Today is never a collapsible group and the pinned story sits above them all,
- * so both resolve to null — nothing expanded.
+ * Today is never a collapsible group, so it resolves to null.
+ *
+ * ⚠️ The pinned story sits above every group, so "its group" means nothing —
+ * and it is what a fresh visit to /news/ shows. It used to resolve to null
+ * too, which collapsed EVERYTHING: a first-time reader saw one headline, and
+ * the newest stories sat hidden inside a closed "This Week" until they
+ * thought to open it. So the pinned story opens the newest group instead.
  *
  * Shared by NewsView.astro (first paint) and news-app.js (every swap) so the
  * server and the client cannot disagree about which group is open.
@@ -184,8 +189,23 @@ export function findPinned(stories) {
 export function expandedFor(stories, story) {
   if (!story) return null;
   const pinned = findPinned(stories);
-  if (pinned && story.slug === pinned.slug) return null;
+  if (pinned && story.slug === pinned.slug) return newestGroup(stories, pinned);
   const key = bucketKey(daysAgo(story.date));
+  return key === 'Today' ? null : key;
+}
+
+// The group holding the most recent story other than the pinned one. By date,
+// not by position: nothing here should depend on the query's sort order.
+function newestGroup(stories, pinned) {
+  let newest = null;
+  stories.forEach((s) => {
+    if (pinned && s.slug === pinned.slug) return;
+    const d = daysAgo(s.date);
+    if (d === null) return;
+    if (newest === null || d < newest) newest = d;
+  });
+  if (newest === null) return null;
+  const key = bucketKey(newest);
   return key === 'Today' ? null : key;
 }
 
