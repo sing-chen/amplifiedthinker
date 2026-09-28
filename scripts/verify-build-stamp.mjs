@@ -30,6 +30,15 @@ const ORIGINS = {
 function expectedSha() {
   const arg = process.argv[2];
   if (arg && /^[0-9a-f]{7,40}$/i.test(arg)) return arg.toLowerCase();
+  // ⚠️ Fetch first. origin/main is only as fresh as this clone's last fetch, so
+  // a push from anywhere else (another machine, a cloud session) left production
+  // AHEAD of the local ref and this reported a correct deploy as STALE. A failed
+  // fetch is a warning, not a stop: the stale ref is still the best guess offline.
+  try {
+    execSync('git fetch --quiet origin main', { stdio: ['ignore', 'ignore', 'pipe'] });
+  } catch {
+    console.log('⚠️  git fetch failed -- comparing against the last-fetched origin/main\n');
+  }
   try {
     // origin/main, not HEAD: this checks what production should be built from,
     // and a local branch is by definition not that.
