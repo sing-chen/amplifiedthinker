@@ -367,6 +367,11 @@
     '  .ssb-switcher { gap: 4px; }',
     '  .ssb-btn { padding: 4px 8px; font-size: 11px; }',
     '}',
+
+    /* Screen-reader-only text: the new-tab notice below. Here rather than in
+       styles.css because the ten skill pages do not load styles.css, and they
+       hold most of the site's new-tab links. */
+    '.snav-sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }',
   ].join('\n');
 
   /* ── Build nav HTML ──────────────────────────────────────────────────── */
@@ -1092,6 +1097,67 @@
     formatDate: formatDate
   };
 
+  /* ── "Opens in a new tab", said once, for every link that does ─────────
+     ⚠️ THIS IS THE ONE PLACE THE NOTICE COMES FROM. Do not add it by hand: a
+     hand-written notice is detected and left alone, but a second copy of the
+     logic would drift. Added 2026-09-28 after a review found over 70
+     target="_blank" links saying nothing about it — the plan resource tables
+     (which /add-skill copies), every News story's source link, the Future
+     Skills sources and citations, and the links My People builds by script —
+     with more arriving through /add-skill and /add-news. A rule each author
+     has to remember is exactly what those commands have drifted from before.
+
+     Three cases, so nothing is announced twice:
+       · the name already mentions a new tab (Goodreads, LinkedIn, the sign-in
+         "Open in a new tab") — left alone;
+       · the link has an aria-label — hidden text inside it would be ignored,
+         because the label wins, so the notice is appended to the label;
+       · otherwise a visually hidden span is appended to the link's content.
+     Marked with data-newtab so a link is never processed twice.
+
+     A MutationObserver on the whole body catches links that arrive later:
+     News swaps stories in place and My People builds its profile dialog on
+     click. It only reads the nodes that were added. */
+  var NEWTAB_TEXT = 'opens in a new tab';
+
+  function noteNewTab(a) {
+    if (a.hasAttribute('data-newtab')) return;
+    a.setAttribute('data-newtab', '');
+    var label = a.getAttribute('aria-label');
+    if (label !== null) {
+      if (!/new tab/i.test(label)) a.setAttribute('aria-label', label + ' (' + NEWTAB_TEXT + ')');
+      return;
+    }
+    if (a.hasAttribute('aria-labelledby') || /new tab/i.test(a.textContent || '')) return;
+    var sr = document.createElement('span');
+    sr.className = 'snav-sr-only';
+    sr.textContent = ' (' + NEWTAB_TEXT + ')';
+    a.appendChild(sr);
+  }
+
+  function noteNewTabsIn(root) {
+    if (!root || root.nodeType !== 1) return;
+    if (root.matches && root.matches('a[target="_blank"]')) noteNewTab(root);
+    var links = root.querySelectorAll ? root.querySelectorAll('a[target="_blank"]') : [];
+    for (var i = 0; i < links.length; i++) noteNewTab(links[i]);
+  }
+
+  function watchNewTabLinks() {
+    if (window.__snavNewTabInit) return;
+    window.__snavNewTabInit = true;
+    var scan = function () { noteNewTabsIn(document.body); };
+    // nav.js runs before the rest of <body> is parsed, so the full pass waits.
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan);
+    else scan();
+    if (typeof MutationObserver === 'undefined') return;
+    new MutationObserver(function (records) {
+      for (var i = 0; i < records.length; i++) {
+        var added = records[i].addedNodes;
+        for (var j = 0; j < added.length; j++) noteNewTabsIn(added[j]);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
   /* ── Entry point ─────────────────────────────────────────────────────── */
   function init() {
     injectNav();
@@ -1112,6 +1178,8 @@
     // Delegated, so it survives auth.js repainting the slot and the primer
     // bundle wiping the nav — neither of which this has to know about.
     watchSignInActivation();
+
+    watchNewTabLinks();
   }
 
   if (document.body) {

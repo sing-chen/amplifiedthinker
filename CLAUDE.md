@@ -268,6 +268,13 @@ their own copy until 2026-09-02, and one of them had stopped escaping quotes. A 
 calls that one; `src/lib/news-render.mjs` keeps its own because it runs on the server, and a dev
 specimen that mounts a script without loading `nav.js` has to inline `nav.js` first.
 
+**"Opens in a new tab" comes from `nav.js`, for every page.** Any `target="_blank"` link gets the
+notice added at runtime: a visually hidden span, or appended to its `aria-label` if it has one, and
+nothing if its name already says "new tab". A `MutationObserver` covers links added later (News story
+swaps, My People profiles). ⚠️ **Do not write the notice into new links by hand**, in `/add-skill`,
+`/add-news` or anywhere else. It would be skipped rather than doubled, but it is a second copy of a
+rule that already lives in one place. Added 2026-09-28, when a review found over 70 links without it.
+
 **Two kinds of path that look alike.** A file you read or write needs `public/`; a URL inside a page
 never does, because `public/` is stripped when served. `public/nav.js` is the file; `../../nav.js` is
 how a skill page references it.
