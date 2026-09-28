@@ -34,6 +34,17 @@
   .hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:20px;max-width:860px}
   .hero-hl em{color:var(--sage);font-style:normal;font-weight:400}
   .hero-body{font-family:var(--font-body);font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:860px}
+  /* The library is what this page is for, and it starts 2.6 screens down on
+     desktop and 5.6 on a phone, behind the argument for it. This is the one
+     way straight there from the top. Same pill as the homepage's hero CTA —
+     the hero is the same fixed pine band in both themes, so no dark variant.
+     scroll-margin-top on #the-library already clears the fixed page nav. */
+  .hero-cta{display:inline-flex;align-items:center;gap:9px;margin-top:26px;background:var(--sage);color:#0E1917;text-decoration:none;font-family:var(--font-display);font-size:14px;font-weight:650;letter-spacing:-.006em;padding:12px 21px 13px;border-radius:var(--radius-pill);box-shadow:0 10px 28px -12px rgba(0,0,0,.5);transition:transform .2s,background-color .15s}
+  .hero-cta svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  .hero-cta:hover{transform:translateY(-1px);background:#BDD4C6}
+  .hero-cta:hover svg{transform:translateY(2px)}
+  .hero-cta:focus-visible{outline:2px solid var(--off-white);outline-offset:3px}
+  @media(prefers-reduced-motion:reduce){.hero-cta,.hero-cta svg{transition:none}}
 
   /* ── SIGNAL BAR ── */
   .signal-bar{background:#163F39;border-bottom:1px solid rgba(255,255,255,.05);padding:0 40px}
@@ -468,6 +479,7 @@
     <p class="eyebrow">Future Skills Library</p>
     <h1 class="hero-hl">The skills that always set people apart<br /><em>and don't get automated away.</em></h1>
     <p class="hero-body">Analytical reasoning, creative judgment, systems awareness, resilience. This research-grounded library is built for the capabilities that have always mattered, and that AI has simply made harder to keep neglecting as it handles more of the rest.</p>
+    <a class="hero-cta" href="#the-library">Browse the skills <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
   </div>
 </section>
 
@@ -564,7 +576,7 @@
         </div>
         <div>
           <div class="wc-title">Immersion beats instruction</div>
-          <div class="wc-body">Skills applied in real work stick 3x faster than lecture-based learning. This library is designed for deliberate practice embedded in what you're already doing.</div>
+          <div class="wc-body">Skills practised in real work stick in a way that lecture-based learning rarely matches. This library is designed for deliberate practice embedded in what you're already doing.</div>
         </div>
       </div>
       <div class="wc wc-slate">
@@ -702,9 +714,14 @@
        which is the only way this stays honest: it is one of two places on the
        site where someone decides whether to sign up, and understating what an
        account does there is as much a defect as overstating it.
-       ⚠️ Still a live dependency. Notes and saved news are the next two things
-       to land; when either does, this sentence moves again. -->
-  <p class="lib-guest-note">Everything below is free to read, with or without an account. An account keeps your place, lets you mark a primer or plan complete, and shows how far you have got with every skill on one page. <a href="why-sign-up.html">Why sign up</a></p>
+       ⚠️ AND IT FIRED AGAIN, unnoticed for a month: notes on a primer or plan
+       shipped 2026-08-27 and this sentence did not move, though the line above
+       said it would. Caught 2026-09-28 by a page audit, not by the change that
+       made it wrong. Saved news also landed, but it is not a library feature, so
+       it stays out of a sentence about what is below.
+       ⚠️ Still a live dependency: the next account feature that touches primers
+       or plans moves this sentence, in the same commit. -->
+  <p class="lib-guest-note">Everything below is free to read, with or without an account. An account keeps your place, lets you mark a primer or plan complete, keeps your notes against the section you wrote them on, and shows how far you have got with every skill on one page. <a href="why-sign-up.html">Why sign up</a></p>
 
   <div class="filter-empty" id="filter-empty">No skills match this filter yet.</div>
 

@@ -750,8 +750,12 @@ becomes an understatement standing at the exact point where somebody decides whe
 **It must be rewritten in that same commit**, to say that an account also keeps a personalised
 view of progress across every skill. This is the same shape as the *"Never a newsletter"* trap in
 CLAUDE.md: copy that describes the limits of a system rots like a comment, and this one rots in the
-direction of underselling. A note sits in the markup beside the line; the grep is `find your place
-again`.
+direction of underselling. A note sits in the markup beside the line; the grep is
+`lib-guest-note` (it was `find your place again` until that wording went on 2026-08-21).
+⚠️ **It fired a second time and nobody moved it:** notes on a primer or plan shipped 2026-08-27 and
+the line kept listing only place, completion and progress until a page audit caught it on
+2026-09-28. A note in the markup did not stop that; the feature's own commit has to grep for this
+line.
 
 The Library section opens with an eyebrow, `Browse by skill`, and the category tabs — and then
 goes straight into the cards. That gap is the only place on the page where a guest and an account
