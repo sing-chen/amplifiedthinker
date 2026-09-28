@@ -30,8 +30,6 @@
   .eyebrow{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:14px}
   .hero-hl{font-family:var(--font-display);font-size:clamp(28px,3.4vw,44px);font-weight:700;color:var(--white);line-height:1.15;letter-spacing:-.034em;margin-bottom:20px;max-width:860px}
   .hero-body{font-family:var(--font-body);font-size:16px;line-height:1.75;color:rgba(255,255,255,.84);max-width:640px}
-  .hero-hint{display:inline-flex;align-items:center;gap:7px;margin-top:22px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--sage);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:var(--radius-pill)}
-  .hero-hint svg{width:15px;height:15px;flex-shrink:0}
 
   /* ── PEOPLE SECTION ── */
   .people-section{padding:52px 40px 90px;max-width:var(--page-max);margin:0 auto}
@@ -50,14 +48,32 @@
   .bento-standard .bento-tile{height:200px}
   .bento-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .4s cubic-bezier(.2,.7,.3,1)}
   .bento-tile:hover img{transform:scale(1.06)}
-  @media (prefers-reduced-motion:reduce){.bento-tile img,.bento-tile,.work-cover-img{transition:none}.bento-tile:hover img{transform:none}.work-cover-card:hover .work-cover-img{transform:none}}
+  @media (prefers-reduced-motion:reduce){.bento-tile img,.bento-tile,.work-cover-img{transition:none}.bento-tile:hover img{transform:none}.work-cover-card:hover .work-cover-img{transform:none}.bento-more svg{transition:none}}
   .bento-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,18,16,.82) 100%);z-index:1}
+  /* The small tiles' text block reaches 74px down a 200px tile now the "Read
+     the story" cue sits under it — into the clear top third of the gradient
+     above, where a pale photo (Brené Brown's) left the name faint. So the
+     darkening starts higher here; the faces sit above it. Measured at the
+     WORST pixel behind the name, quote and cue on all six photos: the old
+     gradient fell to 1.29:1 on Brené Brown's at the new text height, a .58
+     middle stop reached 4.08:1 (short of AA for 14px), .66 gives 5.25:1
+     minimum. The featured row moved up too: Vanessa Van Edwards's pale
+     backdrop left her 20px name at 2.60:1 under the old gradient, 6.45:1
+     under its own below (Simon Sinek 4.67 -> 8.29).
+     Re-measure if a photo changes — a paler one lowers the floor. */
+  .bento-standard .bento-tile::before{background:linear-gradient(180deg,transparent 18%,rgba(10,18,16,.66) 46%,rgba(10,18,16,.9) 100%)}
+  .bento-featured .bento-tile::before{background:linear-gradient(180deg,transparent 30%,rgba(10,18,16,.62) 55%,rgba(10,18,16,.9) 100%)}
   .bento-tile-body{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;z-index:2;color:#fff;text-align:left}
   .bento-tile.large .bento-tile-body{padding:22px 24px}
   .bento-name{display:block;font-family:var(--font-display);letter-spacing:-.006em;font-weight:600;font-size:14px;margin-bottom:6px;line-height:1.25}
   .bento-tile.large .bento-name{font-size:20px;margin-bottom:8px}
   .bento-quote{font-family:var(--font-body);font-size:11px;font-style:italic;color:rgba(255,255,255,.85);margin-top:7px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .bento-tile.large .bento-quote{margin-top:10px;font-size:13.5px;-webkit-line-clamp:3}
+  /* sits on the tile's dark gradient in both themes, like the name above it */
+  .bento-more{display:inline-flex;align-items:center;gap:6px;margin-top:9px;font-family:var(--font-display);font-size:12px;font-weight:650;letter-spacing:.01em;color:var(--sage)}
+  .bento-tile.large .bento-more{margin-top:12px;font-size:13px}
+  .bento-more svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+  .bento-tile:hover .bento-more svg,.bento-tile:focus-visible .bento-more svg{transform:translateX(3px)}
   .bento-tile:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
   @media(max-width:820px){.bento-standard{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:520px){.bento-featured{grid-template-columns:1fr}.bento-standard{grid-template-columns:1fr}}
@@ -90,17 +106,17 @@
   .pname{font-family:var(--font-display);letter-spacing:-.014em;font-size:19px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-top:0;margin-bottom:8px}
   .ppills{margin-bottom:8px}
   .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--fg-brand);text-decoration:none;margin-top:10px}
-  .pext-link:hover{color:#26605B;text-decoration:underline}
+  .pext-link:hover{color:var(--deep-teal);text-decoration:underline}
   .pext-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:2px}
   .pext-link svg{width:13px;height:13px;flex-shrink:0;opacity:.7}
 
   /* ── PERSONAL ANNOTATION ── */
-  .pannotation{font-family:var(--font-body);font-size:13.5px;font-weight:500;line-height:1.6;color:#26605B;margin:16px 0 14px;padding-bottom:14px;border-bottom:1px solid rgba(172,196,182,.3)}
+  .pannotation{font-family:var(--font-body);font-size:13.5px;font-weight:500;line-height:1.6;color:var(--deep-teal);margin:16px 0 14px;padding-bottom:14px;border-bottom:1px solid rgba(172,196,182,.3)}
 
   /* ── QUOTE ── */
   .pquote{margin:0 0 16px;padding:0}
-  .pquote-mark{font-family:var(--font-display);font-size:44px;font-weight:700;line-height:1;color:#ACC4B6;display:block;margin-bottom:-10px;user-select:none}
-  .pquote-text{font-family:var(--font-body);font-size:13.5px;font-style:italic;line-height:1.6;color:#1F4D4A}
+  .pquote-mark{font-family:var(--font-display);font-size:44px;font-weight:700;line-height:1;color:var(--sage);display:block;margin-bottom:-10px;user-select:none}
+  .pquote-text{font-family:var(--font-body);font-size:13.5px;font-style:italic;line-height:1.6;color:var(--navy)}
   .pquote-source{font-family:var(--font-display);font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:6px}
 
   /* description */
@@ -149,7 +165,9 @@
   [data-theme="dark"] .pp-ai{background:#332712;color:#D9BB6E}
 
   [data-theme="dark"] .pext-link:hover{color:var(--sage)}
-  [data-theme="dark"] .pannotation{color:var(--teal);border-bottom-color:var(--line)}
+  /* --fg-brand, not --teal: --teal is a fill, and design rule 4 retired it as
+     text. It passed here (5.09:1), but it was the one text use left on the page */
+  [data-theme="dark"] .pannotation{color:var(--fg-brand);border-bottom-color:var(--line)}
   [data-theme="dark"] .pquote-text{color:var(--fg-heading)}
   [data-theme="dark"] .pquote-source{color:var(--fg-2)}
   [data-theme="dark"] .pdesc{color:var(--fg-1)}
@@ -207,7 +225,6 @@
     <p class="eyebrow">Virtual Roundtable</p>
     <h1 class="hero-hl">My People</h1>
     <p class="hero-body">The thinkers, coaches, and practitioners I return to — my virtual board of advisors. Each of them sharpens a different dimension of how I think and operate.</p>
-    <p class="hero-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9V4.5a1.5 1.5 0 0 1 3 0V9"/><path d="M12 9V3.5a1.5 1.5 0 0 1 3 0V9"/><path d="M15 9.5V5.5a1.5 1.5 0 0 1 3 0V12"/><path d="M6 12v-2a1.5 1.5 0 0 1 3 0v1"/><path d="M18 12v3c0 3.5-2 6-6 6s-6.5-1.5-8-4l-1.5-3a1.5 1.5 0 0 1 2.7-1.3L6 15"/></svg>Click on anyone's photo to read the full story</p>
   </div>
 </section>
 
@@ -285,7 +302,7 @@
       url: 'https://simonsinek.com',
       urlDisplay: 'simonsinek.com',
       large: true,
-      annotation: "Sinek's work reframed how I view leadership. Does someone feel safe enough to say what they actually think before a decision locks in, not just whether they nod along afterward? Do they have the right environment to operate at their natural best? That shows up in how you run meetings, how you handle disagreement, and how far out you think about consequences before committing to something. Empathy and long-term thinking used to feel like traits some leaders happened to have, they have changed the way I think about work.",
+      annotation: "Sinek's work reframed how I view leadership. Does someone feel safe enough to say what they actually think before a decision locks in, not just whether they nod along afterward? Do they have the right environment to operate at their natural best? That shows up in how you run meetings, how you handle disagreement, and how far out you think about consequences before committing to something. Empathy and long-term thinking used to feel like traits some leaders happened to have. They have changed the way I think about work.",
       quoteText: "People don't buy what you do; they buy why you do it.",
       quoteSource: 'Start With Why',
       description: 'Simon Sinek is a prominent figure in the fields of leadership, motivation, and organisational culture. He is renowned for his groundbreaking Golden Circle concept — his theory that individuals and organisations who inspire genuine action do so by starting with "why": their purpose, cause, or belief.',
@@ -342,7 +359,7 @@
       imagePosition: 'center 7%',
       url: 'https://adamgrant.net',
       urlDisplay: 'adamgrant.net',
-      annotation: "Grant challenges assumptions before I even notice I'm carrying them. Think Again is the book I come back to again and again; its more like a manual for staying intellectually honest with myself. Rethinking a position used to feel like a loss, evidence that the first take was wrong. Now it reads like the thing that separates someone building an accurate picture from someone just defending an earlier one.",
+      annotation: "Grant challenges assumptions before I even notice I'm carrying them. Think Again is the book I come back to again and again; it's more like a manual for staying intellectually honest with myself. Rethinking a position used to feel like a loss, evidence that the first take was wrong. Now it reads like the thing that separates someone building an accurate picture from someone just defending an earlier one.",
       quoteText: "If knowledge is power, knowing what we don't know is wisdom.",
       quoteSource: 'Think Again',
       description: 'Adam Grant is an organisational psychologist, bestselling author, and professor at the Wharton School. His research challenges conventional thinking on motivation, generosity, and how we form and revise our beliefs — exploring what drives people to perform, contribute, and change their minds.',
@@ -379,7 +396,7 @@
       imageAlt: 'Shade Zahrai',
       url: 'https://www.shadezahrai.com',
       urlDisplay: 'shadezahrai.com',
-      annotation: 'Her research targets the internal aspect of influence before having you focus on the external, emphasising trust-building and self-awareness. Her material treating both as trainable skills, not fixed traits, opened my mind to what is possible.',
+      annotation: 'Her research targets the internal aspect of influence before having you focus on the external, emphasising trust-building and self-awareness. Her material treats both as trainable skills, not fixed traits, opened my mind to what is possible.',
       quoteText: "Stepping outside your comfort zone doesn't mean you become immunized to pain.",
       quoteSource: 'Big Trust',
       description: "A renowned leadership consultant, author, and speaker, Shade's expertise lies in developing authentic leadership practices, empowering employees, fostering a positive work culture, navigating complex business challenges, and promoting personal and professional well-being.",
@@ -413,7 +430,7 @@
       imageAlt: 'Cal Newport',
       url: 'https://calnewport.com',
       urlDisplay: 'calnewport.com',
-      annotation: "Deep work sounds like a personal discipline problem until you watch it fail at the team level. Someone blocks focus time and still gets pulled into three conversations  because the system around them wasn't built to protect it. Newport's argument that stuck with me is that attention is structural, not just willpower. A calendar full of open-door meetings and instant-response norms will beat anyone's discipline eventually. The fix isn't a personal productivity hack. It's redesigning the conditions people are trying to focus inside of.",
+      annotation: "Deep work sounds like a personal discipline problem until you watch it fail at the team level. Someone blocks focus time and still gets pulled into three conversations because the system around them wasn't built to protect it. Newport's argument that stuck with me is that attention is structural, not just willpower. A calendar full of open-door meetings and instant-response norms will beat anyone's discipline eventually. The fix isn't a personal productivity hack. It's redesigning the conditions people are trying to focus inside of.",
       quoteText: 'Who you are, what you think, feel, and do, what you love — is the sum of what you focus on.',
       quoteSource: 'Deep Work',
       description: 'Cal Newport is a computer science professor, author, and one of the most compelling voices on how to do meaningful work in a world designed for distraction. His writing makes the case for depth over constant connectivity, and for building a professional life around focused effort rather than busyness.',
@@ -442,6 +459,11 @@
         '<span class="bento-name">' + escapeHTML(p.name) + '</span>' +
         '<span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span>' +
         '<span class="bento-quote">&ldquo;' + escapeHTML(p.quoteText) + '&rdquo;</span>' +
+        // The tile's own affordance. It replaced a hero line telling readers
+        // to "click" a photo, which was wrong on a phone and only needed
+        // because nothing on the tile said it opened anything. The button's
+        // aria-label already names the action, so this is not read twice.
+        '<span class="bento-more" aria-hidden="true">Read the story <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>' +
       '</span>' +
       '</button>';
   }
