@@ -30,6 +30,12 @@
      but means a different thing. */
   --accent-warm-text:var(--terracotta);
   --line-soft:rgba(45,51,48,.08);--line:rgba(45,51,48,.14);--line-strong:rgba(45,51,48,.24);
+  /* The site footer's ground (2026-09-28, design piece 15). It was
+     --charcoal, the only neutral grey on a green site, and in dark it sat
+     LIGHTER than the page above it. Light: the hero's deepest pine stop.
+     Dark: below --bg-page, so the page ends darker, not paler. Its own token
+     because --charcoal is also --fg-1 and cannot move. */
+  --bg-footer:#122E2A;
 
   /* ── Status colors — all re-checked at 4.5:1+ against --bg-page/white ── */
   --status-ok:#26605B;--status-warn:#7D5F17;--status-error:#8A4B2C;--status-info:#3D5A99;
@@ -96,6 +102,7 @@
   --accent-warm:#C97A4A;--accent-cool:var(--teal);--accent-support:#8AA35E;
   --accent-warm-text:#E7A57C;
   --line-soft:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--line-strong:rgba(255,255,255,.22);
+  --bg-footer:#0E1917;
   --status-ok:#4FA89E;--status-warn:#D1A73B;--status-error:#C97A4A;--status-info:#7C9CD1;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -148,7 +155,7 @@ button,input,select,textarea{font-family:inherit}
    Values are the index.html originals, unchanged. Responsive padding stays in
    each page: the breakpoints genuinely differ (700px on the wide pages, 640px
    on the document pages), so there is no one rule to share. ───────────────── */
-.site-footer{background:var(--charcoal);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
+.site-footer{background:var(--bg-footer);padding:32px 40px;border-top:1px solid rgba(255,255,255,.06)}
 .fi{max-width:var(--page-max);margin:0 auto}
 .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .footer-tagline{font-family:var(--font-display);font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.02em}

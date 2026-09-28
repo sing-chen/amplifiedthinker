@@ -35,7 +35,8 @@ position it does not have.
 | 11 | The two-tone wordmark | 2026-08-28 | `1b987ba` |
 | 12 | Asymmetric tiles — Future Skills leads | 2026-09-28 | `929d473` |
 | 13 | Coming-soon affordance, label contrast, type floor, field edges | 2026-09-28 | `a3d2178` |
-| 14 | Home: the announce card never empties, a larger and shorter intro | 2026-09-28 | this commit |
+| 14 | Home: the announce card never empties, a larger and shorter intro | 2026-09-28 | `80e8307` |
+| 15 | The footer leaves charcoal for pine, darker than the page in dark | 2026-09-28 | this commit |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Pieces 9–11 were built on `feat/amplitude` and merged to `main` on 2026-08-28. ⚠️ Remaining
@@ -479,7 +480,7 @@ separators, the decorative quote mark on My People, and the nav wordmark's "Thin
 
 ---
 
-## Piece 14 — the announce card's empty state, and the hero intro (2026-09-28)
+## Piece 14 — the announce card's empty state, and the hero intro (landed 2026-09-28, `80e8307`)
 
 `public/index.html` only. From a second `taste-skill` pass on the homepage, same day as piece 12.
 
@@ -503,6 +504,29 @@ Checked and deliberately left: the lead tile's open space (piece 12), the tile e
 the lamp and entrance (piece 10), and the card's grid binding, which leaves a short single item
 with empty glass below it. Normal-length items fill it. The footer's `--charcoal` against the
 pine page was raised as a site-wide decision and is not part of this piece.
+
+---
+
+## Piece 15 — the footer ground (2026-09-28)
+
+`public/styles.css` only, reaching the 12 surfaces that carry `.site-footer`: the eight hand-written
+pages and, through BaseLayout, sign-in, account, learning and News. Raised by piece 14's review and
+decided by the owner from a four-way comparison on two pages in both themes.
+
+- **New token `--bg-footer`: `#122E2A` light, `#0E1917` dark.** The footer was `--charcoal`, the
+  only neutral grey on a green site, and in dark it sat LIGHTER than the page (1.26:1 above
+  `#142320`), so every page ended on a paler band. Light now takes the hero's deepest pine stop, so
+  the homepage starts and ends on the same colour. Dark now sits below the page.
+- ⚠️ **`--charcoal` did not move and must not.** It is also `--fg-1`, the light body text colour.
+  That is why the footer has a token of its own rather than a new value for the old one.
+- **No text colour changed.** The smallest footer text (55% white) measures 5.42:1 light and
+  6.10:1 dark, up from 5.08:1. The nav's `#1B4A44` was rejected for this: it drops that text to
+  4.26:1, and it would need brightening.
+- `search.html`'s `.search-footer` keeps its own fixed `#1B4A44`, matched to its own hero. Checked
+  unchanged in both themes.
+
+Verification: computed background and the lowest text contrast read on all 12 pages plus Search,
+in both themes. Production eye pass still owed.
 
 ---
 
