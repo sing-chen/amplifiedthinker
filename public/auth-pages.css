@@ -241,16 +241,16 @@
 }
 .auth-panel input:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 1px; }
 
-/* ⚠️ PLACEHOLDERS CARRY HELP TEXT HERE, SO A CLIPPED ONE IS A SENTENCE THAT
- * STOPS MID-WORD. Every placeholder on these forms was measured against the
- * field's inner width at a 375px viewport and shortened until it fits — three
- * of them did not, and only measuring found it. Below about 340px the longest
- * still run out of room, and this makes that read as truncation rather than as
- * the end of the sentence.
+/* ⚠️ PLACEHOLDERS ARE BARE FIELD NAMES, AND HELP TEXT GOES IN AN .auth-hint
+ * LINE. From 2026-08-27 to 2026-09-28 the sign-up placeholders carried the help
+ * text, and all three were clipped mid-word at 375px and below. The numbers
+ * this comment used to quote (~283px of room at 375px) predate the field icons,
+ * whose 2.5rem padding-left took 40px of it. Measured at 360px: 208px of text
+ * room in a plain field and 152px in a password field, since the Show button
+ * takes 4.25rem on the right. "Email — confirmations and resets" needs 236px.
  *
- * ⚠️ If you lengthen a placeholder, measure it. The password fields have
- * ~227px of usable width at 375px, not the ~283px the others get, because the
- * Show button takes 4.25rem of padding-right. */
+ * ⚠️ If a placeholder grows past a single word or two, measure it at 360px.
+ * The ellipsis only makes overflow read as truncation; it fits nothing. */
 .auth-panel input::placeholder { text-overflow: ellipsis; }
 
 /* Reveal control for password fields.
@@ -284,6 +284,12 @@
 .auth-pw-toggle:focus-visible { outline: 2px solid var(--fg-brand); outline-offset: 1px; }
 
 .auth-hint { font-size: 12px; color: var(--fg-2); margin: -12px 0 var(--space-4); }
+/* ⚠️ Links in a hint or the summary footer had NO colour rule, so they wore
+   the browser's default #0000EE, and visited purple after a click. Found
+   2026-09-28 on the sign-up terms line. .auth-blocked a, further down, stays
+   the error colour because it comes later at the same specificity. */
+.auth-hint a,
+.auth-summary-foot a { color: var(--fg-brand); }
 
 /* ── Consent checkbox ──────────────────────────────────────────────────────
    Used by the sign-up form on /sign-in/ and the preference toggle on

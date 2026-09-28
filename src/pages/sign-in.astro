@@ -100,22 +100,27 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           <div class="auth-field">
             <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
             <input type="text" id="auth-name" autocomplete="given-name" maxlength="60"
-                   placeholder="First name &mdash; so emails greet you" />
+                   placeholder="First name" />
           </div>
+          <p class="auth-hint" id="auth-name-hint">So emails greet you</p>
         </div>
 
         <label class="auth-label-hidden" for="auth-email">Email</label>
         <div class="auth-field">
           <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
           <input type="email" id="auth-email" autocomplete="username" required
-                 placeholder="Email &mdash; confirmations and resets" />
+                 placeholder="Email" />
         </div>
+        <p class="auth-hint" id="auth-email-hint" hidden>For confirmations and resets</p>
         <!--
-          ⚠️ THIS LINE IS GONE, AND ITS CONTENT IS IN THE FIELD'S PLACEHOLDER.
-          It read "Sign-up confirmation and password resets. Anything else is
-          opt-in." The first half is now "Email — confirmations and resets"; the
-          second half is carried by the tickbox below it, which says what the
-          only other message is and that it is off unless you ask.
+          ⚠️ THE HINT ABOVE IS BACK OUT OF THE PLACEHOLDER, 2026-09-28. From
+          2026-08-27 it lived there as "Email — confirmations and resets", which
+          measured 236px against 208px of room at a 360px viewport: the promise
+          was cut off mid-word on most phones, and vanished as soon as anyone
+          typed. A hint line fits at any width and stays on screen. Sign-up only,
+          toggled by setMode(). "Anything else is opt-in" is carried by the
+          tickbox below, which says what the only other message is and that it
+          is off unless you ask.
 
           The history below is kept because the line has been wrong once before
           and the reasoning is what stops it going wrong again.
@@ -143,18 +148,20 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <span class="auth-field-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
             <div class="auth-pw">
               <input type="password" id="auth-password" autocomplete="current-password"
-                     required minlength="8" placeholder="Password &mdash; 8+ characters" />
+                     required minlength="8" placeholder="Password" />
               <button type="button" class="auth-pw-toggle" data-pw-for="auth-password"
                       aria-pressed="false" aria-label="Show password">Show</button>
             </div>
           </div>
           <!--
-            ⚠️ THE HINT ELEMENT IS GONE, NOT EMPTIED. The placeholder carries the
-            length rule, and the breach check now explains itself in its own
-            rejection — see message() in public/pwned.js for why that is the
-            right place for it. Nothing is left for a standing hint to say here.
-            setMode() no longer toggles anything for this field.
+            ⚠️ Sign-up only, toggled by setMode(). Between 2026-08-27 and
+            2026-09-28 the length rule lived in the placeholder instead, where it
+            was clipped to "8+ character" on phones — the password field has the
+            least room of the three, because the Show button takes its right
+            side. The breach check still explains itself in its own rejection;
+            see message() in public/pwned.js.
           -->
+          <p class="auth-hint" id="auth-password-hint" hidden>8+ characters</p>
         </div>
 
         <!--
@@ -781,13 +788,25 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       // screen-reader user hears which box to fix rather than only that one
       // exists. Cleared on the next attempt so a corrected field is not still
       // announced as wrong.
+      //
+      // ⚠️ THE DESCRIPTION IS THE FIELD'S HINT PLUS THE ERROR, NEVER THE ERROR
+      // ALONE. On sign-up each field has a hint line, and aria-describedby reads
+      // a referenced element EVEN WHEN IT IS HIDDEN — so the hint is attached
+      // per mode by setMode(), recorded in data-hint, and restored from there.
+      // Overwriting the attribute would drop the hint the first time anyone
+      // got a field wrong; removing it outright would drop it for good.
+      function describe(input, extra) {
+        var ids = [input.getAttribute('data-hint'), extra].filter(Boolean).join(' ');
+        if (ids) input.setAttribute('aria-describedby', ids);
+        else input.removeAttribute('aria-describedby');
+      }
       function fieldError(id, text) {
         clearFieldErrors();
         var input = el(id);
         setStatus(text, 'bad');
         if (!input) return;
         input.setAttribute('aria-invalid', 'true');
-        input.setAttribute('aria-describedby', 'auth-status');
+        describe(input, 'auth-status');
         try { input.focus({ preventScroll: false }); } catch (e) { input.focus(); }
       }
       function clearFieldErrors() {
@@ -795,7 +814,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           var input = el(id);
           if (!input) return;
           input.removeAttribute('aria-invalid');
-          input.removeAttribute('aria-describedby');
+          describe(input);
         });
       }
 
@@ -959,25 +978,29 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         el('auth-password-row').hidden = isForgot;
         el('auth-password').required = !isForgot;
         el('auth-password').autocomplete = isSignup ? 'new-password' : 'current-password';
-        // ⚠️ THE PLACEHOLDER IS A RULE FOR CHOOSING A PASSWORD, SO IT ONLY
+        // ⚠️ THE PASSWORD HINT IS A RULE FOR CHOOSING A PASSWORD, SO IT ONLY
         // BELONGS WHERE ONE IS BEING CHOSEN. On the sign-in form you are typing
-        // a password you already have, and "at least 8 characters" reads either
-        // as a demand or as a hint that your existing password might not
-        // qualify. Same field, two jobs.
-        el('auth-password').placeholder = isSignup
-          ? 'Password — 8+ characters'
-          : 'Password';
-
-        // ⚠️ SAME ARGUMENT, AND IT IS THE REASON THIS SUFFIX EXISTS AT ALL.
-        // "confirmations and resets" is a promise about what will be sent to an
-        // address you are handing over, so it belongs at the moment you hand it
-        // over and nowhere else. On the sign-in form the account already exists
-        // and the mail has already been agreed to; on the reset form the field
-        // identifies you rather than collecting anything. In both, the promise
-        // is answering a question that was settled at sign-up.
-        el('auth-email').placeholder = isSignup
-          ? 'Email — confirmations and resets'
-          : 'Email';
+        // a password you already have, and "8+ characters" reads either as a
+        // demand or as a hint that your existing password might not qualify.
+        // Same field, two jobs.
+        //
+        // ⚠️ SAME ARGUMENT FOR THE EMAIL HINT. "For confirmations and resets"
+        // is a promise about what will be sent to an address you are handing
+        // over, so it belongs at the moment you hand it over and nowhere else.
+        // On the sign-in form the mail was agreed to at sign-up; on the reset
+        // form the field identifies you rather than collecting anything.
+        //
+        // Each hint is shown AND attached to its field's description together,
+        // because a hidden element is still read out when referenced.
+        [['auth-name', 'auth-name-hint'],
+         ['auth-email', 'auth-email-hint'],
+         ['auth-password', 'auth-password-hint']].forEach(function (pair) {
+          el(pair[1]).hidden = !isSignup;
+          if (isSignup) el(pair[0]).setAttribute('data-hint', pair[1]);
+          else el(pair[0]).removeAttribute('data-hint');
+          el(pair[0]).removeAttribute('aria-invalid');
+          describe(el(pair[0]));
+        });
 
         el('auth-to-signup').hidden = isSignup;
         el('auth-to-signin').hidden = !isSignup && !isForgot;
