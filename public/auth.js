@@ -147,7 +147,9 @@
 
     slot.innerHTML =
       '<button type="button" class="snav-auth-avatar" id="snav-auth-avatar"' +
-      ' aria-expanded="false"' +
+      ' aria-expanded="false" aria-haspopup="true" aria-controls="snav-auth-menu"' +
+      // Same spoken name nav.js paints, from the same helper. See accountLabel.
+      ' aria-label="' + escapeAttr(n.accountLabel(n.labelFor(name, email()))) + '"' +
       ' title="' + escapeAttr(n.labelFor(name, email())) + '">' +
       escapeHtml(n.initialFor(name, email())) + '</button>' +
       '<div class="snav-auth-menu" id="snav-auth-menu" hidden>' +
@@ -207,6 +209,18 @@
         var a = global.document.getElementById('snav-auth-avatar');
         if (a) { a.setAttribute('aria-expanded', 'false'); a.focus(); }
       }
+    });
+
+    // Close when focus leaves the menu. Tabbing past "Sign out" used to leave
+    // it open over the page with focus somewhere behind it. No focus move:
+    // the reader is already going where they meant to.
+    global.document.addEventListener('focusin', function (e) {
+      var menu = global.document.getElementById('snav-auth-menu');
+      if (!menu || menu.hasAttribute('hidden')) return;
+      if (e.target.closest && e.target.closest('.snav-auth')) return;
+      menu.setAttribute('hidden', '');
+      var a = global.document.getElementById('snav-auth-avatar');
+      if (a) a.setAttribute('aria-expanded', 'false');
     });
 
     // nav.js re-injects the whole nav if the Primer bundle wipes it, which

@@ -113,7 +113,10 @@
     '}',
     '#site-nav a { text-decoration: none; }',
     '.snav-brand { margin-right: auto; line-height: 1; text-decoration: none; display: flex; align-items: center; gap: 0px; }',
-    '.snav-brand-logo { display: block; width: 75px; height: 75px; object-fit: contain; flex-shrink: 0; }',
+    /* The 75px logo overhangs the 56px bar on purpose; the negative margin keeps
+       the LINK box inside the bar. Without it the link was 75px tall, so its
+       focus ring lost its top edge off-screen and spilled into the page. */
+    '.snav-brand-logo { display: block; width: 75px; height: 75px; margin: -10px 0; object-fit: contain; flex-shrink: 0; }',
     '.snav-brand-text { display: flex; flex-direction: column; gap: 2px; }',
     /* Two-tone wordmark: "Amplified" heavy against "Thinker" light — the
        site's weight-spread gesture applied to its own name. The 700/300 pair
@@ -314,7 +317,11 @@
     '.ssb-btn.ssb-btn-active { background: #26605B; border-color: transparent; color: #fff; }',
 
     /* Focus styles for injected nav elements */
-    '#site-nav a:focus-visible, .ssb-btn:focus-visible, .snav-toggle:focus-visible, .snav-search:focus-visible, .snav-auth-avatar:focus-visible, .snav-auth-menu button:focus-visible {',
+    /* ⚠️ Every focusable thing in the two bars belongs in this list. The theme
+       toggle and the skill bar's back link were missing, fell back to the
+       site-wide #26605B ring, and measured 1.38:1 and 1.59:1 against the bars:
+       a focus ring you could barely see. Found 2026-09-28. */
+    '#site-nav a:focus-visible, #site-skill-bar a:focus-visible, .ssb-btn:focus-visible, .snav-toggle:focus-visible, .snav-search:focus-visible, .snav-theme-toggle:focus-visible, .snav-auth-avatar:focus-visible, .snav-auth-menu button:focus-visible {',
     '  outline: 2px solid #ACC4B6;',
     '  outline-offset: 3px;',
     '  border-radius: 4px;',
@@ -324,7 +331,7 @@
     '@media (max-width: 768px) {',
     '  #site-nav { padding: 0 16px; }',
     '  .snav-brand-tag { display: none; }',
-    '  .snav-brand-logo { width: 36px; height: 36px; }',
+    '  .snav-brand-logo { width: 36px; height: 36px; margin: 0; }',
     '  .snav-toggle { display: flex; }',
     '  .snav-links {',
     '    display: none;',
@@ -364,7 +371,9 @@
 
   /* ── Build nav HTML ──────────────────────────────────────────────────── */
   function link(href, label, key) {
-    var cls = activePage === key ? ' class="snav-active"' : '';
+    // aria-current as well as the class: the pill was the only sign of the
+    // current page, and a screen reader cannot see a pill.
+    var cls = activePage === key ? ' class="snav-active" aria-current="page"' : '';
     return '<li><a href="' + root(href) + '"' + cls + '>' + label + '</a></li>';
   }
 
@@ -372,7 +381,7 @@
   var navHTML = [
     '<nav id="site-nav" role="navigation" aria-label="Site navigation">',
     '  <a href="' + root('index.html') + '" class="snav-brand">',
-    '    <img src="' + root('images/amplified_site_logo.png') + '" alt="Amplified Thinker" class="snav-brand-logo" width="36" height="36">',
+    '    <img src="' + root('images/amplified_site_logo.png') + '" alt="" class="snav-brand-logo" width="36" height="36">',
     '    <span class="snav-brand-text">',
     '      <span class="snav-brand-name">Amplified <span class="snav-brand-thin">Thinker</span></span>',
     '      <span class="snav-brand-tag">Built for a world that keeps changing.</span>',
@@ -471,8 +480,11 @@
       injectFavicon();
       document.head.appendChild(built.styleEl);
 
-      // Prepend nav nodes to body
-      var ref = document.body.firstChild;
+      // Prepend nav nodes to body, but AFTER a leading skip link. Before it,
+      // the skip link was the 10th Tab stop on desktop: a keyboard user had
+      // already passed everything it exists to skip.
+      var lead = document.body.firstElementChild;
+      var ref = lead && lead.classList.contains('skip-link') ? lead.nextSibling : document.body.firstChild;
       built.nodes.forEach(function (node) {
         document.body.insertBefore(node, ref);
       });
@@ -587,6 +599,13 @@
 
   function labelFor(name, email) {
     return (name && name.trim()) || email || '';
+  }
+
+  // The avatar's spoken name. Its visible content is one initial, which a
+  // screen reader announced as just "S"; the title does not count once
+  // there is text inside the button. Shared with auth.js, which repaints it.
+  function accountLabel(label) {
+    return label ? 'Account menu, ' + label : 'Account menu';
   }
 
   /* Where the reader should be put back after signing in.
@@ -729,7 +748,8 @@
     } else if (peek.state === 'in') {
       slot.innerHTML =
         '<button type="button" class="snav-auth-avatar" id="snav-auth-avatar"' +
-        ' aria-expanded="false"' +
+        ' aria-expanded="false" aria-haspopup="true" aria-controls="snav-auth-menu"' +
+        ' aria-label="' + escapeHtml(accountLabel(labelFor(peek.name, peek.email))) + '"' +
         ' title="' + escapeHtml(labelFor(peek.name, peek.email)) + '">' +
         escapeHtml(initialFor(peek.name, peek.email)) + '</button>';
     }
@@ -995,6 +1015,13 @@
       }
     });
 
+    // Close when focus moves out of the nav. Tabbing past the last header
+    // control used to leave the menu open over the page, with focus behind it.
+    document.addEventListener('focusin', function (e) {
+      var nav = document.getElementById('site-nav');
+      if (nav && nav.classList.contains('menu-open') && !nav.contains(e.target)) closeMenu(nav);
+    });
+
     // If the viewport grows past the breakpoint while open, reset state
     window.addEventListener('resize', function () {
       var nav = document.getElementById('site-nav');
@@ -1051,6 +1078,7 @@
     peekSession: peekSession,
     initialFor: initialFor,
     labelFor: labelFor,
+    accountLabel: accountLabel,
     // ⚠️ Exported because auth.js REPAINTS THIS SLOT and would otherwise build
     // the sign-in link without it. Same rule as initialFor/labelFor above: the
     // two files paint the same control, so anything about it is defined once

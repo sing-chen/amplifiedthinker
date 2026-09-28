@@ -95,6 +95,9 @@ const payload = JSON.stringify(stories).replace(/</g, '\\u003c');
   </div>
   <article class="story-panel" id="story-panel" set:html={story}></article>
 </div>
+<!-- Read out when a filter or a search changes the list. Empty on first paint,
+     so nothing is announced until the reader does something. -->
+<p class="news-status" id="news-status" role="status"></p>
 </div>
 
 <script type="application/json" id="news-data" set:html={payload}></script>

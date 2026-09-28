@@ -194,6 +194,12 @@
 /* Footer rules live in styles.css under .site-footer. Only the responsive
    padding is here, because the breakpoint is this page's own. */
 
+/* The filter/search announcement: read out, never shown. */
+.news-status{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* The title takes focus from script (opening a story on a phone, or after a
+   redraw). It is not a control, so no ring. */
+.story-title[tabindex="-1"]:focus{outline:none}
+
 @media(max-width:800px){
   .news-layout{grid-template-columns:1fr}
   .headline-col{max-height:none}

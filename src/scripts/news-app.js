@@ -33,6 +33,7 @@ import {
   var searchInput = document.getElementById('headline-search');
   var scrollPrev = document.getElementById('filter-scroll-prev');
   var scrollNext = document.getElementById('filter-scroll-next');
+  var statusEl = document.getElementById('news-status');
 
   // The error page renders the shell without the layout. Bail rather than
   // throwing into a page that is already telling the reader something useful.
@@ -80,8 +81,46 @@ import {
      column has no max-height, both rects agree, and this correctly does
      nothing. Pair it with focus({preventScroll:true}) for the same reason —
      focusing an off-screen element scrolls the page too. */
+  function reduceMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function isNarrow() {
+    return !!(window.matchMedia && window.matchMedia('(max-width: 800px)').matches);
+  }
+
+  // How much of the top of the window is covered: the fixed site bars, plus
+  // the filter bar, which is sticky beneath them at every width.
+  function coveredTop() {
+    var offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--site-total-offset'), 10) || 56;
+    if (getComputedStyle(filterBar).position === 'sticky') offset += filterBar.getBoundingClientRect().height;
+    return offset;
+  }
+
+  // Scrolls the WINDOW so el sits just below the covered top. Only ever for
+  // the narrow layout, where the page is the scroller.
+  function scrollWindowTo(el) {
+    var top = el.getBoundingClientRect().top + window.scrollY - coveredTop() - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion() ? 'auto' : 'smooth' });
+  }
+
   function revealInPanel(el) {
-    if (!el) return;
+    // A hidden list (a phone showing a story) has nothing to reveal.
+    if (!el || el.offsetParent === null) return;
+    // ⚠️ At 800px and below the panel is NOT a scroller: it has no max-height
+    // and the page scrolls instead. Adjusting its scrollTop did nothing there,
+    // so arrow keys walked focus off the bottom of the screen. Measured
+    // 2026-09-28: twelve ArrowDowns at 390x600 left the focused headline at
+    // 746px. Keep it in the window instead, still without scrollIntoView.
+    if (headlinePanel.scrollHeight <= headlinePanel.clientHeight + 1) {
+      // 'instant' on purpose: styles.css sets scroll-behavior:smooth, and a
+      // held arrow key fires faster than a smooth scroll finishes, so each
+      // step measured a rect mid-animation and focus drifted off-screen.
+      var r = el.getBoundingClientRect(), top = coveredTop();
+      if (r.top < top) window.scrollBy({ top: r.top - top - 8, behavior: 'instant' });
+      else if (r.bottom > window.innerHeight) window.scrollBy({ top: r.bottom - window.innerHeight + 8, behavior: 'instant' });
+      return;
+    }
     var panel = headlinePanel.getBoundingClientRect();
     var item = el.getBoundingClientRect();
     if (item.top < panel.top) headlinePanel.scrollTop -= (panel.top - item.top);
@@ -106,12 +145,37 @@ import {
     }
     var slugs = navigableSlugs(stories, state);
     var i = slugs.indexOf(story.slug);
+    var restore = focusKeyIn(storyPanel);
     storyPanel.innerHTML = storyHTML(
       story,
       i > 0 ? slugs[i - 1] : null,
       i !== -1 && i < slugs.length - 1 ? slugs[i + 1] : null
     );
     announceStory(story);
+    // After announceStory: news-actions.js repaints Save/Pin/Note inside that
+    // dispatch, so the buttons exist again by the time this runs.
+    if (restore) refocus(storyPanel, restore, '.story-title');
+  }
+
+  /* ⚠️ A REDRAW DESTROYS THE FOCUSED CONTROL. The filter bar and the story
+     panel are both rebuilt with innerHTML: pressing a filter chip, or Save or
+     Pin (whose change comes back through amplified:news-personal and rebuilds
+     the panel), dropped focus to <body>, so the next Tab started from the top
+     of the page. Measured 2026-09-28. So the focused control is remembered by
+     the attribute that identifies it, and focused again in the new markup. */
+  function focusKeyIn(container) {
+    var a = document.activeElement;
+    if (!a || !container.contains(a)) return null;
+    var attrs = ['data-tag', 'data-action', 'data-nav'];
+    for (var k = 0; k < attrs.length; k++) {
+      if (a.hasAttribute(attrs[k])) return '[' + attrs[k] + '="' + a.getAttribute(attrs[k]) + '"]';
+    }
+    return a.classList.contains('story-back') ? '.story-back' : '*';
+  }
+
+  function refocus(container, key, fallback) {
+    var el = (key !== '*' && container.querySelector(key)) || (fallback && container.querySelector(fallback));
+    if (el) el.focus({ preventScroll: true });
   }
 
   /* ⚠️ Replacing the panel's innerHTML DESTROYS whatever the personal layer had
@@ -131,8 +195,24 @@ import {
   }
 
   function renderFilterBar() {
+    var restore = focusKeyIn(filterBar);
     filterBar.innerHTML = filterBarHTML(stories, state);
+    // A chip that no longer exists (Saved, emptied) hands focus to All stories.
+    if (restore) refocus(filterBar, restore, '[data-tag="all"]');
     updateScrollArrows();
+  }
+
+  // Read out what a filter or a search left in the list. Only ever called
+  // from something the reader did, never on first paint.
+  var announceTimer = null;
+  function announceCount(delay) {
+    if (!statusEl) return;
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(function () {
+      var n = stories.filter(function (s) { return matchesFilter(s, state); }).length;
+      statusEl.textContent = n === 0 ? 'No headlines match.'
+        : n === 1 ? '1 story.' : n + ' stories.';
+    }, delay || 0);
   }
 
   /* ── the document's own identity ───────────────────────────────────────────
@@ -184,14 +264,36 @@ import {
       if (hadFocusInPanel) focusInPanel(el);
       else revealInPanel(el);
     }
-    if (opts.scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (opts.scrollTop) window.scrollTo({ top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' });
+
+    // ⚠️ ON A PHONE THE LIST AND THE STORY ARE ALTERNATIVES, so opening one
+    // swaps what the page is. It used to keep the list's scroll position: the
+    // story opened 265px above the screen after tapping the 20th headline,
+    // with focus on <body>. Land at the story's top instead, focused on its
+    // title, and remember where the list was for the back link.
+    if (opts.fromList && isNarrow()) {
+      listScrollY = window.scrollY;
+      scrollWindowTo(storyPanel);
+      var title = storyPanel.querySelector('.story-title');
+      if (title) title.focus({ preventScroll: true });
+    }
   }
+
+  var listScrollY = null;
 
   // After a filter or a search narrows the list, the open story may no longer
   // be in it. Fall back to whatever the list now starts with.
   function reconcileSelection() {
     var current = activeStory();
     if (current && matchesFilter(current, state)) {
+      renderHeadlines();
+      renderStory(current);
+      return;
+    }
+    // ⚠️ Nothing matches at all: keep the story that is open. pickDefault
+    // falls back to the first story in the feed, so searching "zzz" used to
+    // open an unrelated story and rewrite the address and title to match.
+    if (current && !stories.some(function (s) { return matchesFilter(s, state); })) {
       renderHeadlines();
       renderStory(current);
       return;
@@ -230,7 +332,7 @@ import {
     var item = e.target.closest('.headline-item');
     if (!item || !isPlainClick(e)) return;
     e.preventDefault();
-    show(item.getAttribute('data-slug'), { scrollIntoHeadline: true });
+    show(item.getAttribute('data-slug'), { scrollIntoHeadline: true, fromList: true });
   });
 
   storyPanel.addEventListener('click', function (e) {
@@ -240,7 +342,18 @@ import {
       // the list without leaving the story, so the URL stays put.
       e.preventDefault();
       layoutEl.classList.remove('show-detail');
-      headlinePanel.focus();
+      // Back to the headline the reader came from, where the list was: it used
+      // to focus the whole list and lose the scroll position.
+      // Instant: this puts the list back where it was, which is not a journey.
+      if (listScrollY !== null) window.scrollTo({ top: listScrollY, behavior: 'instant' });
+      var from = headlinePanel.querySelector('.headline-item.active');
+      if (from) {
+        from.focus({ preventScroll: true });
+        // The page can come back a different height from when the story
+        // opened, so the saved position alone can leave the headline below
+        // the screen. Make sure the headline itself is in view.
+        revealInPanel(from);
+      } else headlinePanel.focus();
       return;
     }
     var nav = e.target.closest('.story-nav-btn[data-nav]');
@@ -257,6 +370,7 @@ import {
     state.tag = chip.getAttribute('data-tag');
     renderFilterBar();
     reconcileSelection();
+    announceCount();
   });
 
   /* ── search ──────────────────────────────────────────────────────────────── */
@@ -265,6 +379,8 @@ import {
     state.rawQuery = value.trim();
     state.query = state.rawQuery.toLowerCase();
     reconcileSelection();
+    // Debounced: every keystroke would otherwise queue its own announcement.
+    announceCount(500);
   }
 
   if (searchInput) {
@@ -336,10 +452,10 @@ import {
   filterBar.addEventListener('scroll', updateScrollArrows);
   window.addEventListener('resize', updateScrollArrows);
   if (scrollPrev) scrollPrev.addEventListener('click', function () {
-    filterBar.scrollBy({ left: -filterBar.clientWidth * 0.7, behavior: 'smooth' });
+    filterBar.scrollBy({ left: -filterBar.clientWidth * 0.7, behavior: reduceMotion() ? 'auto' : 'smooth' });
   });
   if (scrollNext) scrollNext.addEventListener('click', function () {
-    filterBar.scrollBy({ left: filterBar.clientWidth * 0.7, behavior: 'smooth' });
+    filterBar.scrollBy({ left: filterBar.clientWidth * 0.7, behavior: reduceMotion() ? 'auto' : 'smooth' });
   });
 
   /* ── history ─────────────────────────────────────────────────────────────── */

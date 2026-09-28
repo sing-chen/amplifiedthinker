@@ -564,8 +564,15 @@
   function cancelPinConfirm() {
     var row = doc.querySelector('.story-actions-row');
     if (!row || !row.hasAttribute('data-restore')) return false;
+    // Restoring the row destroys Cancel / Yes, which had focus. Put it back on
+    // the Pin button the question came from, or it falls to <body>.
+    var hadFocus = row.contains(doc.activeElement);
     row.innerHTML = row.getAttribute('data-restore');
     row.removeAttribute('data-restore');
+    if (hadFocus) {
+      var pin = row.querySelector('[data-action="pin"]');
+      if (pin) pin.focus();
+    }
     return true;
   }
 

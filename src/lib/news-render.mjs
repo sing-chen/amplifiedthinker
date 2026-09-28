@@ -243,9 +243,13 @@ export function filterBarHTML(stories, state) {
   }
 
   const render = (c) => {
-    let cls = 'filter-chip' + (c.key === (state.tag || 'all') ? ' active' : '');
+    const on = c.key === (state.tag || 'all');
+    let cls = 'filter-chip' + (on ? ' active' : '');
     if (THEMED_TAGS[c.key]) cls += ' themed ' + themeClass(c.key);
-    return '<button type="button" class="' + cls + '" data-tag="' + escapeHTML(c.key) + '">' +
+    // aria-pressed as well as .active: the colour was the only sign of which
+    // filter was on, and a screen reader cannot see it.
+    return '<button type="button" class="' + cls + '" data-tag="' + escapeHTML(c.key) + '"' +
+      ' aria-pressed="' + (on ? 'true' : 'false') + '">' +
       icon(c.path) + escapeHTML(c.label) + '</button>';
   };
 
@@ -417,13 +421,17 @@ export function storyHTML(story, prevSlug, nextSlug) {
   html += '<nav class="story-nav" aria-label="Story navigation">';
   html += prevSlug
     ? '<a class="story-nav-btn" data-nav="prev" href="' + escapeHTML(storyPath(prevSlug)) + '">&lsaquo; Previous</a>'
-    : '<span class="story-nav-btn is-disabled" aria-disabled="true">&lsaquo; Previous</span>';
+    // role="link": aria-disabled on a bare span means nothing, so a screen
+    // reader never heard that there was no previous story.
+    : '<span class="story-nav-btn is-disabled" role="link" aria-disabled="true">&lsaquo; Previous</span>';
   html += nextSlug
     ? '<a class="story-nav-btn" data-nav="next" href="' + escapeHTML(storyPath(nextSlug)) + '">Next &rsaquo;</a>'
-    : '<span class="story-nav-btn is-disabled" aria-disabled="true">Next &rsaquo;</span>';
+    : '<span class="story-nav-btn is-disabled" role="link" aria-disabled="true">Next &rsaquo;</span>';
   html += '</nav>';
   html += '</div>';
-  html += '<h2 class="story-title">' + escapeHTML(story.title || '') + '</h2>';
+  // tabindex="-1" so news-app.js can land focus here when a story opens on a
+  // phone, or when the control that had focus is redrawn away.
+  html += '<h2 class="story-title" tabindex="-1">' + escapeHTML(story.title || '') + '</h2>';
   html += '<p class="story-summary">' + escapeHTML(story.summary || '') + '</p>';
   if (story.implications) {
     html += '<div class="story-implications"><span class="story-implications-label">Why it matters</span><p>' +

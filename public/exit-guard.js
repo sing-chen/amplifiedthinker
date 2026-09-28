@@ -263,7 +263,13 @@
       '[data-theme="dark"] #exitGuard .eg-go{color:var(--d-fg-2,#9BAAA3);' +
         'border-color:var(--d-line,rgba(255,255,255,.12))}' +
       '[data-theme="dark"] #exitGuard .eg-go:hover{color:var(--d-fg-1,#E7EDE9);' +
-        'border-color:var(--d-fg-2,#9BAAA3)}';
+        'border-color:var(--d-fg-2,#9BAAA3)}' +
+      // ⚠️ The focus ring too. --fg-brand does not flip on the skill pages, so
+      // it stayed #26605B on the dark card: 1.98:1, found 2026-09-28. The same
+      // parallel-token trap every other rule in this block already answers.
+      '[data-theme="dark"] #exitGuard button:focus-visible,' +
+        '[data-theme="dark"] #exitGuard a.eg-btn:focus-visible{' +
+        'outline-color:var(--d-teal-stroke,#8FCFC3)}';
     var style = doc.createElement('style');
     style.id = 'exitGuardStyles';
     style.textContent = css;
