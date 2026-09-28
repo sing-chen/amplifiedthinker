@@ -563,6 +563,27 @@ sign-in and nowhere else. See [supabase/README.md](supabase/README.md).
 
 ---
 
+## Third-party skill: `ui-ux-pro-max`
+
+`.claude/skills/ui-ux-pro-max/` is vendored from
+[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+(MIT) at upstream commit `09170ee`, added 2026-09-28. Local Python and CSVs only, no network calls.
+Update by re-copying that folder from upstream, never by editing it in place.
+
+⚠️ **It is generic advice and this site's rules override it wherever they disagree.** Use it for
+accessibility, touch-target, form and interaction checks. Do NOT take its palettes, font pairings or
+style picks: type and colour are bound by [docs/design-modernisation.md](docs/design-modernisation.md).
+Three conflicts are known:
+- **Fonts.** It recommends Google Fonts pairings with share links. The site is self-hosted Inter
+  only, and `privacy.html` claims *no third party is involved in showing you the page*. One Google
+  Fonts link makes that page false.
+- **Dark mode.** It assumes semantic tokens flip. On the ten skill pages they do not; dark is the
+  parallel `--d-*` set (see the traps above).
+- **Icons and CDNs.** Any icon set or library it suggests from a CDN is the same third-party request
+  problem as the fonts. Vendor it or skip it.
+
+---
+
 ## Working agreements
 
 - **Branch per phase**, short names (`feat/…`) — Vercel builds the preview URL from the branch name.

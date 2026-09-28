@@ -4,6 +4,7 @@
 .claude/*
 !.claude/commands/
 !.claude/launch.json
+!.claude/skills/
 
 # Full-resolution source images. Moved out of `images/` in Phase 2 so they sit
 # outside `public/`, which Astro copies into the build verbatim — inside it, a
@@ -38,3 +39,6 @@ baseline-*.json
 # Specimen pages from scripts/dev/. Generated from the source they document,
 # so they are always reproducible and never the source of truth.
 specimen-*.html
+
+# Python bytecode from running vendored skill scripts
+__pycache__/
