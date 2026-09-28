@@ -584,6 +584,31 @@ Three conflicts are known:
 
 ---
 
+## Third-party skill: `taste-skill`
+
+`.claude/skills/taste-skill/` is vendored from
+[Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT) at upstream commit `ce26fc2`,
+added 2026-09-28. Only `skills/taste-skill/SKILL.md` and the licence were copied; the repo's other
+twelve skills were not. Markdown only, no scripts. Update by re-copying from upstream, never by
+editing in place.
+
+⚠️ **It is written for a React + Tailwind + Motion greenfield landing page, and this site is none of
+those.** Use it for its anti-template critique: brief inference, the AI-tells list (§9), the redesign
+audit (§11) and the pre-flight checks that are about layout, contrast and copy. Its rules lose
+wherever they meet this file or [docs/design-modernisation.md](docs/design-modernisation.md). Known
+conflicts:
+- **Stack.** §3 defaults to React/Next, Tailwind v4 and `motion/react`, and §2 tells it to *install*
+  official design-system packages. The site is hand-written HTML and vanilla JS inside Astro. Never
+  add a framework, CSS framework or UI kit because this skill assumes one.
+- **Inter.** §4.1 and §9.B discourage Inter as a default. Inter is the site's only face, by decision.
+- **Third-party requests.** §4.8 reaches for `picsum.photos`, Unsplash, `cdn.simpleicons.org` and
+  icon npm packages. Any of these on a live page makes `privacy.html` false. Same rule as the fonts.
+- **Dark mode.** §8.A assumes semantic tokens flip. On the ten skill pages they do not (see traps).
+- **Em-dash ban (§9.G).** A rule for generated marketing copy. Do not rewrite the site's existing
+  editorial copy to satisfy it.
+
+---
+
 ## Working agreements
 
 - **Branch per phase**, short names (`feat/…`) — Vercel builds the preview URL from the branch name.
