@@ -343,21 +343,23 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       This is the one action on the site with no way to check afterwards
       whether it worked: the account page cannot show you your own password.
 
-      So the redirect stays -- being left on a spent form is its own dead end --
-      but it is announced, counted down, and skippable.
+      ⚠️ NO AUTOMATIC REDIRECT, since 2026-09-28. It used to count down six
+      seconds and then leave, skippable but not stoppable — which fails WCAG
+      2.2.1 (a time limit must be possible to turn off or extend), and pulled a
+      screen-reader user away mid-sentence. The panel replaces the spent form,
+      so there is no dead end to escape: the button is the way on, at the
+      reader's pace. The `finished` guard in settle() still matters — without
+      it, USER_UPDATED would send a signed-in visitor straight home.
     -->
     <div class="auth-panel" id="auth-recover-done" hidden>
       <h1 id="auth-recover-done-heading" tabindex="-1">Password updated</h1>
       <p class="auth-lede" id="auth-recover-done-detail"></p>
-      <p class="auth-muted">
-        Taking you back to the site<span id="auth-recover-count" aria-hidden="true"></span>.
-      </p>
       <div class="auth-actions">
         <!--
           Same relative path as HOME in the script below. Absolute '/index.html'
           would land outside the site on the Pages origin.
         -->
-        <a class="auth-btn" href="../index.html">Go there now</a>
+        <a class="auth-btn" href="../index.html">Continue to the site</a>
       </div>
     </div>
 
@@ -1225,34 +1227,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           show('done');
           window.scrollTo(0, 0);
           focusHeading('auth-recover-done-heading');
-          startRedirect();
         });
       });
-
-      /*
-       * Counts down, then goes. The wait is the point: this is the one action
-       * on the site with no way to check afterwards whether it worked, since
-       * the account page cannot show you your own password.
-       *
-       * ⚠️ The countdown is aria-hidden and the panel is not a live region. A
-       * number changing once a second inside one would be read out six times,
-       * which is how a confirmation becomes noise for anyone using a screen
-       * reader. The heading and the sentence carry the meaning; the counter
-       * only says how long the reader has, and the button beside it means
-       * nobody has to wait at all.
-       */
-      function startRedirect() {
-        var left = 6;
-        var out = el('auth-recover-count');
-
-        function tick() {
-          out.textContent = left > 0 ? ' in ' + left + ' second' + (left === 1 ? '' : 's') : '';
-          if (left <= 0) { window.location.replace(HOME); return; }
-          left--;
-          window.setTimeout(tick, 1000);
-        }
-        tick();
-      }
 
       // ---- lifecycle -------------------------------------------------------
 

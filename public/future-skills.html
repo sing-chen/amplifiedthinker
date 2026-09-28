@@ -777,7 +777,11 @@
 
     <!-- ANALYTICAL THINKING — available -->
     <div class="scard active" id="s-analytical" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-analytical')" aria-expanded="false" aria-controls="sb-analytical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-analytical')}">
+      <!-- Each live card's header is a button, so its name was everything inside it:
+           category, name, summary, quote and status, read out as one run on every
+           focus. aria-labelledby names it by skill and status ("Analytical Thinking,
+           Available Now"); the summary is its description. 2026-09-28. -->
+      <div class="sheader" aria-labelledby="sname-analytical sstat-analytical" aria-describedby="ssum-analytical" onclick="toggleSkill('s-analytical')" aria-expanded="false" aria-controls="sb-analytical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-analytical')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -785,10 +789,10 @@
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
-            <div class="sname">Analytical Thinking</div>
+            <div class="sname" id="sname-analytical">Analytical Thinking</div>
           </div>
-          <div class="ssum"><span class="ssum-desc">Break complex problems into their components before drawing conclusions. </span><em>"What's actually happening here?"</em></div>
-          <div class="sstatus ss-avail">Available Now</div>
+          <div class="ssum" id="ssum-analytical"><span class="ssum-desc">Break complex problems into their components before drawing conclusions. </span><em>"What's actually happening here?"</em></div>
+          <div id="sstat-analytical" class="sstatus ss-avail">Available Now</div>
         </div>
         <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
@@ -826,7 +830,7 @@
 
     <!-- CREATIVE THINKING — available -->
     <div class="scard active" id="s-creative" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-creative')" aria-expanded="false" aria-controls="sb-creative" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-creative')}">
+      <div class="sheader" aria-labelledby="sname-creative sstat-creative" aria-describedby="ssum-creative" onclick="toggleSkill('s-creative')" aria-expanded="false" aria-controls="sb-creative" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-creative')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><path d="M9 21h6"/><path d="M12 3a6 6 0 0 1 6 6c0 2.22-1.2 4.16-3 5.2V17a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-2.8C7.2 13.16 6 11.22 6 9a6 6 0 0 1 6-6z"/></svg>
@@ -834,10 +838,10 @@
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
-            <div class="sname">Creative Thinking</div>
+            <div class="sname" id="sname-creative">Creative Thinking</div>
           </div>
-          <div class="ssum"><span class="ssum-desc">Produce original approaches by combining ideas across domains in ways that default thinking misses. </span><em>"What else is possible?"</em></div>
-          <div class="sstatus ss-avail">Available Now</div>
+          <div class="ssum" id="ssum-creative"><span class="ssum-desc">Produce original approaches by combining ideas across domains in ways that default thinking misses. </span><em>"What else is possible?"</em></div>
+          <div id="sstat-creative" class="sstatus ss-avail">Available Now</div>
         </div>
         <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
@@ -875,7 +879,7 @@
 
     <!-- CRITICAL THINKING — available -->
     <div class="scard active" id="s-critical" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-critical')" aria-expanded="false" aria-controls="sb-critical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-critical')}">
+      <div class="sheader" aria-labelledby="sname-critical sstat-critical" aria-describedby="ssum-critical" onclick="toggleSkill('s-critical')" aria-expanded="false" aria-controls="sb-critical" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-critical')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="3" x2="12" y2="21"/><path d="M5 21h14"/><path d="M5 8l-3 6a3 3 0 0 0 6 0L5 8z"/><path d="M19 8l-3 6a3 3 0 0 0 6 0L19 8z"/><line x1="5" y1="8" x2="19" y2="8"/></svg>
@@ -883,10 +887,10 @@
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
-            <div class="sname">Critical Thinking</div>
+            <div class="sname" id="sname-critical">Critical Thinking</div>
           </div>
-          <div class="ssum"><span class="ssum-desc">Evaluate arguments, identify assumptions, and resist the pull of flawed reasoning — including your own. </span><em>"Is this actually true?"</em></div>
-          <div class="sstatus ss-avail">Available Now</div>
+          <div class="ssum" id="ssum-critical"><span class="ssum-desc">Evaluate arguments, identify assumptions, and resist the pull of flawed reasoning — including your own. </span><em>"Is this actually true?"</em></div>
+          <div id="sstat-critical" class="sstatus ss-avail">Available Now</div>
         </div>
         <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
@@ -996,7 +1000,7 @@
 
     <!-- STRATEGIC SYNTHESIS & DECISION MAKING — available -->
     <div class="scard active" id="s-strategic" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-strategic')" aria-expanded="false" aria-controls="sb-strategic" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-strategic')}">
+      <div class="sheader" aria-labelledby="sname-strategic sstat-strategic" aria-describedby="ssum-strategic" onclick="toggleSkill('s-strategic')" aria-expanded="false" aria-controls="sb-strategic" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-strategic')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -1004,10 +1008,10 @@
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
-            <div class="sname">Strategic Synthesis &amp; Decision-Making</div>
+            <div class="sname" id="sname-strategic">Strategic Synthesis &amp; Decision-Making</div>
           </div>
-          <div class="ssum"><span class="ssum-desc">Connect disparate information into a coherent picture and choose a path forward under uncertainty. </span><em>"What does this all mean — and what do we do?"</em></div>
-          <div class="sstatus ss-avail">Available Now</div>
+          <div class="ssum" id="ssum-strategic"><span class="ssum-desc">Connect disparate information into a coherent picture and choose a path forward under uncertainty. </span><em>"What does this all mean — and what do we do?"</em></div>
+          <div id="sstat-strategic" class="sstatus ss-avail">Available Now</div>
         </div>
         <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
@@ -1045,7 +1049,7 @@
 
     <!-- SYSTEMS THINKING — available -->
     <div class="scard active" id="s-systems" data-categories="cognitive" role="listitem">
-      <div class="sheader" onclick="toggleSkill('s-systems')" aria-expanded="false" aria-controls="sb-systems" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-systems')}">
+      <div class="sheader" aria-labelledby="sname-systems sstat-systems" aria-describedby="ssum-systems" onclick="toggleSkill('s-systems')" aria-expanded="false" aria-controls="sb-systems" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSkill('s-systems')}">
         <div class="sstatus-strip"></div>
         <div class="skill-icon si-cognitive">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -1053,10 +1057,10 @@
         <div class="shc">
           <div class="stb">
             <div class="skill-pills"><span class="skill-pill sp-cognitive">Cognitive</span></div>
-            <div class="sname">Systems Thinking</div>
+            <div class="sname" id="sname-systems">Systems Thinking</div>
           </div>
-          <div class="ssum"><span class="ssum-desc">See interdependencies, feedback loops, and unintended consequences before they surface. </span><em>"What am I not seeing?"</em></div>
-          <div class="sstatus ss-avail">Available Now</div>
+          <div class="ssum" id="ssum-systems"><span class="ssum-desc">See interdependencies, feedback loops, and unintended consequences before they surface. </span><em>"What am I not seeing?"</em></div>
+          <div id="sstat-systems" class="sstatus ss-avail">Available Now</div>
         </div>
         <div class="stoggle" aria-hidden="true"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
@@ -1111,7 +1115,7 @@
         <span class="footer-sep" aria-hidden="true">·</span>
         <a href="about.html">About</a>
         <span class="footer-sep" aria-hidden="true">·</span>
-        <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/singchen" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn (opens in a new tab)">LinkedIn</a>
       </nav>
     </div>
     <div class="fn"><span class="fn-copy">© <span id="yr"></span> Sing Chen</span> <span class="fn-sep" aria-hidden="true">·</span> <a href="whats-new.html">What's New</a> <span class="fn-sep" aria-hidden="true">·</span> <a href="why-sign-up.html">Why Sign Up</a> <span class="fn-sep" aria-hidden="true">·</span> <a href="privacy.html">Privacy &amp; Cookies</a> <span class="fn-sep" aria-hidden="true">·</span> <a href="terms.html">Terms of Use</a></div><script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
