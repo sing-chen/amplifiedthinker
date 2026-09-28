@@ -34,6 +34,7 @@ position it does not have.
 | 10 | The Amplitude hero, with the announce card | 2026-08-28 | `058fdad` |
 | 11 | The two-tone wordmark | 2026-08-28 | `1b987ba` |
 | 12 | Asymmetric tiles — Future Skills leads | 2026-09-28 | `929d473` |
+| 13 | Coming-soon affordance, label contrast, type floor, field edges | 2026-09-28 | `a3d2178` |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Pieces 9–11 were built on `feat/amplitude` and merged to `main` on 2026-08-28. ⚠️ Remaining
@@ -45,6 +46,7 @@ Measured outcomes, not estimates:
 ```
 fonts       266 KB over 10 third-party requests  ->  157 KB over 2 same-origin
 contrast    205 failing elements                 ->  52 (all judgment calls, see below)
+            -> piece 13 closed the two recorded ones; no text judgment call remains
 families    2 typefaces + a serif                ->  1 variable family, 100-900
 auth mail   white-on-teal 5.40:1                 ->  7.22:1  (AA -> AAA)
 ```
@@ -108,6 +110,19 @@ surfaces.
 longhand. 63 were replaced with the token definitions in `474a55e`; leaving them behind splits one
 colour into two that drift independently.
 
+**7. The type floor (piece 13, 2026-09-28).** On phones, running body copy is never under **15px**.
+Nothing, at any width, is under **11px** — labels, eyebrows, pills, badges, table headers included.
+The floor only ever raises: weights stay where rule 1 puts them, and tracking follows rule 2's ramp
+for the new size. ⚠️ **"Body" is decided by what the reader is reading, not by the element.** The News
+headline rows are body (the page is read by them); contents lists, form hints, card titles,
+citations and diagram labels are not, and stayed below 15px by the owner's decision.
+
+**8. Text fields: 16px on phones, and an edge you can see.** Every text field is **16px** at phone
+width, because iOS zooms into anything smaller on focus and stays zoomed. Every field's border is
+**`--fg-2`** (`--d-fg-2` on the skill pages), which clears the **3:1** a field boundary needs
+(WCAG 1.4.11) in both themes. The faint `--line`/`rgba(…,.18)` edges it replaced measured about
+1.4–1.6:1. A new field takes both, or it is the failure this rule exists to stop.
+
 ---
 
 ## Traps this work produced
@@ -163,7 +178,7 @@ Recorded so these read as decisions rather than oversights. Each has a reason it
 
 | Item | Size | Why it is still open |
 |---|---|---|
-| Remaining AA contrast items | **52 elements** | Judgment calls, not bugs. Chiefly the deliberate "coming soon" dimming — `.scard.cs .ssum` at **2.24:1** — where the low contrast *is* the signal that the item is not ready. Fixing it means designing a different affordance, not picking a darker grey |
+| ~~Remaining AA contrast items~~ | ~~52 elements~~ | ✅ **Closed by piece 13, 2026-09-28, `a3d2178`.** The two recorded judgment calls are gone: the coming-soon dimming (`.scard.cs .ssum`, last measured 1.95:1) was replaced by a real affordance, and the announce card's clay (accepted at ~3.4:1, re-measured at 3.18:1) was lightened to 4.93:1. A site-wide scan after it found no text below threshold. Row kept because the reasoning stands: the fix for the dimming was a design decision, not a darker grey |
 | ~~Old-palette `rgba()` longhands~~ | ~~88~~ | ✅ **Done 2026-08-24, `e82d1af`.** The site now holds **no old-palette literal in any notation**, so the next palette move is a token edit rather than a hunt. Row kept because the reasoning is the general lesson — these were *not* cosmetic, and calling them so is the mistake recorded in the traps above |
 | ~~`--teal` `rgba()` longhands~~ | ~~52~~ | ✅ **Done 2026-08-24, `1835753`.** Verified inert across 201,380 comparisons. Row kept rather than deleted because *why* it was separable — `--teal` never moved — is the reasoning the remaining 88 turn on |
 | Thumbnail prompt terracotta | 1 value | `#C77B5F` was the real token until `2f92728` (2026-07-20) replaced it with `#8A4B2C`. Correcting the prompt alone makes skill eleven's artwork diverge from the ten already shipped — it needs one regeneration pass over the whole set, which is its own piece of work |
@@ -216,7 +231,7 @@ Not a queue. Listed with what each would actually cost, so the choice is informe
   `::-webkit-scrollbar-thumb` is unreachable by `querySelectorAll` (10 more). Both were verified by
   reading source and by eye instead. **Any claim of "N comparisons, 0 differing" silently excludes
   every interactive state**, and should say so.
-- **Design a real "coming soon" affordance.** Retires the last text-contrast failure by removing the
+- ✅ **~~Design a real "coming soon" affordance~~ — DONE in piece 13, 2026-09-28.** Retires the last text-contrast failure by removing the
   reason for it — a badge, a reduced-opacity *card* rather than reduced-opacity *text*, or moving
   unbuilt skills out of the list entirely. Closes an accessibility item with a design decision.
 - **Regenerate the ten video thumbnails** on the current palette. Unblocks correcting `/add-skill`'s
@@ -300,7 +315,9 @@ glass merged into the pine, so the pane became white-tinted glass with a lit top
 environmental light the wave used to provide. ⚠️ **Recorded judgment call:** the lighter ground
 costs the clay accents contrast — the mark and link read **~3.4:1** on the frosted pane (11px/13.5px,
 lightened one step to `#E29A6F` to claw some back; the no-blur fallback reads ~4.9:1). Owner-approved
-material trade, same register as the coming-soon dimming.
+material trade, same register as the coming-soon dimming. ✅ **Superseded by piece 13 (2026-09-28):**
+re-measured at 3.18:1 against the lightest pane pixels at 1280, below what was accepted, and
+lightened to `#F0C5A6` (4.93:1 there, 5.45:1+ on phones) on the owner's decision.
 
 **What building them taught, beyond the plan:**
 
@@ -419,6 +436,45 @@ Verification: tile heights and gaps measured at 1280, 920 (narrowest two-column 
 375, dark mode at 375, no horizontal overflow at any of them. ✅ Production eye pass done the
 same day, after `verify:stamp` confirmed `929d473` was live: 1280 in both themes (544 / 260 / 260,
 title 420 in dark) and 375 in light, no overflow.
+
+---
+
+## Piece 13 — the review's colour and type decisions (landed 2026-09-28, `a3d2178`)
+
+Came out of a site-wide accessibility review run with the vendored `ui-ux-pro-max` skill. Everything
+the review found that had one right answer shipped as three accessibility batches the same day;
+what it found that touched **this document's rules** came back to the owner as four decisions, and
+this piece is those decisions plus four follow-ups. Reviewed before merge on a before/after page of
+37 screenshot pairs with the measured ratios beside each.
+
+| Decision | What shipped | Measured |
+|---|---|---|
+| Coming soon | The whole-card `opacity:.68` is gone. Full-contrast text, a solid badge (`--fg-1` on `--bg-sunken`), a dashed `--line-strong` card, no hover. Still not clickable; screen readers still hear "Coming soon" | summary 1.95 → 7.11 (light), 1.60 → 5.90 (dark) |
+| My People names | The photo gradient starts higher and ends deeper (.94); standard tiles 200 → 250px on phones so names clear faces | worst name 5.76 → 7.47, at the 5th-percentile photo pixel |
+| Labels, by rule 4 | Four bugs: primer active rail number, plan example label, systems-thinking "Balancing" in dark, the dark Full Learning Plan card's lost fill. About a dozen near-misses across plans, primers, search, News, Future Skills, Learning and the home card | 1.26 → 8.02, 1.80 → 5.25, 2.48 → 10.15; every near-miss ≥ 4.5 |
+| Type floor | Rule 7 above | 22 pages, no horizontal scroll at 320/390/1280 |
+| Follow-ups | Announce-card clay `#E29A6F` → `#F0C5A6`; News headline rows 15px on phones; rule 8 above | clay 3.38 → 4.93; field edges 1.4–1.6 → 4.6–6.7 |
+
+**What it taught:**
+
+- ⚠️ **A recorded judgment call can drift out from under its own record.** The clay was accepted at
+  "~3.4:1" and measured 3.18:1 a month later — the frosted pane had been lightened after the number
+  was written. A ratio in this document is a measurement with a date, not a property of the colour;
+  re-measure before leaning on one.
+- ⚠️ **The first review number was already stale too.** Brené Brown's name was reported at 1.8:1; by
+  the time the fix ran, the owner's own commit that morning had lifted it to 5.76:1. Measure at fix
+  time, and say which number the before/after is against.
+- **Several "contrast" items were really the parallel-token trap again.** "Balancing" was an inline
+  `var(--deep-teal)` with no dark counterpart, and the dark Full Learning Plan card lost its fill to a
+  later `[data-theme="dark"] .lcard` of equal specificity. Neither is a colour choice; both are the
+  failure CLAUDE.md already describes, found by measuring rather than reading.
+- **Raising sizes moves layout, so the floor needed three layout fixes:** plan habit rows stack their
+  label above the value under 480px, the sign-up summary box grows, and the Creative Thinking plan's
+  SCAMPER grid (clipped on phones before this piece) now wraps.
+
+Exempt and left as they are: disabled Previous controls (WCAG exempts inactive controls), decorative
+separators, the decorative quote mark on My People, and the nav wordmark's "Thinker" at 4.48:1
+(logos are exempt, and the two-tone wordmark is piece 11's recorded choice).
 
 ---
 
