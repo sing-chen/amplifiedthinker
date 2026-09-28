@@ -73,8 +73,16 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
   .doc-body .doc-toc-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
   .doc-toc ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
   .doc-toc li{font-family:var(--font-body);font-size:14.5px;line-height:1.5;color:var(--text-muted)}
-  .doc-toc a{color:var(--navy);text-decoration:none;border-bottom:1px solid transparent}
-  .doc-toc a:hover{color:var(--mid-teal);border-bottom-color:color-mix(in srgb, var(--teal) 40%, transparent)}
+  /* 24px targets without moving a single line of text (2026-09-28). The links
+     were 18px tall with 6px between them — passing WCAG 2.2's target-size rule
+     only through its spacing exception. Vertical padding on an INLINE box grows
+     the hit area and leaves the line box alone, so nothing reflows. The hover
+     rule was a border-bottom, which padding would push 4px below the text; it
+     is drawn as a 1px background stripe instead, placed exactly where the
+     border sat (the bottom of the content box, i.e. 3px up from the padding's
+     edge before its own 1px). */
+  .doc-toc a{color:var(--navy);text-decoration:none;padding:4px 0;background:no-repeat 0 calc(100% - 3px)/100% 1px linear-gradient(transparent,transparent)}
+  .doc-toc a:hover{color:var(--mid-teal);background-image:linear-gradient(color-mix(in srgb, var(--teal) 40%, transparent),color-mix(in srgb, var(--teal) 40%, transparent))}
 
   /* ── THE SHORT VERSION ── */
   .doc-claim{background:#1B4A44;border-radius:var(--radius-lg);padding:26px 30px}
@@ -167,8 +175,8 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
 
     <p>Amplified Thinker is not a company. It is run by <strong>Sing Chen</strong>, so "Amplified Thinker", "we" and "us" all mean that person — who is also the data controller named in the <a href="privacy.html">privacy notice</a>.</p>
 
-    <div class="doc-toc">
-      <p class="doc-toc-label">Contents</p>
+    <nav class="doc-toc" aria-labelledby="doc-toc-label">
+      <p class="doc-toc-label" id="doc-toc-label">Contents</p>
       <ol>
         <li><a href="#t1">What Amplified Thinker is</a></li>
         <li><a href="#t2">Your account</a></li>
@@ -184,7 +192,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
         <li><a href="#t12">Governing law</a></li>
         <li><a href="#t13">Contact</a></li>
       </ol>
-    </div>
+    </nav>
 
     <h2 class="doc-h2" id="t1"><span class="doc-num">1.</span>What Amplified Thinker is</h2>
 

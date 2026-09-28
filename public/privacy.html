@@ -78,8 +78,16 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
   .doc-body .doc-toc-label{font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:12px}
   .doc-toc ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
   .doc-toc li{font-family:var(--font-body);font-size:14.5px;line-height:1.5;color:var(--text-muted)}
-  .doc-toc a{color:var(--navy);text-decoration:none;border-bottom:1px solid transparent}
-  .doc-toc a:hover{color:var(--mid-teal);border-bottom-color:color-mix(in srgb, var(--teal) 40%, transparent)}
+  /* 24px targets without moving a single line of text (2026-09-28). The links
+     were 18px tall with 6px between them — passing WCAG 2.2's target-size rule
+     only through its spacing exception. Vertical padding on an INLINE box grows
+     the hit area and leaves the line box alone, so nothing reflows. The hover
+     rule was a border-bottom, which padding would push 4px below the text; it
+     is drawn as a 1px background stripe instead, placed exactly where the
+     border sat (the bottom of the content box, i.e. 3px up from the padding's
+     edge before its own 1px). */
+  .doc-toc a{color:var(--navy);text-decoration:none;padding:4px 0;background:no-repeat 0 calc(100% - 3px)/100% 1px linear-gradient(transparent,transparent)}
+  .doc-toc a:hover{color:var(--mid-teal);background-image:linear-gradient(color-mix(in srgb, var(--teal) 40%, transparent),color-mix(in srgb, var(--teal) 40%, transparent))}
 
   /* ── THE SHORT VERSION ──
      A brand band, same treatment as .thesis on about.html. Fixed dark in both
@@ -101,6 +109,32 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
   .doc-table code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:rgba(172,196,182,.22);padding:1px 5px;border-radius:4px;color:var(--navy)}
   .doc-table tbody tr:last-child th,.doc-table tbody tr:last-child td{border-bottom:none}
 
+  /* ── TABLES ON A PHONE (2026-09-28) ──
+     At 460px minimum the tables sat in a ~350px wrapper at 390px and were
+     clipped mid-word, with the rest reachable only by a sideways scroll few
+     readers find. Below 520px each row stacks instead, and every cell carries
+     its column's header as a small label (data-label, the same words as the
+     <thead>, styled as the <thead> is). The real <thead> stays in the
+     accessibility tree, only visually hidden, and the explicit role attributes
+     in the markup keep the table a table to Safari, which drops table
+     semantics once a table element is display:block. The generated label is
+     given empty alt text so a screen reader does not hear every header twice.
+     Layout only: nothing here changes a word of the notice. */
+  @media(max-width:520px){
+    .doc-table{min-width:0}
+    .doc-table,.doc-table tbody,.doc-table tr,.doc-table th,.doc-table td{display:block}
+    .doc-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+    .doc-table tbody tr{padding:14px 0;border-bottom:1px solid rgba(172,196,182,.35)}
+    .doc-table tbody tr:first-child{padding-top:0}
+    .doc-table tbody tr:last-child{border-bottom:none;padding-bottom:0}
+    .doc-table tbody th,.doc-table td{padding:0;border-bottom:none}
+    .doc-table td{margin-top:8px}
+    .doc-body .doc-table code{overflow-wrap:anywhere}
+    .doc-table [data-label]::before{content:attr(data-label);content:attr(data-label) / "";display:block;margin-bottom:2px;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;line-height:1.55;color:var(--fg-brand)}
+    [data-theme="dark"] .doc-table tbody tr{border-bottom-color:var(--line)}
+    [data-theme="dark"] .doc-table tbody tr:last-child{border-bottom:none}
+  }
+
   /* ── CALLOUT ── */
   .doc-callout{background:var(--light-sage);border-left:3px solid var(--teal);border-radius:0 var(--radius) var(--radius) 0;padding:18px 22px;display:flex;flex-direction:column;gap:10px}
   .doc-callout p{font-size:15px;line-height:1.7;color:var(--navy)}
@@ -111,6 +145,14 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
   .doc-list li::before{content:"";position:absolute;left:6px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--sage)}
 
   .doc-note{font-family:var(--font-body);font-size:13px;color:var(--text-muted);line-height:1.6}
+  /* A hostname or storage key has no break opportunity, so one long enough
+     pushed the page 3px sideways at 320px (2026-09-28). Break it anywhere
+     rather than widen the page. ⚠️ NOT inside a table at desktop width:
+     `anywhere` also lowers a cell's min-content width, and the auto table
+     layout then squeezed the Item column until every storage key broke
+     mid-name. The stacked phone layout below turns it back on. */
+  .doc-body code{overflow-wrap:anywhere}
+  .doc-body .doc-table code{overflow-wrap:normal}
   .doc-divider{height:1px;background:rgba(172,196,182,.35);margin:6px 0}
 
   /* ── FOOTER (copied verbatim from index.html so the two cannot drift) ── */
@@ -195,8 +237,8 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
       </ul>
     </div>
 
-    <div class="doc-toc">
-      <p class="doc-toc-label">Contents</p>
+    <nav class="doc-toc" aria-labelledby="doc-toc-label">
+      <p class="doc-toc-label" id="doc-toc-label">Contents</p>
       <ol>
         <li><a href="#s1">What's in this policy?</a></li>
         <li><a href="#s2">Who is responsible for my information?</a></li>
@@ -215,7 +257,7 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
         <li><a href="#s15">How will I find out about changes?</a></li>
         <li><a href="#s16">How do I contact you?</a></li>
       </ol>
-    </div>
+    </nav>
 
     <h2 class="doc-h2" id="s1"><span class="doc-num">1.</span>What's in this policy?</h2>
 
@@ -252,62 +294,62 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
     <p>The first four rows apply to everyone, account or not. The rest apply only once you have an account — a contract is a basis we can rely on only where there is one, and reading the site is not a contract.</p>
 
     <div class="doc-table-wrap" tabindex="0" role="region" aria-label="Table, scrolls sideways">
-      <table class="doc-table">
-        <thead>
-          <tr><th scope="col">What for</th><th scope="col">Our legal basis (UK GDPR Article 6)</th></tr>
+      <table class="doc-table" role="table">
+        <thead role="rowgroup">
+          <tr role="row"><th scope="col" role="columnheader">What for</th><th scope="col" role="columnheader">Our legal basis (UK GDPR Article 6)</th></tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Serving you the website at all, which necessarily involves your device's IP address reaching our providers</th>
-            <td><strong>Legitimate interests</strong> — Article 6(1)(f). We cannot deliver a page to you without it. Weighed against your rights and considered proportionate: it is the minimum a web request requires, and the data is not used to identify or profile you.</td>
+        <tbody role="rowgroup">
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Serving you the website at all, which necessarily involves your device's IP address reaching our providers</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Legitimate interests</strong> — Article 6(1)(f). We cannot deliver a page to you without it. Weighed against your rights and considered proportionate: it is the minimum a web request requires, and the data is not used to identify or profile you.</td>
           </tr>
-          <tr>
-            <th scope="row">Keeping the site secure, available and free of abuse — including the bot check on the sign-in form</th>
-            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Running a site that stays up and whose sign-up form is not used to send mail to strangers.</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Keeping the site secure, available and free of abuse — including the bot check on the sign-in form</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Legitimate interests</strong> — Article 6(1)(f). Running a site that stays up and whose sign-up form is not used to send mail to strangers.</td>
           </tr>
-          <tr>
-            <th scope="row">Counting page views, anonymously and in aggregate</th>
-            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Knowing which pages are read at all, in order to decide what to write next. Limited to aggregate figures that cannot identify or re-identify anyone, and you have the right to object (section 12).</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Counting page views, anonymously and in aggregate</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Legitimate interests</strong> — Article 6(1)(f). Knowing which pages are read at all, in order to decide what to write next. Limited to aggregate figures that cannot identify or re-identify anyone, and you have the right to object (section 12).</td>
           </tr>
-          <tr>
-            <th scope="row">Replying to you if you email us</th>
-            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Answering someone who has chosen to get in touch. Applies whether or not you have an account.</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Replying to you if you email us</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Legitimate interests</strong> — Article 6(1)(f). Answering someone who has chosen to get in touch. Applies whether or not you have an account.</td>
           </tr>
-          <tr>
-            <th scope="row">Creating your account and signing you in</th>
-            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Creating your account and signing you in</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
           </tr>
-          <tr>
-            <th scope="row">Storing your position in the primers and plans, and giving it back to you on any device</th>
-            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Storing your position in the primers and plans, and giving it back to you on any device</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
           </tr>
-          <tr>
-            <th scope="row">Keeping the news stories you saved and the one you pinned, and giving them back to you on any device</th>
-            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Keeping the news stories you saved and the one you pinned, and giving them back to you on any device</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
           </tr>
-          <tr>
-            <th scope="row">Keeping the notes you write — on a news story, or on a primer or plan — and giving them back to you on any device</th>
-            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Keeping the notes you write — on a news story, or on a primer or plan — and giving them back to you on any device</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
           </tr>
-          <tr>
-            <th scope="row">Addressing you by name in the two emails, and on your account page</th>
-            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Addressing you by name in the two emails, and on your account page</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
           </tr>
-          <tr>
-            <th scope="row">Sending the service email you have asked for — confirming your address, resetting your password</th>
-            <td><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Sending the service email you have asked for — confirming your address, resetting your password</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Performance of a contract</strong> — Article 6(1)(b)</td>
           </tr>
-          <tr>
-            <th scope="row">Sending you occasional updates about new skills and new features, <em>if you opted in</em></th>
-            <td><strong>Consent</strong> — Article 6(1)(a), and Regulation 22 of PECR. Asked for at sign-up, never assumed, and withdrawable at any time from your account page, or from the unsubscribe link every such message will carry. No such message has been sent yet &mdash; see section 8. ⚠️ Withdrawing it has no effect on the account email above, which is not sent on this basis.</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Sending you occasional updates about new skills and new features, <em>if you opted in</em></th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Consent</strong> — Article 6(1)(a), and Regulation 22 of PECR. Asked for at sign-up, never assumed, and withdrawable at any time from your account page, or from the unsubscribe link every such message will carry. No such message has been sent yet &mdash; see section 8. ⚠️ Withdrawing it has no effect on the account email above, which is not sent on this basis.</td>
           </tr>
-          <tr>
-            <th scope="row">Telling you if this policy changes in a way that affects information you have already given us</th>
-            <td><strong>Legal obligation</strong> — Article 6(1)(c), read with the transparency duty in Articles 12–14. Not marketing, and not covered by the consent above.</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Telling you if this policy changes in a way that affects information you have already given us</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Legal obligation</strong> — Article 6(1)(c), read with the transparency duty in Articles 12–14. Not marketing, and not covered by the consent above.</td>
           </tr>
-          <tr>
-            <th scope="row">Checking a password you have just chosen against a database of passwords exposed in past breaches</th>
-            <td><strong>Legitimate interests</strong> — Article 6(1)(f). Stopping an account being created behind a password already known to attackers. See section 7 for how it works without your password leaving the browser.</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="What for">Checking a password you have just chosen against a database of passwords exposed in past breaches</th>
+            <td role="cell" data-label="Our legal basis (UK GDPR Article 6)"><strong>Legitimate interests</strong> — Article 6(1)(f). Stopping an account being created behind a password already known to attackers. See section 7 for how it works without your password leaving the browser.</td>
           </tr>
         </tbody>
       </table>
@@ -329,35 +371,35 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
     <p>Up to five things, all written by your own browser and none of them readable by anyone else. The first two happen whether or not you have an account:</p>
 
     <div class="doc-table-wrap" tabindex="0" role="region" aria-label="Table, scrolls sideways">
-      <table class="doc-table">
-        <thead>
-          <tr><th scope="col">Item</th><th scope="col">What it is</th><th scope="col">How long</th></tr>
+      <table class="doc-table" role="table">
+        <thead role="rowgroup">
+          <tr role="row"><th scope="col" role="columnheader">Item</th><th scope="col" role="columnheader">What it is</th><th scope="col" role="columnheader">How long</th></tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row"><code>theme</code></th>
-            <td>Light or dark, as you set it. Read before the page paints, which is what stops the screen flashing the wrong colour. Written only at the moment you change the setting, and it never leaves your device — including for account holders, since nothing syncs it.</td>
-            <td>Until you clear it</td>
+        <tbody role="rowgroup">
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="Item"><code>theme</code></th>
+            <td role="cell" data-label="What it is">Light or dark, as you set it. Read before the page paints, which is what stops the screen flashing the wrong colour. Written only at the moment you change the setting, and it never leaves your device — including for account holders, since nothing syncs it.</td>
+            <td role="cell" data-label="How long">Until you clear it</td>
           </tr>
-          <tr>
-            <th scope="row"><code>amplified_hero_entrance</code></th>
-            <td>A flag saying the homepage's opening animation has already played, so it plays once per browsing session rather than on every visit to the page. Written the first time the homepage appears in a session; nothing about you is in it.</td>
-            <td>The browsing session</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="Item"><code>amplified_hero_entrance</code></th>
+            <td role="cell" data-label="What it is">A flag saying the homepage's opening animation has already played, so it plays once per browsing session rather than on every visit to the page. Written the first time the homepage appears in a session; nothing about you is in it.</td>
+            <td role="cell" data-label="How long">The browsing session</td>
           </tr>
-          <tr>
-            <th scope="row"><code>sb-…-auth-token</code></th>
-            <td>Your sign-in session, written by our authentication provider. Strictly necessary: without it you would be signed out on every page. Removed when you sign out.</td>
-            <td>The session</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="Item"><code>sb-…-auth-token</code></th>
+            <td role="cell" data-label="What it is">Your sign-in session, written by our authentication provider. Strictly necessary: without it you would be signed out on every page. Removed when you sign out.</td>
+            <td role="cell" data-label="How long">The session</td>
           </tr>
-          <tr>
-            <th scope="row"><code>amplified_pw_recovery</code></th>
-            <td>A timestamp, written only while you are part-way through a password reset, so that reloading the page does not drop you out of it. Nothing about you is in it.</td>
-            <td>30 minutes</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="Item"><code>amplified_pw_recovery</code></th>
+            <td role="cell" data-label="What it is">A timestamp, written only while you are part-way through a password reset, so that reloading the page does not drop you out of it. Nothing about you is in it.</td>
+            <td role="cell" data-label="How long">30 minutes</td>
           </tr>
-          <tr>
-            <th scope="row"><code>amplified_…</code></th>
-            <td>Leftovers. An earlier version of the site saved reading position in the browser for guests. That was removed, and any old entries are deliberately left untouched and unused rather than deleted behind your back.</td>
-            <td>Until you clear them</td>
+          <tr role="row">
+            <th scope="row" role="rowheader" data-label="Item"><code>amplified_…</code></th>
+            <td role="cell" data-label="What it is">Leftovers. An earlier version of the site saved reading position in the browser for guests. That was removed, and any old entries are deliberately left untouched and unused rather than deleted behind your back.</td>
+            <td role="cell" data-label="How long">Until you clear them</td>
           </tr>
         </tbody>
       </table>
@@ -394,15 +436,15 @@ if(location.search.indexOf("embed=1")>-1)document.documentElement.setAttribute("
     <p>We do not sell your information and we do not share it for marketing. The site is run by one person, so a handful of services do the work that would otherwise need a server room. Each does one job:</p>
 
     <div class="doc-table-wrap" tabindex="0" role="region" aria-label="Table, scrolls sideways">
-      <table class="doc-table">
-        <thead>
-          <tr><th scope="col">Service</th><th scope="col">What it does</th><th scope="col">Who it affects</th></tr>
+      <table class="doc-table" role="table">
+        <thead role="rowgroup">
+          <tr role="row"><th scope="col" role="columnheader">Service</th><th scope="col" role="columnheader">What it does</th><th scope="col" role="columnheader">Who it affects</th></tr>
         </thead>
-        <tbody>
-          <tr><th scope="row">Supabase</th><td>The database, sign-in, and the accounts themselves</td><td>Account holders</td></tr>
-          <tr><th scope="row">Resend</th><td>Delivers the two account emails, and carries replies we send from the contact address</td><td>Account holders; anyone who emails us</td></tr>
-          <tr><th scope="row">Vercel</th><td>Hosts and delivers the site, and counts page views</td><td>Everyone</td></tr>
-          <tr><th scope="row">Cloudflare</th><td>The domain's DNS and email routing, and the bot check on the sign-in page</td><td>Everyone; the bot check, sign-in visitors only</td></tr>
+        <tbody role="rowgroup">
+          <tr role="row"><th scope="row" role="rowheader" data-label="Service">Supabase</th><td role="cell" data-label="What it does">The database, sign-in, and the accounts themselves</td><td role="cell" data-label="Who it affects">Account holders</td></tr>
+          <tr role="row"><th scope="row" role="rowheader" data-label="Service">Resend</th><td role="cell" data-label="What it does">Delivers the two account emails, and carries replies we send from the contact address</td><td role="cell" data-label="Who it affects">Account holders; anyone who emails us</td></tr>
+          <tr role="row"><th scope="row" role="rowheader" data-label="Service">Vercel</th><td role="cell" data-label="What it does">Hosts and delivers the site, and counts page views</td><td role="cell" data-label="Who it affects">Everyone</td></tr>
+          <tr role="row"><th scope="row" role="rowheader" data-label="Service">Cloudflare</th><td role="cell" data-label="What it does">The domain's DNS and email routing, and the bot check on the sign-in page</td><td role="cell" data-label="Who it affects">Everyone; the bot check, sign-in visitors only</td></tr>
         </tbody>
       </table>
     </div>

@@ -161,8 +161,16 @@
   /* The row count is supplementary. Kept on wide screens where it sits on the
      same line for free; dropped where it would wrap the summary onto three
      lines and push `margin-left:auto` somewhere that reads as a mistake. */
+  /* The table fits the phone instead of scrolling (2026-09-28). At 420px
+     minimum inside a ~316px wrapper at 390px, the whole "With an account"
+     column started off-screen — the one column the page exists to show — and
+     nothing hinted it was there. Only the SIDE padding is trimmed; the
+     vertical padding the note above calls load-bearing is untouched. */
   @media(max-width:520px){
     .doc-summary-hint{display:none}
+    .doc-table{min-width:0}
+    .doc-table th,.doc-table td{padding-left:6px;padding-right:6px}
+    .doc-table tbody th{padding-left:0}
   }
 
   /* ── DARK MODE ──

@@ -73,6 +73,10 @@
     cancelBulk();
     closeEditor();
     render();
+    // render() replaces the chip that was pressed, so focus would fall to
+    // <body> and a keyboard reader would start again from the top of the page
+    // (2026-09-28). The chip they chose is the one that still exists.
+    focusQuiet(doc.querySelector('.acct-filter-chip[data-filter="' + cssEscape(key) + '"]'));
   }
 
   /* ── loading ───────────────────────────────────────────────────────────────
@@ -222,6 +226,25 @@
 
   function el(id) { return doc.getElementById(id); }
 
+  /* Moves focus without scrolling the page. Every repaint below destroys the
+     control that had focus; without this it lands on <body> (2026-09-28). */
+  function focusQuiet(node) {
+    if (!node || typeof node.focus !== 'function') return;
+    try { node.focus({ preventScroll: true }); } catch (e) { node.focus(); }
+  }
+
+  // The live status line, focusable by script only, for when nothing in the
+  // table survives to take focus.
+  function focusStatus() { focusQuiet(el('acct-notes-status')); }
+
+  // The rows in the order the table shows them. One definition, because the
+  // delete path needs to know which row came AFTER the one removed.
+  function orderedVisible() {
+    return visibleNotes().sort(function (a, b) {
+      return String(recency(b)).localeCompare(String(recency(a)));
+    });
+  }
+
   function setStatus(text) {
     state.status = text || '';
     var s = el('acct-notes-status');
@@ -291,7 +314,7 @@
         '<p class="auth-muted">You have not written any notes yet. ' +
         'You can write one on any <a href="../future-skills.html">plan or primer</a>, ' +
         'or on a <a href="../news/">news story</a>.</p>' +
-        '<p class="auth-status" id="acct-notes-status" role="status" aria-live="polite"></p>';
+        '<p class="auth-status" id="acct-notes-status" role="status" aria-live="polite" tabindex="-1"></p>';
       setStatus(state.status);
       return;
     }
@@ -322,7 +345,7 @@
         '<button type="button" class="auth-btn auth-btn-danger-quiet" data-acct="bulk-delete">Delete selected</button>' +
         '<button type="button" class="auth-btn auth-btn-quiet" data-acct="bulk-clear">Clear selection</button>' +
       '</div>' +
-      '<p class="auth-status" id="acct-notes-status" role="status" aria-live="polite"></p>' +
+      '<p class="auth-status" id="acct-notes-status" role="status" aria-live="polite" tabindex="-1"></p>' +
       /* Scrolls inside its own container rather than widening the page — the
          same wrapper why-sign-up.html's comparison table uses. */
       '<div class="acct-notes-wrap">' +
@@ -341,17 +364,24 @@
     // wrote last is the one you are most likely looking for. (Per-plan order is
     // the PLAN's own sequence, which is a different question asked in a
     // different place — see skill-notes.js.)
-    visibleNotes().sort(function (a, b) {
-      return String(recency(b)).localeCompare(String(recency(a)));
-    }).forEach(function (n) {
+    orderedVisible().forEach(function (n) {
       var kind = kindOf(n);
       var href = targetHref(n);
       var topic = esc(targetLabel(n));
+      /* ⚠️ Every row's controls used to be named "Select this note", "Edit this
+         note" and "Delete this note" — identical thirty times over, so a screen
+         reader listing buttons could not tell one row from another (2026-09-28).
+         The name now carries what the note is on, and the section where there
+         is one, because two notes on one plan share a topic. `topic` and the
+         section are both esc()'d, which escapes quotes, so they are safe inside
+         an attribute. */
+      var sub = anchorLabel(n);
+      var about = 'note on ' + topic + (sub ? ', ' + esc(sub) : '');
       html +=
         '<tr class="acct-note-row" data-note="' + esc(n.id) + '">' +
           '<td class="acct-col-pick">' +
             '<input type="checkbox" class="acct-note-pick" data-pick="' + esc(n.id) + '"' +
-            ' aria-label="Select this note">' +
+            ' aria-label="Select ' + about + '">' +
           '</td>' +
           '<td class="acct-col-kind"><span class="acct-chip is-' + kind + '">' + kind + '</span></td>' +
           '<td class="acct-col-topic">' +
@@ -369,10 +399,10 @@
              rather than one being added later. */
           '<td class="acct-col-act">' +
             '<button type="button" class="acct-icon-btn" data-row="edit"' +
-              ' title="Edit this note" aria-label="Edit this note">' +
+              ' title="Edit this note" aria-label="Edit ' + about + '">' +
               icon(ICON_EDIT) + '</button>' +
             '<button type="button" class="acct-icon-btn is-danger" data-row="delete"' +
-              ' title="Delete this note" aria-label="Delete this note">' +
+              ' title="Delete this note" aria-label="Delete ' + about + '">' +
               icon(ICON_DELETE) + '</button>' +
           '</td>' +
         '</tr>';
@@ -527,20 +557,40 @@
   function cancelRowDelete() {
     var open = doc.querySelector('.acct-note-confirming');
     if (!open) return false;
+    /* Removing the prompt removes the button that had focus. If it did, hand
+       focus back to the Delete button that opened the prompt, so Cancel and
+       Escape leave the reader where they started (2026-09-28). Only then: a
+       cancel caused by something else (a filter change, a second prompt)
+       leaves focus to whoever caused it. */
+    var had = open.contains(doc.activeElement);
+    var row = open.previousElementSibling;
     open.parentNode.removeChild(open);
     Array.prototype.forEach.call(doc.querySelectorAll('.acct-note-row.is-confirming'), function (r) {
       r.classList.remove('is-confirming');
     });
+    if (had) focusQuiet(row && row.querySelector('[data-row="delete"]'));
     return true;
   }
 
   function doRowDelete(id) {
     setStatus('Deleting…');
     deleteNotes([id]).then(function () {
+      // The row that takes focus once this one is gone: the next one down,
+      // or the one above if this was the last. Worked out BEFORE the note
+      // leaves state, since afterwards there is no position to ask about.
+      var order = orderedVisible();
+      var at = order.map(function (n) { return n.id; }).indexOf(id);
+      var near = order[at + 1] || order[at - 1] || null;
       state.notes = state.notes.filter(function (n) { return n.id !== id; });
       delete state.picked[id];
       state.status = 'Note deleted.';
       render();
+      // The status line already announces "Note deleted." through its live
+      // region; focus goes to the neighbouring row's Delete, or to that
+      // status line when no row is left to hold it (2026-09-28).
+      var nextRow = near && rowFor(near.id);
+      if (nextRow) focusQuiet(nextRow.querySelector('[data-row="delete"]'));
+      else focusStatus();
     }).catch(function (err) {
       setStatus('Could not delete. Check your connection and try again.');
     });
@@ -564,6 +614,9 @@
       state.picked = {};
       render();
       setStatus(removed === 1 ? 'Note deleted.' : removed + ' notes deleted.');
+      // The Yes button went with the repaint; the status line is what says
+      // what happened, so focus goes there (2026-09-28).
+      focusStatus();
     }).catch(function (err) {
       cancelBulk();
       setStatus('Could not delete. Check your connection and try again.');

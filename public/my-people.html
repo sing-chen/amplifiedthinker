@@ -84,7 +84,10 @@
   .modal-body{padding:26px 30px 32px}
 
   /* name + external link */
-  .pname{font-family:var(--font-display);letter-spacing:-.014em;font-size:19px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-bottom:8px}
+  /* .pname is an <h2> since 2026-09-28 (it was a <div>, so the dialog had no
+     heading to jump to). margin-top:0 cancels the UA h2 margin so it renders
+     exactly as the div did; size and weight were already set here. */
+  .pname{font-family:var(--font-display);letter-spacing:-.014em;font-size:19px;font-weight:600;color:var(--fg-heading);line-height:1.25;margin-top:0;margin-bottom:8px}
   .ppills{margin-bottom:8px}
   .pext-link{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--fg-brand);text-decoration:none;margin-top:10px}
   .pext-link:hover{color:#26605B;text-decoration:underline}
@@ -455,9 +458,12 @@
     if (person.books && person.books.length) {
       html += '<div class="pworks-label">Key Works</div>';
       html += '<div class="works-covers">';
+      // alt="" because the title is already the link's visible text: with an
+      // alt as well, every book announced itself twice ("Co-Intelligence cover
+      // Co-Intelligence"). 2026-09-28.
       person.books.forEach(function (b) {
         html += '<a class="work-cover-card" href="' + escapeHTML(b.href) + '" target="_blank" rel="noopener">' +
-          '<span class="work-cover-img"><img src="' + escapeHTML(b.cover) + '" alt="' + escapeHTML(b.title) + ' cover" loading="lazy"></span>' +
+          '<span class="work-cover-img"><img src="' + escapeHTML(b.cover) + '" alt="" loading="lazy"></span>' +
           '<span class="work-cover-title">' + escapeHTML(b.title) + '</span>' +
           '</a>';
       });
@@ -481,9 +487,13 @@
     var imgStyle = person.imagePosition ? ' style="object-position:' + escapeHTML(person.imagePosition) + '"' : '';
     html += '<div class="modal-photo"><img src="' + escapeHTML(person.image) + '" alt="' + escapeHTML(person.imageAlt) + '"' + imgStyle + '></div>';
     html += '<div class="modal-body">';
-    html += '<div class="pname" id="modal-name">' + escapeHTML(person.name) + '</div>';
+    // The dialog's aria-labelledby points at this id, so the heading names it.
+    html += '<h2 class="pname" id="modal-name">' + escapeHTML(person.name) + '</h2>';
     html += '<div class="ppills"><span class="ppill ' + meta.pillClass + '">' + escapeHTML(meta.label) + '</span></div>';
-    html += '<a href="' + escapeHTML(person.url) + '" target="_blank" rel="noopener" aria-label="' + escapeHTML(person.name) + ' website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + EXT_ICON + '</svg>' + escapeHTML(person.urlDisplay) + '</a>';
+    // The accessible name STARTS with the visible text (WCAG 2.5.3, label in
+    // name): a voice user says "click oneusefulthing.org", which the old label
+    // "<Name> website" did not contain. 2026-09-28.
+    html += '<a href="' + escapeHTML(person.url) + '" target="_blank" rel="noopener" aria-label="' + escapeHTML(person.urlDisplay) + ', ' + escapeHTML(person.name) + '’s website" class="pext-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + EXT_ICON + '</svg>' + escapeHTML(person.urlDisplay) + '</a>';
     html += '<p class="pannotation">' + escapeHTML(person.annotation) + '</p>';
     html += '<div class="pquote"><span class="pquote-mark" aria-hidden="true">&ldquo;</span><div class="pquote-text">' + escapeHTML(person.quoteText) + '</div><div class="pquote-source">— ' + escapeHTML(person.quoteSource) + '</div></div>';
     html += '<div class="pdesc">' + escapeHTML(person.description) + '</div>';
@@ -498,12 +508,18 @@
     var person = PEOPLE.filter(function (p) { return p.id === id; })[0];
     if (!person) return;
 
+    // ampPushed marks an entry THIS page pushed, which is the only kind that
+    // may be closed with history.back(): a profile opened from a shared URL
+    // has the previous SITE (or nothing) behind it, and back() there would
+    // leave the page. A reload keeps history.state, so the flag is carried
+    // through the replace rather than reset. 2026-09-28.
     var url = new URL(window.location.href);
     url.searchParams.set('person', id);
     if (opts.replace) {
-      window.history.replaceState({}, '', url);
+      var pushed = !!(window.history.state && window.history.state.ampPushed);
+      window.history.replaceState({ ampPushed: pushed }, '', url);
     } else {
-      window.history.pushState({}, '', url);
+      window.history.pushState({ ampPushed: true }, '', url);
     }
 
     renderModal(person);
@@ -514,10 +530,20 @@
   function closeModal(opts) {
     opts = opts || {};
     if (modalScrim.open) modalScrim.close();
+    // Closing UNWINDS the entry opening added; it must never push another.
+    // Until 2026-09-28 it pushed, so every profile viewed cost two entries and
+    // Back after closing reopened the profile just dismissed. back() lands on
+    // the entry without ?person=, whose popstate finds the dialog already
+    // closed and does nothing. A profile that arrived by shared URL has no
+    // entry of ours behind it, so its ?person= is replaced away instead.
     if (!opts.skipHistory) {
-      var url = new URL(window.location.href);
-      url.searchParams.delete('person');
-      window.history.pushState({}, '', url);
+      if (window.history.state && window.history.state.ampPushed) {
+        window.history.back();
+      } else {
+        var url = new URL(window.location.href);
+        url.searchParams.delete('person');
+        window.history.replaceState({}, '', url);
+      }
     }
     if (lastFocusedTile) lastFocusedTile.focus();
   }
@@ -547,7 +573,9 @@
       if (!modalScrim.open) modalScrim.showModal();
       document.getElementById('modal-close-btn').focus();
     } else if (modalScrim.open) {
+      // Back pressed while a profile is open: closed here, history already moved.
       modalScrim.close();
+      if (lastFocusedTile) lastFocusedTile.focus();
     }
   });
 

@@ -110,8 +110,13 @@
   border-color: var(--sage);
   background: rgba(255,255,255,.12);
 }
+/* The border change alone was the only focus cue until 2026-09-28, and it
+   renders at 1px: a colour shift on a hairline, not a ring. Same --sage 2px
+   ring as .search-clear and the chips beside it; the hero is the fixed dark
+   #1B4A44 band in both themes, where --sage holds in light and dark. */
 #search-input:focus-visible {
-  outline: none; /* handled by border-color above */
+  outline: 2px solid var(--sage);
+  outline-offset: 2px;
 }
 .search-clear::after { content: ''; position: absolute; inset: -7px; }
 .search-clear {
@@ -630,7 +635,11 @@
 <main class="search-body" id="results-region">
 
   <!-- Initial prompt (shown before typing) -->
-  <div class="search-state visible" id="state-initial" aria-hidden="true">
+  <!-- No aria-hidden: this is the VISIBLE state at load, and hiding it left a
+       screen reader with nothing below the search box until the first query.
+       showState() still sets aria-hidden on whichever states are not showing.
+       2026-09-28 -->
+  <div class="search-state visible" id="state-initial">
     <div class="search-state-icon">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
     </div>
@@ -784,7 +793,12 @@
     })
     .catch(function (err) {
       showState('error');
-      hint.textContent = '';
+      // Said in the polite hint region, because showing #state-error is silent,
+      // and the ?q= query is put back in the box rather than dropped: the
+      // reader keeps what they asked for, and the URL (never rewritten here)
+      // still carries it for a refresh. 2026-09-28.
+      if (initialQuery) input.value = initialQuery;
+      hint.textContent = "Search isn't available right now. The search index couldn't be loaded.";
       input.disabled = true;
       input.placeholder = 'Search unavailable';
       var chipsElErr = document.querySelector('.search-chips');

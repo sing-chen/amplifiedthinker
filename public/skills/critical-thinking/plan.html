@@ -336,7 +336,8 @@
     margin-bottom: 24px;
     max-width: var(--content-max);
   }
-  .section h3 {
+  .section h3,
+  .section .accordion-title {
     font-family:var(--font-display);letter-spacing:-.024em;
     font-size: 20px;
     font-weight: 600;
@@ -504,7 +505,8 @@
     color:var(--fg-brand);
     margin-bottom: 8px;
   }
-  .principle h3 {
+  .principle h3,
+  .principle .accordion-title {
     margin-top: 0;
     color: var(--deep-teal);
   }
@@ -513,6 +515,21 @@
      Principles default closed; the model card defaults open
      in markup, since there's only one. Toggled via .open
      class on the parent .principle / .model-card. */
+  /* Disclosure pattern: <h3 class="accordion-heading"> wraps a native <button>,
+     so the title stays a heading (a button's children are presentational).
+     The h3 adds nothing visual of its own; .section h3's type belongs to
+     .accordion-title inside the button. The dark selector is listed because
+     [data-theme="dark"] .section h3 would otherwise recolour it. */
+  .section h3.accordion-heading,
+  [data-theme="dark"] .section h3.accordion-heading {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  .accordion-title,
+  .principle-header .principle-number,
+  .model-header .model-source { display: block; }
   .principle-header,
   .model-header {
     display: flex;
@@ -521,6 +538,21 @@
     gap: 20px;
     cursor: pointer;
     border-radius: var(--radius);
+    /* Undo the <button> UA look so it renders as the old div header did.
+       Padding is reset here, BEFORE .model-header's own padding rule. */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-transform: inherit;
+    text-align: left;
   }
   .principle-header-text,
   .model-header-text {
@@ -762,7 +794,7 @@
   }
   .model-header { padding: 24px 32px; }
   .model-body { padding: 0 32px 28px; }
-  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header-text .accordion-title { margin: 0 0 6px; }
   .model-header .model-source { margin-bottom: 0; }
   .model-source {
     font-family:var(--font-body);
@@ -848,7 +880,9 @@
     padding: 24px 28px;
     border-left: 3px solid var(--terracotta);
   }
-  .mistake h4 {
+  .mistake .mistake-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 600;
@@ -984,7 +1018,9 @@
     max-width: var(--content-max);
     margin-bottom: 32px;
   }
-  .scenario h4 {
+  .scenario .scenario-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 17px;
     font-weight: 600;
@@ -1351,7 +1387,9 @@
     gap: 12px;
     margin-bottom: 14px;
   }
-  .progression-stage h4 {
+  .progression-stage .progression-title {
+    margin: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 700;
@@ -1754,6 +1792,7 @@
 
   [data-theme="dark"] .section h2,
   [data-theme="dark"] .section h3,
+  [data-theme="dark"] .section .accordion-title,
   [data-theme="dark"] .principle h3 { color: var(--d-fg-heading); }
   [data-theme="dark"] .section p { color: var(--d-fg-1); }
   [data-theme="dark"] .definition-box p { color: var(--cream); }
@@ -1817,7 +1856,7 @@
   [data-theme="dark"] .ladder-leap-tag { color: var(--d-terra-stroke); }
 
   [data-theme="dark"] .mistake { background: var(--d-bg-surface); border-left-color: var(--terracotta); }
-  [data-theme="dark"] .mistake h4 { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .mistake .mistake-title { color: var(--d-terra-stroke); }
   [data-theme="dark"] .mistake-cell-label { color: var(--d-fg-2); }
   [data-theme="dark"] .mistake-cell p { color: var(--d-fg-1); }
 
@@ -1832,7 +1871,7 @@
   [data-theme="dark"] .indicator-panel.underuse .indicator-list li:hover { background: var(--d-terra-bg); }
   [data-theme="dark"] .indicator-panel.overuse  .indicator-list li:hover { background: var(--d-amber-bg); }
 
-  [data-theme="dark"] .scenario h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .scenario .scenario-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .scenario-col.without { background: var(--d-terra-bg); }
   [data-theme="dark"] .scenario-col.with    { background: var(--d-teal-bg); }
   [data-theme="dark"] .without .scenario-col-label { color: var(--d-terra-stroke); }
@@ -1884,7 +1923,7 @@
   [data-theme="dark"] .habit-not-clicking-label { color: var(--d-terra-stroke); }
 
   [data-theme="dark"] .progression-stage { background: var(--d-bg-surface); border-left-color: var(--teal); }
-  [data-theme="dark"] .progression-stage h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .progression-stage .progression-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .progression-cap { border-top-color: var(--d-line); }
   [data-theme="dark"] .progression-cap-item label { color: var(--d-teal-stroke); }
   [data-theme="dark"] .progression-cap-item p { color: var(--d-fg-1); }
@@ -2176,16 +2215,18 @@
       <p class="principles-intro">Five axes for testing whether a conclusion holds. Unlike a build sequence, these aren't strictly ordered — depending on what's in front of you, you might start anywhere. Together they cover the ground a judgment needs to stand on: what's claimed versus what's shown, whether the evidence underneath is strong enough, where bias might be operating, where an unexamined assumption took over, and what an evaluation does — and doesn't — produce.</p>
 
       <div class="principle" id="principle-01">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 01</div>
-            <h3>Claims versus evidence</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 01</span>
+              <span class="accordion-title">Claims versus evidence</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-01-body">
           <p>Every conclusion arrives wrapped in language that makes it sound true: confident framing, specific numbers, an authoritative tone. None of that is evidence. The first move in evaluating any conclusion is separating what's being claimed from what's actually been demonstrated — which sentences are assertions, and which are backed by something you could independently check.</p>
           <p>This is easy to skip because a well-formed claim and a well-evidenced claim often look identical on the page. "Support tickets increased 40% due to a UI change" reads the same whether that's a measured fact or a plausible-sounding inference dressed in measurement language. Until you've located what a claim is standing on, treat it as a hypothesis — something to test, not something to act on.</p>
@@ -2193,16 +2234,18 @@
       </div>
 
       <div class="principle" id="principle-02">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 02</div>
-            <h3>The quality of the evidence</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 02</span>
+              <span class="accordion-title">The quality of the evidence</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-02-body">
           <p>Not all evidence carries the same weight, and treating it as if it does is one of the most common ways a sound-seeming conclusion turns out to be wrong. Evidence varies along at least four dimensions worth checking deliberately, every time:</p>
           <div class="filter-grid">
@@ -2232,16 +2275,18 @@
       </div>
 
       <div class="principle" id="principle-03">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 03</div>
-            <h3>Bias has three addresses</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 03</span>
+              <span class="accordion-title">Bias has three addresses</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-03-body">
           <p>Bias is in the source — a report written by someone with a stake in a particular outcome. It's in the data — a dataset filtered, categorized, or collected in a way that shapes what it can show before any analysis begins. And it's in you — bringing prior beliefs that make some conclusions feel more obviously true than others, regardless of what the evidence actually supports.</p>
           <p>The third is hardest, because it's invisible from the inside. A conclusion that confirms what you already suspected gets less scrutiny than one that surprises you — not from carelessness, but because confirming evidence takes less effort to accept than disconfirming evidence takes to process.</p>
@@ -2254,16 +2299,18 @@
       </div>
 
       <div class="principle" id="principle-04">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 04</div>
-            <h3>The leap from data to conclusion</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 04</span>
+              <span class="accordion-title">The leap from data to conclusion</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-04-body">
           <p>Between "here's what happened" and "here's what it means" sits a leap, and that leap is where assumptions get smuggled in without anyone deciding to put them there. A 40% increase in tickets is data. "A UI change caused confusion" is an interpretation of that data, resting on an assumption — that UI changes typically cause this kind of spike — which may or may not apply here.</p>
           <p>The Ladder of Inference, covered as this plan's mental model, makes this leap visible: each rung from raw observation to action involves a choice that feels automatic but isn't. Most flawed conclusions aren't wrong because the underlying data was wrong. They're wrong because a leap partway up the ladder went unexamined — and the higher up the ladder a conclusion sits, the more confidently it tends to be stated, which is exactly backwards from how much scrutiny it's received.</p>
@@ -2271,16 +2318,18 @@
       </div>
 
       <div class="principle" id="principle-05">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 05</div>
-            <h3>What this produces — and what it doesn't</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 05</span>
+              <span class="accordion-title">What this produces — and what it doesn't</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-05-body">
           <p>The output of this entire process is a judgment: this part is sound, this part is questionable, this is what's missing. That's it. It is not a fix, a redesign, or a list of alternatives — reaching for those is Creative Thinking, and reaching for them too early is one of the most common ways an evaluation gets cut short.</p>
           <p>The pull toward "here's what we should do instead" is strong, especially once you've found a real problem with a conclusion. Finding a flaw creates momentum toward resolving it, and stopping at "this doesn't hold" can feel incomplete in a way that's uncomfortable to sit with. Resisting that pull means treating an honest, incomplete picture — knowing something doesn't hold up without yet knowing what replaces it — as a legitimate, useful place to stop.</p>
@@ -2357,16 +2406,18 @@
       <h2>Mental Model</h2>
 
       <div class="model-card open" id="model-ladder">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="true" aria-controls="model-ladder-body" onclick="toggleAccordion('model-ladder')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-ladder')}">
-          <div class="model-header-text">
-            <h3>The Ladder of Inference</h3>
-            <div class="model-source">Chris Argyris · popularised by Peter Senge, <em>The Fifth Discipline</em>, 1990</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Collapse</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="true" aria-controls="model-ladder-body" onclick="toggleAccordion('model-ladder')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Ladder of Inference</span>
+              <span class="model-source">Chris Argyris · popularised by Peter Senge, <em>The Fifth Discipline</em>, 1990</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Collapse</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-ladder-body">
           <p>The Ladder of Inference describes seven rungs most people climb in milliseconds, without noticing: starting from raw data and facts, we select certain data to pay attention to (shaped by what we already expect to see), add meaning to it based on past experience, form assumptions, draw conclusions, develop beliefs, and take action — each rung built on the one below it, each one a choice that felt automatic.</p>
           <p>Argyris's caution is that the lower a rung sits, the more self-evident it feels — and the less likely anyone questions it. A fact, however obvious it seems, isn't really substantiated until it's verified independently. The Ladder's value isn't memorising seven labels; it's the habit of climbing back down a conclusion before acting on it, rung by rung, until you find the one that was actually an assumption wearing a fact's clothes.</p>
@@ -2396,7 +2447,7 @@
       <h2>Common Mistakes</h2>
 
       <div class="mistake">
-        <h4>Mistaking confidence for credibility</h4>
+        <h3 class="mistake-title">Mistaking confidence for credibility</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2410,7 +2461,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Confirmation creep</h4>
+        <h3 class="mistake-title">Confirmation creep</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2424,7 +2475,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Strawmanning instead of steelmanning</h4>
+        <h3 class="mistake-title">Strawmanning instead of steelmanning</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2438,7 +2489,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Treating "no flaw found" as "verified true"</h4>
+        <h3 class="mistake-title">Treating "no flaw found" as "verified true"</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2521,7 +2572,7 @@
       <h2>Practical Examples</h2>
 
       <div class="scenario">
-        <h4>An AI ticket-volume analysis</h4>
+        <h3 class="scenario-title">An AI ticket-volume analysis</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Critical Thinking</div>
@@ -2537,7 +2588,7 @@
       </div>
 
       <div class="scenario">
-        <h4>Removing a "redundant" QA step</h4>
+        <h3 class="scenario-title">Removing a "redundant" QA step</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Critical Thinking</div>
@@ -2935,7 +2986,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-structural">Foundation</span>
-          <h4>The Careful Skeptic</h4>
+          <h3 class="progression-title">The Careful Skeptic</h3>
         </div>
         <p>You apply the checks deliberately and consciously — source, method, currency, motive; steelmanning before objecting; tracing a leap down the Ladder. The process takes effort and reminders. You're still occasionally swept up by confident presentation, but you catch it more often than before.</p>
         <div class="progression-cap">
@@ -2953,7 +3004,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-analytical">Expansion</span>
-          <h4>The Bias Spotter</h4>
+          <h3 class="progression-title">The Bias Spotter</h3>
         </div>
         <p>The checks become habitual — you run them before deciding to. Your focus shifts to noticing patterns in your own reactions, which kinds of claims get a free pass, and you start noticing when other people's evaluations stop short: a "no flaw found" treated as "verified," a cause accepted by elimination, a conclusion that went unchecked because it confirmed something convenient.</p>
         <div class="progression-cap">
@@ -2971,7 +3022,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-growth">Integration</span>
-          <h4>The Calibration Point</h4>
+          <h3 class="progression-title">The Calibration Point</h3>
         </div>
         <p>The checks run fast enough not to slow decisions down, and you can tell which situations need heavy scrutiny and which don't — avoiding the overuse end of the spectrum as readily as the underuse end. You help others build the same instinct by making the checks visible and shared, not just applying them privately.</p>
         <div class="progression-cap">

@@ -346,7 +346,8 @@
     margin-bottom: 24px;
     max-width: var(--content-max);
   }
-  .section h3 {
+  .section h3,
+  .section .accordion-title {
     font-family:var(--font-display);letter-spacing:-.024em;
     font-size: 20px;
     font-weight: 600;
@@ -514,7 +515,8 @@
     color:var(--fg-brand);
     margin-bottom: 8px;
   }
-  .principle h3 {
+  .principle h3,
+  .principle .accordion-title {
     margin-top: 0;
     color: var(--deep-teal);
   }
@@ -522,6 +524,21 @@
   /* ── ACCORDION (shared: principles + mental models) ──
      All principles default closed; the first model card opens by
      default. Toggled via .open on the parent .principle / .model-card. */
+  /* Disclosure pattern: <h3 class="accordion-heading"> wraps a native <button>,
+     so the title stays a heading (a button's children are presentational).
+     The h3 adds nothing visual of its own; .section h3's type belongs to
+     .accordion-title inside the button. The dark selector is listed because
+     [data-theme="dark"] .section h3 would otherwise recolour it. */
+  .section h3.accordion-heading,
+  [data-theme="dark"] .section h3.accordion-heading {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  .accordion-title,
+  .principle-header .principle-number,
+  .model-header .model-source { display: block; }
   .principle-header,
   .model-header {
     display: flex;
@@ -530,6 +547,21 @@
     gap: 20px;
     cursor: pointer;
     border-radius: var(--radius);
+    /* Undo the <button> UA look so it renders as the old div header did.
+       Padding is reset here, BEFORE .model-header's own padding rule. */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-transform: inherit;
+    text-align: left;
   }
   .principle-header-text,
   .model-header-text {
@@ -620,7 +652,7 @@
   }
   .model-header { padding: 24px 32px; }
   .model-body { padding: 0 32px 28px; }
-  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header-text .accordion-title { margin: 0 0 6px; }
   .model-header .model-source { margin-bottom: 0; }
   .model-source {
     font-family:var(--font-body);
@@ -749,7 +781,9 @@
     padding: 24px 28px;
     border-left: 3px solid var(--terracotta);
   }
-  .mistake h4 {
+  .mistake .mistake-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 600;
@@ -885,7 +919,9 @@
     max-width: var(--content-max);
     margin-bottom: 32px;
   }
-  .scenario h4 {
+  .scenario .scenario-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 17px;
     font-weight: 600;
@@ -1254,7 +1290,9 @@
     gap: 12px;
     margin-bottom: 14px;
   }
-  .progression-stage h4 {
+  .progression-stage .progression-title {
+    margin: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 700;
@@ -1645,6 +1683,7 @@
 
   [data-theme="dark"] .section h2,
   [data-theme="dark"] .section h3,
+  [data-theme="dark"] .section .accordion-title,
   [data-theme="dark"] .principle h3 { color: var(--d-fg-heading); }
   [data-theme="dark"] .section p { color: var(--d-fg-1); }
   [data-theme="dark"] .principles-intro { border-bottom-color: var(--d-line); }
@@ -1711,7 +1750,7 @@
   [data-theme="dark"] .model-applied .step-num:not(.root) { background: var(--d-bg-surface); }
 
   [data-theme="dark"] .mistake { background: var(--d-bg-surface); border-left-color: var(--terracotta); }
-  [data-theme="dark"] .mistake h4 { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .mistake .mistake-title { color: var(--d-terra-stroke); }
   [data-theme="dark"] .mistake-cell-label { color: var(--d-fg-2); }
   [data-theme="dark"] .mistake-cell p { color: var(--d-fg-1); }
 
@@ -1726,7 +1765,7 @@
   [data-theme="dark"] .indicator-panel.underuse .indicator-list li:hover { background: var(--d-terra-bg); }
   [data-theme="dark"] .indicator-panel.overuse  .indicator-list li:hover { background: var(--d-amber-bg); }
 
-  [data-theme="dark"] .scenario h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .scenario .scenario-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .scenario-col.without { background: var(--d-terra-bg); }
   [data-theme="dark"] .scenario-col.with    { background: var(--d-teal-bg); }
   [data-theme="dark"] .without .scenario-col-label { color: var(--d-terra-stroke); }
@@ -1778,7 +1817,7 @@
   [data-theme="dark"] .habit-not-clicking-label { color: var(--d-slate-stroke); }
 
   [data-theme="dark"] .progression-stage { background: var(--d-bg-surface); border-left-color: var(--teal); }
-  [data-theme="dark"] .progression-stage h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .progression-stage .progression-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .progression-cap { border-top-color: var(--d-line); }
   [data-theme="dark"] .progression-cap-item label { color: var(--d-teal-stroke); }
   [data-theme="dark"] .progression-cap-item p { color: var(--d-fg-1); }
@@ -2075,16 +2114,18 @@
       <p class="principles-intro">Six principles, in sequence. Each builds on the one before it — you can't name a trade-off until you've stopped accumulating, can't identify signal until you know what the trade-off is, can't test a choice you haven't made. The mental models, behavioral indicators, and daily practices later in this plan are all applications of these six ideas.</p>
 
       <div class="principle" id="principle-01">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 01</div>
-            <h3>Synthesis is subtraction, not accumulation</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 01</span>
+              <span class="accordion-title">Synthesis is subtraction, not accumulation</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-01-body">
           <p>A summary keeps everything and makes it shorter. A synthesis throws most of it away and keeps the part that determines what happens next. The two look similar on the page and are opposite in intent — which is why so much work that calls itself synthesis is really just a well-organised pile.</p>
           <p>The tell is whether anything was discarded. If every input that went in is still represented in the output, no synthesis happened. The discomfort of deleting a stakeholder's contribution, or a week of your own analysis, is the work — not a sign you've done it wrong.</p>
@@ -2092,16 +2133,18 @@
       </div>
 
       <div class="principle" id="principle-02">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 02</div>
-            <h3>Every choice is a trade-off, and unnamed trade-offs get paid anyway</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 02</span>
+              <span class="accordion-title">Every choice is a trade-off, and unnamed trade-offs get paid anyway</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-02-body">
           <p>Choosing one thing means not choosing the others, and the cost of the road not taken lands whether or not anyone said it out loud. "Let's do some of each" isn't avoiding the trade-off — it's paying it in a worse currency, spreading capacity so thin that nothing lands properly.</p>
           <p>Naming the trade-off is what makes a decision defensible later. When someone asks in three months why the other option wasn't taken, "we weighted retention highest and that option scored lower on it" is an answer. "It didn't come up" is not, and it's what most teams have.</p>
@@ -2109,16 +2152,18 @@
       </div>
 
       <div class="principle" id="principle-03">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 03</div>
-            <h3>Signal is what would change the decision — everything else is context</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 03</span>
+              <span class="accordion-title">Signal is what would change the decision — everything else is context</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-03-body">
           <p>"Important" and "decision-relevant" are different tests, and most people apply the first. A finding can be genuinely interesting, hard-won, and true, and still not move the choice in front of you by a single degree. That finding is context. It belongs in the appendix, not the recommendation.</p>
           <p>The operational version is a subtraction test: remove this input entirely — does the decision change? If not, it isn't carrying weight, however much work went into producing it. Running that test on your own analysis is uncomfortable in exactly the way Principle 01 predicts.</p>
@@ -2130,16 +2175,18 @@
       </div>
 
       <div class="principle" id="principle-04">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 04</div>
-            <h3>Decide against futures, not forecasts</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 04</span>
+              <span class="accordion-title">Decide against futures, not forecasts</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-04-body">
           <p>A forecast is a single predicted future, and planning against one means betting the whole decision on being right about it. Scenarios do something different: they hold several plausible futures at once and ask which choice survives across them. The goal was never to predict correctly — it's to avoid a choice that only works if one specific thing happens.</p>
           <p>This reframes what a good decision looks like. A choice that wins big in one quadrant and collapses in the other three is a bet on a prediction. A choice that performs acceptably across all four, even without winning anywhere, is usually the stronger call — and knowing which one you're making is the point.</p>
@@ -2147,16 +2194,18 @@
       </div>
 
       <div class="principle" id="principle-05">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 05</div>
-            <h3>Separate what you know from what you're assuming</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 05</span>
+              <span class="accordion-title">Separate what you know from what you're assuming</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-05-body">
           <p>Every real decision runs on a mix of established fact and judgment filling the gaps. That's not a weakness to apologise for — it's the condition of deciding anything before the evidence is complete, which is to say, of deciding anything at all. The failure mode isn't relying on assumptions. It's losing track of which parts of your reasoning are assumptions.</p>
           <p>Writing the two lists side by side takes minutes and changes what you do next. It tells you which assumption, if wrong, breaks the whole recommendation — which is exactly the one worth spending another day testing, while the rest can be left alone.</p>
@@ -2168,16 +2217,18 @@
       </div>
 
       <div class="principle" id="principle-06">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-06')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 06</div>
-            <h3>A decision nobody can act on isn't a decision</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 06</span>
+              <span class="accordion-title">A decision nobody can act on isn't a decision</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-06-body">
           <p>Analysis that stays in your head, or in a document nobody finishes, has the same practical effect as no analysis. This is where thinking meets influence: the last mile of the skill is compression and framing, not more rigour. A recommendation that can't survive being stated in one sentence usually hasn't been made yet.</p>
           <p>Framing is audience-dependent without being dishonest. An executive needs the answer first and the reasoning available on request; a peer implementing it needs the reasoning to understand the edges. Same decision, same evidence, different entry point — and choosing the entry point is part of the work, not a presentational afterthought.</p>
@@ -2190,16 +2241,18 @@
       <h2>Key Mental Models and Frameworks</h2>
 
       <div class="model-card open" id="model-decision-matrix">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="true" aria-controls="model-decision-matrix-body" onclick="toggleAccordion('model-decision-matrix')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-decision-matrix')}">
-          <div class="model-header-text">
-            <h3>The Weighted Decision Matrix</h3>
-            <div class="model-source">Classical decision analysis · popularised as the Pugh matrix, 1980s</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Collapse</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="true" aria-controls="model-decision-matrix-body" onclick="toggleAccordion('model-decision-matrix')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Weighted Decision Matrix</span>
+              <span class="model-source">Classical decision analysis · popularised as the Pugh matrix, 1980s</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Collapse</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-decision-matrix-body">
           <p>List the options as rows, the criteria as columns, and give each criterion a weight before you score anything. Multiply, sum, compare. The weights are the actual decision — they're where you state what matters most, committed in advance of knowing which option they favour. Everything after that is arithmetic.</p>
           <p>Its real value isn't the number it produces. It's that disagreement moves to the right place: instead of arguing about conclusions, people argue about weights, which is a conversation that can actually be settled.</p>
@@ -2241,16 +2294,18 @@
       </div>
 
       <div class="model-card" id="model-rice">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-rice-body" onclick="toggleAccordion('model-rice')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-rice')}">
-          <div class="model-header-text">
-            <h3>RICE Scoring</h3>
-            <div class="model-source">Sean McBride · Intercom · 2016</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-rice-body" onclick="toggleAccordion('model-rice')">
+            <span class="model-header-text">
+              <span class="accordion-title">RICE Scoring</span>
+              <span class="model-source">Sean McBride · Intercom · 2016</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-rice-body">
           <p>A fixed formula for ranking options when the data is partial: Reach × Impact × Confidence, divided by Effort. Its distinguishing move is putting <em>Confidence</em> inside the calculation as a percentage — so a high-scoring option built on weak evidence is automatically discounted rather than quietly winning on optimistic inputs.</p>
           <p>Where the weighted matrix asks you to define criteria each time, RICE fixes them. That makes it faster and more comparable across a backlog, and less adaptable to a decision whose criteria are genuinely unusual.</p>
@@ -2271,16 +2326,18 @@
       </div>
 
       <div class="model-card" id="model-scenario-cross">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-scenario-cross-body" onclick="toggleAccordion('model-scenario-cross')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-scenario-cross')}">
-          <div class="model-header-text">
-            <h3>The Scenario Cross</h3>
-            <div class="model-source">Peter Schwartz · Global Business Network, from the Shell scenario tradition</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-scenario-cross-body" onclick="toggleAccordion('model-scenario-cross')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Scenario Cross</span>
+              <span class="model-source">Peter Schwartz · Global Business Network, from the Shell scenario tradition</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-scenario-cross-body">
           <p>Pick the two uncertainties that would most change your decision — not the two most talked about, the two most decision-relevant. Cross them and you get four futures instead of one forecast. Then test the choice in each quadrant and see where it breaks.</p>
           <p>The discipline is in the axis selection. Two uncertainties that move together produce a fake cross with only two real quadrants; the pair has to be genuinely independent for the exercise to tell you anything you didn't already know.</p>
@@ -2301,16 +2358,18 @@
       </div>
 
       <div class="model-card" id="model-premortem">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-premortem-body" onclick="toggleAccordion('model-premortem')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-premortem')}">
-          <div class="model-header-text">
-            <h3>The Pre-Mortem</h3>
-            <div class="model-source">Gary Klein · Harvard Business Review · 2007</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-premortem-body" onclick="toggleAccordion('model-premortem')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Pre-Mortem</span>
+              <span class="model-source">Gary Klein · Harvard Business Review · 2007</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-premortem-body">
           <p>Before committing, assume the decision has already failed — not "might fail," has failed, twelve months from now — and work backwards to why. The grammatical shift from hypothetical to certain is the entire mechanism: it converts raising doubts from an act of disloyalty into a task everyone's been asked to complete.</p>
           <p>It's the cheapest available counter to optimism bias, and it surfaces the reservations people already held privately but had no safe moment to say. Run it once, before the point of no return, on any decision large enough that being wrong would be expensive.</p>
@@ -2327,16 +2386,18 @@
       </div>
 
       <div class="model-card" id="model-pyramid">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-pyramid-body" onclick="toggleAccordion('model-pyramid')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-pyramid')}">
-          <div class="model-header-text">
-            <h3>The Pyramid Principle</h3>
-            <div class="model-source">Barbara Minto · McKinsey · 1970s</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-pyramid-body" onclick="toggleAccordion('model-pyramid')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Pyramid Principle</span>
+              <span class="model-source">Barbara Minto · McKinsey · 1970s</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-pyramid-body">
           <p>Lead with the answer, then the reasons, then the evidence. Most analysis is written in the order it was discovered — context, method, findings, and finally a conclusion on page eleven — which forces the reader to perform the synthesis you were supposed to perform for them.</p>
           <p>Answer-first feels presumptuous the first few times, as though you're skipping the work. You aren't: the work is all still there, just underneath. What changes is that a reader who stops after one line still leaves knowing what you want — and most readers stop after one line.</p>
@@ -2358,7 +2419,7 @@
       <h2>Common Mistakes</h2>
 
       <div class="mistake">
-        <h4>Gathering more input instead of deciding</h4>
+        <h3 class="mistake-title">Gathering more input instead of deciding</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2372,7 +2433,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Escalation of commitment</h4>
+        <h3 class="mistake-title">Escalation of commitment</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2386,7 +2447,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Building the base case on the optimistic branch</h4>
+        <h3 class="mistake-title">Building the base case on the optimistic branch</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2400,7 +2461,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Delivering the analysis instead of the recommendation</h4>
+        <h3 class="mistake-title">Delivering the analysis instead of the recommendation</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2483,7 +2544,7 @@
       <h2>Practical Examples</h2>
 
       <div class="scenario">
-        <h4>A vendor evaluation that ends without a recommendation</h4>
+        <h3 class="scenario-title">A vendor evaluation that ends without a recommendation</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Strategic Synthesis</div>
@@ -2499,7 +2560,7 @@
       </div>
 
       <div class="scenario">
-        <h4>An eighteen-month project everyone privately doubts</h4>
+        <h3 class="scenario-title">An eighteen-month project everyone privately doubts</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Strategic Synthesis</div>
@@ -2898,7 +2959,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-structural">Foundation</span>
-          <h4>The Explicit Decider</h4>
+          <h3 class="progression-title">The Explicit Decider</h3>
         </div>
         <p>You make the implicit parts visible, deliberately and with effort. You name the trade-off rather than leaving it in the room, write weights down before scoring, and mark which parts of your reasoning are assumptions. It takes a template and a conscious pause each time — but decisions you're involved in now come with stated reasons attached, where before they came with a summary.</p>
         <div class="progression-cap">
@@ -2916,7 +2977,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-analytical">Expansion</span>
-          <h4>The Scenario Tester</h4>
+          <h3 class="progression-title">The Scenario Tester</h3>
         </div>
         <p>Stress-testing has become reflex. You run choices against more than one future without being prompted, catch optimism creeping into a base case, and spot escalation of commitment in other people's arguments — including the polite versions that sound like new information. Your attention shifts from making the call to making it robust: what breaks it, what you'd need to see to change it, what threshold should stop it.</p>
         <div class="progression-cap">
@@ -2934,7 +2995,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-growth">Integration</span>
-          <h4>The Direction Setter</h4>
+          <h3 class="progression-title">The Direction Setter</h3>
         </div>
         <p>Synthesis is no longer a process you run — it's how you hold ambiguity. You move fluidly between weighing, testing, and framing depending on what a situation needs, calibrate the framing to the audience without softening the recommendation, and stay comfortable committing on partial information because you know exactly which parts are partial. You make the reasoning visible so others can build the same habit.</p>
         <div class="progression-cap">

@@ -345,7 +345,8 @@
     margin-bottom: 24px;
     max-width: var(--content-max);
   }
-  .section h3 {
+  .section h3,
+  .section .accordion-title {
     font-family:var(--font-display);letter-spacing:-.024em;
     font-size: 20px;
     font-weight: 600;
@@ -513,7 +514,8 @@
     color:var(--fg-brand);
     margin-bottom: 8px;
   }
-  .principle h3 {
+  .principle h3,
+  .principle .accordion-title {
     margin-top: 0;
     color: var(--deep-teal);
   }
@@ -521,6 +523,21 @@
   /* ── ACCORDION (shared: principles + mental models) ──
      All principles and model cards default closed. Toggled
      via .open class on the parent .principle / .model-card. */
+  /* Disclosure pattern: <h3 class="accordion-heading"> wraps a native <button>,
+     so the title stays a heading (a button's children are presentational).
+     The h3 adds nothing visual of its own; .section h3's type belongs to
+     .accordion-title inside the button. The dark selector is listed because
+     [data-theme="dark"] .section h3 would otherwise recolour it. */
+  .section h3.accordion-heading,
+  [data-theme="dark"] .section h3.accordion-heading {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  .accordion-title,
+  .principle-header .principle-number,
+  .model-header .model-source { display: block; }
   .principle-header,
   .model-header {
     display: flex;
@@ -529,6 +546,21 @@
     gap: 20px;
     cursor: pointer;
     border-radius: var(--radius);
+    /* Undo the <button> UA look so it renders as the old div header did.
+       Padding is reset here, BEFORE .model-header's own padding rule. */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-transform: inherit;
+    text-align: left;
   }
   .principle-header-text,
   .model-header-text {
@@ -619,7 +651,7 @@
   }
   .model-header { padding: 24px 32px; }
   .model-body { padding: 0 32px 28px; }
-  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header-text .accordion-title { margin: 0 0 6px; }
   .model-header .model-source { margin-bottom: 0; }
   .model-source {
     font-family:var(--font-body);
@@ -789,7 +821,9 @@
     padding: 24px 28px;
     border-left: 3px solid var(--terracotta);
   }
-  .mistake h4 {
+  .mistake .mistake-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 600;
@@ -925,7 +959,9 @@
     max-width: var(--content-max);
     margin-bottom: 32px;
   }
-  .scenario h4 {
+  .scenario .scenario-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 17px;
     font-weight: 600;
@@ -1294,7 +1330,9 @@
     gap: 12px;
     margin-bottom: 14px;
   }
-  .progression-stage h4 {
+  .progression-stage .progression-title {
+    margin: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 700;
@@ -1713,6 +1751,7 @@
 
   [data-theme="dark"] .section h2,
   [data-theme="dark"] .section h3,
+  [data-theme="dark"] .section .accordion-title,
   [data-theme="dark"] .principle h3 { color: var(--d-fg-heading); }
   [data-theme="dark"] .section p { color: var(--d-fg-1); }
   [data-theme="dark"] .principles-intro { border-bottom-color: var(--d-line); }
@@ -1772,7 +1811,7 @@
   [data-theme="dark"] .model-applied .step-num:not(.root) { background: var(--d-bg-surface); }
 
   [data-theme="dark"] .mistake { background: var(--d-bg-surface); border-left-color: var(--terracotta); }
-  [data-theme="dark"] .mistake h4 { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .mistake .mistake-title { color: var(--d-terra-stroke); }
   [data-theme="dark"] .mistake-cell-label { color: var(--d-fg-2); }
   [data-theme="dark"] .mistake-cell p { color: var(--d-fg-1); }
 
@@ -1787,7 +1826,7 @@
   [data-theme="dark"] .indicator-panel.underuse .indicator-list li:hover { background: var(--d-terra-bg); }
   [data-theme="dark"] .indicator-panel.overuse  .indicator-list li:hover { background: var(--d-amber-bg); }
 
-  [data-theme="dark"] .scenario h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .scenario .scenario-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .scenario-col.without { background: var(--d-terra-bg); }
   [data-theme="dark"] .scenario-col.with    { background: var(--d-teal-bg); }
   [data-theme="dark"] .without .scenario-col-label { color: var(--d-terra-stroke); }
@@ -1839,7 +1878,7 @@
   [data-theme="dark"] .habit-not-clicking-label { color: var(--d-slate-stroke); }
 
   [data-theme="dark"] .progression-stage { background: var(--d-bg-surface); border-left-color: var(--teal); }
-  [data-theme="dark"] .progression-stage h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .progression-stage .progression-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .progression-cap { border-top-color: var(--d-line); }
   [data-theme="dark"] .progression-cap-item label { color: var(--d-teal-stroke); }
   [data-theme="dark"] .progression-cap-item p { color: var(--d-fg-1); }
@@ -2126,16 +2165,18 @@
       <p class="principles-intro">Six principles, in sequence. Each builds on the one before it — divergence has to happen before convergence is possible, reframing opens the territory that generation then fills, and so on through to the constraints that sharpen a chosen idea. The mental models, behavioral indicators, and daily practices later in this plan are all applications of these six ideas.</p>
 
       <div class="principle" id="principle-01">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 01</div>
-            <h3>Divergence before convergence</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 01</span>
+              <span class="accordion-title">Divergence before convergence</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-01-body">
           <p>Generating and judging are two different acts, and doing them at the same time quietly kills the first one. The moment an idea gets evaluated the instant it's spoken, the pool of ideas that follow narrows to whatever feels safe to say next. Divergence means generating volume — deliberately, without commentary — before any idea is allowed to be judged.</p>
           <p>This is not intuitive. Most workplace habits reward looking decisive, and judging ideas as they arrive feels like rigor. It's actually the fastest way to end up with three variations on the first idea instead of a genuine range.</p>
@@ -2143,16 +2184,18 @@
       </div>
 
       <div class="principle" id="principle-02">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 02</div>
-            <h3>Reframing: the default framing is not the only one</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 02</span>
+              <span class="accordion-title">Reframing: the default framing is not the only one</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-02-body">
           <p>Every problem arrives already framed — as a resourcing issue, a training gap, a process fix. That framing isn't neutral. It was inherited from however the problem was first described, and it quietly determines which solutions even occur to you. A problem framed as "we need more people" will never generate "we need to remove a step."</p>
           <p>Reframing means treating the current framing as one option among several, not as the problem itself. Naming it explicitly — "we're currently framing this as X" — is what makes it possible to ask what else it could be.</p>
@@ -2160,16 +2203,18 @@
       </div>
 
       <div class="principle" id="principle-03">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 03</div>
-            <h3>Association across domains</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 03</span>
+              <span class="accordion-title">Association across domains</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-03-body">
           <p>Creative Thinking is recombination, not invention from nothing. A genuinely original idea is usually two familiar things meeting for the first time — a structure borrowed from one domain, applied to a problem in another. Restaurants pioneered the buzzer-pager system for table waits; airports later borrowed it for gate boarding.</p>
           <p>This is why staying inside one domain caps how far ideation can go. The people, publications, and conversations you draw from set a hard ceiling on what you can recombine — if every input is from the same field, every output will be a variation on what that field already does.</p>
@@ -2177,16 +2222,18 @@
       </div>
 
       <div class="principle" id="principle-04">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 04</div>
-            <h3>Judgment deferred, not absent</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 04</span>
+              <span class="accordion-title">Judgment deferred, not absent</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-04-body">
           <p>Deferring judgment during generation doesn't mean judgment never happens — it means it happens later, deliberately, as its own step. Skipping the judgment step entirely isn't creative discipline, it's just an unfiltered list. The discipline is in the sequencing: generate first, evaluate second, and don't let the second step contaminate the first.</p>
           <p>Knowing when generation has genuinely stopped — as opposed to just slowing down — is part of the skill. A forced quota (ten ideas, no fewer) is a common way to push past the first, easiest wave of ideas into the territory that actually requires effort to reach.</p>
@@ -2194,16 +2241,18 @@
       </div>
 
       <div class="principle" id="principle-05">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 05</div>
-            <h3>Quantity as a lever for quality</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 05</span>
+              <span class="accordion-title">Quantity as a lever for quality</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-05-body">
           <p>More ideas raise the odds that a genuinely useful one is in the set. Early ideas in any session tend to be the most obvious, most familiar ones. Volume is what pushes past that first layer into combinations nobody would reach in the first three tries.</p>
           <div class="ai-note">
@@ -2214,16 +2263,18 @@
       </div>
 
       <div class="principle" id="principle-06">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-06')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 06</div>
-            <h3>Constraints sharpen creativity</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 06</span>
+              <span class="accordion-title">Constraints sharpen creativity</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-06-body">
           <p>Unlimited freedom tends to produce the safest, most obvious idea — with no boundary to push against, there's nothing forcing a departure from the familiar. A deliberate constraint — half the budget, a third of the time, no new headcount — removes the obvious options and forces a genuinely different combination to solve the same problem.</p>
           <p>This is why "think outside the box" rarely works as an instruction, and a specific limit usually does. The constraint doesn't restrict creativity; it gives it something concrete to solve for.</p>
@@ -2236,16 +2287,18 @@
       <h2>Key Mental Models and Frameworks</h2>
 
       <div class="model-card" id="model-scamper">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-scamper-body" onclick="toggleAccordion('model-scamper')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-scamper')}">
-          <div class="model-header-text">
-            <h3>SCAMPER</h3>
-            <div class="model-source">Bob Eberle · built on Alex Osborn's checklist · 1971</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-scamper-body" onclick="toggleAccordion('model-scamper')">
+            <span class="model-header-text">
+              <span class="accordion-title">SCAMPER</span>
+              <span class="model-source">Bob Eberle · built on Alex Osborn's checklist · 1971</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-scamper-body">
           <p>Seven prompts — Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse/Rearrange — applied one at a time to something that already exists. It doesn't wait for inspiration; it manufactures ideas on demand by forcing the same fixed thing through seven different lenses.</p>
           <div class="model-applied">
@@ -2267,16 +2320,18 @@
       </div>
 
       <div class="model-card" id="model-divergent-convergent">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-divergent-convergent-body" onclick="toggleAccordion('model-divergent-convergent')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-divergent-convergent')}">
-          <div class="model-header-text">
-            <h3>The Divergent–Convergent Cycle</h3>
-            <div class="model-source">J.P. Guilford · popularized in design practice</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-divergent-convergent-body" onclick="toggleAccordion('model-divergent-convergent')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Divergent–Convergent Cycle</span>
+              <span class="model-source">J.P. Guilford · popularized in design practice</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-divergent-convergent-body">
           <p>Two phases, kept deliberately apart. Diverge: generate as many options as possible without judging any of them. Converge: apply judgment only once generation has genuinely stopped, narrowing the full set down to what's worth pursuing. Running both at once collapses back into evaluating the first idea as it arrives — which is exactly what this model exists to prevent.</p>
           <div class="model-applied">
@@ -2308,16 +2363,18 @@
       </div>
 
       <div class="model-card" id="model-assumption-reversal">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-assumption-reversal-body" onclick="toggleAccordion('model-assumption-reversal')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-assumption-reversal')}">
-          <div class="model-header-text">
-            <h3>Assumption Reversal</h3>
-            <div class="model-source">Lateral thinking · Edward de Bono</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-assumption-reversal-body" onclick="toggleAccordion('model-assumption-reversal')">
+            <span class="model-header-text">
+              <span class="accordion-title">Assumption Reversal</span>
+              <span class="model-source">Lateral thinking · Edward de Bono</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-assumption-reversal-body">
           <p>Name the assumption baked into how a problem is currently framed, then deliberately invert it. The reversal usually isn't literally true or immediately workable — that's not the point. The point is that starting from an inverted premise forces a genuinely different set of ideas than starting from the familiar one.</p>
           <div class="model-applied">
@@ -2333,16 +2390,18 @@
       </div>
 
       <div class="model-card" id="model-mindmap">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-mindmap-body" onclick="toggleAccordion('model-mindmap')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-mindmap')}">
-          <div class="model-header-text">
-            <h3>Mind Mapping</h3>
-            <div class="model-source">Tony Buzan · popularized from the 1970s</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-mindmap-body" onclick="toggleAccordion('model-mindmap')">
+            <span class="model-header-text">
+              <span class="accordion-title">Mind Mapping</span>
+              <span class="model-source">Tony Buzan · popularized from the 1970s</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-mindmap-body">
           <p>Puts a central problem in the middle of the page and radiates associations outward, branch by branch, without pre-sorting them into categories. The radial, non-linear structure is deliberate — linear lists push toward the most obvious next item, while a map lets one branch trigger a completely unrelated one elsewhere on the page.</p>
           <div class="model-applied">
@@ -2362,16 +2421,18 @@
       </div>
 
       <div class="model-card" id="model-reframing-matrix">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-reframing-matrix-body" onclick="toggleAccordion('model-reframing-matrix')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-reframing-matrix')}">
-          <div class="model-header-text">
-            <h3>The Reframing Matrix</h3>
-            <div class="model-source">Michael Morgan · 1993</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-reframing-matrix-body" onclick="toggleAccordion('model-reframing-matrix')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Reframing Matrix</span>
+              <span class="model-source">Michael Morgan · 1993</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-reframing-matrix-body">
           <p>Places the same problem in four quadrants, each viewed through a different lens — product, planning, potential, people. Working the same problem through all four in sequence surfaces ideas that a single-perspective discussion never reaches, because each lens asks a genuinely different question of the same material.</p>
           <div class="model-applied">
@@ -2395,7 +2456,7 @@
       <h2>Common Mistakes</h2>
 
       <div class="mistake">
-        <h4>Judging ideas as they're generated</h4>
+        <h3 class="mistake-title">Judging ideas as they're generated</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2409,7 +2470,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Settling on the first workable idea</h4>
+        <h3 class="mistake-title">Settling on the first workable idea</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2423,7 +2484,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Recombining only within the same domain</h4>
+        <h3 class="mistake-title">Recombining only within the same domain</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2437,7 +2498,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Mistaking novelty for value</h4>
+        <h3 class="mistake-title">Mistaking novelty for value</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2520,7 +2581,7 @@
       <h2>Practical Examples</h2>
 
       <div class="scenario">
-        <h4>A hiring process that's crept longer every year</h4>
+        <h3 class="scenario-title">A hiring process that's crept longer every year</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Creative Thinking</div>
@@ -2536,7 +2597,7 @@
       </div>
 
       <div class="scenario">
-        <h4>A product feature stuck in the same shape for two years</h4>
+        <h3 class="scenario-title">A product feature stuck in the same shape for two years</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Creative Thinking</div>
@@ -2930,7 +2991,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-structural">Foundation</span>
-          <h4>The Deliberate Divergent</h4>
+          <h3 class="progression-title">The Deliberate Divergent</h3>
         </div>
         <p>You apply the sequence deliberately and consciously: generate before judging, name the assumption before proposing a fix, pull in an unrelated input rather than defaulting to the familiar one. The process requires effort and reminders — a facilitator, a checklist, a quota you set for yourself. Your idea sets are genuinely wider than before, but you still need the structure present to get there.</p>
         <div class="progression-cap">
@@ -2948,7 +3009,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-analytical">Expansion</span>
-          <h4>The Cross-Pollinator</h4>
+          <h3 class="progression-title">The Cross-Pollinator</h3>
         </div>
         <p>Reframing and cross-domain association have become habitual — you reach for an unrelated field without needing a checklist to remind you. Your focus shifts to the quality of the divergent set: are you generating genuinely distinct options, or the same idea with different wording? You start noticing when others' brainstorms stayed inside one domain the whole time.</p>
         <div class="progression-cap">
@@ -2966,7 +3027,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-growth">Integration</span>
-          <h4>The Creative Standard-Setter</h4>
+          <h3 class="progression-title">The Creative Standard-Setter</h3>
         </div>
         <p>Creative Thinking is no longer a technique you apply — it's how you naturally approach a stuck problem. You move fluidly between reframing, association, and structured checklists depending on what a situation needs, and you hold divergence and convergence as clearly separate modes without needing to force the distinction. You help others build the same habit by making the sequence visible.</p>
         <div class="progression-cap">

@@ -345,7 +345,8 @@
     margin-bottom: 24px;
     max-width: var(--content-max);
   }
-  .section h3 {
+  .section h3,
+  .section .accordion-title {
     font-family:var(--font-display);letter-spacing:-.024em;
     font-size: 20px;
     font-weight: 600;
@@ -513,7 +514,8 @@
     color:var(--fg-brand);
     margin-bottom: 8px;
   }
-  .principle h3 {
+  .principle h3,
+  .principle .accordion-title {
     margin-top: 0;
     color: var(--deep-teal);
   }
@@ -521,6 +523,21 @@
   /* ── ACCORDION (shared: principles + mental models) ──
      All principles and model cards default closed. Toggled
      via .open class on the parent .principle / .model-card. */
+  /* Disclosure pattern: <h3 class="accordion-heading"> wraps a native <button>,
+     so the title stays a heading (a button's children are presentational).
+     The h3 adds nothing visual of its own; .section h3's type belongs to
+     .accordion-title inside the button. The dark selector is listed because
+     [data-theme="dark"] .section h3 would otherwise recolour it. */
+  .section h3.accordion-heading,
+  [data-theme="dark"] .section h3.accordion-heading {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  .accordion-title,
+  .principle-header .principle-number,
+  .model-header .model-source { display: block; }
   .principle-header,
   .model-header {
     display: flex;
@@ -529,6 +546,21 @@
     gap: 20px;
     cursor: pointer;
     border-radius: var(--radius);
+    /* Undo the <button> UA look so it renders as the old div header did.
+       Padding is reset here, BEFORE .model-header's own padding rule. */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-transform: inherit;
+    text-align: left;
   }
   .principle-header-text,
   .model-header-text {
@@ -619,7 +651,7 @@
   }
   .model-header { padding: 24px 32px; }
   .model-body { padding: 0 32px 28px; }
-  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header-text .accordion-title { margin: 0 0 6px; }
   .model-header .model-source { margin-bottom: 0; }
   .model-source {
     font-family:var(--font-body);
@@ -747,7 +779,9 @@
     padding: 24px 28px;
     border-left: 3px solid var(--terracotta);
   }
-  .mistake h4 {
+  .mistake .mistake-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 600;
@@ -883,7 +917,9 @@
     max-width: var(--content-max);
     margin-bottom: 32px;
   }
-  .scenario h4 {
+  .scenario .scenario-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 17px;
     font-weight: 600;
@@ -1252,7 +1288,9 @@
     gap: 12px;
     margin-bottom: 14px;
   }
-  .progression-stage h4 {
+  .progression-stage .progression-title {
+    margin: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 700;
@@ -1645,6 +1683,7 @@
 
   [data-theme="dark"] .section h2,
   [data-theme="dark"] .section h3,
+  [data-theme="dark"] .section .accordion-title,
   [data-theme="dark"] .principle h3 { color: var(--d-fg-heading); }
   [data-theme="dark"] .section p { color: var(--d-fg-1); }
   [data-theme="dark"] .principles-intro { border-bottom-color: var(--d-line); }
@@ -1703,7 +1742,7 @@
   [data-theme="dark"] .circle-node.origin { border-color: var(--terracotta); color: var(--d-terra-stroke); }
 
   [data-theme="dark"] .mistake { background: var(--d-bg-surface); border-left-color: var(--terracotta); }
-  [data-theme="dark"] .mistake h4 { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .mistake .mistake-title { color: var(--d-terra-stroke); }
   [data-theme="dark"] .mistake-cell-label { color: var(--d-fg-2); }
   [data-theme="dark"] .mistake-cell p { color: var(--d-fg-1); }
 
@@ -1718,7 +1757,7 @@
   [data-theme="dark"] .indicator-panel.underuse .indicator-list li:hover { background: var(--d-terra-bg); }
   [data-theme="dark"] .indicator-panel.overuse  .indicator-list li:hover { background: var(--d-amber-bg); }
 
-  [data-theme="dark"] .scenario h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .scenario .scenario-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .scenario-col.without { background: var(--d-terra-bg); }
   [data-theme="dark"] .scenario-col.with    { background: var(--d-teal-bg); }
   [data-theme="dark"] .without .scenario-col-label { color: var(--d-terra-stroke); }
@@ -1770,7 +1809,7 @@
   [data-theme="dark"] .habit-not-clicking-label { color: var(--d-slate-stroke); }
 
   [data-theme="dark"] .progression-stage { background: var(--d-bg-surface); border-left-color: var(--teal); }
-  [data-theme="dark"] .progression-stage h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .progression-stage .progression-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .progression-cap { border-top-color: var(--d-line); }
   [data-theme="dark"] .progression-cap-item label { color: var(--d-teal-stroke); }
   [data-theme="dark"] .progression-cap-item p { color: var(--d-fg-1); }
@@ -2054,16 +2093,18 @@
       <p class="principles-intro">Six principles, in sequence. Each builds on the one before it — you have to draw the boundary before you can map what's connected, and you have to see the loop before you can find a leverage point that actually holds. The mental models, behavioral indicators, and daily practices later in this plan are all applications of these six ideas.</p>
 
       <div class="principle" id="principle-01">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 01</div>
-            <h3>The boundary is a choice, not a given</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 01</span>
+              <span class="accordion-title">The boundary is a choice, not a given</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-01-body">
           <p>Every situation — a problem to diagnose, a decision to make, a new initiative to plan — comes with an implicit line around what counts as "in scope." That line isn't neutral — it was inherited from however the situation first got described, and it quietly decides what you'll treat as connected versus irrelevant. Draw the boundary around one team's workflow, and a dependency on another team's tooling, or on a function that hasn't been looped in yet, simply disappears from view.</p>
           <p>Naming the boundary explicitly — "we're currently only looking at X" — is what makes it possible to ask whether it's drawn in the right place. Sometimes that means widening it when a symptom keeps returning from just outside it; sometimes it means widening it before anything's gone wrong at all, so a new team or initiative doesn't launch missing a dependency everyone assumed someone else had covered.</p>
@@ -2071,16 +2112,18 @@
       </div>
 
       <div class="principle" id="principle-02">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 02</div>
-            <h3>Structure drives behavior</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 02</span>
+              <span class="accordion-title">Structure drives behavior</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-02-body">
           <p>A recurring problem is rarely a people problem — it's what the current structure is built to produce. If the same failure keeps happening under different people, in different circumstances, the common factor is the structure surrounding all of them, not any individual's effort or judgment.</p>
           <p>This reframes where blame naturally lands. "The team keeps missing this" becomes "the structure keeps producing this outcome regardless of who's in the team" — a very different, and far more solvable, question.</p>
@@ -2088,16 +2131,18 @@
       </div>
 
       <div class="principle" id="principle-03">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 03</div>
-            <h3>Everything is connected by feedback, not just cause-and-effect</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 03</span>
+              <span class="accordion-title">Everything is connected by feedback, not just cause-and-effect</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-03-body">
           <p>Linear cause-and-effect assumes A causes B and stops there. Most workplace systems loop back: B goes on to affect A again, either amplifying the original change (a reinforcing loop) or resisting it (a balancing loop). Missing the loop means missing why a problem persists after the "obvious" cause was already addressed once.</p>
           <p>Spotting the loop is what separates "we fixed it this time" from "we fixed the thing that keeps producing it."</p>
@@ -2105,16 +2150,18 @@
       </div>
 
       <div class="principle" id="principle-04">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 04</div>
-            <h3>The obvious symptom is rarely the leverage point</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 04</span>
+              <span class="accordion-title">The obvious symptom is rarely the leverage point</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-04-body">
           <p>Some interventions barely move a system; others transform it. The shallow ones — adjusting a number, adding a step — are the easiest to reach for and the weakest in effect. The deep ones — changing a rule, a goal, or the shared assumption underneath a structure — are harder to touch and are where lasting change actually happens.</p>
           <div class="ai-note">
@@ -2125,16 +2172,18 @@
       </div>
 
       <div class="principle" id="principle-05">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 05</div>
-            <h3>Second-order effects are the real cost of any intervention</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 05</span>
+              <span class="accordion-title">Second-order effects are the real cost of any intervention</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-05-body">
           <p>Every fix ripples further than its first, intended effect. Removing a bottleneck in one place can quietly create a new gap somewhere else that was depending on that bottleneck for a reason nobody stated out loud. The fix isn't finished until the ripple has been traced, not just the immediate improvement.</p>
           <p>This is why "did it work" needs a follow-up question: what else changed that we weren't looking for?</p>
@@ -2142,16 +2191,18 @@
       </div>
 
       <div class="principle" id="principle-06">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-06')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 06</div>
-            <h3>No single discipline sees the whole system</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 06</span>
+              <span class="accordion-title">No single discipline sees the whole system</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-06-body">
           <p>A product lens, an operations lens, and a people lens each surface a genuinely different part of the same system — none of them see the whole. A problem framed entirely in one discipline's terms will only ever generate that discipline's kind of fix.</p>
           <p>Reframing the same problem through a second, unrelated lens isn't a formality — it's often the step that surfaces the interdependency the first lens structurally couldn't see.</p>
@@ -2164,16 +2215,18 @@
       <h2>Key Mental Models and Frameworks</h2>
 
       <div class="model-card" id="model-feedback-loops">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-feedback-loops-body" onclick="toggleAccordion('model-feedback-loops')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-feedback-loops')}">
-          <div class="model-header-text">
-            <h3>Feedback Loops</h3>
-            <div class="model-source">Systems dynamics · reinforcing vs. balancing</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-feedback-loops-body" onclick="toggleAccordion('model-feedback-loops')">
+            <span class="model-header-text">
+              <span class="accordion-title">Feedback Loops</span>
+              <span class="model-source">Systems dynamics · reinforcing vs. balancing</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-feedback-loops-body">
           <p>A reinforcing loop amplifies whatever's already happening — output from one cycle becomes input that strengthens the next. A balancing loop does the opposite: it detects a gap from a target and triggers a correction, resisting further change. Most recurring problems are being kept alive by an unnamed reinforcing loop, or by a balancing loop that's stopped correcting.</p>
           <div class="model-applied">
@@ -2198,16 +2251,18 @@
       </div>
 
       <div class="model-card" id="model-iceberg">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-iceberg-body" onclick="toggleAccordion('model-iceberg')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-iceberg')}">
-          <div class="model-header-text">
-            <h3>The Iceberg Model</h3>
-            <div class="model-source">Systems thinking practice · four levels of depth</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-iceberg-body" onclick="toggleAccordion('model-iceberg')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Iceberg Model</span>
+              <span class="model-source">Systems thinking practice · four levels of depth</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-iceberg-body">
           <p>Most problem-solving stops at the event — the visible tip. This model pushes deeper through four levels: the event itself, the pattern it belongs to, the structure producing that pattern, and the mental model — the shared belief or assumption — that keeps the structure in place. Events and patterns show what's happening; structures and mental models explain why.</p>
           <div class="model-applied">
@@ -2224,16 +2279,18 @@
       </div>
 
       <div class="model-card" id="model-leverage-points">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-leverage-points-body" onclick="toggleAccordion('model-leverage-points')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-leverage-points')}">
-          <div class="model-header-text">
-            <h3>Leverage Points</h3>
-            <div class="model-source">Donella Meadows · "Places to Intervene in a System," 1999</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-leverage-points-body" onclick="toggleAccordion('model-leverage-points')">
+            <span class="model-header-text">
+              <span class="accordion-title">Leverage Points</span>
+              <span class="model-source">Donella Meadows · "Places to Intervene in a System," 1999</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-leverage-points-body">
           <p>Not every intervention is equal. Meadows ranked twelve places to intervene in a system, from shallow — adjusting a number or rate — to deep — shifting the rules, the goals, or the paradigm a system runs on. The deeper the intervention, the harder it is to make, and the more it actually changes.</p>
           <div class="model-applied">
@@ -2252,16 +2309,18 @@
       </div>
 
       <div class="model-card" id="model-connection-circles">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-connection-circles-body" onclick="toggleAccordion('model-connection-circles')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-connection-circles')}">
-          <div class="model-header-text">
-            <h3>Connection Circles</h3>
-            <div class="model-source">Systems mapping · popularized via Untools</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-connection-circles-body" onclick="toggleAccordion('model-connection-circles')">
+            <span class="model-header-text">
+              <span class="accordion-title">Connection Circles</span>
+              <span class="model-source">Systems mapping · popularized via Untools</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-connection-circles-body">
           <p>List ten or fewer elements that change within a system and arrange them around a circle. Draw an arrow between any two that directly affect each other, marking whether the effect increases (+) or decreases (–) the other. Once the arrows are in, trace the circle for closed loops — those are the reinforcing or balancing dynamics actually running the system.</p>
           <div class="model-applied">
@@ -2298,7 +2357,7 @@
       <h2>Common Mistakes</h2>
 
       <div class="mistake">
-        <h4>Patching the symptom, not the structure</h4>
+        <h3 class="mistake-title">Patching the symptom, not the structure</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2312,7 +2371,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Drawing the boundary too narrow</h4>
+        <h3 class="mistake-title">Drawing the boundary too narrow</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2326,7 +2385,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Reaching for the shallow leverage point</h4>
+        <h3 class="mistake-title">Reaching for the shallow leverage point</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2340,7 +2399,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Rolling out a fix without tracing its ripple</h4>
+        <h3 class="mistake-title">Rolling out a fix without tracing its ripple</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2424,7 +2483,7 @@
       <h2>Practical Examples</h2>
 
       <div class="scenario">
-        <h4>A support queue that grows every product launch</h4>
+        <h3 class="scenario-title">A support queue that grows every product launch</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Systems Thinking</div>
@@ -2440,7 +2499,7 @@
       </div>
 
       <div class="scenario">
-        <h4>A cross-team decision that keeps getting relitigated</h4>
+        <h3 class="scenario-title">A cross-team decision that keeps getting relitigated</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Systems Thinking</div>
@@ -2455,7 +2514,7 @@
       </div>
 
       <div class="scenario">
-        <h4>A new team is announced, and excitement outruns the details</h4>
+        <h3 class="scenario-title">A new team is announced, and excitement outruns the details</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Systems Thinking</div>
@@ -2851,7 +2910,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-structural">Foundation</span>
-          <h4>The Deliberate Mapper</h4>
+          <h3 class="progression-title">The Deliberate Mapper</h3>
         </div>
         <p>You apply the sequence deliberately and consciously: map the interdependencies, name the loop, push through the Iceberg's four levels. The process requires effort and a checklist — a template, a facilitator, a reminder to widen the boundary. Your fixes are starting to hold longer than before, but you still need the structure present to get there.</p>
         <div class="progression-cap">
@@ -2869,7 +2928,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-analytical">Expansion</span>
-          <h4>The Loop Spotter</h4>
+          <h3 class="progression-title">The Loop Spotter</h3>
         </div>
         <p>Naming loops and checking the leverage-points ladder have become habitual — you reach for them without a template. Your focus shifts to the quality of the intervention: is this genuinely a rule-level fix, or a parameter tweak dressed up as one? You start noticing when others are patching the same symptom for the third time.</p>
         <div class="progression-cap">
@@ -2887,7 +2946,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-growth">Integration</span>
-          <h4>The Systems Standard-Setter</h4>
+          <h3 class="progression-title">The Systems Standard-Setter</h3>
         </div>
         <p>Systems Thinking is no longer a technique you apply — it's how you take in any situation, not just a stuck one. You move fluidly between mapping, loop-spotting, and leverage-point selection when something's broken, and just as fluidly notice a dependency or stakeholder that hasn't been named yet when something new is forming. You help others build the same habit by making the wider picture visible, not just the fix.</p>
         <div class="progression-cap">

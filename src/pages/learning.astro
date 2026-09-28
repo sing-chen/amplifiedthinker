@@ -144,12 +144,18 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       <section class="learn-section" id="learn-skills-section">
         <div class="learn-collapse">
           <div class="learn-collapse-head">
+            <!-- The note sits inside the button so it is part of the click target,
+                 but it is a description, not a name (2026-09-28). Named by content,
+                 the toggle was announced as the label plus both sentences, every
+                 time it was reached. aria-labelledby names it "Your skills" and
+                 aria-describedby keeps the note, read after the state. -->
             <h2 class="learn-h2">
               <button type="button" class="learn-toggle" id="learn-skills-toggle"
-                      aria-expanded="true" aria-controls="learn-skills-body">
+                      aria-expanded="true" aria-controls="learn-skills-body"
+                      aria-labelledby="learn-skills-label" aria-describedby="learn-skills-note">
                 <span class="learn-toggle-text">
-                  <span>Your skills</span>
-                  <span class="learn-note">Primer and plan progress for each skill, tracked separately. Critical Thinking's plan runs a section longer than the rest.</span>
+                  <span id="learn-skills-label">Your skills</span>
+                  <span class="learn-note" id="learn-skills-note">Primer and plan progress for each skill, tracked separately. Critical Thinking's plan runs a section longer than the rest.</span>
                 </span>
                 <svg class="learn-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
               </button>

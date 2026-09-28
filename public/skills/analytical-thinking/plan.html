@@ -345,7 +345,8 @@
     margin-bottom: 24px;
     max-width: var(--content-max);
   }
-  .section h3 {
+  .section h3,
+  .section .accordion-title {
     font-family:var(--font-display);letter-spacing:-.024em;
     font-size: 20px;
     font-weight: 600;
@@ -513,7 +514,8 @@
     color:var(--fg-brand);
     margin-bottom: 8px;
   }
-  .principle h3 {
+  .principle h3,
+  .principle .accordion-title {
     margin-top: 0;
     color: var(--deep-teal);
   }
@@ -521,6 +523,21 @@
   /* ── ACCORDION (shared: principles + mental models) ──
      All principles and model cards default closed. Toggled
      via .open class on the parent .principle / .model-card. */
+  /* Disclosure pattern: <h3 class="accordion-heading"> wraps a native <button>,
+     so the title stays a heading (a button's children are presentational).
+     The h3 adds nothing visual of its own; .section h3's type belongs to
+     .accordion-title inside the button. The dark selector is listed because
+     [data-theme="dark"] .section h3 would otherwise recolour it. */
+  .section h3.accordion-heading,
+  [data-theme="dark"] .section h3.accordion-heading {
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+  }
+  .accordion-title,
+  .principle-header .principle-number,
+  .model-header .model-source { display: block; }
   .principle-header,
   .model-header {
     display: flex;
@@ -529,6 +546,21 @@
     gap: 20px;
     cursor: pointer;
     border-radius: var(--radius);
+    /* Undo the <button> UA look so it renders as the old div header did.
+       Padding is reset here, BEFORE .model-header's own padding rule. */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    text-transform: inherit;
+    text-align: left;
   }
   .principle-header-text,
   .model-header-text {
@@ -619,7 +651,7 @@
   }
   .model-header { padding: 24px 32px; }
   .model-body { padding: 0 32px 28px; }
-  .model-header-text h3 { margin: 0 0 6px; }
+  .model-header-text .accordion-title { margin: 0 0 6px; }
   .model-header .model-source { margin-bottom: 0; }
   .model-source {
     font-family:var(--font-body);
@@ -769,7 +801,9 @@
     padding: 24px 28px;
     border-left: 3px solid var(--terracotta);
   }
-  .mistake h4 {
+  .mistake .mistake-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 16px;
     font-weight: 600;
@@ -905,7 +939,9 @@
     max-width: var(--content-max);
     margin-bottom: 32px;
   }
-  .scenario h4 {
+  .scenario .scenario-title {
+    margin-top: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 17px;
     font-weight: 600;
@@ -1274,7 +1310,9 @@
     gap: 12px;
     margin-bottom: 14px;
   }
-  .progression-stage h4 {
+  .progression-stage .progression-title {
+    margin: 0;
+    line-height: inherit;
     font-family:var(--font-display);letter-spacing:-.014em;
     font-size: 18px;
     font-weight: 700;
@@ -1693,6 +1731,7 @@
 
   [data-theme="dark"] .section h2,
   [data-theme="dark"] .section h3,
+  [data-theme="dark"] .section .accordion-title,
   [data-theme="dark"] .principle h3 { color: var(--d-fg-heading); }
   [data-theme="dark"] .section p { color: var(--d-fg-1); }
   [data-theme="dark"] .principles-intro { border-bottom-color: var(--d-line); }
@@ -1752,7 +1791,7 @@
   [data-theme="dark"] .fishbone-cat-desc { color: var(--d-fg-1); }
 
   [data-theme="dark"] .mistake { background: var(--d-bg-surface); border-left-color: var(--terracotta); }
-  [data-theme="dark"] .mistake h4 { color: var(--d-terra-stroke); }
+  [data-theme="dark"] .mistake .mistake-title { color: var(--d-terra-stroke); }
   [data-theme="dark"] .mistake-cell-label { color: var(--d-fg-2); }
   [data-theme="dark"] .mistake-cell p { color: var(--d-fg-1); }
 
@@ -1767,7 +1806,7 @@
   [data-theme="dark"] .indicator-panel.underuse .indicator-list li:hover { background: var(--d-terra-bg); }
   [data-theme="dark"] .indicator-panel.overuse  .indicator-list li:hover { background: var(--d-amber-bg); }
 
-  [data-theme="dark"] .scenario h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .scenario .scenario-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .scenario-col.without { background: var(--d-terra-bg); }
   [data-theme="dark"] .scenario-col.with    { background: var(--d-teal-bg); }
   [data-theme="dark"] .without .scenario-col-label { color: var(--d-terra-stroke); }
@@ -1819,7 +1858,7 @@
   [data-theme="dark"] .habit-not-clicking-label { color: var(--d-slate-stroke); }
 
   [data-theme="dark"] .progression-stage { background: var(--d-bg-surface); border-left-color: var(--teal); }
-  [data-theme="dark"] .progression-stage h4 { color: var(--d-fg-heading); }
+  [data-theme="dark"] .progression-stage .progression-title { color: var(--d-fg-heading); }
   [data-theme="dark"] .progression-cap { border-top-color: var(--d-line); }
   [data-theme="dark"] .progression-cap-item label { color: var(--d-teal-stroke); }
   [data-theme="dark"] .progression-cap-item p { color: var(--d-fg-1); }
@@ -2108,16 +2147,18 @@
       <p class="principles-intro">Six principles, in sequence. Each builds on the one before it — decomposition makes structure possible, structure makes cause-tracing possible, and so on through to choosing the right framework for the problem in front of you. The mental models, behavioral indicators, and daily practices later in this plan are all applications of these six ideas.</p>
 
       <div class="principle" id="principle-01">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-01')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 01</div>
-            <h3>Decomposition: naming the parts is the first analytical act</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-01-body" onclick="toggleAccordion('principle-01')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 01</span>
+              <span class="accordion-title">Decomposition: naming the parts is the first analytical act</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-01-body">
           <p>Complex problems resist direct analysis because they are too large and entangled to examine as a whole. The act of decomposition — separating a problem into its distinct, nameable components — is what makes analysis possible at all. Until you have named the parts, you are reacting to the problem as a single overwhelming mass rather than working on it systematically.</p>
           <p>This is not intuitive. Under time pressure or cognitive load, the brain prefers to treat a complex problem as a pattern match against something familiar and jump to a response. Decomposition interrupts that jump. It forces the question: what is this actually made of?</p>
@@ -2125,16 +2166,18 @@
       </div>
 
       <div class="principle" id="principle-02">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-02')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 02</div>
-            <h3>Structure before analysis: the map precedes the territory</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-02-body" onclick="toggleAccordion('principle-02')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 02</span>
+              <span class="accordion-title">Structure before analysis: the map precedes the territory</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-02-body">
           <p>Before you analyze, you need a way to organize what you are looking at. Structure determines what you examine, in what order, and whether you are covering the full territory or only the parts that are most visible or most familiar.</p>
           <p>A framework does not tell you the answer. It tells you where to look. The structure you choose — whether a simple categorization, a process map, or an established framework like MECE or fishbone — determines whether your analysis is systematic or selective. Selective analysis produces confident-sounding conclusions that break down the moment the unexamined parts surface.</p>
@@ -2142,16 +2185,18 @@
       </div>
 
       <div class="principle" id="principle-03">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-03')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 03</div>
-            <h3>Cause versus symptom: the diagnostic obligation</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-03-body" onclick="toggleAccordion('principle-03')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 03</span>
+              <span class="accordion-title">Cause versus symptom: the diagnostic obligation</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-03-body">
           <p>What you observe is almost always a downstream effect of something upstream. A team missing deadlines is a symptom. A customer segment churning is a symptom. A process producing errors at a consistent rate is a symptom. The analytical work is tracing the thread from what is visible back to what is actually generating it.</p>
           <p>Skipping this step — treating the symptom as the problem — produces solutions that suppress the observable effect without addressing its source. The symptom returns, often in a different form, and the cycle repeats. The diagnostic obligation is to follow the evidence until you reach something that, if it changed, would change the symptom.</p>
@@ -2159,16 +2204,18 @@
       </div>
 
       <div class="principle" id="principle-04">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-04')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 04</div>
-            <h3>Evidence over assumption: knowing which is which</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-04-body" onclick="toggleAccordion('principle-04')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 04</span>
+              <span class="accordion-title">Evidence over assumption: knowing which is which</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-04-body">
           <p>Every analysis rests on a mixture of data and assumption. Evidence tells you what is actually happening in the situation you are examining. Assumption tells you what you already believed before you started. The analytical discipline is making that distinction visible — knowing, for each element of your picture, whether it is grounded in evidence from this situation or imported from prior experience.</p>
           <div class="ai-note">
@@ -2179,16 +2226,18 @@
       </div>
 
       <div class="principle" id="principle-05">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-05')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 05</div>
-            <h3>Pattern recognition: real signal versus projected pattern</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-05-body" onclick="toggleAccordion('principle-05')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 05</span>
+              <span class="accordion-title">Pattern recognition: real signal versus projected pattern</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-05-body">
           <p>Across enough observations, genuine patterns emerge — regularities that would be invisible in any single data point. Pattern recognition is the ability to identify those regularities and draw valid inferences from them.</p>
           <p>The discipline is knowing when a pattern is real. Human cognition has a strong tendency to find patterns in noise — to see regularity in random data because regularity is easier to process and act on than randomness. The check is replication: does the pattern hold when tested against new data, applied to adjacent cases, or examined by someone who did not expect to find it?</p>
@@ -2196,16 +2245,18 @@
       </div>
 
       <div class="principle" id="principle-06">
-        <div class="principle-header" role="button" tabindex="0" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('principle-06')}">
-          <div class="principle-header-text">
-            <div class="principle-number">Principle 06</div>
-            <h3>The right decomposition for the situation</h3>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="principle-header" aria-expanded="false" aria-controls="principle-06-body" onclick="toggleAccordion('principle-06')">
+            <span class="principle-header-text">
+              <span class="principle-number">Principle 06</span>
+              <span class="accordion-title">The right decomposition for the situation</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="principle-body" id="principle-06-body">
           <p>There is no universal analytical framework. MECE is well-suited to structuring problem spaces where completeness matters and overlap creates confusion. First Principles decomposition works when established assumptions need stripping away. Fishbone diagrams are effective for cause-and-effect analysis in operational contexts. Process mapping fits problems that live in workflows and handoffs.</p>
           <p>Choosing well is itself an analytical act. The wrong framework can make certain causes structurally invisible by putting them outside the categories the framework creates.</p>
@@ -2218,16 +2269,18 @@
       <h2>Key Mental Models and Frameworks</h2>
 
       <div class="model-card" id="model-mece">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-mece-body" onclick="toggleAccordion('model-mece')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-mece')}">
-          <div class="model-header-text">
-            <h3>MECE — Mutually Exclusive, Collectively Exhaustive</h3>
-            <div class="model-source">Barbara Minto · The Pyramid Principle · McKinsey & Company, 1987</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-mece-body" onclick="toggleAccordion('model-mece')">
+            <span class="model-header-text">
+              <span class="accordion-title">MECE — Mutually Exclusive, Collectively Exhaustive</span>
+              <span class="model-source">Barbara Minto · The Pyramid Principle · McKinsey & Company, 1987</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-mece-body">
           <p>A structuring principle that ensures a decomposition covers all relevant territory (collectively exhaustive) without double-counting or creating ambiguous overlaps (mutually exclusive). It disciplines the analytical impulse to add categories until the problem feels covered — because categories that overlap hide where the issue actually sits.</p>
           <div class="model-applied">
@@ -2247,16 +2300,18 @@
       </div>
 
       <div class="model-card" id="model-5whys">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-5whys-body" onclick="toggleAccordion('model-5whys')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-5whys')}">
-          <div class="model-header-text">
-            <h3>The 5 Whys</h3>
-            <div class="model-source">Taiichi Ohno · Toyota Production System · 1950s</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-5whys-body" onclick="toggleAccordion('model-5whys')">
+            <span class="model-header-text">
+              <span class="accordion-title">The 5 Whys</span>
+              <span class="model-source">Taiichi Ohno · Toyota Production System · 1950s</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-5whys-body">
           <p>A cause-tracing technique that works by repeatedly asking "why" in response to each answer until a root cause is reached — typically within five iterations. Interrupts the tendency to stop analysis at the first plausible explanation, which is almost always a symptom or intermediate cause.</p>
           <div class="model-applied">
@@ -2273,16 +2328,18 @@
       </div>
 
       <div class="model-card" id="model-first-principles">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-first-principles-body" onclick="toggleAccordion('model-first-principles')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-first-principles')}">
-          <div class="model-header-text">
-            <h3>First Principles Decomposition</h3>
-            <div class="model-source">Aristotle · modern application by physicists and engineers · popularized in business by Elon Musk</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-first-principles-body" onclick="toggleAccordion('model-first-principles')">
+            <span class="model-header-text">
+              <span class="accordion-title">First Principles Decomposition</span>
+              <span class="model-source">Aristotle · modern application by physicists and engineers · popularized in business by Elon Musk</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-first-principles-body">
           <p>Strips a problem back to its most fundamental, irreducible truths — the things verifiably true regardless of convention or history — then rebuilds understanding from those foundations rather than inheriting assumptions from prior analyses.</p>
           <div class="model-applied">
@@ -2293,16 +2350,18 @@
       </div>
 
       <div class="model-card" id="model-fishbone">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-fishbone-body" onclick="toggleAccordion('model-fishbone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-fishbone')}">
-          <div class="model-header-text">
-            <h3>Fishbone Diagram (Ishikawa / Cause-and-Effect)</h3>
-            <div class="model-source">Kaoru Ishikawa · quality management · 1960s</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-fishbone-body" onclick="toggleAccordion('model-fishbone')">
+            <span class="model-header-text">
+              <span class="accordion-title">Fishbone Diagram (Ishikawa / Cause-and-Effect)</span>
+              <span class="model-source">Kaoru Ishikawa · quality management · 1960s</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-fishbone-body">
           <p>Maps potential causes of a problem across standard categories — typically People, Process, Technology, Environment, Materials, Measurement — to ensure diagnostic coverage and make cause-effect relationships visually explicit. Most effective in operational and quality contexts where multiple contributing causes are likely.</p>
           <div class="model-applied">
@@ -2328,16 +2387,18 @@
       </div>
 
       <div class="model-card" id="model-issue-tree">
-        <div class="model-header" role="button" tabindex="0" aria-expanded="false" aria-controls="model-issue-tree-body" onclick="toggleAccordion('model-issue-tree')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAccordion('model-issue-tree')}">
-          <div class="model-header-text">
-            <h3>The Issue Tree</h3>
-            <div class="model-source">Management consulting practice · McKinsey & Co. · widely adopted across professional services</div>
-          </div>
-          <div class="accordion-control" aria-hidden="true">
-            <span class="accordion-label">Expand</span>
-            <div class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
-          </div>
-        </div>
+        <h3 class="accordion-heading">
+          <button type="button" class="model-header" aria-expanded="false" aria-controls="model-issue-tree-body" onclick="toggleAccordion('model-issue-tree')">
+            <span class="model-header-text">
+              <span class="accordion-title">The Issue Tree</span>
+              <span class="model-source">Management consulting practice · McKinsey & Co. · widely adopted across professional services</span>
+            </span>
+            <span class="accordion-control" aria-hidden="true">
+              <span class="accordion-label">Expand</span>
+              <span class="accordion-toggle"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </span>
+          </button>
+        </h3>
         <div class="model-body" id="model-issue-tree-body">
           <p>Decomposes a central question into its component sub-questions in a hierarchical, branching structure. Makes the full analytical territory visible at once, shows how sub-questions relate, and allows work to be allocated across a decomposed structure rather than tackled as an undifferentiated whole.</p>
           <div class="model-applied">
@@ -2362,7 +2423,7 @@
       <h2>Common Mistakes</h2>
 
       <div class="mistake">
-        <h4>Solving before decomposing</h4>
+        <h3 class="mistake-title">Solving before decomposing</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2376,7 +2437,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Confusing a comprehensive framework with a complete analysis</h4>
+        <h3 class="mistake-title">Confusing a comprehensive framework with a complete analysis</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2390,7 +2451,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Stopping at the first plausible cause</h4>
+        <h3 class="mistake-title">Stopping at the first plausible cause</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2404,7 +2465,7 @@
       </div>
 
       <div class="mistake">
-        <h4>Treating pattern recognition as analysis</h4>
+        <h3 class="mistake-title">Treating pattern recognition as analysis</h3>
         <div class="mistake-row">
           <div class="mistake-cell">
             <div class="mistake-cell-label">Why it happens</div>
@@ -2487,7 +2548,7 @@
       <h2>Practical Examples</h2>
 
       <div class="scenario">
-        <h4>Recurring delivery delays in a client project</h4>
+        <h3 class="scenario-title">Recurring delivery delays in a client project</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Analytical Thinking</div>
@@ -2503,7 +2564,7 @@
       </div>
 
       <div class="scenario">
-        <h4>Declining engagement scores in an employee survey</h4>
+        <h3 class="scenario-title">Declining engagement scores in an employee survey</h3>
         <div class="scenario-cols">
           <div class="scenario-col without">
             <div class="scenario-col-label">Without Analytical Thinking</div>
@@ -2902,7 +2963,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-structural">Foundation</span>
-          <h4>The Deliberate Decomposer</h4>
+          <h3 class="progression-title">The Deliberate Decomposer</h3>
         </div>
         <p>You apply the analytical sequence deliberately and consciously: decompose before analyzing, name evidence versus assumption, trace symptoms toward causes before concluding. The process requires effort and reminders. You occasionally catch yourself jumping ahead and have to pull back. Your analytical outputs are clearer and more defensible than before, but still rely on you being present to explain them.</p>
         <div class="progression-cap">
@@ -2920,7 +2981,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-analytical">Expansion</span>
-          <h4>The Evidence Tracer</h4>
+          <h3 class="progression-title">The Evidence Tracer</h3>
         </div>
         <p>Decomposition has become habitual — you do it before consciously deciding to. Your focus shifts to the quality of the analysis: are you tracing causes far enough, testing patterns against new data, distinguishing between evidence and assumption with increasing precision? You start noticing when others' analyses have structural gaps — untested patterns, causes stopped too early, frameworks that don't fit the problem.</p>
         <div class="progression-cap">
@@ -2938,7 +2999,7 @@
       <div class="progression-stage">
         <div class="progression-stage-header">
           <span class="tag tag-growth">Integration</span>
-          <h4>The Analytical Standard-Setter</h4>
+          <h3 class="progression-title">The Analytical Standard-Setter</h3>
         </div>
         <p>Analytical Thinking is no longer a process you follow — it is the way you naturally approach problems. You select frameworks fluidly, revise decompositions mid-analysis when the evidence points elsewhere, and hold the full picture from symptom to root cause in working memory across complex, multi-variable problems. You help others develop their analytical practice by making your process visible.</p>
         <div class="progression-cap">

@@ -604,7 +604,10 @@
   }
   .video-meta { margin-top: 10px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
   .video-transcript-toggle {
-    background: none; border: none; padding: 0;
+    background: none; border: none;
+    /* 24px minimum target: 4px of padding each way, taken back by the
+       negative margin so the text and the layout around it do not move. */
+    padding: 4px 0; margin: -4px 0; min-height: 24px;
     font-family:var(--font-body);
     font-size: 13px; font-weight: 500;
     color: var(--deep-teal); text-decoration: underline;
