@@ -371,7 +371,15 @@
     /* Screen-reader-only text: the new-tab notice below. Here rather than in
        styles.css because the ten skill pages do not load styles.css, and they
        hold most of the site's new-tab links. */
-    '.snav-sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }',
+    /* ⚠️ top/left are NOT optional. Without them an absolute box sits at its
+       static position — wherever its link is — and a link inside a sideways
+       scroller (the Future Skills stat carousel, a plan's resource table)
+       leaves its span far past the scroller's edge. The scroller does not clip
+       it, because the span's containing block is an ancestor OF the scroller,
+       so the page grows to fit and a phone zooms the whole page out: 375px ->
+       1565px on Future Skills, 674px on a plan page, live 2026-09-28. Anchored
+       at its containing block's corner, it can never land outside it. */
+    '.snav-sr-only { position: absolute; top: 0; left: 0; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }',
   ].join('\n');
 
   /* ── Build nav HTML ──────────────────────────────────────────────────── */
