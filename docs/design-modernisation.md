@@ -33,6 +33,7 @@ position it does not have.
 | 9 | The tiles go quiet — hue at four signal points, never as fill | 2026-08-28 | `82e5f5a` |
 | 10 | The Amplitude hero, with the announce card | 2026-08-28 | `058fdad` |
 | 11 | The two-tone wordmark | 2026-08-28 | `1b987ba` |
+| 12 | Asymmetric tiles — Future Skills leads | merge pending | `feat/asymmetric-tiles` |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Pieces 9–11 were built on `feat/amplitude` and merged to `main` on 2026-08-28. ⚠️ Remaining
@@ -384,6 +385,39 @@ Decisions already taken, in the specimens, on sight:
 15px-appropriate −.01em from the tracking ramp. The 300 weight is available because fonts.css
 retains the full 100–900 range. ⚠️ The frosted-glass nav bar from the specimen is NOT part of
 this piece; it is a separate decision with its own fallback stack, and it has not been taken.
+
+---
+
+## Piece 12 — asymmetric tiles (`feat/asymmetric-tiles`, merge pending)
+
+`public/index.html` only, CSS plus nothing else. Prompted by a `taste-skill` audit on 2026-09-28,
+whose clearest finding was the three equal tiles: identical height, side by side, all text on
+white. Piece 9 made them quiet; this makes them unequal, because they are. Future Skills is the
+site's main route in, so the layout now says so.
+
+- **Desktop:** Future Skills takes a `1.45fr` column and both rows; My People and News stack
+  beside it on `1fr 1fr` rows, so the pair always matches the lead tile's height exactly.
+- **The lead title goes poster-size** — `clamp(34px,3.4vw,44px)`, `-.035em` from the tracking
+  ramp — and **stays editorial-light** (380, 420 dark). Size leads here, not weight; rule 1 above.
+- **The space between the description and the CTA is left open on purpose.** It is the cost of
+  the asymmetry, and it was paid rather than filled.
+- **≤900px:** the lead tile spans the full width over the other two; the title steps down to
+  `clamp(26px,4vw,32px)`. **≤700px:** one column.
+
+⚠️ **Two fillers for that space were built and rejected on sight — do not re-propose them without
+a new reason:**
+
+- **A list of the live skills.** Worked on desktop, but added height to an already long column on
+  mobile, and it made the homepage a second copy of editorial data that `/add-skill` would have
+  had to keep in step — the command-drift trap in [CLAUDE.md](../CLAUDE.md).
+- **A hover gesture** — two hairlines, a "ceiling" rising on hover to echo the headline. It
+  respected the motion doctrine (moves only when asked) and was still the owner's no. Same
+  verdict as the tile waveforms removed in the Amplitude revision: ornament that has to justify
+  itself.
+
+Verification: tile heights and gaps measured at 1280, 920 (narrowest two-column width), 768 and
+375, dark mode at 375, no horizontal overflow at any of them. ⚠️ Still to do at merge: the
+production eye pass, both themes.
 
 ---
 
