@@ -1064,6 +1064,17 @@
     padding: 16px 20px;
     max-width: var(--content-max);
   }
+  /* The verdict written into an option after Reveal. Right and wrong used to
+     be shown by border and fill alone, and in dark mode "selected" and
+     "correct" are the same teal, so the words carry it now. Styled as the
+     question label above it. */
+  .kc-option.has-verdict { flex-wrap: wrap; }
+  .kc-verdict {
+    flex-basis: 100%;
+    font-family:var(--font-display); font-size: 10px; font-weight:650;
+    letter-spacing:.1em; text-transform: uppercase; color: var(--deep-teal);
+  }
+  .kc-option.incorrect .kc-verdict { color: var(--terracotta); }
   .kc-score p {
     font-family:var(--font-display);letter-spacing:-.006em;
     font-size: 14px;
@@ -1779,6 +1790,10 @@
   [data-theme="dark"] .kc-option.incorrect { background: var(--d-terra-bg); border-color: var(--terracotta); }
   [data-theme="dark"] .kc-score { background: var(--d-teal-bg); }
   [data-theme="dark"] .kc-score p { color: var(--d-teal-stroke); }
+  /* Body text, not --d-teal-stroke: the stroke on the teal fill measured
+     3.88:1 at this size. */
+  [data-theme="dark"] .kc-verdict { color: var(--d-fg-1); }
+  [data-theme="dark"] .kc-option.incorrect .kc-verdict { color: var(--d-terra-stroke); }
   [data-theme="dark"] .kc-retake-btn { color: var(--d-teal-stroke); border-color: var(--d-teal-stroke); }
   [data-theme="dark"] .kc-retake-btn:hover { background: var(--d-teal-stroke); color: var(--d-bg-page); }
   [data-theme="dark"] .kc-answer-label { color: var(--d-teal-stroke); }
@@ -2615,7 +2630,7 @@
 
       <button class="kc-reveal-btn" id="kcRevealBtn" onclick="revealAnswers()">Reveal answers and explanations</button>
       <div class="kc-score" id="kcScore">
-        <p id="kcScoreText"></p>
+        <p id="kcScoreText" tabindex="-1"></p>
         <button class="kc-retake-btn" id="kcRetakeBtn" type="button" onclick="resetQuiz()">Retake knowledge check</button>
       </div>
     </div>
@@ -2627,7 +2642,7 @@
 
       <!-- Day 1 -->
       <div class="habit-day">
-        <button class="habit-day-header" onclick="toggleDay(this)">
+        <button class="habit-day-header" aria-expanded="false" onclick="toggleDay(this)">
           <div class="habit-day-num">1</div>
           <div class="habit-day-title-wrap">
             <div class="habit-day-title">Separating the Problem from the Symptom</div>
@@ -2677,7 +2692,7 @@
 
       <!-- Day 2 -->
       <div class="habit-day">
-        <button class="habit-day-header" onclick="toggleDay(this)">
+        <button class="habit-day-header" aria-expanded="false" onclick="toggleDay(this)">
           <div class="habit-day-num">2</div>
           <div class="habit-day-title-wrap">
             <div class="habit-day-title">Choosing a Structure</div>
@@ -2726,7 +2741,7 @@
 
       <!-- Day 3 -->
       <div class="habit-day">
-        <button class="habit-day-header" onclick="toggleDay(this)">
+        <button class="habit-day-header" aria-expanded="false" onclick="toggleDay(this)">
           <div class="habit-day-num">3</div>
           <div class="habit-day-title-wrap">
             <div class="habit-day-title">Following the Evidence</div>
@@ -2776,7 +2791,7 @@
 
       <!-- Day 4 -->
       <div class="habit-day">
-        <button class="habit-day-header" onclick="toggleDay(this)">
+        <button class="habit-day-header" aria-expanded="false" onclick="toggleDay(this)">
           <div class="habit-day-num">4</div>
           <div class="habit-day-title-wrap">
             <div class="habit-day-title">Testing the Pattern</div>
@@ -2826,7 +2841,7 @@
 
       <!-- Day 5 -->
       <div class="habit-day">
-        <button class="habit-day-header" onclick="toggleDay(this)">
+        <button class="habit-day-header" aria-expanded="false" onclick="toggleDay(this)">
           <div class="habit-day-num">5</div>
           <div class="habit-day-title-wrap">
             <div class="habit-day-title">Producing a Communicable Analysis</div>
@@ -3153,6 +3168,7 @@ function restoreState(data) {
       if (!q) return;
       q.querySelectorAll('.kc-option').forEach((o, i) => {
         o.classList.toggle('selected', i === optionIdx);
+        o.setAttribute('aria-pressed', i === optionIdx ? 'true' : 'false');
       });
     });
     checkAllAnswered();
@@ -3160,7 +3176,7 @@ function restoreState(data) {
 
   // Restore revealed answers
   if (data.quizRevealed) {
-    revealAnswers();
+    revealAnswers(true);
   }
 
   // Restore habit day open states
@@ -3208,6 +3224,10 @@ function shuffledPositions(n) {
   return positions; // positions[originalIndex] = visual position
 }
 
+// Each option says whether it is the chosen one: the .selected border was
+// the only sign, which a screen reader cannot see.
+document.querySelectorAll('.kc-option').forEach(o => o.setAttribute('aria-pressed', 'false'));
+
 function newQuizOrder() {
   const order = {};
   Object.keys(kcAnswers).forEach(qId => {
@@ -3231,6 +3251,7 @@ function selectOption(qId, optionIdx) {
   const options = q.querySelectorAll('.kc-option');
   options.forEach((o, i) => {
     o.classList.toggle('selected', i === optionIdx);
+    o.setAttribute('aria-pressed', i === optionIdx ? 'true' : 'false');
   });
   kcSelected[qId] = optionIdx;
   checkAllAnswered();
@@ -3244,7 +3265,17 @@ function checkAllAnswered() {
   btn.style.display = allDone ? 'inline-block' : 'none';
 }
 
-function revealAnswers() {
+function addVerdict(option, text) {
+  const v = document.createElement('span');
+  v.className = 'kc-verdict';
+  v.textContent = text;
+  option.classList.add('has-verdict');
+  option.appendChild(v);
+}
+
+// `quiet` is the restore path: re-showing a quiz answered on an earlier
+// visit must not pull focus down the page on load.
+function revealAnswers(quiet) {
   let score = 0;
   Object.keys(kcAnswers).forEach(qId => {
     const correct = kcAnswers[qId];
@@ -3255,6 +3286,9 @@ function revealAnswers() {
       o.disabled = true;
       if (i === correct) o.classList.add('correct');
       else if (i === selected && i !== correct) o.classList.add('incorrect');
+      if (i === correct && i === selected) addVerdict(o, 'Your answer · Correct');
+      else if (i === correct) addVerdict(o, 'Correct answer');
+      else if (i === selected) addVerdict(o, 'Your answer · Incorrect');
       o.classList.remove('selected');
     });
     const answer = document.getElementById(qId + '-answer');
@@ -3270,6 +3304,9 @@ function revealAnswers() {
      score >= 3 ? 'good understanding. Review the sections linked to any missed questions.' :
      'worth revisiting the first principles and mental models before moving on.');
   document.getElementById('kcRetakeBtn').style.display = 'inline-block';
+  // The Reveal button that had focus is now hidden. Hand focus to the score,
+  // which also reads it out.
+  if (!quiet) scoreText.focus();
   saveProgress();
 }
 
@@ -3283,7 +3320,10 @@ function resetQuiz(scrollToQuiz) {
     if (!q) return;
     q.querySelectorAll('.kc-option').forEach(o => {
       o.disabled = false;
-      o.classList.remove('selected', 'correct', 'incorrect');
+      o.classList.remove('selected', 'correct', 'incorrect', 'has-verdict');
+      o.setAttribute('aria-pressed', 'false');
+      const v = o.querySelector('.kc-verdict');
+      if (v) v.remove();
     });
     const answer = document.getElementById(qId + '-answer');
     if (answer) answer.style.display = 'none';
@@ -3294,6 +3334,9 @@ function resetQuiz(scrollToQuiz) {
   saveProgress();
   if (scrollToQuiz) {
     document.getElementById('kc1').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Retake sits inside the score box, which has just been hidden.
+    const firstQ = document.querySelector('#kc1 .kc-q-text');
+    if (firstQ) { firstQ.setAttribute('tabindex', '-1'); firstQ.focus({ preventScroll: true }); }
   }
 }
 
@@ -3493,7 +3536,10 @@ function scrollToSection(idx) {
   const target = document.getElementById(sectionIds[idx]);
   if (target) {
     const top = target.getBoundingClientRect().top + window.scrollY - getNavOffset();
-    window.scrollTo({ top: top, behavior: 'smooth' });
+    // ⚠️ 'smooth' was hard-coded, so a rail click scrolled up to ~10,000px
+    // in one animated sweep even for readers who have asked for less motion.
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
     currentIdx = idx;
     updateButtons();
   }
@@ -3504,7 +3550,17 @@ navLinks.forEach(function(link) {
   link.addEventListener('click', function(e) {
     e.preventDefault();
     const idx = sectionIds.indexOf(this.dataset.section);
-    if (idx !== -1) scrollToSection(idx);
+    if (idx !== -1) {
+      scrollToSection(idx);
+      // Focus follows the jump. It used to stay in the rail, so the next Tab
+      // went to the next rail link instead of into the section just opened.
+      // preventScroll, because scrollToSection has already placed it.
+      const heading = document.querySelector('#' + sectionIds[idx] + ' h2');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus({ preventScroll: true });
+      }
+    }
   });
 });
 

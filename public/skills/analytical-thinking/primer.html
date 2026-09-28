@@ -888,6 +888,16 @@
       .stage { margin-left: 0; width: 100%; }
 
       .slide { padding: 28px 20px 92px; }
+
+      /* Matches strategic-synthesis, which already stacked these. The other
+         four never got the rule, and at 320px the cards were cut off. */
+      .two-col { grid-template-columns: 1fr; }
+
+      /* The issue tree's four branches were cut off from 390px down. Two per
+         row, and the connector lines go, because they are drawn for one row
+         of four and would point at nothing. */
+      .tree-branches { grid-template-columns: repeat(2, 1fr); row-gap: 10px; margin-top: 12px; }
+      .tree-root::after, .tree-branches::before, .tree-branch::before { display: none; }
     }
   </style>
 </head>
@@ -1196,6 +1206,9 @@
       iframe.setAttribute('allowfullscreen', '');
       videoEmbed.innerHTML = '';
       videoEmbed.appendChild(iframe);
+      // The button that had focus has just been removed. Hand focus to the
+      // player, or it falls to <body> and the next Tab starts over.
+      iframe.focus();
     });
   }
 
@@ -1264,7 +1277,11 @@
 
   // ── Navigation ───────────────────────────────
 
-  function goTo(idx) {
+  // `fromEnd` is ArrowUp arriving from the next slide: it lands at the
+  // bottom so reading continues upward. Everything else lands at the top.
+  // Slides used to keep whatever scroll they were left at, so going back
+  // with Left or Previous could open a slide halfway down.
+  function goTo(idx, fromEnd) {
     if (idx < 0 || idx >= TOTAL || idx === current) return;
 
     // Stop playback and restore the facade if leaving the title slide
@@ -1286,6 +1303,7 @@
     // Activate new
     slides[current].classList.remove('exit-up');
     slides[current].classList.add('active');
+    slides[current].scrollTop = fromEnd ? slides[current].scrollHeight : 0;
 
     // Dismiss banner if still showing
     if (!resumeBanner.classList.contains('hidden')) hideBanner();
@@ -1295,6 +1313,12 @@
   }
 
   function updateUI() {
+    // ⚠️ Only the current slide is live. The others are opacity:0 and still
+    // in the tab order and the reading order: a screen reader read all the
+    // slides as one page, and at 320px two links on unseen slides took focus
+    // while invisible. Found 2026-09-28. inert takes them out of both.
+    slides.forEach(function (s, i) { s.toggleAttribute('inert', i !== current); });
+
     // Nav links
     navLinks.forEach(function (link) {
       var i = parseInt(link.dataset.slide, 10);
@@ -1307,9 +1331,14 @@
       }
     });
 
-    // Arrows
-    btnPrev.disabled = current === 0;
-    btnNext.disabled = current === TOTAL - 1;
+    // Arrows. A button that is disabled while it has focus drops focus to
+    // <body>, which is what pressing Next onto the last slide (or Previous
+    // onto the first) used to do. Hand focus across to the other button first.
+    var atStart = current === 0, atEnd = current === TOTAL - 1;
+    if (atEnd && document.activeElement === btnNext) btnPrev.focus();
+    if (atStart && document.activeElement === btnPrev) btnNext.focus();
+    btnPrev.disabled = atStart;
+    btnNext.disabled = atEnd;
     btnNext.textContent = '';
     btnNext.innerHTML = current === TOTAL - 1
       ? 'Done'
@@ -1336,9 +1365,34 @@
   });
 
   // Keyboard navigation
+  //
+  // ⚠️ UP/DOWN SCROLL A SLIDE THAT OVERFLOWS, AND ONLY TURN THE PAGE AT ITS
+  // END. They used to change slide unconditionally, and slides do overflow:
+  // at 320px some ran nearly 1,000px taller than the stage, so everything
+  // below the fold was unreachable by keyboard. Scrolled by hand because
+  // focus usually sits on a button outside the slide, where the browser
+  // would scroll the page instead. Left/Right still always turn the page.
+  // Keys typed into a field (the notes editor) are never taken.
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+    var t = e.target;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+
+    if (e.key === 'ArrowRight') { goTo(current + 1); return; }
+    if (e.key === 'ArrowLeft')  { goTo(current - 1); return; }
+
+    var down = e.key === 'ArrowDown' || e.key === 'PageDown';
+    var up   = e.key === 'ArrowUp'   || e.key === 'PageUp';
+    if (!down && !up) return;
+    var s = slides[current];
+    var room = down ? s.scrollHeight - s.clientHeight - s.scrollTop : s.scrollTop;
+    if (room > 1) {
+      e.preventDefault();
+      var step = /^Page/.test(e.key) ? s.clientHeight * 0.85 : 60;
+      s.scrollBy({ top: down ? step : -step });
+    } else if (/^Arrow/.test(e.key)) {
+      goTo(current + (down ? 1 : -1), up);
+    }
   });
 
   // ── Mobile "Sections" panel (rail-as-toolbar) ──────────────

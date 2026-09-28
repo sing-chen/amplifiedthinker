@@ -485,6 +485,35 @@
     }, true);
   });
 
+  /* ⚠️ IN-PAGE LINKS JUMP WITHOUT A HISTORY ENTRY, OR THE TRAP BELOW FIRES.
+     Found 2026-09-28 on all ten pages: pressing Enter on "Skip to slide
+     content" opened "Leave without keeping your place?". The keydown armed the
+     trap, then the #fragment navigation fired popstate, which is exactly the
+     signal the trap reads as a back press. The plan's "#resources" button did
+     the same. So a same-page fragment link is followed here by hand: scroll,
+     move focus, and update the address with replaceState, which fires nothing.
+     Bubble phase and defaultPrevented on purpose: the plan's section rail
+     already cancels its own clicks and scrolls with its offset, and must be
+     left to do that. */
+  doc.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = decodeURIComponent(a.getAttribute('href').slice(1));
+    var target = id && doc.getElementById(id);
+    if (!target) return;
+
+    e.preventDefault();
+    // Clear the fixed bars: the pages pad <body> by exactly their height.
+    var offset = parseInt(global.getComputedStyle(doc.body).paddingTop, 10) || 0;
+    global.scrollTo({ top: target.getBoundingClientRect().top + global.scrollY - offset });
+    if (!target.hasAttribute('tabindex') && !/^(A|BUTTON|INPUT|SELECT|TEXTAREA)$/.test(target.tagName)) {
+      target.setAttribute('tabindex', '-1');
+    }
+    try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); }
+    try { global.history.replaceState(global.history.state, '', '#' + id); } catch (err) {}
+  });
+
   global.addEventListener('popstate', function () {
     if (!trapped) return;
     trapped = false;
