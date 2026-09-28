@@ -87,7 +87,10 @@
 /* 2026-09-28: 11px is the site's type floor, desktop too — this and .story-tag
    were 10.5px */
 .headline-group-header{position:sticky;top:0;z-index:1;background:var(--bg-surface);padding:10px 12px 4px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand)}
-.headline-date-prefix{color:var(--fg-brand);font-weight:600}
+/* 2026-09-28: was --fg-brand at 600, so every row opened on a bold teal date,
+   17 times in one month group whose header already names the month. The date
+   stays, quiet; the title leads. */
+.headline-date-prefix{color:var(--fg-2);font-weight:400}
 .headline-pin-icon{display:inline-flex;vertical-align:-1px;color:var(--terracotta);margin-right:3px}
 .headline-pin-icon svg{width:11px;height:11px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .headline-divider{height:1px;background:var(--light-sage);margin:6px 10px}
@@ -127,7 +130,11 @@
 .story-summary{font-family:var(--font-body);font-size:15.5px;line-height:1.75;color:var(--text-muted);margin-bottom:22px}
 .story-implications{border-left:3px solid var(--light-sage);padding-left:14px;margin-bottom:22px}
 .story-implications-label{display:block;font-family:var(--font-display);font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-brand);margin-bottom:6px}
-.story-implications p{font-family:var(--font-body);font-size:14px;line-height:1.7;color:var(--text-muted);font-style:italic;margin:0}
+/* 2026-09-28: was 14px, muted and italic, the quietest text in the panel, and
+   it is the part the page's own hero sentence promises. Now the summary's
+   size, upright, in the main text colour. The rule and label still set it
+   apart. */
+.story-implications p{font-family:var(--font-body);font-size:15.5px;line-height:1.75;color:var(--fg-1);margin:0}
 .story-source-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);letter-spacing:-.006em;font-size:13px;font-weight:600;color:var(--tag-text, var(--fg-brand));text-decoration:none;margin-bottom:22px}
 .story-source-link:hover{color:var(--terracotta)}
 .story-source-link:focus-visible{outline:2px solid var(--mid-teal);outline-offset:3px;border-radius:2px}
@@ -233,8 +240,15 @@
   .story-title{font-size:20px}
   .story-toprow{flex-wrap:wrap;gap:10px 12px}
   /* 2026-09-28: body copy is never below 15px on a phone (14 / 13.5 / 14.5) */
-  .story-implications p,.story-actions-invite,.empty-state,.news-error p{font-size:15px}
-  .filter-bar{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:34px;padding-right:34px;mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 40px,black calc(100% - 40px),transparent)}
+  .story-actions-invite,.empty-state,.news-error p{font-size:15px}
+  /* 2026-09-28: the left side had a fixed 34px pad and fade for the "scroll
+     back" arrow, which is hidden until you scroll, so at rest the first chip
+     sat indented from the card below it with its edge faded. Now there is no
+     left pad (the row starts on the gutter) and the left fade appears only
+     with .can-prev, set beside the arrow in news-app.js. The right keeps its
+     pad: it only shows at the end of the row, where it clears the arrow. */
+  .filter-bar{--fade-l:0px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-left:0;padding-right:34px;mask-image:linear-gradient(to right,transparent,black var(--fade-l),black calc(100% - 40px),transparent);-webkit-mask-image:linear-gradient(to right,transparent,black var(--fade-l),black calc(100% - 40px),transparent)}
+  .filter-bar.can-prev{--fade-l:40px}
   .filter-bar::-webkit-scrollbar{display:none}
   .filter-chip{flex-shrink:0}
   .filter-scroll-btn:not([hidden]){display:flex}
@@ -286,7 +300,6 @@
 [data-theme="dark"] .story-title{color:var(--fg-heading)}
 [data-theme="dark"] .story-summary{color:var(--fg-2)}
 [data-theme="dark"] .story-implications{border-left-color:var(--line)}
-[data-theme="dark"] .story-implications p{color:var(--fg-2)}
 [data-theme="dark"] .story-source-link:hover{color:var(--accent-warm)}
 [data-theme="dark"] .story-actions{border-top-color:var(--line)}
 [data-theme="dark"] .story-actions-invite{color:var(--fg-2)}

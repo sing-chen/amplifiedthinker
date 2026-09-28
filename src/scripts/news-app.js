@@ -446,6 +446,9 @@ import {
     if (!scrollPrev || !scrollNext) return;
     var max = filterBar.scrollWidth - filterBar.clientWidth;
     scrollPrev.hidden = filterBar.scrollLeft <= 4;
+    // The CSS fades the row's left edge only while there is something to
+    // scroll back to, so the first chip is not dimmed at rest.
+    filterBar.classList.toggle('can-prev', !scrollPrev.hidden);
     scrollNext.hidden = max <= 4 || filterBar.scrollLeft >= max - 4;
   }
 

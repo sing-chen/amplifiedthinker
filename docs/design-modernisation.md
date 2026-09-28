@@ -36,7 +36,8 @@ position it does not have.
 | 12 | Asymmetric tiles — Future Skills leads | 2026-09-28 | `929d473` |
 | 13 | Coming-soon affordance, label contrast, type floor, field edges | 2026-09-28 | `a3d2178` |
 | 14 | Home: the announce card never empties, a larger and shorter intro | 2026-09-28 | `80e8307` |
-| 15 | The footer leaves charcoal for pine, darker than the page in dark | 2026-09-28 | this commit |
+| 15 | The footer leaves charcoal for pine, darker than the page in dark | 2026-09-28 | `2001110` |
+| 16 | News: "Why it matters" at full voice, quiet row dates, chips on the gutter | 2026-09-28 | this commit |
 | — | **Next** | — | **unassigned — see Candidates** |
 
 Pieces 9–11 were built on `feat/amplitude` and merged to `main` on 2026-08-28. ⚠️ Remaining
@@ -507,7 +508,7 @@ pine page was raised as a site-wide decision and is not part of this piece.
 
 ---
 
-## Piece 15 — the footer ground (2026-09-28)
+## Piece 15 — the footer ground (landed 2026-09-28, `2001110`)
 
 `public/styles.css` only, reaching the 12 surfaces that carry `.site-footer`: the eight hand-written
 pages and, through BaseLayout, sign-in, account, learning and News. Raised by piece 14's review and
@@ -527,6 +528,31 @@ decided by the owner from a four-way comparison on two pages in both themes.
 
 Verification: computed background and the lowest text contrast read on all 12 pages plus Search,
 in both themes. Production eye pass still owed.
+
+---
+
+## Piece 16 — the News reader (2026-09-28)
+
+`public/news-app.css` and three lines of `src/scripts/news-app.js`. From a `taste-skill` pass on /news/,
+rendered locally with the 98 authored stories because this environment cannot reach the database.
+The skill scopes itself to landing pages, so the reader got only its copy, colour and consistency
+checks.
+
+- **"Why it matters" was the quietest text in the panel**: 14px, muted, italic, 4 to 6 lines, under a
+  15.5px summary. It is the part the page's own hero sentence promises. Now 15.5px, upright, `--fg-1`
+  (12.9:1 light, 12.0:1 dark). The rule and label still set it apart. It now reads a step LOUDER
+  than the summary, which is deliberate.
+- **Row dates go quiet**: `--fg-2` at 400, was `--fg-brand` at 600 on every row, 17 times under a
+  month header. 5.18:1 on the column, 4.59:1 on the active row in light (the tightest), 5.9 / 6.7:1
+  in dark. ⚠️ Date and title are now close in tone in light; the title leads by position. Judge it
+  in the eye pass before adding weight back.
+- **Phone chip row starts on the gutter** (x 20, level with the card; was 54). The left pad and fade
+  existed for the scroll-back arrow, which is hidden at rest. The pad is gone and the fade appears
+  only with `.can-prev`, toggled in `updateScrollArrows()` beside the arrow itself.
+
+Left as they are: the five tag hues (they mark categories, used identically in chips and story
+tags), the hand-drawn chip icons (an icon CDN breaks `privacy.html`), source headlines' own dashes
+and title case (editorial), and the uppercase labels (app labels, not section eyebrows).
 
 ---
 
