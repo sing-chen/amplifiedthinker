@@ -99,6 +99,10 @@
   .ac-go{font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#E29A6F;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .15s}
   .ac-go:hover{color:#EEDBC6}
   .ac-go:focus-visible{outline:2px solid #E29A6F;outline-offset:3px;border-radius:2px}
+  /* The step announcement: read out, never shown. The counter above it
+     used to be the live region, so a screen reader pressing Next heard
+     "2 / 3" and nothing about the story it had moved to. */
+  .ac-live{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
   .ac-go svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
   .ac-go:hover svg{transform:translateX(3px)}
 
@@ -166,6 +170,11 @@
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <script src="nav.js"></script>
 
+<!-- ⚠️ <main> OPENS ABOVE THE HERO, 2026-09-28. It used to open after it, so
+     the headline, the intro and "Start with a skill" sat outside the main
+     landmark and the skip link jumped straight past all three to the tiles. -->
+<main id="main-content">
+
 <section class="hero" id="hero" aria-label="Introduction">
   <div class="hero-lamp" id="hero-lamp" aria-hidden="true"></div>
   <div class="hero-body">
@@ -185,42 +194,45 @@
           <span class="ac-label">What's new</span>
           <div class="ac-step" id="ac-step">
             <button type="button" class="ac-btn" id="ac-prev" aria-label="Previous announcement"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <span class="ac-count" id="ac-count" aria-live="polite"></span>
+            <span class="ac-count" id="ac-count"></span>
             <button type="button" class="ac-btn" id="ac-next" aria-label="Next announcement"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
         </div>
         <div class="ac-view" id="ac-view"><div class="ac-track" id="ac-track"></div></div>
+        <span class="ac-live" id="ac-live" aria-live="polite"></span>
       </aside>
     </div>
   </div>
 </section>
 
-<main id="main-content">
-
 <section class="explore" aria-labelledby="explore-label">
   <p class="tiles-kicker">Explore</p>
-  <p class="tiles-title" id="explore-label">Skills to build. Thinkers worth knowing. News worth tracking.</p>
+  <h2 class="tiles-title" id="explore-label">Skills to build. Thinkers worth knowing. News worth tracking.</h2>
+  <!-- Each tile is one link, so its accessible name was the whole card, about
+       40 words for Future Skills. aria-labelledby names it by eyebrow and
+       title instead, aria-describedby carries the description, and the title
+       is an <h3> so heading navigation finds all three. -->
   <div class="explore-grid">
 
-    <a href="future-skills.html" class="tile tile-skills">
-      <p class="tile-eyebrow">Future skills</p>
-      <p class="tile-title">The library of what holds its value</p>
-      <p class="tile-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more.</p>
-      <span class="tile-cta">Browse the library <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+    <a href="future-skills.html" class="tile tile-skills" aria-labelledby="tile-skills-eyebrow tile-skills-title" aria-describedby="tile-skills-desc">
+      <p class="tile-eyebrow" id="tile-skills-eyebrow">Future skills</p>
+      <h3 class="tile-title" id="tile-skills-title">The library of what holds its value</h3>
+      <p class="tile-desc" id="tile-skills-desc">A research-grounded library of the human skills that hold their value as AI handles more of the rest — drawn from WEF, McKinsey, Deloitte, Udemy, and more.</p>
+      <span class="tile-cta">Browse the library <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
     </a>
 
-    <a href="my-people.html" class="tile tile-people">
-      <p class="tile-eyebrow">My people</p>
-      <p class="tile-title">The people whose work I keep turning to</p>
-      <p class="tile-desc">The thinkers, coaches, and practitioners who've shaped how I lead, communicate, and build capability.</p>
-      <span class="tile-cta">Meet them <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+    <a href="my-people.html" class="tile tile-people" aria-labelledby="tile-people-eyebrow tile-people-title" aria-describedby="tile-people-desc">
+      <p class="tile-eyebrow" id="tile-people-eyebrow">My people</p>
+      <h3 class="tile-title" id="tile-people-title">The people whose work I keep turning to</h3>
+      <p class="tile-desc" id="tile-people-desc">The thinkers, coaches, and practitioners who've shaped how I lead, communicate, and build capability.</p>
+      <span class="tile-cta">Meet them <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
     </a>
 
-    <a href="news/" class="tile tile-news">
-      <p class="tile-eyebrow">News</p>
-      <p class="tile-title">The stories reshaping how we work</p>
-      <p class="tile-desc">A curated feed of the skills and workplace shifts worth knowing about.</p>
-      <span class="tile-cta">Read the feed <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+    <a href="news/" class="tile tile-news" aria-labelledby="tile-news-eyebrow tile-news-title" aria-describedby="tile-news-desc">
+      <p class="tile-eyebrow" id="tile-news-eyebrow">News</p>
+      <h3 class="tile-title" id="tile-news-title">The stories reshaping how we work</h3>
+      <p class="tile-desc" id="tile-news-desc">A curated feed of the skills and workplace shifts worth knowing about.</p>
+      <span class="tile-cta">Read the feed <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
     </a>
 
   </div>
@@ -262,6 +274,7 @@
   var view = document.getElementById('ac-view');
   var countEl = document.getElementById('ac-count');
   var stepEl = document.getElementById('ac-step');
+  var liveEl = document.getElementById('ac-live');
   if (!card || !track) return;
 
   var NEWS_MAX_COUNT = 3;
@@ -492,14 +505,33 @@
     show(current, true);
   }
 
+  /* ⚠️ EVERY ITEM BUT THE CURRENT ONE IS INERT, and the window's scroll is
+     put back to 0. Measured 2026-09-28: the other items' links were still
+     in the tab order, and focusing one made the browser scroll this
+     overflow:hidden window to reveal it. That showed a different story (or
+     half of one) under a counter still reading "1 / 3", and every step after
+     it landed on the wrong item, because the track's transform and the
+     window's scrollTop were then both moving the content. Inert takes the
+     hidden items out of the tab order and out of what a screen reader reads,
+     so the counter and the screen agree again. */
   function show(i, instant) {
     var items = track.children, n = items.length;
     if (!n) return;
     current = ((i % n) + n) % n;
+    for (var k = 0; k < n; k++) items[k].toggleAttribute('inert', k !== current);
+    view.scrollTop = 0;
     if (instant) track.style.transitionDuration = '0s';
     track.style.transform = 'translateY(-' + offsets[current] + 'px)';
     if (instant) { void track.offsetHeight; track.style.transitionDuration = ''; }
     countEl.textContent = (current + 1) + ' / ' + n;
+    // Announced only when the reader steps. A re-measure (resize, fonts,
+    // news arriving) calls this with instant=true and must stay silent.
+    if (!instant && liveEl) {
+      var item = items[current];
+      var mark = item.querySelector('.ac-mark'), text = item.querySelector('.ac-text');
+      liveEl.textContent = (current + 1) + ' of ' + n + '. ' +
+        (mark ? mark.textContent + '. ' : '') + (text ? text.textContent : '');
+    }
   }
 
   // (Re)measures and shows — call whenever track's children change.

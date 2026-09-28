@@ -157,6 +157,13 @@ button,input,select,textarea{font-family:inherit}
 .footer-nav a:hover{color:rgba(255,255,255,.85)}
 .footer-nav a:focus-visible{outline:2px solid var(--sage);outline-offset:3px;border-radius:2px}
 .footer-sep{color:rgba(255,255,255,.15);user-select:none}
+/* ⚠️ The links wrap at 430px and below (measured 2026-09-28 on four pages),
+   and every wrap left a separator at a line edge: "· LinkedIn" opening a line
+   at 390px. CSS cannot see where a line breaks, so the separators go wherever
+   wrapping can happen, and the 20px gap does the separating. 520px leaves
+   margin above the measured wrap. Scoped to .site-footer, so search.html's
+   .search-footer band keeps its own. */
+@media (max-width:520px){.site-footer .footer-sep{display:none}}
 .fn{font-family:var(--font-body);font-size:12px;color:rgba(255,255,255,.55);margin-top:12px}
 .fn a{color:rgba(255,255,255,.55);text-decoration:none;transition:color .15s}
 .fn a:hover{color:rgba(255,255,255,.85)}
