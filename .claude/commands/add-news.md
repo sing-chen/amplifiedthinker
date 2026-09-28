@@ -131,6 +131,7 @@ Rules:
 - `url`: the linked URL from the "Source:" line.
 - `summary`: the digest's existing 2-3 sentence summary, lightly trimmed if needed.
 - `implications`: the digest's "Implications" line, verbatim or lightly trimmed. Rendered on the site under a "Why it matters" label. Do NOT include the "Connects to" line — that one is still dropped for scannability.
+  ⚠️ **REQUIRED, never empty.** Since 2026-09-28 the /news/ hero says *"Each story summarised, with why it matters"* — a claim about every story, and the database column is nullable, so nothing else stops one arriving without it. If a digest entry has no Implications line, write one from the summary or ask the user; do not emit the story with this field blank. (All 109 stories had it when the sentence went live.)
 - `tags`: map the digest's "Theme tags" line onto this fixed vocabulary only — drop any tag that doesn't match, and de-dupe if a story maps to the same tag twice:
   `skills development`, `workforce transformation`, `leadership and culture`, `macro signals`, `research and insights`.
 - `pinned`: optional boolean. Only present when the user has chosen to pin this story (see Step 4). Don't add it otherwise.
