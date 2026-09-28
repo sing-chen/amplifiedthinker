@@ -248,6 +248,9 @@
 
   /* ── FILTER TABS ── */
   .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
+  /* toggled by hideEmptyFilters(); display:flex above would beat the UA
+     [hidden] rule and show an "empty" bar in full */
+  .filter-bar[hidden],.ftab[hidden]{display:none}
   .ftab{font-family:var(--font-display);font-size:12px;font-weight:600;padding:6px 14px;border-radius:var(--radius-pill);border:1px solid rgba(172,196,182,.3);color:var(--text-muted);background:transparent;cursor:pointer;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
   .ftab:hover{background:var(--light-sage);border-color:color-mix(in srgb, var(--deep-teal) 30%, transparent);color:var(--mid-teal)}
   .ftab.active{background:var(--mid-teal);border-color:transparent;color:var(--white)}
@@ -540,7 +543,6 @@
 
 <!-- ── WHY THIS EXISTS ── -->
 <section class="why" aria-labelledby="why-heading" id="why-this-matters">
-  <p class="section-label">Why this matters</p>
   <div class="why-grid">
     <div>
       <h2 class="why-hl" id="why-heading">The cognitive apprenticeship is quietly disappearing</h2>
@@ -615,7 +617,6 @@
   <div class="chart-inner">
     <div class="chart-grid">
       <div class="chart-header">
-        <p class="section-label">The evidence</p>
         <h2 class="chart-hl" id="chart-heading">Where the skills in this library sit in 2030</h2>
         <div class="chart-body">
           <p>The WEF Future of Jobs Report 2025 mapped every core skill on two axes: how essential it is today, and how much employers expect its importance to grow. Skills covered in this library cluster in the top-right quadrant — core now, and rising fast.</p>
@@ -654,7 +655,6 @@
   <div class="intro-inner">
   <div class="intro-grid">
     <div class="ib">
-      <p class="section-label">About the library</p>
       <h2 class="why-hl" id="about-heading">What's here, and how to use it</h2>
       <p>The skills in this library are not the ones getting the most attention in L&D conversations right now. Most organisations are focused on AI fluency — and that matters. But <strong>analytical reasoning, creative problem-solving, systems awareness, resilience, and the ability to lead without authority</strong> have always been the skills that separate people who compound their capability from people who don't. AI didn't create the need for them. It removed the excuse to keep neglecting them.</p>
       <p>Each skill here is standalone — a self-contained resource you can start with wherever it's most relevant to your work right now. Over time, as the library grows, related skills will be packaged into guided learning journeys for people who want a more structured path through a connected set of capabilities.</p>
@@ -691,7 +691,6 @@
 <div class="library-wrap">
 <section class="library" aria-label="Skills library" id="the-library">
   <div class="lib-hdr">
-    <p class="section-label">The library</p>
     <h2 class="stitle">Browse by skill</h2>
     <div class="filter-bar" role="group" aria-label="Filter skills by category">
       <button class="ftab active" data-filter="all" aria-pressed="true">All</button>
@@ -1171,6 +1170,30 @@ document.querySelectorAll('.ftab').forEach(function(tab) {
     filterSkills(this.dataset.filter);
   });
 });
+
+/* A category tab is offered only once it holds a skill you can open. Two of
+   the three led to nothing but "coming soon" cards, a filter whose whole
+   answer was "not yet". Derived from the cards on every load, never a list
+   kept by hand, so a tab comes back by itself in the commit that takes its
+   first skill live. And "All" plus one category is not a choice, so with
+   fewer than two live categories the bar goes altogether.
+   ⚠️ Both carry [hidden] rules in the CSS: .filter-bar sets display:flex,
+   which beats the UA [hidden] rule — see CLAUDE.md. */
+(function hideEmptyFilters() {
+  var bar = document.querySelector('.filter-bar');
+  if (!bar) return;
+  var offered = 0;
+  bar.querySelectorAll('.ftab').forEach(function(tab) {
+    var cat = tab.dataset.filter;
+    if (cat === 'all') return;
+    var live = Array.prototype.some.call(document.querySelectorAll('.scard.active'), function(card) {
+      return (card.dataset.categories || '').split(' ').indexOf(cat) !== -1;
+    });
+    tab.hidden = !live;
+    if (live) offered++;
+  });
+  bar.hidden = offered < 2;
+})();
 
 function toggleSkill(id) {
   var card = document.getElementById(id);

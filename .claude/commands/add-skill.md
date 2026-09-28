@@ -208,6 +208,8 @@ Rewrite that block to match the structure of an already-live card (e.g. `id="s-c
   - `.sdef` — `.sdef-inner` with an `.sthumb` (`<picture><source srcset="skills/[slug]/video-thumbnail.webp" type="image/webp"><img src="skills/[slug]/video-thumbnail.png" alt="[Skill Name] skill thumbnail" width="140" height="79" loading="lazy"></picture>` — a 1280×720 palette PNG plus a WebP beside it, as the five live skills carry since 2026-09-02) and `.sdtext` (the skill's one-sentence definition, quoted) — plus `.swhat` with two paragraphs: one on the cost of not having the skill, one on what it produces (draw these from the plan's Overview/Snapshot content, don't invent new phrasing)
   - `.slaunch` → `.lcards` with two `.lcard` links to `skills/[slug]/primer.html` and `skills/[slug]/plan.html` (the second gets `class="lcard primary"`), matching the copy pattern (type, one-line description, time estimate, CTA) used by the other live cards exactly
 
+⚠️ **The category filter tabs are derived, not edited.** Since 2026-09-28 a tab above the list shows only once a skill in its category is live (`scard active`), and the whole bar shows only once two categories are live. So the first live skill in Self-Efficacy or Engagement makes the filter bar **appear for the first time** — expected, not a bug. Check it renders, in both themes. Nothing to add by hand.
+
 Note the video-thumbnail.png referenced here won't exist yet (per Step 4's build rule 8, video is added later) — the `<img>` will show broken until that file is added. That's expected and matches how this site's build sequence already works; don't skip the `<img>` tag to avoid it unless the user says otherwise.
 
 **5c. Add the skill to the search index**
