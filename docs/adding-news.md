@@ -53,6 +53,9 @@ Run `/add-news` and paste the digest, or a URL. It parses the entries, shortlist
 story into the file's schema. This half of the command was never about the file format and is
 unchanged from before Phase 6.
 
+It starts by running `npm run pull:news`, which lists prod rows missing from `content/news.json` so the
+file is current before anything is authored against it (see the drift note near the end of this page).
+
 **Ask for a shortlist rather than accepting all of them.** Most stories in a digest are worth
 reading once; the News page is for the ones worth more than that.
 

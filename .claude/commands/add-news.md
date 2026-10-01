@@ -72,6 +72,28 @@ If no digest content is present yet, ask the user to paste or attach it.
 
 Treat a fetch failure (paywall, login wall, broken link) as a stop — tell the user the URL couldn't be read and ask for a summary or a different source, don't fabricate story content for a page you couldn't access.
 
+## Step 0 — Sync the file with prod — ⚠️ **do this before anything else**
+
+```bash
+npm run pull:news
+```
+
+Dry run. It lists prod's `news_stories` rows that `content/news.json` does not have. If it says
+nothing to add, carry on. If it lists rows, show the user the list and ask before running
+`npm run pull:news -- --write`, then commit the file on its own (ask first, as always).
+
+⚠️ **Why this comes first.** A story can reach the database without passing through the file (the
+admin UI will do it routinely; it already has). It then holds a `<date>-<index>` that the file does
+not know about, and a new story authored for that date takes the same index. The load fails on
+`news_stories_legacy_id_key`, or worse, a different story is overwritten. On 2026-10-01 a live HBR
+story held `2026-09-21-0`, and the first load of an IBM story for that date rolled back. It also
+makes Step 1a's file-based duplicate check complete, because it reads the file prod has.
+
+The script only appends, at the index the row already holds, and never shifts a position. A
+**conflict** (position taken by a different story, or a gap) is reported and left alone: stop and
+tell the user, do not resolve it by renumbering. It reads prod with the anon key and never writes
+to the database.
+
 ## Step 1 — Shortlist
 
 Parse every story in the digest. Reply with a compact numbered shortlist — headline and source only, one line each, no summaries. Ask which numbers to keep (they may say "all", "1,3,5", "cut 2 and 4", etc.). Wait for their reply before doing anything else.
