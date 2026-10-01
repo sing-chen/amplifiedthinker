@@ -82,6 +82,18 @@
     "date": "2026-09-21",
     "stories": [
       {
+        "title": "Research: Gen AI Is Collapsing Creative Processes",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/research-gen-ai-is-collapsing-creative-processes",
+        "summary": "A Netherlands-based team spent a year observing senior creative professionals in TV and advertising production. Generative AI sped up brainstorming but squeezed the stages where ideas normally get checked against what can actually be made. In one case a client approved an AI-generated image whose lighting was physically impossible, and the production team then had to try to recreate it.",
+        "implications": "Treat AI speed at the idea stage as a debt you pay later, unless your own expertise checks the work first. Add a feasibility check between an AI draft and showing it to anyone, and state plainly what reality can deliver — your hands-on knowledge of the constraints becomes more valuable, not less.",
+        "tags": [
+          "skills development",
+          "workforce transformation",
+          "research and insights"
+        ]
+      },
+      {
         "title": "AI may be wearing down the skills employers now value most, and a reskilling plan won’t fix that",
         "source": "IBM Institute for Business Value",
         "url": "https://newsroom.ibm.com/2026-09-21-new-ibm-chro-study-ai-puts-critical-thinking-at-the-center-of-workforce-priorities",
