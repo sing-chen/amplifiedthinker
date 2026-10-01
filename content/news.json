@@ -79,6 +79,34 @@
     ]
   },
   {
+    "date": "2026-09-22",
+    "stories": [
+      {
+        "title": "Research: Work Stress Isn't Always About Workload",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/research-work-stress-isnt-always-about-workload",
+        "summary": "Gargi Sawhney and Mallory McCord write up their meta-analysis of 60 years of role-stressor research: 515 studies covering 787,959 workers. Unclear expectations (role ambiguity) proved the most damaging stressor overall, eroding job satisfaction and performance; clashing demands (role conflict) were the main driver of burnout and quitting; and sheer overload mostly produced emotional and physical symptoms. The usual fixes, such as moving tasks around or time-management training, only address overload.",
+        "implications": "When work starts to feel crushing, work out which of the three it is before you ask for help. If the real problem is unclear expectations, ask your manager to say plainly what \"done\" and \"good\" look like — that will likely do more for your performance than getting a task taken off your plate.",
+        "tags": [
+          "leadership and culture",
+          "research and insights"
+        ]
+      },
+      {
+        "title": "Workplace AI Adoption Remains Slow, Informal and Uneven (Konstanz AI Study, Wave 3)",
+        "source": "University of Konstanz (via Phys.org)",
+        "url": "https://phys.org/news/2026-09-workplace-ai-uneven-survey.html",
+        "summary": "A May 2026 survey of 1,105 German employees by the University of Konstanz Future of Work Lab finds only 38% use AI at work, up from 35% a year earlier, and just 55% of users say their main tool was introduced by their employer. Use splits sharply: 49% of knowledge workers against 25% of manual workers, and 56% of highly educated employees against 21% of those with less education. Among small organisations, only 11% offer AI training and 10% have usage guidelines.",
+        "implications": "Don't wait for a formal rollout. In most workplaces AI skill is being built by employees on their own initiative, and waiting widens the gaps above. Keep a record of what you try — prompts, workflows, limits you hit — so that when official policy arrives you're the one helping to shape it.",
+        "tags": [
+          "workforce transformation",
+          "skills development",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
     "date": "2026-09-21",
     "stories": [
       {
@@ -103,6 +131,213 @@
           "skills development",
           "workforce transformation",
           "leadership and culture",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-19",
+    "stories": [
+      {
+        "title": "\"Almost Every Job Has Tasks That AI Can Change\": Brynjolfsson on What Actually Protects Workers",
+        "source": "Stanford Graduate School of Business",
+        "url": "https://www.gsb.stanford.edu/insights/almost-every-job-has-tasks-ai-can-change",
+        "summary": "Erik Brynjolfsson argues almost no job is fully automatable but almost every job has tasks AI can change, and that what protects workers is framing good questions and owning the outcome — AI fluency alone is like email fluency in 2005. He cites a 19% employment gap for 22–25-year-olds in AI-exposed jobs, and a study of 51 AI deployments in which 77% of problems were non-technical (change management, data quality, process redesign) and only 45% of deployments reduced headcount.",
+        "implications": "List your tasks in two columns — ones AI could replace and ones it could improve — then deliberately move your time toward the second before someone else decides for you. Early in your career, go after the judgment, checking and client-facing work that remains once routine junior tasks are automated.",
+        "tags": [
+          "skills development",
+          "workforce transformation",
+          "macro signals"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-18",
+    "stories": [
+      {
+        "title": "How AI Creates a Capability Mirage",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/how-ai-creates-a-capability-mirage/",
+        "summary": "Drawing on a joint Anthrome Insight–Axialent study of how AI affects behaviour and culture at work, the authors argue that because generative AI lets anyone produce polished output, organisations look capable while real skills quietly wear away. Teammates can no longer tell what a colleague actually understands, and trust between them suffers.",
+        "implications": "Polished output no longer shows that you can do the work. Look for chances to show your reasoning live — talk through the trade-offs, defend a draft without the tool, or teach someone else — and keep practising the core skills you currently hand off to AI, so they don't fade without you noticing.",
+        "tags": [
+          "skills development",
+          "workforce transformation"
+        ]
+      },
+      {
+        "title": "Employers Look for Resilient Staff – Then Leave Them to Burn Out",
+        "source": "The Conversation",
+        "url": "https://theconversation.com/employers-look-for-resilient-staff-then-leave-them-to-burn-out-290463",
+        "summary": "Laura Chamberlain of Warwick Business School reports that hiring managers name resilience as the quality that decides whether a new hire succeeds, yet organisations rarely develop it and instead wait to see who survives a crisis. Drawing on her interviews and wider research, she argues resilience is built through relationships rather than individual toughness, and has to be built in calm periods. This is research-informed commentary rather than a new study, and the author runs a resilience-training business.",
+        "implications": "Build your support network now, while things are calm: colleagues who notice early when you're struggling, and people who make it OK to ask for help. Separate \"can't\" from \"not yet\" by keeping a list of the tasks you've deferred.",
+        "tags": [
+          "skills development",
+          "leadership and culture"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-16",
+    "stories": [
+      {
+        "title": "What It Takes to Make Progress When the Future Feels Out of Control",
+        "source": "Harvard Business Review IdeaCast",
+        "url": "https://hbr.org/podcast/2026/09/what-it-takes-to-make-progress-when-the-future-feels-out-of-control",
+        "summary": "Martin Seligman argues agency is made of three separable components — efficacy (belief you can hit a goal now), optimism (belief effort pays off long-term) and imagination (the breadth of goals you can envision) — and that all three respond to training rather than being fixed traits. He positions abductive reasoning, the creative inferential leap, as the human capability AI does not replicate.",
+        "implications": "When you catch yourself concluding a project or a market is hopeless, put it in perspective — worst case, best case, most likely case — then plan against the most likely one. Treating pessimism as a testable hypothesis rather than a read on reality is the habit that separates people who keep making moves from people who wait.",
+        "tags": [
+          "skills development"
+        ]
+      },
+      {
+        "title": "Stop Automating Old Processes. Design New Ones Instead.",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/stop-automating-old-processes-design-new-ones-instead",
+        "summary": "Organisations are doubling AI spend (BCG: 0.8% to 1.7% of revenue), yet only 12% of CEOs report both revenue and cost benefits (PwC), and 60% see no enterprise-wide EBIT impact despite around 80% using generative AI somewhere (McKinsey QuantumBlack). Masha Shunko and Serguei Netessine attribute the gap to automating existing tasks inside unchanged workflows rather than redesigning the workflow first.",
+        "implications": "If you're asked to bolt AI onto a process you already run, the higher-value contribution is mapping what that process would look like if designed today from scratch — redesign judgment is scarcer than tool proficiency. Notice whether your organisation measures AI adoption or AI outcomes; the answer tells you how long the current approach has.",
+        "tags": [
+          "workforce transformation",
+          "leadership and culture"
+        ]
+      },
+      {
+        "title": "You Think You're a Good Collaborator. Do the People You Manage Agree?",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/you-think-youre-a-good-collaborator-do-the-people-you-manage-agree",
+        "summary": "Drawing on data from more than 10,000 professionals, Ivan Matviak and Heidi K. Gardner find senior leaders consistently rate themselves as effective collaborators who listen and empower, while the people they work with report otherwise. Dominating conversations and micromanaging are named as the behaviours that most undercut leaders' intended collaborative posture.",
+        "implications": "If your manager describes the team as collaborative in terms you wouldn't use, the gap is well documented rather than a sign you're misreading things — and specific behavioural feedback travels better than a rating. The moment you lead anything, assume your own self-assessment is the least reliable data point available.",
+        "tags": [
+          "leadership and culture",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-15",
+    "stories": [
+      {
+        "title": "Even a Tiny Sense of Lasting Meaning Makes People Choose Harder Work — Starting by Age Four",
+        "source": "Psychological Science",
+        "url": "https://doi.org/10.1177/09567976261462874",
+        "summary": "Across four experiments with 604 children aged 4–9 and 582 adults, researchers from UT Dallas and the University of Chicago found that when told their work would be kept, 83% of adults chose the challenging creative task; told it would be destroyed, only 34% did. Making the task more fun raised motivation somewhat but could not make up for knowing the work wouldn't last.",
+        "implications": "Notice which parts of your work feel thrown away — drafts nobody reads, analyses that go nowhere — and build a way for that work to last, such as a decision log, a shared doc or a reusable template. You'll be more willing to take on hard problems when your effort visibly adds up.",
+        "tags": [
+          "research and insights"
+        ]
+      },
+      {
+        "title": "Career Shocks and the Sustainability of Global Careers",
+        "source": "International Journal of Human Resource Management",
+        "url": "https://www.tandfonline.com/doi/full/10.1080/09585192.2026.2723321",
+        "summary": "A University of Western Australia study followed more than 150 expatriates through personal, organisational and institutional shocks — from divorce and restructures to downturns and immigration policy. Those who reset their goals, learned new skills, widened their networks or moved again ended up with satisfying long-run careers; those who waited it out did not. Company-sponsored expats responded proactively more often, largely because they had internal mobility and support to draw on.",
+        "implications": "When a restructure or life event knocks your plan off course, treat it as a prompt to review your direction rather than something to recover from quietly. Before the next shock arrives, work out which internal networks and mobility options you could actually use — especially if you don't have organisational sponsorship.",
+        "tags": [
+          "skills development",
+          "workforce transformation",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-12",
+    "stories": [
+      {
+        "title": "When AI Disruption Never Ends",
+        "source": "MIT Sloan Management Review",
+        "url": "https://sloanreview.mit.edu/article/when-ai-disruption-never-ends/",
+        "summary": "Rory McDonald and Will Drover argue AI has produced perpetual rather than episodic disruption, which breaks conventional change management built on the assumption that transitions eventually conclude. They set out three “steady-state disruption” practices: permanent AI infrastructure instead of rolling pilots, split cadences for initiatives moving at different speeds, and embedded learning held as standing capacity. Their core claim is that optimising for speed alone produces organisational fatigue and loses to organisations built for endurance.",
+        "implications": "If you have been waiting for tooling to stabilise before investing in depth, stop — there is no settling point to wait for, so build learning into your weekly cadence rather than treating it as a project with an end date. Notice too whether your organisation runs everything at one urgent tempo; that is the pattern the authors identify as the fatigue driver, and it is worth naming when you scope your own work.",
+        "tags": [
+          "workforce transformation",
+          "leadership and culture"
+        ]
+      },
+      {
+        "title": "Right-Sizing AI at Work: Workforce Transformation and Human-Machine Partnerships in Ireland",
+        "source": "Trinity College Dublin",
+        "url": "https://www.tcd.ie/news_events/top-stories/featured/new-research-from-technology-ireland-digital-skillnet-/",
+        "summary": "Survey research from the Centre for Sociology of Humans and Machines, a joint centre at Trinity College Dublin and TU Dublin led by Taha Yasseri, finds AI’s effect on Irish workplaces is currently task and workflow transformation rather than large-scale job elimination. 47.4% of workers use AI tools daily, 64.7% describe themselves as confident and 69% feel prepared to adapt their skills — but the study identifies a clear gap between that confidence and participation in formal training. Workers increasingly occupy review, verification, coordination and judgement roles over AI-supported output, which the researchers say calls for structured, role-specific skills development rather than general AI literacy.",
+        "implications": "Self-taught confidence is not the same as verified competence — if your AI-assisted work has never been checked against a standard, you are inside the gap this study measures, so seek role-specific practice and real feedback rather than more tool exposure. Recognise too that the task mix is shifting toward verification and judgement: the skill that pays is the domain depth that lets you spot a plausible-but-wrong answer.",
+        "tags": [
+          "research and insights",
+          "workforce transformation",
+          "skills development"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-10",
+    "stories": [
+      {
+        "title": "Employees Disengaged? Show Them How They Add Value",
+        "source": "Harvard Business School Working Knowledge",
+        "url": "https://www.library.hbs.edu/working-knowledge/employees-disengaged-show-them-how-they-add-value",
+        "summary": "Researchers ran a two-arm communication experiment at a 292-employee, 12-site building-materials firm after it introduced broad-based equity. Employees who got a letter naming the specific daily behaviours that build company value were 13 percentage points less likely to leave than those who got values-and-mission messaging. The effect was strongest during organisational disruption.",
+        "implications": "If you can't draw the line from what you did this week to something the business actually values, that gap is a documented driver of your own disengagement — not a motivation failing. Write that line yourself if no one hands it to you, and use it in your next check-in rather than waiting for leadership to supply the narrative.",
+        "tags": [
+          "research and insights"
+        ]
+      },
+      {
+        "title": "Gartner Identifies 4 Shifts Shaping the Future of Work",
+        "source": "Gartner",
+        "url": "https://www.gartner.com/en/newsroom/press-releases/2026-09-09-gartner-identifies-four-shifts-shaping-the-future-of-work",
+        "summary": "Gartner reframes the current phase as workforce amplification rather than automation, with early AI investments entering the Trough of Disillusionment. Two of the four named shifts are expanding human capability through the human–AI relationship (strengthening judgment, creativity and decision-making while preserving accountability) and building a workforce that adapts, not just adopts. Gartner predicts that by 2029, 30% of employees laid off as AI replacements will need rehiring, often at higher cost.",
+        "implications": "\"Adapt, not adopt\" is the distinction to hold onto — tool fluency is table stakes, and the differentiator is being the person who redesigns how a process runs end-to-end. If you're in a function under displacement pressure, the rehiring forecast is a reason to document what only you can adjudicate, not to compete on speed of tool use.",
+        "tags": [
+          "workforce transformation",
+          "skills development"
+        ],
+        "pinned": true
+      },
+      {
+        "title": "Developing and Validating a Career Competency Framework for the Fourth Industrial Revolution",
+        "source": "Frontiers in Organizational Psychology",
+        "url": "https://www.frontiersin.org/journals/organizational-psychology/articles/10.3389/forgp.2026.1823243/full",
+        "summary": "A two-round modified Delphi study narrowed 38 candidate competencies to 26, split into 12 critical core and 14 important contributors. The core tier: career adaptability, ethical behaviour, digital literacy, continuous learning, resilience, complex problem-solving, critical thinking, virtual collaboration, collaboration, diversity, communication and work–life integration. Notably, networking and goal-setting — staples of conventional career advice — were de-emphasised, and ethical behaviour was treated as a core competency rather than an add-on.",
+        "implications": "Check your development plan against that core tier before adding another tool certification — adaptability and judgment rank above the specialised capabilities most plans lead with. If you've been treating networking as the main lever on your career, this panel of practitioners who actually made 4IR transitions ranked it below the ability to keep learning and to reason through messy problems.",
+        "tags": [
+          "skills development",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-09",
+    "stories": [
+      {
+        "title": "AI Can Enhance Every Stage of Teamwork—Under Two Conditions",
+        "source": "Harvard Business Review",
+        "url": "https://hbr.org/2026/09/ai-can-enhance-every-stage-of-teamwork-under-two-conditions",
+        "summary": "Drawing on work with more than 300 managers across 35 organizations, the authors argue that most AI deployment treats the tool as a solo productivity aid and ignores the collaborative arc entirely. They map AI to three distinct stages: before a meeting to sharpen preparation and pressure-test ideas, during it to challenge assumptions and broaden perspectives, and after it to force reflection and convert lessons into reusable practice. The gains depend on two conditions — intentionality and craft — not on tool access.",
+        "implications": "If your AI use stops at drafting your own work, you're leaving the higher-value application untouched — try using it to pressure-test your position before your next contentious meeting, and to interrogate what actually happened after one. Notice which of the three stages you never use it for; that gap is where the compounding return sits.",
+        "tags": [
+          "skills development",
+          "workforce transformation",
+          "leadership and culture"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-09-08",
+    "stories": [
+      {
+        "title": "AI Could Undermine Managers' Judgement Unless Used Carefully, University of Bath-Led Study Warns",
+        "source": "University of Bath",
+        "url": "https://www.bath.ac.uk/announcements/ai-could-undermine-managers-judgement-unless-used-carefully-university-of-bath-led-study-warns/",
+        "summary": "The paper theorises two opposing pathways for what generative AI does to phronesis — the practical wisdom built through experience, reflection and human interaction. \"Epistemic deskilling\" happens when people outsource enough of their thinking that they stop exercising their own judgement; \"epistemic upskilling\" happens when AI is used as a prompt for reflection. The decisive variable is accountability: where people must justify and explain their reasoning to others, AI use tends to deepen judgement rather than replace it.",
+        "implications": "Change what you ask AI for — instead of an answer, ask it to argue against your position, then find the gaps in its reasoning, because those gaps are exactly where your own judgement has to do the work. If nobody currently asks you to justify your decisions, build that structure yourself: write down your reasoning before you prompt, and compare.",
+        "tags": [
+          "skills development",
           "research and insights"
         ]
       }
@@ -1312,77 +1547,6 @@
           "skills development",
           "workforce transformation",
           "leadership and culture"
-        ]
-      }
-    ]
-  },
-  {
-    "date": "2026-09-10",
-    "stories": [
-      {
-        "title": "Employees Disengaged? Show Them How They Add Value",
-        "source": "Harvard Business School Working Knowledge",
-        "url": "https://www.library.hbs.edu/working-knowledge/employees-disengaged-show-them-how-they-add-value",
-        "summary": "Researchers ran a two-arm communication experiment at a 292-employee, 12-site building-materials firm after it introduced broad-based equity. Employees who got a letter naming the specific daily behaviours that build company value were 13 percentage points less likely to leave than those who got values-and-mission messaging. The effect was strongest during organisational disruption.",
-        "implications": "If you can't draw the line from what you did this week to something the business actually values, that gap is a documented driver of your own disengagement — not a motivation failing. Write that line yourself if no one hands it to you, and use it in your next check-in rather than waiting for leadership to supply the narrative.",
-        "tags": [
-          "research and insights"
-        ]
-      },
-      {
-        "title": "Gartner Identifies 4 Shifts Shaping the Future of Work",
-        "source": "Gartner",
-        "url": "https://www.gartner.com/en/newsroom/press-releases/2026-09-09-gartner-identifies-four-shifts-shaping-the-future-of-work",
-        "summary": "Gartner reframes the current phase as workforce amplification rather than automation, with early AI investments entering the Trough of Disillusionment. Two of the four named shifts are expanding human capability through the human–AI relationship (strengthening judgment, creativity and decision-making while preserving accountability) and building a workforce that adapts, not just adopts. Gartner predicts that by 2029, 30% of employees laid off as AI replacements will need rehiring, often at higher cost.",
-        "implications": "\"Adapt, not adopt\" is the distinction to hold onto — tool fluency is table stakes, and the differentiator is being the person who redesigns how a process runs end-to-end. If you're in a function under displacement pressure, the rehiring forecast is a reason to document what only you can adjudicate, not to compete on speed of tool use.",
-        "tags": [
-          "workforce transformation",
-          "skills development"
-        ],
-        "pinned": true
-      },
-      {
-        "title": "Developing and Validating a Career Competency Framework for the Fourth Industrial Revolution",
-        "source": "Frontiers in Organizational Psychology",
-        "url": "https://www.frontiersin.org/journals/organizational-psychology/articles/10.3389/forgp.2026.1823243/full",
-        "summary": "A two-round modified Delphi study narrowed 38 candidate competencies to 26, split into 12 critical core and 14 important contributors. The core tier: career adaptability, ethical behaviour, digital literacy, continuous learning, resilience, complex problem-solving, critical thinking, virtual collaboration, collaboration, diversity, communication and work–life integration. Notably, networking and goal-setting — staples of conventional career advice — were de-emphasised, and ethical behaviour was treated as a core competency rather than an add-on.",
-        "implications": "Check your development plan against that core tier before adding another tool certification — adaptability and judgment rank above the specialised capabilities most plans lead with. If you've been treating networking as the main lever on your career, this panel of practitioners who actually made 4IR transitions ranked it below the ability to keep learning and to reason through messy problems.",
-        "tags": [
-          "skills development",
-          "research and insights"
-        ]
-      }
-    ]
-  },
-  {
-    "date": "2026-09-09",
-    "stories": [
-      {
-        "title": "AI Can Enhance Every Stage of Teamwork—Under Two Conditions",
-        "source": "Harvard Business Review",
-        "url": "https://hbr.org/2026/09/ai-can-enhance-every-stage-of-teamwork-under-two-conditions",
-        "summary": "Drawing on work with more than 300 managers across 35 organizations, the authors argue that most AI deployment treats the tool as a solo productivity aid and ignores the collaborative arc entirely. They map AI to three distinct stages: before a meeting to sharpen preparation and pressure-test ideas, during it to challenge assumptions and broaden perspectives, and after it to force reflection and convert lessons into reusable practice. The gains depend on two conditions — intentionality and craft — not on tool access.",
-        "implications": "If your AI use stops at drafting your own work, you're leaving the higher-value application untouched — try using it to pressure-test your position before your next contentious meeting, and to interrogate what actually happened after one. Notice which of the three stages you never use it for; that gap is where the compounding return sits.",
-        "tags": [
-          "skills development",
-          "workforce transformation",
-          "leadership and culture"
-        ]
-      }
-    ]
-  },
-  {
-    "date": "2026-09-08",
-    "stories": [
-      {
-        "title": "AI Could Undermine Managers' Judgement Unless Used Carefully, University of Bath-Led Study Warns",
-        "source": "University of Bath",
-        "url": "https://www.bath.ac.uk/announcements/ai-could-undermine-managers-judgement-unless-used-carefully-university-of-bath-led-study-warns/",
-        "summary": "The paper theorises two opposing pathways for what generative AI does to phronesis — the practical wisdom built through experience, reflection and human interaction. \"Epistemic deskilling\" happens when people outsource enough of their thinking that they stop exercising their own judgement; \"epistemic upskilling\" happens when AI is used as a prompt for reflection. The decisive variable is accountability: where people must justify and explain their reasoning to others, AI use tends to deepen judgement rather than replace it.",
-        "implications": "Change what you ask AI for — instead of an answer, ask it to argue against your position, then find the gaps in its reasoning, because those gaps are exactly where your own judgement has to do the work. If nobody currently asks you to justify your decisions, build that structure yourself: write down your reasoning before you prompt, and compare.",
-        "tags": [
-          "skills development",
-          "research and insights"
         ]
       }
     ]

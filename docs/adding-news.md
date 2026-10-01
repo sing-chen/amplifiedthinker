@@ -261,3 +261,9 @@ The admin UI writes to `news_stories` directly. At that point:
 
 That drift is detectable: `verify:news-dupes` reports rows in the database that are not in the file,
 which is exactly the signal that this workflow has been superseded.
+
+Until then, `npm run pull:news` closes that drift: it lists the prod rows missing from the file and,
+with `--write`, appends each at the `<date>-<index>` it already holds. It only appends, never shifts a
+position, and reports a conflict instead of guessing. Run it **before** authoring a day, because a
+story added outside the file can occupy the index a new one needs: on 2026-10-01 a live HBR story held
+`2026-09-21-0` and the first load of a new story failed on `news_stories_legacy_id_key`.
