@@ -1,0 +1,54 @@
+-- PARTIAL load for public.news_stories, GENERATED from content/news.json.
+--
+--   npm run build:news-seed -- --only 2026-09-29 --only 2026-09-28 --only 2026-09-24 --only 2026-09-23 --only 2026-09-21 --write
+--
+-- ⚠️ DO NOT HAND-EDIT. Regenerate instead; this file is an output.
+--
+-- Run it in the Supabase SQL editor, which executes as the table owner. The
+-- anon key is refused by RLS (correctly) and `service_role` is deliberately
+-- unavailable to this project — see the header of scripts/build-news-seed.mjs.
+--
+-- ⚠️ IDEMPOTENT ON `slug`: re-running updates in place instead of duplicating.
+-- `slug` is the immutable public identifier from here on; `legacy_id` is the
+-- OLD positional `<date>-<index>` form that shared links still point at, and it
+-- is what the 301 endpoint resolves.
+--
+-- Generated from 6 stories for 2026-09-29, 2026-09-28, 2026-09-24, 2026-09-23, 2026-09-21, out of 104 in the file.
+--
+-- ⚠️ PARTIAL. This touches ONLY the rows listed below. It is not a
+-- replacement for supabase/seed/news_seed.sql and does not reconcile
+-- anything it omits.
+
+insert into public.news_stories
+  (slug, legacy_id, story_date, sort_order, title, source, url, summary, implications, tags, pinned, status)
+values
+  ('2026-09-29-ai-is-reshaping-the-workplace-but-not-replacing-human', '2026-09-29-0', '2026-09-29'::date, 0, 'AI is reshaping the workplace, but not replacing human judgement', 'Åbo Akademi University', 'https://www.eurekalert.org/news-releases/1145893', 'A doctoral dissertation by Nurlan Musazade, defended 25 September, analysed several years of job advertisements and ran experiments on how people work with generative AI. Participants who combined AI output with their own judgement did better than those who leaned more heavily on the AI. Job ads increasingly ask for creativity, analytical thinking and systems thinking alongside AI-tool skills and traditional technical skills such as Python.', 'The advantage comes from integrating AI into your work, not from having access to it. Treat AI output as one input you check, not an answer you hand on, and keep a record of where you overrode or changed what it gave you: that is evidence of the judgement skill this study says matters.', ARRAY['skills development', 'workforce transformation', 'research and insights']::text[], false, 'published'),
+  ('2026-09-28-why-are-employees-reluctant-to-disclose-ai-use-to-their', '2026-09-28-0', '2026-09-28'::date, 0, 'Why are employees reluctant to disclose AI use to their bosses?', 'USC Marshall School of Business', 'https://www.marshall.usc.edu/news/why-are-employees-reluctant-to-disclose-ai-use-to-their-bosses', 'Eric Anicich and Jeslyn Brouwers surveyed 604 US employees who use AI daily. 80% said sharing their AI techniques would help their team, yet about a third had withheld them. People in the lowest trust quartile were about four times as likely to withhold. Their fears were looking less competent, being handed extra work, and showing their job could be automated. Note the research first appeared in HBR in June 2026, so this week’s coverage is a new write-up rather than new data.', 'Adoption that happens but stays hidden is a pilot-to-production failure that never shows up in official usage data, and leaders cannot see productivity gains they are not shown. The barrier is trust in the organisation, not technology. Whether a technique gets shared again can turn on the first 30 seconds of how a supervisor reacts.', ARRAY['workforce transformation', 'leadership and culture', 'research and insights']::text[], false, 'published'),
+  ('2026-09-24-ai-tools-are-thinning-out-management-layers-so-coordinating', '2026-09-24-0', '2026-09-24'::date, 0, 'AI tools are thinning out management layers, so coordinating directly with peers is becoming a career skill', 'INSEAD Knowledge', 'https://knowledge.insead.edu/leadership-organisations/beyond-automation-how-ai-changing-management', 'Phanish Puranam, Piyush Gulati and Arianna Marchetti separate AI used to produce work from “OrgTech”, technology that changes how organisations coordinate and assign authority. Their study of 3,000 US public firms (2010–2019) found that adopting collaboration tools like Jira and Slack cut managers per employee and shifted coordination onto non-managers. “Vertical” OrgTech concentrates oversight in managers; “lateral” OrgTech spreads decisions across peers. Which one a firm gets depends on how it deploys the tools.', 'The technology does not decide the outcome; how an organisation deploys it does. Heavier monitoring points to vertical, more peer-level decision rights to lateral. Where it is lateral, skill at resolving problems with colleagues and negotiating handoffs is increasingly how non-managers get recognised, because there are fewer managers to escalate to.', ARRAY['workforce transformation', 'leadership and culture', 'research and insights']::text[], false, 'published'),
+  ('2026-09-24-you-probably-cant-judge-your-own-emotional-intelligence-from', '2026-09-24-1', '2026-09-24'::date, 1, 'You probably can’t judge your own emotional intelligence from how you feel about it', 'Cambridge Judge Business School', 'https://www.jbs.cam.ac.uk/2026/are-women-really-more-emotionally-intelligent-than-men/', 'A meta-analysis in Emotion by Hausfeld, Hampel, Bach and Menges combines 1,279 papers covering 609,278 people in 76 countries. On average, women are better at recognising and understanding emotions and at managing other people’s emotions; men score slightly higher at regulating their own. Women’s advantage is large on performance-based tests and almost disappears on self-reports, so how people rate themselves is a poor guide to their actual ability.', 'Emotional intelligence is several separate skills, not one trait, and self-assessment is a weak way to find the weak one: use a performance-based test or specific colleague feedback. It is also a warning for skills-based models that rely on self-rating, and a prompt to check whether emotional labour is being handed out by stereotype rather than skill.', ARRAY['skills development', 'leadership and culture', 'research and insights']::text[], false, 'published'),
+  ('2026-09-23-psychological-capital-hope-self-belief-resilience-and', '2026-09-23-0', '2026-09-23'::date, 0, '“Psychological capital” (hope, self-belief, resilience and optimism) is linked to lower stress and less job-hunting', 'American Psychological Association', 'https://www.apa.org/news/press/releases/2026/09/psychological-capital-work-stress', 'The 2026 Work in America Survey, fielded by the Harris Poll with 2,009 US workers, found 37% say their workplace harms their mental health, up from 32% last year. Workers who score high on psychological capital were much less likely to feel stressed during the workday (38% vs 55%) or to plan a job search (19% vs 51%), and less worried about AI making them obsolete (37% vs 53%). APA stresses it is not a fixed trait and can be developed.', 'These four resources can be built, not just possessed: keep a record of problems you solved to build self-belief, and write down more than one route to a goal to build hope. The finding is correlational, so treat it as a strong hint rather than proof that building them lowers your stress.', ARRAY['skills development', 'research and insights']::text[], false, 'published'),
+  ('2026-09-21-ai-may-be-wearing-down-the-skills-employers-now-value-most', '2026-09-21-0', '2026-09-21'::date, 0, 'AI may be wearing down the skills employers now value most, and a reskilling plan won’t fix that', 'IBM Institute for Business Value', 'https://newsroom.ibm.com/2026-09-21-new-ibm-chro-study-ai-puts-critical-thinking-at-the-center-of-workforce-priorities', 'Designing the Thinking Organization, a study with Oxford Economics, surveyed 1,500 CHROs and 8,800 employees in 28 countries. 60% of employees say skill erosion affects them directly, with critical thinking the skill most often said to be declining. 80% of firms have a reskilling roadmap, but those roadmaps teach new tools and do nothing about existing skills fading. 71% of CHROs call the ability to supervise, check and override AI output the most essential workforce skill, yet only 29% of employees rank judgment as important.', 'Leaders will judge people on whether they can catch AI’s mistakes, not on how much they use it. Only 26% of organisations clearly define which work is human-led, AI-assisted or AI-executed. Doing one core task a week without AI first, then comparing, keeps judgment exercised. IBM is a vendor, but the survey was run with Oxford Economics.', ARRAY['skills development', 'workforce transformation', 'leadership and culture', 'research and insights']::text[], false, 'published')
+on conflict (slug) do update set
+  legacy_id    = excluded.legacy_id,
+  story_date   = excluded.story_date,
+  sort_order   = excluded.sort_order,
+  title        = excluded.title,
+  source       = excluded.source,
+  url          = excluded.url,
+  summary      = excluded.summary,
+  implications = excluded.implications,
+  tags         = excluded.tags,
+  pinned       = excluded.pinned,
+  status       = excluded.status;
+
+-- Nothing in this batch is merged away; clear any pointer left by a
+-- previous run so the file stays the source of truth.
+update public.news_stories set merged_into = null
+ where slug in ('2026-09-29-ai-is-reshaping-the-workplace-but-not-replacing-human', '2026-09-28-why-are-employees-reluctant-to-disclose-ai-use-to-their', '2026-09-24-ai-tools-are-thinning-out-management-layers-so-coordinating', '2026-09-24-you-probably-cant-judge-your-own-emotional-intelligence-from', '2026-09-23-psychological-capital-hope-self-belief-resilience-and', '2026-09-21-ai-may-be-wearing-down-the-skills-employers-now-value-most') and merged_into is not null;
+
+-- Verification, to run in the same sitting:
+--   select count(*) from public.news_stories
+--     where story_date in ('2026-09-29', '2026-09-28', '2026-09-24', '2026-09-23', '2026-09-21');  -- expect 6
+--   select count(*) from public.news_stories where pinned;           -- expect at most 1
+--   select title from public.news_stories where title ~ '[^[:ascii:]]' limit 5;
+--     -- eyeball these: accented text must read correctly, not as mojibake
