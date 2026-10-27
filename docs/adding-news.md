@@ -8,8 +8,9 @@ of a JSON file and into the `news_stories` table.
 > **Editing the file publishes nothing. Pushing publishes nothing.**
 >
 > `/news/` renders from the database. `content/news.json` is an *authoring input* — the only thing
-> that reads it is `scripts/build-news-seed.mjs`. A story goes live when its **SQL is run in the
-> Supabase SQL editor**, and at no other moment.
+> that reads it is `scripts/build-news-seed.mjs`. A story goes live when its **SQL is run against
+> prod** (in the Supabase SQL editor, or by Claude through the Supabase connector), and at no other
+> moment.
 >
 > ⚠️ **A run that stops before that looks completely successful**: green build, clean deploy, no
 > story. No gate catches it — the three `prebuild` checks read skills, redirects and encoding, and
@@ -28,10 +29,12 @@ and two are closed:
 |---|---|
 | the anon key | refused by RLS, correctly |
 | `service_role` | **refused by us** — one line of it bypasses every policy in the schema, and Phase 6 settled that it gets no home in this project |
-| the dashboard SQL editor | runs as the table owner. The only one left |
+| the dashboard SQL editor | runs as the table owner. Paste the file by hand |
+| the Supabase connector (`execute_sql`) | runs as your own Supabase login, not as the anon key or `service_role`, so it does not break the rule above. Claude can run the file for you, after you say yes |
 
-So the product of this workflow is **generated SQL that a human pastes**. Nobody hand-writes rows;
-the generator does. It is the same arrangement the migrations already use.
+So the product of this workflow is **generated SQL**, run by you in the editor or by Claude through
+the connector. Nobody hand-writes rows; the generator does. It is the same arrangement the
+migrations already use.
 
 **This is an interim route with an end date.** Phase 7 ships an admin UI that writes to the table
 directly, and retires both this workflow and `content/news.json`. See [the last section](#what-changes-when-phase-7-ships).
@@ -151,7 +154,15 @@ runs and publishes nothing is the exact failure this workflow is arranged around
 
 ## Step 5 — Run it
 
-Open the **Supabase SQL editor**, paste the generated file, run it.
+Either open the **Supabase SQL editor**, paste the generated file and run it, or let Claude run it
+through the Supabase connector.
+
+Through the connector, Claude finds the prod project by matching its ref to the `prod` URL in
+`public/supabase-client.js`, tells you the project and the row count, and **waits for your yes**
+before writing to the live database. Each batch is asked afresh. It then runs its own checks, because
+the connector's empty `[]` result proves nothing: the row count for the dates, at most one pinned
+row, and the non-ASCII titles reading as real text. If the connector is unavailable, it falls back to
+handing you the file. First used on 2026-10-27.
 
 > ### ⚠️ Which project depends on whether Phase 6 has merged
 >

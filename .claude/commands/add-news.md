@@ -36,8 +36,10 @@ no test.
 `news_stories` is admin-write: the policy requires `public.is_admin()`, and `is_admin` can only be
 set where `auth.uid()` is null — the dashboard SQL editor. The anon key is refused by RLS,
 correctly, and `service_role` was deliberately refused a home in this project because one line of it
-bypasses every policy in the schema. The SQL editor is the only route left, so this command's
-product is generated SQL that a human pastes. Nobody hand-writes the rows; the generator does.
+bypasses every policy in the schema. The routes left are the SQL editor and the Supabase connector,
+which runs as the user's own login, so this command's product is generated SQL that is either
+pasted by a human or run through the connector with their approval. Nobody hand-writes the rows;
+the generator does.
 
 ### This is the interim route, and it has an end date
 
@@ -205,10 +207,28 @@ run after it — see the Phase 7 warning above. A `--only` date that matches not
 rather than emitting an empty file, because SQL that runs and publishes nothing is the failure this
 whole command is arranged around.
 
-**Then hand it to the user to run**, in the Supabase SQL editor. **You cannot run it** — the anon
-key is refused by RLS, correctly, and there is no service key. Say plainly that the story is not
-live until they do, and paste the verification queries from the foot of the generated file so they
-can confirm the row count themselves rather than trusting "Success. No rows returned".
+**Then get it run on prod.** Say plainly that the story is not live until it is. Two routes:
+
+1. **The Supabase connector (preferred, when its tools are available).** Its `execute_sql` runs as the
+   user's own Supabase login, not the anon key and not `service_role`, so it does not breach the
+   no-service-key rule. Load the tools with ToolSearch if they are deferred, then:
+   - `list_projects`, and take the project whose ref matches the `prod` URL in
+     `public/supabase-client.js`. Do not pick by name alone: the account also holds a dev project and
+     an unrelated `promptly` one.
+   - ⚠️ **Writing to the live database is outward-facing.** Tell the user the project, the row count and
+     the file, and **wait for a clear yes** before running anything. Approval for an earlier batch does
+     not carry over.
+   - Run the file's statements verbatim (the `insert … on conflict` and the `update … merged_into`
+     cleanup; the comments can go). The result comes back as `[]`, which proves nothing, so then run a
+     check of your own: the `count(*)` for the dates (it must match the row count the generator
+     printed), `count(*) where pinned` (at most 1), and the non-ASCII titles, which must read as real
+     text and not mojibake.
+2. **If the connector is not available or is refused**, hand the file to the user to paste into the
+   Supabase SQL editor and give them the verification queries from the foot of the generated file, so
+   they can confirm the row count themselves rather than trusting "Success. No rows returned".
+
+The anon key still cannot write (RLS refuses it, correctly) and there is still no service key, so
+those are not routes. Do not try them.
 
 **The SQL goes to prod** — that is the live site, and has been since Phase 6 merged on
 2026-08-26. Run it against dev too if the two projects are being kept in step; nothing on the
