@@ -233,6 +233,19 @@ whole command is arranged around.
    Supabase SQL editor and give them the verification queries from the foot of the generated file, so
    they can confirm the row count themselves rather than trusting "Success. No rows returned".
 
+**Then prove it is live**, with every date in the batch:
+
+```bash
+npm run verify:news-live -- <YYYY-MM-DD> [<YYYY-MM-DD> ...]
+```
+
+It must end `LIVE:` and exit 0 before you tell the user the stories are published. Report the
+`/news/<slug>` links it prints. Pages are server-rendered, so no deploy is involved. If the user ran
+the SQL themselves, run this check once they say it is done. ⚠️ **Never report a story as published
+on the strength of the SQL result, the commit or the file.** `NOT IN PROD` means the SQL has not run
+on prod, whatever anything else said. `CONTROL FAILED` means the origin answered 200 for a slug that
+cannot exist, so nothing was proven: say so and stop.
+
 The anon key still cannot write (RLS refuses it, correctly) and there is still no service key, so
 those are not routes. Do not try them.
 

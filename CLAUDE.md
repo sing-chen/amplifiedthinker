@@ -248,6 +248,12 @@ scripts/         lib/supabase.mjs — ⚠️ THE ONE PLACE A NODE SCRIPT LEARNS 
                  ⚠️ If prod cannot be read it says PROD NOT CHECKED and exits 1, never "clean".
                  Its rules are shared, not copied: lib/digest.mjs (the digest file check) and
                  lib/news-match.mjs (normUrl/overlap, also used by verify-news-duplicates)
+                 verify-news-live.mjs (npm run verify:news-live -- <date> [...]) - the last step of
+                 /add-news: every story the file holds for those dates must be a published prod row
+                 AND serve on /news/<slug> (200, right <title>, canonical), /news/, the sitemap and
+                 search. READS ONLY. ⚠️ A slug that cannot exist must 404 first, or the run stops:
+                 a 200 from an origin that answers everything proves nothing. Slugs come from prod,
+                 never recomputed, so the slug rule stays in build-news-seed.mjs alone
                  build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so

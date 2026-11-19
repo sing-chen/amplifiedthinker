@@ -240,6 +240,27 @@ load-bearing one is:
 select status, count(*) from public.news_stories group by status order by status;
 ```
 
+Then prove the day's stories are actually on the site:
+
+```bash
+npm run verify:news-live -- <YYYY-MM-DD> [<YYYY-MM-DD> ...]
+```
+
+For every story the file holds under those dates it finds the prod row (published, same title), then
+fetches `/news/<slug>` on the production origin and checks the status, the `<title>` and the
+canonical link, and that the slug appears on `/news/`, in `/sitemap.xml` and in
+`/api/search-index.json`. The pages are server-rendered, so this passes the moment the SQL has run.
+No deploy is needed.
+
+- **`NOT IN PROD`** means the SQL never ran on prod, or ran on dev instead. Writing the file is not
+  publishing.
+- **"prod has this story under a different title"** means the file and the table disagree. Usually
+  that is an edit made after the SQL ran, or an encoding fault on one side.
+- **`CONTROL FAILED`** means a slug that cannot exist did not return 404, so a 200 would prove
+  nothing. The run stops instead of reporting success.
+
+First run 2026-11-19, on the four stories for 12–17 Nov.
+
 **And look at the page.** Automated checks are necessary and never sufficient for anything visual.
 
 ---
