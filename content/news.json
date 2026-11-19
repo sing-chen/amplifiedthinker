@@ -1,5 +1,72 @@
 [
   {
+    "date": "2026-11-17",
+    "stories": [
+      {
+        "title": "LSE and Protiviti: AI saves a fifth of the week, but performance tracks resilience and willingness to learn, not AI use",
+        "source": "The Inclusion Initiative at the London School of Economics, with Protiviti",
+        "url": "https://www.protiviti.com/gl-en/press-release-ai-at-work-lse-protiviti-research",
+        "summary": "The third annual LSE Inclusion Initiative report, ‘Beyond the Technology: Who Really Captures AI’s Gains at Work’, surveyed 3,001 professionals worldwide (March–May 2026). AI users say they save about 19% of their working week but put 72% of that time back into more work, a pattern the authors call ‘workload creep’, and 48% worry about being judged for not using AI enough. Self-rated performance showed no consistent link to AI adoption, training or access; it tracked conscientiousness, resilience, confidence in solving problems and willingness to learn.",
+        "implications": "Decide on purpose where your saved hours go: protect some for learning or deeper work instead of letting them fill up with more of the same tasks. Don’t treat visible AI use as your performance story; the traits that predicted performance here — resilience, problem-solving confidence, willingness to learn — are the ones to build and show.",
+        "tags": [
+          "skills development",
+          "workforce transformation",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-11-16",
+    "stories": [
+      {
+        "title": "Gartner’s 2027 workforce risks: capability quietly lost, change fatigue, and rewards that miss what people need",
+        "source": "Gartner",
+        "url": "https://www.gartner.com/en/newsroom/press-releases/2026-11-16-gartner-unveils-top-enterprise-risks-set-to-redefine-workforces-in-2027",
+        "summary": "At its HR Symposium in Sydney, Gartner named four risks for 2027: leadership misalignment (68% of CHROs say over 10% of their leaders are misaligned on strategy), capability lost through premature AI-driven cuts (it predicts 30% of people replaced by AI will be rehired by 2029, often at higher cost), change fatigue that wears down engagement, and rewards that do not fit what employees need. Gartner says employees experience change as the combined weight of shifting priorities rather than as separate initiatives, and that intent to stay and performance both rose 17% when rewards felt relevant to people’s needs.",
+        "implications": "Use these risks to read your own environment: if priorities keep shifting and leaders give different answers, write down for yourself how your daily work connects to the bigger picture, because Gartner names losing that link as a main cause of disengagement. Keep a record of the knowledge only you hold; Gartner’s point that lost capability is less visible than cost savings is a reason to make yours visible.",
+        "tags": [
+          "research and insights",
+          "workforce transformation",
+          "leadership and culture"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-11-13",
+    "stories": [
+      {
+        "title": "‘Likely’ means different things to different people: three decision styles emerge when probabilities come in words versus numbers",
+        "source": "The University of Tokyo",
+        "url": "https://www.u-tokyo.ac.jp/focus/en/press/z0508_00485.html",
+        "summary": "University of Tokyo researchers asked 138 people (48 with autism spectrum disorder) to recommend a treatment based on a doctor’s statement of its chance of success, given either as a number or in words such as ‘likely’. Three decision styles emerged: one driven mainly by the positive or negative framing of the words, one driven by the numbers people inferred from them, and a mixed group. The authors conclude that communicating uncertainty is not just a matter of choosing clear words, and that speakers should check how their meaning was understood. The study appeared in Psychonomic Bulletin & Review.",
+        "implications": "When you give a forecast or risk estimate, put a number next to the word (‘likely — about 70%’), because your listeners may be reacting to the tone of the word rather than the odds. When you are the one deciding, turn others’ vague probability words into numbers before you act on them.",
+        "tags": [
+          "skills development",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
+    "date": "2026-11-12",
+    "stories": [
+      {
+        "title": "Habit, not curiosity, drives hidden ‘shadow AI’ use at work, and policy without training makes concealment worse",
+        "source": "arXiv (Old Dominion University and Texas A&M University)",
+        "url": "https://arxiv.org/abs/2611.16931",
+        "summary": "A survey of 510 employed generative-AI users found that habit explained the most variance in unsanctioned AI use, while curiosity-driven exploration added little once usage habits were accounted for. About a fifth of respondents concealed their AI use, and concealment was highest where employers had an AI policy but no training (31%) and lowest where they trained without a policy (14%). An open climate for experimentation and knowledge sharing, plus perceived professional support, were linked to less concealment. It is a cross-sectional preprint, so it cannot show cause and effect.",
+        "implications": "If your AI use has become automatic, check whether it is also invisible: hidden use cuts you off from the feedback and shared learning that build real skill. When you choose teams or employers, treat an open climate for experimenting and sharing what works as a sign of a place where you will develop faster.",
+        "tags": [
+          "workforce transformation",
+          "skills development",
+          "research and insights"
+        ]
+      }
+    ]
+  },
+  {
     "date": "2026-10-21",
     "stories": [
       {
