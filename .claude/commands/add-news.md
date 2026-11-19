@@ -65,6 +65,12 @@ The user will paste the raw output of their "Daily workforce digest" scheduled t
 2. In `word/document.xml`, find each `r:id="rIdN"` reference and note which paragraph/story it falls in (they appear in document order, so the Nth hyperlink usually lines up with the Nth "Source:" line — but confirm by checking surrounding text, don't assume the ordering).
 3. Use the resolved `Target` as the story's `url`, never the display text.
 
+**If the input is a digest JSON file** (`news-digests/<YYYY-MM-DD>.json` in the owner's Drive
+folder, written by every digest run since 2026-11-19), prefer it to the prose: run
+`npm run verify:digest -- <file>` first, and if it passes, take the fields as they are. `implications`
+is already the IC line and `tags` are already the site's five, so Step 2's tag mapping is done. A
+file that fails the check is not an input: say what failed and fall back to the readable digest.
+
 If no digest content is present yet, ask the user to paste or attach it.
 
 **If the input is just one or more bare URLs** (no digest formatting — headline/Source/Summary/etc. — around them), don't ask the user to reformat it into digest style. Instead, for each URL:

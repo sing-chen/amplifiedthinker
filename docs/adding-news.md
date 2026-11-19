@@ -59,6 +59,24 @@ unchanged from before Phase 6.
 It starts by running `npm run pull:news`, which lists prod rows missing from `content/news.json` so the
 file is current before anything is authored against it (see the drift note near the end of this page).
 
+### The digest also writes a file
+
+Since 2026-11-19 every run of the daily digest scheduled task also writes
+`news-digests/<YYYY-MM-DD>.json` in the owner's Drive folder, next to the readable digest. It holds
+the same stories, already in the shape `content/news.json` wants. The IC line is `implications`, and
+the tags are the site's five rather than the digest's own seven, which `/add-news` used to drop
+silently. Check a file, or a whole folder, with:
+
+```bash
+npm run verify:digest -- "<path to news-digests>"
+```
+
+A run that found nothing still writes a file with an empty `stories` list, so a **missing** day means
+the run did not happen. Neighbouring days repeat URLs because each run looks back 7 days, and the
+check reports how many. The files stay out of this repo on purpose: they are uncurated third-party
+summaries and the repo is public. This is step 1 of making news preparation weekly and automatic.
+Writing a file publishes nothing, the same as everything else on this page before step 5.
+
 **Ask for a shortlist rather than accepting all of them.** Most stories in a digest are worth
 reading once; the News page is for the ones worth more than that.
 

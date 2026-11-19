@@ -236,6 +236,11 @@ scripts/         lib/supabase.mjs — ⚠️ THE ONE PLACE A NODE SCRIPT LEARNS 
                  the anon key, never writes. Found two real duplicates on its first run, both
                  re-publications 19 and 31 days apart, which /add-news's two-week file window could
                  not see. An EMPTY table reports "not a pass", never clean
+                 verify-digest.mjs (npm run verify:digest -- <folder|file>) - checks the JSON files
+                 the daily digest scheduled task writes (one per run, since 2026-11-19). ⚠️ THOSE
+                 FILES LIVE IN THE OWNER'S DRIVE FOLDER, NOT HERE, on purpose: uncurated third-party
+                 summaries in a public repo. So the script has no default path. Tags are checked
+                 against THEME_ORDER imported from src/lib/news-render.mjs, never a copy
                  build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so
