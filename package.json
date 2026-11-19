@@ -30,6 +30,7 @@
     "verify:news-dupes": "node scripts/verify-news-duplicates.mjs",
     "pull:news": "node scripts/pull-news-from-db.mjs",
     "verify:digest": "node scripts/verify-digest.mjs",
+    "news:candidates": "node scripts/news-candidates.mjs",
     "specimen:note-editor": "node scripts/dev/build-note-editor-specimen.mjs",
     "specimen:skill-notes": "node scripts/dev/build-skill-notes-specimen.mjs",
     "specimen:library-notes": "node scripts/dev/build-library-notes-specimen.mjs"

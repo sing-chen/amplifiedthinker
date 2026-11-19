@@ -35,6 +35,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { projects, keyProblem } from './lib/supabase.mjs';
+import { normUrl, overlap } from './lib/news-match.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = join(REPO, 'content', 'news.json');
@@ -56,33 +57,9 @@ if (keyIssue) {
   process.exit(2);
 }
 
-/* ── normalising, so "the same story" survives cosmetic differences ───────── */
-
-function normUrl(u) {
-  if (!u) return '';
-  try {
-    const p = new URL(String(u));
-    return (p.hostname.replace(/^www\./, '') + p.pathname.replace(/\/+$/, '')).toLowerCase();
-  } catch {
-    return String(u).trim().toLowerCase().replace(/\/+$/, '');
-  }
-}
-
-// Title comparison is deliberately crude and deliberately NOT the primary
-// signal — it exists to catch a reworded headline over the same URL, which the
-// URL check already finds, and to give the report something readable to print.
-function words(t) {
-  return new Set(
-    String(t).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter((w) => w.length > 3)
-  );
-}
-function overlap(a, b) {
-  const A = words(a), B = words(b);
-  if (!A.size || !B.size) return 0;
-  let hit = 0;
-  for (const w of A) if (B.has(w)) hit++;
-  return hit / Math.min(A.size, B.size);
-}
+/* ── normalising, so "the same story" survives cosmetic differences ─────────
+   normUrl and overlap live in scripts/lib/news-match.mjs, shared with
+   news-candidates.mjs so the two can never disagree about what a match is. */
 
 /* ── read both sides ──────────────────────────────────────────────────────── */
 

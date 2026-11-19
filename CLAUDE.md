@@ -241,6 +241,13 @@ scripts/         lib/supabase.mjs — ⚠️ THE ONE PLACE A NODE SCRIPT LEARNS 
                  FILES LIVE IN THE OWNER'S DRIVE FOLDER, NOT HERE, on purpose: uncurated third-party
                  summaries in a public repo. So the script has no default path. Tags are checked
                  against THEME_ORDER imported from src/lib/news-render.mjs, never a copy
+                 news-candidates.mjs (npm run news:candidates -- <folder>) - the weekly prep: a
+                 week of digest files, repeats collapsed, already-published taken out against the
+                 file AND prod, look-alike headlines flagged. READS ONLY. Run by the
+                 `weekly-news-prep` scheduled task (Mondays), which reports a shortlist and stops.
+                 ⚠️ If prod cannot be read it says PROD NOT CHECKED and exits 1, never "clean".
+                 Its rules are shared, not copied: lib/digest.mjs (the digest file check) and
+                 lib/news-match.mjs (normUrl/overlap, also used by verify-news-duplicates)
                  build-skills-catalogue.mjs (npm run build:catalogue) — derives plan/primer lengths
                  from the pages into public/skills-catalogue.json
                  verify-catalogue.mjs (npm run verify:catalogue) — ⚠️ wired as npm's `prebuild`, so

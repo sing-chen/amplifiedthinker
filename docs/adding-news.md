@@ -74,8 +74,31 @@ npm run verify:digest -- "<path to news-digests>"
 A run that found nothing still writes a file with an empty `stories` list, so a **missing** day means
 the run did not happen. Neighbouring days repeat URLs because each run looks back 7 days, and the
 check reports how many. The files stay out of this repo on purpose: they are uncurated third-party
-summaries and the repo is public. This is step 1 of making news preparation weekly and automatic.
-Writing a file publishes nothing, the same as everything else on this page before step 5.
+summaries and the repo is public. Writing a file publishes nothing, the same as everything else on
+this page before step 5.
+
+### The weekly prep does steps 1 and 1a for you
+
+Every Monday at about 07:30 the `weekly-news-prep` scheduled task runs:
+
+```bash
+npm run news:candidates -- "<path to news-digests>" --check-urls --json "<path to news-prep>/<date>.json"
+```
+
+That takes the last 7 days of digest files, keeps each story once, removes anything already published
+(checked against `content/news.json` **and** prod), and flags headlines that look like an earlier
+story or another candidate. The task then does the parts a script cannot:
+- re-opens links that refused a script
+- looks for the original publisher when the source is coverage of someone else's work
+- decides each look-alike flag
+- recommends keep or skip
+
+It writes `news-prep/<date>.md` beside the digests, sends a notification and stops.
+
+**It publishes nothing and changes nothing.** Reply in that run with the numbers you want, and it
+follows `/add-news` from Step 0 with those stories as input, with every approval in it, including the
+explicit yes before the prod write. If the database could not be read, the report says
+**PROD NOT CHECKED** rather than reporting no duplicates.
 
 **Ask for a shortlist rather than accepting all of them.** Most stories in a digest are worth
 reading once; the News page is for the ones worth more than that.
